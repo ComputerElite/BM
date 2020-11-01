@@ -22,3 +22,4 @@ Connect your Quest to your PC with a USB cable, open "BMBF Manager.exe" and hit 
 
 # To-Do
 - Add Installing Support for Mods from the same Minor Version. (ETA: Maybe 03.11.2020)
+- Add Song Search function (ETA: 02.11.2020)
