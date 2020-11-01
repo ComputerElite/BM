@@ -28,7 +28,7 @@ namespace BMBF_Manager
         int MajorV = 1;
         int MinorV = 0;
         int PatchV = 0;
-        Boolean Preview = true;
+        Boolean Preview = false;
 
         Boolean draggable = true;
         String exe = AppDomain.CurrentDomain.BaseDirectory.Substring(0, AppDomain.CurrentDomain.BaseDirectory.Length - 1);
@@ -51,7 +51,7 @@ namespace BMBF_Manager
             QuestIP();
             Quest.Text = IP;
             txtbox.Text = "Output:";
-            //Update();
+            Update();
             BMBF_Link();
         }
 
