@@ -1,0 +1,17 @@
+D:\Visual Studio\BMBF Manager\BMBF Manager\obj\Debug\BMBF Manager.csprojAssemblyReference.cache
+D:\Visual Studio\BMBF Manager\BMBF Manager\obj\Debug\MainWindow.g.cs
+D:\Visual Studio\BMBF Manager\BMBF Manager\obj\Debug\Songs.g.cs
+D:\Visual Studio\BMBF Manager\BMBF Manager\obj\Debug\App.g.cs
+D:\Visual Studio\BMBF Manager\BMBF Manager\obj\Debug\BMBF Manager_MarkupCompile.cache
+D:\Visual Studio\BMBF Manager\BMBF Manager\obj\Debug\BMBF Manager_MarkupCompile.lref
+D:\Visual Studio\BMBF Manager\BMBF Manager\bin\Debug\BMBF Manager.exe.config
+D:\Visual Studio\BMBF Manager\BMBF Manager\bin\Debug\BMBF Manager.exe
+D:\Visual Studio\BMBF Manager\BMBF Manager\bin\Debug\BMBF Manager.pdb
+D:\Visual Studio\BMBF Manager\BMBF Manager\obj\Debug\MainWindow.baml
+D:\Visual Studio\BMBF Manager\BMBF Manager\obj\Debug\Songs.baml
+D:\Visual Studio\BMBF Manager\BMBF Manager\obj\Debug\BMBF Manager.g.resources
+D:\Visual Studio\BMBF Manager\BMBF Manager\obj\Debug\BMBF_Manager.Properties.Resources.resources
+D:\Visual Studio\BMBF Manager\BMBF Manager\obj\Debug\BMBF Manager.csproj.GenerateResource.cache
+D:\Visual Studio\BMBF Manager\BMBF Manager\obj\Debug\BMBF Manager.csproj.CoreCompileInputs.cache
+D:\Visual Studio\BMBF Manager\BMBF Manager\obj\Debug\BMBF Manager.exe
+D:\Visual Studio\BMBF Manager\BMBF Manager\obj\Debug\BMBF Manager.pdb
