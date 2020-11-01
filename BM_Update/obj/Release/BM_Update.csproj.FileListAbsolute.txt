@@ -1,0 +1,15 @@
+D:\Visual Studio\BM_Update\BM_Update\bin\Release\BM_Update.exe.config
+D:\Visual Studio\BM_Update\BM_Update\bin\Release\BM_Update.exe
+D:\Visual Studio\BM_Update\BM_Update\bin\Release\BM_Update.pdb
+D:\Visual Studio\BM_Update\BM_Update\obj\Release\BM_Update.csprojAssemblyReference.cache
+D:\Visual Studio\BM_Update\BM_Update\obj\Release\MainWindow.g.cs
+D:\Visual Studio\BM_Update\BM_Update\obj\Release\App.g.cs
+D:\Visual Studio\BM_Update\BM_Update\obj\Release\BM_Update_MarkupCompile.cache
+D:\Visual Studio\BM_Update\BM_Update\obj\Release\BM_Update_MarkupCompile.lref
+D:\Visual Studio\BM_Update\BM_Update\obj\Release\MainWindow.baml
+D:\Visual Studio\BM_Update\BM_Update\obj\Release\BM_Update.g.resources
+D:\Visual Studio\BM_Update\BM_Update\obj\Release\BM_Update.Properties.Resources.resources
+D:\Visual Studio\BM_Update\BM_Update\obj\Release\BM_Update.csproj.GenerateResource.cache
+D:\Visual Studio\BM_Update\BM_Update\obj\Release\BM_Update.csproj.CoreCompileInputs.cache
+D:\Visual Studio\BM_Update\BM_Update\obj\Release\BM_Update.exe
+D:\Visual Studio\BM_Update\BM_Update\obj\Release\BM_Update.pdb
