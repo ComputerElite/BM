@@ -2,6 +2,9 @@
 The Utility to install new Songs, Mods, Switch between the modded and unmodded Version of Beat Saber and Update BMBF.
 # How-to
 ## Install new Songs
+### 1. Option
+Open "BMBF Manager.exe", put in your Quests IP (if it hasn't picked it up automatically) and click "Install Songs". Put a Search term in the box named "Search Term" and hit "Search". Select the Song you want from the list below. Then check if it is the right Song by clicking "See Song Metadata". If it is the right Song click "Install Song". The Song will install to your Quest.
+### 2. Option
 Open "BMBF Manager.exe", put in your Quests IP (if it hasn't picked it up automatically) and click "Install Songs". Then go to [BeatSaver.com](https://beatsaver.com) and search for your Song. Put the Song Key shown in the Song Key box in the new window that appeared.
 
 ![SongKey](https://github.com/ComputerElite/wiki/blob/main/BM/BeatSaver%20Key.png)
