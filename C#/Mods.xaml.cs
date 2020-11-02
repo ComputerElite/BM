@@ -300,7 +300,7 @@ namespace BMBF_Manager
             {
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
                 {
-                    Sync();
+                    //Sync();
                 }));
                 txtbox.AppendText("\n\nMod " + ModNames[Index] + " was synced to your Quest.");
             }
@@ -310,6 +310,7 @@ namespace BMBF_Manager
                 return;
             }
             /*
+            
             JSONNode BMBF = JSON.Parse("{}");
             try
             {
@@ -353,6 +354,7 @@ namespace BMBF_Manager
             txtbox.AppendText("\n\n" + MainWindow.IP);
             postChanges(exe + "\\tmp\\config.json");
             */
+            
         }
 
         public void postChanges(String Config)
@@ -362,7 +364,7 @@ namespace BMBF_Manager
             {
                 client.QueryString.Add("foo", "foo");
                 client.UploadFile("http://" + MainWindow.IP + ":50000/host/beatsaber/config", "PUT", Config);
-                //client.UploadValues("http://" + MainWindow.IP + ":50000/host/beatsaber/commitconfig", "POST", client.QueryString);
+                client.UploadValues("http://" + MainWindow.IP + ":50000/host/beatsaber/commitconfig", "POST", client.QueryString);
             }
         }
 

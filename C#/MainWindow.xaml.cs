@@ -26,7 +26,7 @@ namespace BMBF_Manager
     public partial class MainWindow : Window
     {
         int MajorV = 1;
-        int MinorV = 0;
+        int MinorV = 1;
         int PatchV = 0;
         Boolean Preview = false;
 
@@ -69,7 +69,7 @@ namespace BMBF_Manager
 
         public void saveConfig()
         {
-            getQuestIP();
+            CheckIP();
             json["IP"] = IP;
             File.WriteAllText(exe + "\\Config.json", json.ToString());
         }
@@ -131,11 +131,12 @@ namespace BMBF_Manager
                 }
             }
 
-            if (FIP == "")
+            if (FIP == "" && IP == "Quest IP")
             {
                 IP = "Quest IP";
                 return;
             }
+            if (FIP == "") return;
             IP = FIP;
         }
 
@@ -443,6 +444,7 @@ namespace BMBF_Manager
 
         private void InstallSongs(object sender, RoutedEventArgs e)
         {
+            CheckIP();
             Songs SongsWindow = new Songs();
             SongsWindow.Show();
         }

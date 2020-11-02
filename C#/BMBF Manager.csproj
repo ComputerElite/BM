@@ -122,21 +122,18 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Main1.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Songs1.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Mods1.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Logo.ico" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Main2.png" />
     <Resource Include="Mods2.png" />
     <Resource Include="Songs2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Songs3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Songs4.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
