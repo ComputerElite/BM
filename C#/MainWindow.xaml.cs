@@ -1,4 +1,5 @@
-﻿using SimpleJSON;
+﻿using Newtonsoft.Json.Linq;
+using SimpleJSON;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -27,10 +28,11 @@ namespace BMBF_Manager
     {
         int MajorV = 1;
         int MinorV = 1;
-        int PatchV = 0;
+        int PatchV = 1;
         Boolean Preview = false;
 
         Boolean draggable = true;
+        Boolean Running = false;
         String exe = AppDomain.CurrentDomain.BaseDirectory.Substring(0, AppDomain.CurrentDomain.BaseDirectory.Length - 1);
         public static String IP = "";
         String BMBF = "https://bmbf.dev/stable/27153984";
@@ -163,7 +165,8 @@ namespace BMBF_Manager
             {
             }
             saveConfig();
-            this.Close();
+            Process.GetCurrentProcess().Kill();
+            //this.Close();
         }
 
         public void StartBMBF()
@@ -488,24 +491,133 @@ namespace BMBF_Manager
 
         private void UpdateBMBF(object sender, RoutedEventArgs e)
         {
-            CheckIP();
-            MessageBoxResult result = MessageBox.Show("Do you have unmodded Beat Saber installed and opened it at least once?", "BMBF Manager BMBF Updater", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-            switch (result)
+            if(Running)
             {
-                case MessageBoxResult.No:
-                    txtbox.AppendText("\n\nBMBF Updating aborted. Please Install unmodded Beat Saber and start it once");
-                    txtbox.ScrollToEnd();
-                    return;
+                txtbox.AppendText("\n\nA operation is already running. Please try again after it has finished.");
+                return;
             }
-
+            Running = true;
+            CheckIP();
             getQuestIP();
-            if (!adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/ \"" + exe + "\\Backup\""))
+            if (!adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/mods \"" + exe + "\\ModChecks"))
             {
                 txtbox.AppendText("\n\n\nAn error Occured (Code: ADB100). Check following");
                 txtbox.AppendText("\n\n- Your Quest is connected and USB Debugging enabled.");
                 txtbox.AppendText("\n\n- You have adb installed.");
+                Running = false;
                 return;
             }
+
+            if (Directory.Exists(exe + "\\ModChecks\\mods"))
+            {
+                //game is modded
+                MessageBoxResult result1 = MessageBox.Show("Modded Beat Saber has been detected. If you press yes I'll uninstall Beat Saber and BMBF and make a Backup of it to restore. If you press no you'll cancle Updating.", "BMBF Manager BMBF Updater", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                switch (result1)
+                {
+                    case MessageBoxResult.No:
+                        txtbox.AppendText("\n\nBMBF Updating aborted.");
+                        txtbox.ScrollToEnd();
+                        Running = false;
+                        return;
+                }
+                if (!adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/ \"" + exe + "\\Backup\""))
+                {
+                    txtbox.AppendText("\n\n\nAn error Occured (Code: ADB100). Check following");
+                    txtbox.AppendText("\n\n- Your Quest is connected and USB Debugging enabled.");
+                    txtbox.AppendText("\n\n- You have adb installed.");
+                    Running = false;
+                    return;
+                }
+
+                //Backup Playlists
+                try {
+                    txtbox.AppendText("\n\nBacking up Playlist to " + exe + "\\Backup\\Playlists.json");
+                    txtbox.ScrollToEnd();
+                    Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
+
+                    if(!adb("pull /sdcard/BMBFData/Playlists/ \"" + exe + "\\Backup\"")) return;
+
+                    using (WebClient client2 = new WebClient())
+                    {
+                        client2.DownloadFile("http://" + IP + ":50000/host/beatsaber/config", exe + "\\tmp\\Config.json");
+                    }
+                
+
+
+                    String Config = exe + "\\tmp\\config.json";
+
+
+
+                    StreamReader reader = new StreamReader(@Config);
+                    String line;
+                    while ((line = reader.ReadLine()) != null)
+                    {
+                        int Index = line.IndexOf("\"Mods\":[", 0, line.Length);
+                        String Playlists = line.Substring(0, Index);
+                        File.WriteAllText(exe + "\\Backup\\Playlists.json", Playlists);
+                    }
+                    txtbox.AppendText("\n\nBacked up Playlists to " + exe + "\\Backup\\Playlists.json");
+                    txtbox.ScrollToEnd();
+                    Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
+                } catch
+                {
+                    txtbox.AppendText("\n\n\nAn error occured (Code: PL100). Check following:");
+                    txtbox.AppendText("\n\n- You put in the Quests IP right.");
+                    txtbox.AppendText("\n\n- You've choosen a Backup Name.");
+                    txtbox.AppendText("\n\n- Your Quest is on.");
+
+                }
+
+
+            if (!adb("uninstall com.beatgames.beatsaber"))
+                {
+                    txtbox.AppendText("\n\n\nAn error Occured (Code: ADB100). Check following");
+                    txtbox.AppendText("\n\n- Your Quest is connected and USB Debugging enabled.");
+                    txtbox.AppendText("\n\n- You have adb installed.");
+                    Running = false;
+                    return;
+                }
+                if (!adb("uninstall com.weloveoculus.BMBF"))
+                {
+                    txtbox.AppendText("\n\n\nAn error Occured (Code: ADB100). Check following");
+                    txtbox.AppendText("\n\n- Your Quest is connected and USB Debugging enabled.");
+                    txtbox.AppendText("\n\n- You have adb installed.");
+                    Running = false;
+                    return;
+                }
+                MessageBoxResult result2 = MessageBox.Show("Please download Beat Saber from the oculus score, play a song and then close it. Press OK once you finished.", "BMBF Manager BMBF Updater", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBoxResult result3 = MessageBox.Show("I want to make sure. Do you have unmodded Beat Saber installed and opened it at least once?", "BMBF Manager BMBF Updater", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                switch (result3)
+                {
+                    case MessageBoxResult.No:
+                        txtbox.AppendText("\n\nBMBF Updating aborted. Please Install unmodded Beat Saber and start it once");
+                        txtbox.ScrollToEnd();
+                        Running = false;
+                        return;
+                }
+            } else
+            {
+                if (!adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/ \"" + exe + "\\Backup\""))
+                {
+                    txtbox.AppendText("\n\n\nAn error Occured (Code: ADB100). Check following");
+                    txtbox.AppendText("\n\n- Your Quest is connected and USB Debugging enabled.");
+                    txtbox.AppendText("\n\n- You have adb installed.");
+                    Running = false;
+                    return;
+                }
+                MessageBoxResult result = MessageBox.Show("Looks like you have unmodded Beat Saber installed. Did you open it at least once?", "BMBF Manager BMBF Updater", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                switch (result)
+                {
+                    case MessageBoxResult.No:
+                        txtbox.AppendText("\n\nBMBF Updating aborted. Please Install unmodded Beat Saber and start it once");
+                        txtbox.ScrollToEnd();
+                        Running = false;
+                        return;
+                }
+            }
+
+            if(Directory.Exists(exe + "\\ModChecks\\mods")) Directory.Delete(exe + "\\ModChecks\\mods", true);
+            
             if (Directory.Exists(exe + "\\Backup\\files\\mods")) Directory.Delete(exe + "\\Backup\\files\\mods", true);
             if (Directory.Exists(exe + "\\Backup\\files\\libs")) Directory.Delete(exe + "\\Backup\\files\\libs", true);
             txtbox.AppendText("\n\nDownloading BMBF");
@@ -561,28 +673,135 @@ namespace BMBF_Manager
                 txtbox.AppendText("\n\n\nAn error Occured (Code: ADB100). Check following");
                 txtbox.AppendText("\n\n- Your Quest is connected and USB Debugging enabled.");
                 txtbox.AppendText("\n\n- You have adb installed.");
+                Running = false;
                 return;
+            }
+
+            //restore Playlists
+            try {
+                using (WebClient client3 = new WebClient())
+                {
+                    Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate {
+                        client3.DownloadFile("http://" + IP + ":50000/host/beatsaber/config", exe + "\\tmp\\OConfig.json");
+                    }));
+
+                }
+
+                String Config = exe + "\\tmp\\OConfig.json";
+
+                String Playlists = exe + "\\Backup\\Playlists.json";
+
+                StreamReader reader = new StreamReader(@Config);
+                String line;
+                String CContent = "";
+                int Index = 0;
+                while ((line = reader.ReadLine()) != null)
+                {
+                    Index = line.IndexOf("\"Mods\":", 0, line.Length);
+                    CContent = line.Substring(Index, line.Length - Index);
+                }
+
+                StreamReader Preader = new StreamReader(@Playlists);
+                String Pline;
+                String Content = "";
+                while ((Pline = Preader.ReadLine()) != null)
+                {
+                    Content = Pline;
+                }
+
+                String finished = Content + CContent;
+
+                JObject o = JObject.Parse(finished);
+                o.Property("SyncConfig").Remove();
+                o.Property("IsCommitted").Remove();
+                o.Property("BeatSaberVersion").Remove();
+
+                JProperty lrs = o.Property("Config");
+                o.Add(lrs.Value.Children<JProperty>());
+                lrs.Remove();
+
+                String FConfig = o.ToString();
+                File.WriteAllText(exe + "\\tmp\\config.json", FConfig);
+
+                PushPNG(exe + "\\Backup\\Playlists");
+                Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate {
+                    postChanges(exe + "\\tmp\\config.json");
+                }));
+                txtbox.AppendText("\n\nRestored old Playlists.");
+                txtbox.ScrollToEnd();
+                Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
+            } catch
+            {
+                txtbox.AppendText("\n\n\nAn error occured (Code: BMBF100). Check following:");
+                txtbox.AppendText("\n\n- Your Quest is on and BMBF opened");
+                txtbox.AppendText("\n\n- You put in the Quests IP right.");
             }
 
             txtbox.AppendText("\n\n\nFinished Installing BMBF and modding Beat Saber. Please click \"Reload Songs Folder\" in BMBF to reload your Songs if you Updated BMBF.");
             txtbox.ScrollToEnd();
+            Running = false;
+
+        }
+
+        public void postChanges(String Config)
+        {
+            System.Threading.Thread.Sleep(10000);
+            using (WebClient client = new WebClient())
+            {
+                client.QueryString.Add("foo", "foo");
+                client.UploadFile("http://" + IP + ":50000/host/beatsaber/config", "PUT", Config);
+                client.UploadValues("http://" + IP + ":50000/host/beatsaber/commitconfig", "POST", client.QueryString);
+            }
+        }
+
+        public void PushPNG(String Path)
+        {
+            String[] directories = Directory.GetFiles(Path);
 
 
+
+            for (int i = 0; i < directories.Length; i++)
+            {
+                if (directories[i].EndsWith(".png"))
+                {
+                    txtbox.AppendText("\n\nPushing " + directories[i] + " to Quest");
+                    adb("push \"" + directories[i] + "\" /sdcard/BMBFData/Playlists/");
+                    txtbox.ScrollToEnd();
+                    Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
+                }
+            }
         }
 
         private void SwitchVersion(object sender, RoutedEventArgs e)
         {
-            if(!adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/mods \"" + exe + "\\ModChecks"))
+            if (Running)
+            {
+                txtbox.AppendText("\n\nA operation is already running. Please try again after it has finished.");
+                return;
+            }
+
+            if (!adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/mods \"" + exe + "\\ModChecks"))
             {
                 txtbox.AppendText("\n\n\nAn error Occured (Code: ADB100). Check following");
                 txtbox.AppendText("\n\n- Your Quest is connected and USB Debugging enabled.");
                 txtbox.AppendText("\n\n- You have adb installed.");
+                Running = false;
                 return;
             }
 
-            if(Directory.Exists(exe + "\\ModChecks\\mods"))
+            if (!adb("shell am force-stop com.weloveoculus.BMBF"))
+            {
+                txtbox.AppendText("\n\n\nAn error Occured (Code: ADB100). Check following");
+                txtbox.AppendText("\n\n- Your Quest is connected and USB Debugging enabled.");
+                txtbox.AppendText("\n\n- You have adb installed.");
+                Running = false;
+                return;
+            }
+
+            if (Directory.Exists(exe + "\\ModChecks\\mods"))
             {
                 //game is modded
+                
                 if (File.Exists(exe + "\\Backups\\modded.apk"))
                 {
                     //Unmodded Beat Saber may be installed
@@ -592,6 +811,7 @@ namespace BMBF_Manager
                         case MessageBoxResult.No:
                             txtbox.AppendText("\n\nAborted.");
                             txtbox.ScrollToEnd();
+                            Running = false;
                             return;
                     }
                 }
@@ -605,6 +825,7 @@ namespace BMBF_Manager
                     txtbox.AppendText("\n\n\nAn error Occured (Code: ADB100). Check following");
                     txtbox.AppendText("\n\n- Your Quest is connected and USB Debugging enabled.");
                     txtbox.AppendText("\n\n- You have adb installed.");
+                    Running = false;
                     return;
                 }
                 if (!adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files \"" + exe + "\\Backups\""))
@@ -612,6 +833,7 @@ namespace BMBF_Manager
                     txtbox.AppendText("\n\n\nAn error Occured (Code: ADB100). Check following");
                     txtbox.AppendText("\n\n- Your Quest is connected and USB Debugging enabled.");
                     txtbox.AppendText("\n\n- You have adb installed.");
+                    Running = false;
                     return;
                 }
                 //Directory.Delete(exe + "\\Backups\\files\\mods", true);
@@ -623,6 +845,7 @@ namespace BMBF_Manager
                     txtbox.AppendText("\n\n\nAn error Occured (Code: ADB100). Check following");
                     txtbox.AppendText("\n\n- Your Quest is connected and USB Debugging enabled.");
                     txtbox.AppendText("\n\n- You have adb installed.");
+                    Running = false;
                     return;
                 }
 
@@ -635,6 +858,7 @@ namespace BMBF_Manager
                     txtbox.AppendText("\n\n\nAn error Occured (Code: ADB100). Check following");
                     txtbox.AppendText("\n\n- Your Quest is connected and USB Debugging enabled.");
                     txtbox.AppendText("\n\n- You have adb installed.");
+                    Running = false;
                     return;
                 }
                 if (!adb("install \"" + exe + "\\tmp\\unmodded.apk\""))
@@ -642,6 +866,7 @@ namespace BMBF_Manager
                     txtbox.AppendText("\n\n\nAn error Occured (Code: ADB100). Check following");
                     txtbox.AppendText("\n\n- Your Quest is connected and USB Debugging enabled.");
                     txtbox.AppendText("\n\n- You have adb installed.");
+                    Running = false;
                     return;
                 }
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate {
@@ -652,6 +877,8 @@ namespace BMBF_Manager
                 adb("push \"" + exe + "\\Backups\\files\\LocalLeaderboards.dat\" /sdcard/Android/data/com.beatgames.beatsaber/files/LocalLeaderboards.dat");
                 adb("push \"" + exe + "\\Backups\\files\\PlayerData.dat\" /sdcard/Android/data/com.beatgames.beatsaber/files/PlayerData.dat");
                 adb("push \"" + exe + "\\Backups\\files\\AvatarData.dat\" /sdcard/Android/data/com.beatgames.beatsaber/files/AvatarData.dat");
+                adb("push \"" + exe + "\\Backups\\files\\settings.cfg\" /sdcard/Android/data/com.beatgames.beatsaber/files/settings.cfg");
+
 
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate {
                     txtbox.AppendText("\n\nFinished. You can now play vanilla Beat Saber.");
@@ -664,12 +891,14 @@ namespace BMBF_Manager
                 if (!File.Exists(exe + "\\Backups\\modded.apk"))
                 {
                     txtbox.AppendText("\n\nPlease Click \"Install/Update BMBF\" to mod Beat Saber the first time.");
+                    Running = false;
                     return;
                 }
                 adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/LocalDailyLeaderboards.dat \"" + exe + "\\Backups\\files\\LocalDailyLeaderboards.dat\"");
                 adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/LocalLeaderboards.dat \"" + exe + "\\Backups\\files\\LocalLeaderboards.dat\"");
                 adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/PlayerData.dat \"" + exe + "\\Backups\\files\\PlayerData.dat\"");
                 adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/AvatarData.dat \"" + exe + "\\Backups\\files\\AvatarData.dat\"");
+                adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/settings.cfg \"" + exe + "\\Backups\\files\\settings.cfg\"");
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate {
                     txtbox.AppendText("\n\nUninstalling Beat Saber.");
                     txtbox.ScrollToEnd();
@@ -679,6 +908,7 @@ namespace BMBF_Manager
                     txtbox.AppendText("\n\n\nAn error Occured (Code: ADB100). Check following");
                     txtbox.AppendText("\n\n- Your Quest is connected and USB Debugging enabled.");
                     txtbox.AppendText("\n\n- You have adb installed.");
+                    Running = false;
                     return;
                 }
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate {
@@ -690,6 +920,7 @@ namespace BMBF_Manager
                     txtbox.AppendText("\n\n\nAn error Occured (Code: ADB100). Check following");
                     txtbox.AppendText("\n\n- Your Quest is connected and USB Debugging enabled.");
                     txtbox.AppendText("\n\n- You have adb installed.");
+                    Running = false;
                     return;
                 }
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate {
@@ -701,6 +932,7 @@ namespace BMBF_Manager
                     txtbox.AppendText("\n\n\nAn error Occured (Code: ADB100). Check following");
                     txtbox.AppendText("\n\n- Your Quest is connected and USB Debugging enabled.");
                     txtbox.AppendText("\n\n- You have adb installed.");
+                    Running = false;
                     return;
                 }
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate {
@@ -717,6 +949,7 @@ namespace BMBF_Manager
             }
 
             if (Directory.Exists(exe + "\\ModChecks\\mods")) Directory.Delete(exe + "\\ModChecks\\mods", true);
+            Running = false;
         }
     }
 }   

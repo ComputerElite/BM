@@ -127,10 +127,6 @@
   <ItemGroup>
     <Resource Include="Main2.png" />
     <Resource Include="Mods2.png" />
-    <Resource Include="Songs2.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Songs3.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Songs4.png" />

@@ -28,6 +28,7 @@ namespace BMBF_Manager
     public partial class Mods : Window
     {
         Boolean draggable = true;
+        Boolean Running = false;
         String exe = AppDomain.CurrentDomain.BaseDirectory.Substring(0, AppDomain.CurrentDomain.BaseDirectory.Length - 1);
         ArrayList CompatibleMods = new ArrayList();
         ArrayList ModNames = new ArrayList();
@@ -103,7 +104,7 @@ namespace BMBF_Manager
                             {
                                 for (int o = 0; ModNames[o] != null; o++)
                                 {
-                                    if (ModNames[o] == Name)
+                                    if ((String)ModNames[o] == Name)
                                     {
                                         existent = true;
                                     }
@@ -234,6 +235,12 @@ namespace BMBF_Manager
                 txtbox.AppendText("\n\nChoose a valid IP.");
                 return;
             }
+            if(Running)
+            {
+                txtbox.AppendText("\n\nA Mod Install is already running.");
+                return;
+            }
+            Running = true;
 
             C = 0;
             while (File.Exists(exe + "\\tmp\\Mod" + C + ".zip"))
@@ -262,6 +269,7 @@ namespace BMBF_Manager
             catch
             {
                 txtbox.AppendText("\n\nError (Code: BM200). Couldn't download Mod");
+                Running = false;
                 return;
             }
 
@@ -275,6 +283,7 @@ namespace BMBF_Manager
                 txtbox.AppendText("\nDownloaded Mod " + ModNames[Index] + "\n");
             }));
             upload(exe + "\\tmp\\Mod" + C + ".zip");
+            Running = false;
         }
 
         public void upload(String path)
@@ -307,6 +316,7 @@ namespace BMBF_Manager
             catch
             {
                 txtbox.AppendText("\n\nCouldn't sync with BeatSaber. Needs to be done manually.");
+                Running = false;
                 return;
             }
             /*
