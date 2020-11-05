@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -32,6 +33,8 @@ namespace BMBF_Manager
         String exe = AppDomain.CurrentDomain.BaseDirectory.Substring(0, AppDomain.CurrentDomain.BaseDirectory.Length - 1);
         ArrayList CompatibleMods = new ArrayList();
         ArrayList ModNames = new ArrayList();
+        ArrayList ModVersions = new ArrayList();
+        String BSVersion = "1.12.2";
         int C = 0;
         int Index = 0;
 
@@ -71,6 +74,7 @@ namespace BMBF_Manager
                 txtbox.AppendText("\n\n- BMBF is opened");
                 return;
             }
+            BSVersion = BMBF["BeatSaberVersion"].ToString().Replace("\"", "");
             String[] GameVersion = BMBF["BeatSaberVersion"].ToString().Replace("\"", "").Split('.');
             //String[] GameVersion = "1.11.1".Replace("\"", "").Split('.');
             int major = Convert.ToInt32(GameVersion[0]);
@@ -97,7 +101,7 @@ namespace BMBF_Manager
                         int Mmajor = Convert.ToInt32(MGameVersion[0]);
                         int Mminor = Convert.ToInt32(MGameVersion[1]);
                         int Mpatch = Convert.ToInt32(MGameVersion[2]);
-                        if (major == Mmajor && minor == Mminor && patch == Mpatch)
+                        if (major == Mmajor && minor == Mminor && patch >= Mpatch)
                         {
                             Boolean existent = false;
                             try
@@ -112,6 +116,7 @@ namespace BMBF_Manager
                             } catch { }
                             if (existent) continue;
                             Version = json["mods"][i]["downloads"][z]["modversion"];
+                            ModVersions.Add(json["mods"][i]["downloads"][z]["gameversion"][u].ToString());
                             ModList.Items.Add(new ModItem { Name = Name, Creator = Creator, GameVersion = json["mods"][i]["downloads"][z]["gameversion"][u], ModVersion = Version });
                             CompatibleMods.Add(json["mods"][i]["downloads"][z]["download"]);
                             ModNames.Add(Name);
@@ -250,6 +255,19 @@ namespace BMBF_Manager
 
             Index = ModList.SelectedIndex;
 
+            if (ModVersions[Index].ToString() != BSVersion)
+            {
+                MessageBoxResult result1 = MessageBox.Show("The latest Version of the Mod " + ModNames[Index] + " on QuestBoard has been made for Beat Saber Version " + ModVersions[Index].ToString() + ". It'll be compatible with your Game but you have to enable it manually. I'll open the BMBF mod tab after installing the mod. For it to activate you scroll to the mod you installed and flip the switch to on. If you get a compatibility warning click \"Enable Mod\" and then click \"Sync to Beat Saber\" in the top right.\nDo you wish to continue?", "BMBF Manager Mod Installing", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                switch (result1)
+                {
+                    case MessageBoxResult.No:
+                        txtbox.AppendText("\n\nMod Installing Aborted.");
+                        txtbox.ScrollToEnd();
+                        Running = false;
+                        return;
+                }
+            }
+
             String Download = CompatibleMods[Index].ToString().Substring(1, CompatibleMods[Index].ToString().Length - 2);
             WebClient c = new WebClient();
             Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
@@ -305,20 +323,30 @@ namespace BMBF_Manager
             {
                 txtbox.AppendText("\n\nA error Occured (Code: BMBF100)");
             }
-            try
+            if (ModVersions[Index].ToString() == BSVersion)
             {
-                Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
+                try
                 {
-                    //Sync();
-                }));
-                txtbox.AppendText("\n\nMod " + ModNames[Index] + " was synced to your Quest.");
-            }
-            catch
+                    Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
+                    {
+                        Sync();
+                    }));
+                    txtbox.AppendText("\n\nMod " + ModNames[Index] + " was synced to your Quest.");
+                }
+                catch
+                {
+                    txtbox.AppendText("\n\nCouldn't sync with BeatSaber. Needs to be done manually.");
+                    Running = false;
+                    return;
+                }
+            } else
             {
-                txtbox.AppendText("\n\nCouldn't sync with BeatSaber. Needs to be done manually.");
+                Process.Start("http://" + MainWindow.IP + ":50000/main/mods");
+                txtbox.AppendText("\n\nSince you choose to install this mod... you need to enable it manually. I uploaded it.");
                 Running = false;
                 return;
             }
+
             /*
             
             JSONNode BMBF = JSON.Parse("{}");

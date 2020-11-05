@@ -28,7 +28,7 @@ namespace BMBF_Manager
     {
         int MajorV = 1;
         int MinorV = 1;
-        int PatchV = 1;
+        int PatchV = 2;
         Boolean Preview = false;
 
         Boolean draggable = true;
@@ -941,7 +941,7 @@ namespace BMBF_Manager
                 }));
                 adb("shell pm grant com.beatgames.beatsaber android.permission.READ_EXTERNAL_STORAGE"); //Grant permission read
                 adb("shell pm grant com.beatgames.beatsaber android.permission.WRITE_EXTERNAL_STORAGE"); //Grant permission write
-                Directory.Delete(exe + "\\Backups", true);
+                //Directory.Delete(exe + "\\Backups", true);
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate {
                     txtbox.AppendText("\n\nfinished. You can now play your Custom Songs again.");
                     txtbox.ScrollToEnd();
