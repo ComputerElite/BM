@@ -2,6 +2,9 @@
 The Utility to install new Songs, Mods, Switch between the modded and unmodded Version of Beat Saber and Update BMBF.
 # How-to
 ## **Go to releases (Right Side) and download the zip file first. Then right click the downloaded zip and click extract.**
+## **Before you do anything you should enable developer mode if you didn't**
+![EnableDevMode](https://github.com/ComputerElite/wiki/blob/main/BM/EnableDevMode.png)
+
 ## Install new Songs
 ### 1. Option
 Open "BMBF Manager.exe", put in your Quests IP (if it hasn't picked it up automatically) and click "Install Songs". Put a Search term in the box named "Search Term" and hit "Search". Select the Song you want from the list below. Then check if it is the right Song by clicking "See Song Metadata". If it is the right Song click "Install Song". The Song will install to your Quest.
