@@ -116,7 +116,58 @@ namespace BMBF_Manager
                             } catch { }
                             if (existent) continue;
                             Version = json["mods"][i]["downloads"][z]["modversion"];
-                            ModVersions.Add(json["mods"][i]["downloads"][z]["gameversion"][u].ToString());
+                            ModVersions.Add(json["mods"][i]["downloads"][z]["gameversion"][u].ToString().Replace("\"", ""));
+                            ModList.Items.Add(new ModItem { Name = Name, Creator = Creator, GameVersion = json["mods"][i]["downloads"][z]["gameversion"][u], ModVersion = Version });
+                            CompatibleMods.Add(json["mods"][i]["downloads"][z]["download"]);
+                            ModNames.Add(Name);
+                            break;
+                        }
+                    }
+                }
+
+            }
+
+            WebClient c = new WebClient();
+
+            json = JSON.Parse(c.DownloadString("https://raw.githubusercontent.com/ComputerElite/BM/main/mods.json"));
+
+            for (int i = 0; json["mods"][i]["name"] != null; i++)
+            {
+                String Name = json["mods"][i]["name"];
+                String Creator = "";
+
+                for (int u = 0; json["mods"][i]["creator"][u] != null; u++)
+                {
+                    Creator = Creator + json["mods"][i]["creator"][u] + ", ";
+                }
+                Creator = Creator.Substring(0, Creator.Length - 2);
+                String Version = json["mods"][i]["downloads"][0]["modversion"];
+
+                for (int z = 0; json["mods"][i]["downloads"][z]["modversion"] != null; z++)
+                {
+                    for (int u = 0; json["mods"][i]["downloads"][z]["gameversion"][u] != null; u++)
+                    {
+                        String[] MGameVersion = json["mods"][i]["downloads"][z]["gameversion"][u].ToString().Replace("\"", "").Split('.');
+                        int Mmajor = Convert.ToInt32(MGameVersion[0]);
+                        int Mminor = Convert.ToInt32(MGameVersion[1]);
+                        int Mpatch = Convert.ToInt32(MGameVersion[2]);
+                        if (major == Mmajor && minor == Mminor && patch >= Mpatch)
+                        {
+                            Boolean existent = false;
+                            try
+                            {
+                                for (int o = 0; ModNames[o] != null; o++)
+                                {
+                                    if ((String)ModNames[o] == Name)
+                                    {
+                                        existent = true;
+                                    }
+                                }
+                            }
+                            catch { }
+                            if (existent) continue;
+                            Version = json["mods"][i]["downloads"][z]["modversion"];
+                            ModVersions.Add(json["mods"][i]["downloads"][z]["gameversion"][u].ToString().Replace("\"", ""));
                             ModList.Items.Add(new ModItem { Name = Name, Creator = Creator, GameVersion = json["mods"][i]["downloads"][z]["gameversion"][u], ModVersion = Version });
                             CompatibleMods.Add(json["mods"][i]["downloads"][z]["download"]);
                             ModNames.Add(Name);
