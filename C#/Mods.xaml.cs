@@ -34,6 +34,7 @@ namespace BMBF_Manager
         ArrayList CompatibleMods = new ArrayList();
         ArrayList ModNames = new ArrayList();
         ArrayList ModVersions = new ArrayList();
+        ArrayList ModDescriptions = new ArrayList();
         String BSVersion = "1.12.2";
         int C = 0;
         int Index = 0;
@@ -118,7 +119,8 @@ namespace BMBF_Manager
                             Version = json["mods"][i]["downloads"][z]["modversion"];
                             ModVersions.Add(json["mods"][i]["downloads"][z]["gameversion"][u].ToString().Replace("\"", ""));
                             ModList.Items.Add(new ModItem { Name = Name, Creator = Creator, GameVersion = json["mods"][i]["downloads"][z]["gameversion"][u], ModVersion = Version });
-                            CompatibleMods.Add(json["mods"][i]["downloads"][z]["download"]);
+                            CompatibleMods.Add(json["mods"][i]["downloads"][z]["download"].ToString().Replace("\"", ""));
+                            ModDescriptions.Add(json["mods"][i]["details"].ToString().Replace("\"", "").Replace("\\r\\n", System.Environment.NewLine));
                             ModNames.Add(Name);
                             break;
                         }
@@ -169,7 +171,8 @@ namespace BMBF_Manager
                             Version = json["mods"][i]["downloads"][z]["modversion"];
                             ModVersions.Add(json["mods"][i]["downloads"][z]["gameversion"][u].ToString().Replace("\"", ""));
                             ModList.Items.Add(new ModItem { Name = Name, Creator = Creator, GameVersion = json["mods"][i]["downloads"][z]["gameversion"][u], ModVersion = Version });
-                            CompatibleMods.Add(json["mods"][i]["downloads"][z]["download"]);
+                            CompatibleMods.Add(json["mods"][i]["downloads"][z]["download"].ToString().Replace("\"", ""));
+                            ModDescriptions.Add(json["mods"][i]["details"].ToString().Replace("\"", "").Replace("\\r\\n", System.Environment.NewLine));
                             ModNames.Add(Name);
                             break;
                         }
@@ -283,6 +286,10 @@ namespace BMBF_Manager
             MainWindow.IP = Quest.Text;
             return;
         }
+        public void MoreInfo(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Mod Name: " + ModNames[ModList.SelectedIndex] + "\n\nDescription:\n" + ModDescriptions[ModList.SelectedIndex], "BMBF Manager Mod Info", MessageBoxButton.OK);
+        }
 
         public void InstallMod(object sender, RoutedEventArgs e)
         {
@@ -362,40 +369,18 @@ namespace BMBF_Manager
             TimeoutWebClient client = new TimeoutWebClient();
 
             txtbox.AppendText("\n\nUploading Mod " + ModNames[Index] + " to BMBF");
+            Uri uri = new Uri("http://" + MainWindow.IP + ":50000/host/beatsaber/upload?overwrite");
             try
             {
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
                 {
-                    client.UploadFile("http://" + MainWindow.IP + ":50000/host/beatsaber/upload?overwrite", path);
+                    client.UploadFileCompleted += new UploadFileCompletedEventHandler(finished_upload);
+                    client.UploadFileAsync(uri, path);
                 }));
-
             }
             catch
             {
                 txtbox.AppendText("\n\nA error Occured (Code: BMBF100)");
-            }
-            if (ModVersions[Index].ToString() == BSVersion)
-            {
-                try
-                {
-                    Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
-                    {
-                        Sync();
-                    }));
-                    txtbox.AppendText("\n\nMod " + ModNames[Index] + " was synced to your Quest.");
-                }
-                catch
-                {
-                    txtbox.AppendText("\n\nCouldn't sync with BeatSaber. Needs to be done manually.");
-                    Running = false;
-                    return;
-                }
-            } else
-            {
-                Process.Start("http://" + MainWindow.IP + ":50000/main/mods");
-                txtbox.AppendText("\n\nSince you choose to install this mod... you need to enable it manually. I uploaded it.");
-                Running = false;
-                return;
             }
 
             /*
@@ -444,6 +429,34 @@ namespace BMBF_Manager
             postChanges(exe + "\\tmp\\config.json");
             */
             
+        }
+
+        private void finished_upload(object sender, AsyncCompletedEventArgs e)
+        {
+            if (ModVersions[Index].ToString() == BSVersion)
+            {
+                try
+                {
+                    Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
+                    {
+                        Sync();
+                    }));
+                    txtbox.AppendText("\n\nMod " + ModNames[Index] + " was synced to your Quest.");
+                }
+                catch
+                {
+                    txtbox.AppendText("\n\nCouldn't sync with BeatSaber. Needs to be done manually.");
+                    Running = false;
+                    return;
+                }
+            }
+            else
+            {
+                Process.Start("http://" + MainWindow.IP + ":50000/main/mods");
+                txtbox.AppendText("\n\nSince you choose to install this mod... you need to enable it manually. I uploaded it.");
+                Running = false;
+                return;
+            }
         }
 
         public void postChanges(String Config)

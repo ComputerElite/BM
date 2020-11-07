@@ -8,11 +8,12 @@
         ResizeMode="CanMinimize"
         WindowStyle="None"
         MouseMove="Drag"
-        Title="BMBF Manager Mod Installing" Height="372" Width="660" Background="#FF282828">
+        Title="BMBF Manager Mod Installing" Height="374" Width="660" Background="#FF282828">
     <Grid>
         <Grid.Background>
-            <ImageBrush ImageSource="Mods2.png" Stretch="UniformToFill"/>
+            <ImageBrush ImageSource="Mods3.png" Stretch="UniformToFill"/>
         </Grid.Background>
+        <Image Source="Logo.png" HorizontalAlignment="Left" Height="25" VerticalAlignment="Top" Width="25" Margin="10,2,0,0"/>
         <Button MouseEnter="noDrag" MouseLeave="doDrag" Click="Close" Content="X" HorizontalAlignment="Left" Margin="616,4,0,0" VerticalAlignment="Top" Width="31" Background="#00000000" BorderBrush="#FFCBCBCB"/>
         <Button MouseEnter="noDrag" MouseLeave="doDrag" Click="Mini" Content="|" HorizontalAlignment="Left" Margin="583,-2,0,0" VerticalAlignment="Top" Width="20" Background="#00000000" BorderBrush="#FFCBCBCB" RenderTransformOrigin="0.5,0.5" Height="31">
             <Button.RenderTransform>
@@ -28,7 +29,7 @@
 
         <TextBox MouseEnter="noDrag" MouseLeave="doDrag" FontFamily="lucida console" Opacity="0.8" IsReadOnly="True" x:Name="txtbox" HorizontalAlignment="Left" Height="333" Margin="10,30,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="188" Background="#FF494949" Foreground="#FFA6A6A6" BorderBrush="#FFD30000"/>
         <AccessText MouseEnter="noDrag" MouseLeave="doDrag" Opacity="0.8" HorizontalAlignment="Left" Height="24" VerticalAlignment="Top" Width="249" RenderTransformOrigin="0.5,0.5" Text="BMBF Manager Mod Installing" FontSize="14" Foreground="Black" Margin="40,4,0,0"/>
-        <Button MouseEnter="noDrag" MouseLeave="doDrag" FontFamily="lucida console" Opacity="0.8" Click="InstallMod" Content="Install selected Mod" HorizontalAlignment="Left" Margin="203,330,0,0" VerticalAlignment="Top" Width="445" Height="33" RenderTransformOrigin="-0.858,0.891" Background="#FF005654" Foreground="#FFF3F3F3" BorderBrush="#FFB94747"/>
+        <Button MouseEnter="noDrag" MouseLeave="doDrag" FontFamily="lucida console" Opacity="0.8" Click="InstallMod" Content="Install selected Mod" HorizontalAlignment="Left" Margin="417,330,0,0" VerticalAlignment="Top" Width="230" Height="33" RenderTransformOrigin="-0.858,0.891" Background="#FF005654" Foreground="#FFF3F3F3" BorderBrush="#FFB94747"/>
         <ListView MouseEnter="noDrag" MouseLeave="doDrag" FontFamily="lucida console" x:Name="ModList" HorizontalAlignment="Left" Height="267" Margin="203,58,0,0" Opacity="0.8" VerticalAlignment="Top" Width="445" Background="#0065a3" Foreground="#171717" BorderBrush="#FFB94747">
             <ListView.View>
                 <GridView>
@@ -55,5 +56,7 @@
                 </GridView>
             </ListView.View>
         </ListView>
+        <Button MouseEnter="noDrag" MouseLeave="doDrag" FontFamily="lucida console" Opacity="0.8" Click="MoreInfo" Content="More Info" HorizontalAlignment="Left" Margin="205,330,0,0" VerticalAlignment="Top" Width="207" Height="33" RenderTransformOrigin="-0.858,0.891" Background="#FF005654" Foreground="#FFF3F3F3" BorderBrush="#FFB94747"/>
+
     </Grid>
 </Window>

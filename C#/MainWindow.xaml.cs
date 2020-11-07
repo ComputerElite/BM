@@ -27,8 +27,8 @@ namespace BMBF_Manager
     public partial class MainWindow : Window
     {
         int MajorV = 1;
-        int MinorV = 1;
-        int PatchV = 3;
+        int MinorV = 2;
+        int PatchV = 0;
         Boolean Preview = false;
 
         Boolean draggable = true;
@@ -950,6 +950,19 @@ namespace BMBF_Manager
 
             if (Directory.Exists(exe + "\\ModChecks\\mods")) Directory.Delete(exe + "\\ModChecks\\mods", true);
             Running = false;
+        }
+
+        private void BPLists(object sender, RoutedEventArgs e)
+        {
+            CheckIP();
+            BPLists BPListsWindow = new BPLists();
+            BPListsWindow.Show();
+        }
+
+        private void OpenBMBF(object sender, RoutedEventArgs e)
+        {
+            CheckIP();
+            Process.Start("http://" + IP + ":50000/main/upload");
         }
     }
 }   
