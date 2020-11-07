@@ -3,6 +3,7 @@ The Utility to install new Songs, Mods, Switch between the modded and unmodded V
 # How-to
 ## **Go to releases (Right Side) and download the zip file first. Then right click the downloaded zip and click extract.**
 ## **Before you do anything you should enable developer mode if you didn't**
+## The First Time you launch the program it asks you for administrative access. If you want the best support click yes. otherwise no. (can be changed any time in the support section)
 ![EnableDevMode](https://github.com/ComputerElite/wiki/blob/main/BM/EnableDevMode.png)
 ## Install new Songs
 ### 1. Option
