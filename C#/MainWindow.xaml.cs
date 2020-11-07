@@ -28,7 +28,7 @@ namespace BMBF_Manager
     {
         int MajorV = 1;
         int MinorV = 2;
-        int PatchV = 0;
+        int PatchV = 1;
         Boolean Preview = false;
 
         Boolean draggable = true;
