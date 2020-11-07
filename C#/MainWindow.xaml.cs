@@ -27,10 +27,11 @@ namespace BMBF_Manager
     public partial class MainWindow : Window
     {
         int MajorV = 1;
-        int MinorV = 2;
-        int PatchV = 1;
+        int MinorV = 3;
+        int PatchV = 0;
         Boolean Preview = false;
 
+        public static Boolean CustomProtocols = false;
         Boolean draggable = true;
         Boolean Running = false;
         String exe = AppDomain.CurrentDomain.BaseDirectory.Substring(0, AppDomain.CurrentDomain.BaseDirectory.Length - 1);
@@ -48,11 +49,11 @@ namespace BMBF_Manager
             if (!Directory.Exists(exe + "\\tmp")) Directory.CreateDirectory(exe + "\\tmp");
             if (File.Exists(exe + "\\BM_Update.exe")) File.Delete(exe + "\\BM_Update.exe");
             UpdateB.Visibility = Visibility.Hidden;
+            txtbox.Text = "Output:";
             StartBMBF();
             loadConfig();
             QuestIP();
             Quest.Text = IP;
-            txtbox.Text = "Output:";
             Update();
             BMBF_Link();
         }
@@ -62,17 +63,52 @@ namespace BMBF_Manager
             if(!File.Exists(exe + "\\Config.json"))
             {
                 IP = "Quest IP";
+                enablecustom();
                 return;
             }
             json = JSON.Parse(File.ReadAllText(exe + "\\Config.json"));
+
+            CustomProtocols = json["CustomProtocols"].AsBool;
             IP = json["IP"];
+
             Quest.Text = IP;
+
+            if (!json["NotFirstRun"].AsBool)
+            {
+                enablecustom();
+            }
+            else if (!json["Location"].Equals(System.Reflection.Assembly.GetEntryAssembly().Location))
+            {
+                enablecustom();
+            }
+            
+        }
+
+        public void enablecustom()
+        {
+            String regFile = "Windows Registry Editor Version 5.00\n\n[HKEY_CLASSES_ROOT\\bm]\n@=\"URL: bm\"\n\"URL Protocol\"=\"bm\"\n\n[HKEY_CLASSES_ROOT\\bm]\n@=\"" + System.Reflection.Assembly.GetEntryAssembly().Location.Replace("\\", "\\\\") + "\"\n\n[HKEY_CLASSES_ROOT\\bm\\shell]\n\n[HKEY_CLASSES_ROOT\\bm\\shell\\open]\n\n[HKEY_CLASSES_ROOT\\bm\\shell\\open\\command]\n@=\"" + System.Reflection.Assembly.GetEntryAssembly().Location.Replace("\\", "\\\\") + " \\\"%1\\\"\"";
+            File.WriteAllText(exe + "\\registry.reg", regFile);
+            try
+            {
+                Process.Start(exe + "\\registry.reg");
+                txtbox.AppendText("\n\nCustom Links enabled");
+            }
+            catch
+            {
+                txtbox.AppendText("\n\nRegistry was unable to change... no Custom protocol enabled.");
+                return;
+            }
+            CustomProtocols = true;
         }
 
         public void saveConfig()
         {
             CheckIP();
             json["IP"] = IP;
+            json["Version"] = MajorV.ToString() + MinorV.ToString() + PatchV.ToString();
+            json["NotFirstRun"] = true;
+            json["Location"] = System.Reflection.Assembly.GetEntryAssembly().Location;
+            json["CustomProtocols"] = CustomProtocols;
             File.WriteAllText(exe + "\\Config.json", json.ToString());
         }
 
@@ -963,6 +999,21 @@ namespace BMBF_Manager
         {
             CheckIP();
             Process.Start("http://" + IP + ":50000/main/upload");
+        }
+
+        private void Support(object sender, RoutedEventArgs e)
+        {
+            CheckIP();
+            Support SupportWindow = new Support();
+            SupportWindow.Show();
+        }
+
+        internal void CustomProto(string Link)
+        {
+            CheckIP();
+            Support SupportWindow = new Support();
+            SupportWindow.Show();
+            SupportWindow.StartSupport(Link);
         }
     }
 }   

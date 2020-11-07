@@ -69,9 +69,13 @@
     <Compile Include="Mods.xaml.cs">
       <DependentUpon>Mods.xaml</DependentUpon>
     </Compile>
+    <Compile Include="OnStart.cs" />
     <Compile Include="SimpleJSON.cs" />
     <Compile Include="Songs.xaml.cs">
       <DependentUpon>Songs.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Support.xaml.cs">
+      <DependentUpon>Support.xaml</DependentUpon>
     </Compile>
     <Compile Include="TimeoutWebClient.cs">
       <SubType>Component</SubType>
@@ -97,6 +101,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Songs.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Support.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -132,9 +140,6 @@
     <Resource Include="Logo.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Mods2.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Songs4.png" />
   </ItemGroup>
   <ItemGroup>
@@ -148,6 +153,12 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="BPLists.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Main5.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Support.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
