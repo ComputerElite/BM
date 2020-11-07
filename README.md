@@ -20,7 +20,7 @@ Connect your Quest to your PC with a USB Cable and open "BMBF Manager.exe". Make
 ## Switch between modded and unmodded Beat Saber
 Connect your Quest to your PC with a USB cable, open "BMBF Manager.exe" and hit "Switch between modded and unmodded Beat Saber". Wait a bit and you will be able to play multiplayer again/play again with mods and custom Songs.
 ## Download BPLists
-Open "BMBF Manager.exe", put in your Quests IP (if it hasn't picked it up automatically) and click "Download BPLists". Then put in how many songs you want and click "Download ranked Songs" to get ranked songs from Scoresaber. The Songs will install to your Quest and you have to Click Sync to Beat Saber once it appears.
+Open "BMBF Manager.exe", put in your Quests IP (if it hasn't picked it up automatically) and click "Download BPLists". Then put in how many songs you want and click "Install ranked Songs from ScoreSaber" to get ranked songs from Scoresaber. The Songs will install to your Quest and you have to Click Sync to Beat Saber once it appears.
 # Contributers
 - Bunny83 with [SimpleJSON.cs](https://github.com/Bunny83/SimpleJSON/blob/master/SimpleJSON.cs)
 # [wiki](https://github.com/ComputerElite/wiki)
