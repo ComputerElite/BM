@@ -285,6 +285,7 @@ namespace BMBF_Manager
             {
                 txtbox.AppendText("\n\nSyncing to Beat Saber");
             }));
+            Sync();
             Process.Start("http://" + MainWindow.IP + ":50000/main/playlists");
             txtbox.AppendText("\n\nSynced to Beat Saber");
             Running = false;
