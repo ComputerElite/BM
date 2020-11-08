@@ -72,6 +72,8 @@ namespace BMBF_Manager
 
         private void Close(object sender, RoutedEventArgs e)
         {
+            CheckIP();
+            MainWindow.IP = Quest.Text;
             this.Close();
         }
 

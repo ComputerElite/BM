@@ -27,11 +27,12 @@ namespace BMBF_Manager
     public partial class MainWindow : Window
     {
         int MajorV = 1;
-        int MinorV = 3;
+        int MinorV = 4;
         int PatchV = 0;
         Boolean Preview = false;
 
         public static Boolean CustomProtocols = false;
+        public static Boolean QuestSoundsInstalled = false;
         Boolean draggable = true;
         Boolean Running = false;
         String exe = AppDomain.CurrentDomain.BaseDirectory.Substring(0, AppDomain.CurrentDomain.BaseDirectory.Length - 1);
@@ -70,6 +71,7 @@ namespace BMBF_Manager
 
             CustomProtocols = json["CustomProtocols"].AsBool;
             IP = json["IP"];
+            QuestSoundsInstalled = json["QSoundsInstalled"].AsBool;
 
             Quest.Text = IP;
 
@@ -109,6 +111,7 @@ namespace BMBF_Manager
             json["NotFirstRun"] = true;
             json["Location"] = System.Reflection.Assembly.GetEntryAssembly().Location;
             json["CustomProtocols"] = CustomProtocols;
+            json["QSoundsInstalled"] = QuestSoundsInstalled;
             File.WriteAllText(exe + "\\Config.json", json.ToString());
         }
 
@@ -1006,6 +1009,13 @@ namespace BMBF_Manager
             CheckIP();
             Support SupportWindow = new Support();
             SupportWindow.Show();
+        }
+
+        private void HitSounds(object sender, RoutedEventArgs e)
+        {
+            CheckIP();
+            HitSounds HitSoundsWindow = new HitSounds();
+            HitSoundsWindow.Show();
         }
 
         internal void CustomProto(string Link)

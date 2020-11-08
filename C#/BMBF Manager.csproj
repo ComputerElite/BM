@@ -66,6 +66,9 @@
     <Compile Include="BPLists.xaml.cs">
       <DependentUpon>BPLists.xaml</DependentUpon>
     </Compile>
+    <Compile Include="HitSounds.xaml.cs">
+      <DependentUpon>HitSounds.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Mods.xaml.cs">
       <DependentUpon>Mods.xaml</DependentUpon>
     </Compile>
@@ -81,6 +84,10 @@
       <SubType>Component</SubType>
     </Compile>
     <Page Include="BPLists.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="HitSounds.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -159,6 +166,15 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Support.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Main6.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="HitSound.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="HitSound2.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
