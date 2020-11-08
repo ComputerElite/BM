@@ -20,6 +20,8 @@ Open "BMBF Manager.exe", put in your Quests IP (if it hasn't picked it up automa
 Connect your Quest to your PC with a USB Cable and open "BMBF Manager.exe". Make sure you have unmodded Beat Saber (the one you download from the oculus store) and have at least opened it once. Then hit "Update/Install BMBF". Read the pop ups carefully and follow them.. After it has finished you are ready to go.
 ## Switch between modded and unmodded Beat Saber
 Connect your Quest to your PC with a USB cable, open "BMBF Manager.exe" and hit "Switch between modded and unmodded Beat Saber". Wait a bit and you will be able to play multiplayer again/play again with mods and custom Songs.
+## Install HitSounds
+Open "BMBF Manager.exe", put in your Quests IP (if it hasn't picked it up automatically) and click "Install HitSounds". Then choose your desired sound via the choose button and then check the box which sound it should bee. Then hit the install button and the Song (and meybe the QuestSounds mod if you don't have it) will install.
 ## Download BPLists
 Open "BMBF Manager.exe", put in your Quests IP (if it hasn't picked it up automatically) and click "Download BPLists". Then put in how many songs you want and click "Install ranked Songs from ScoreSaber" to get ranked songs from Scoresaber. The Songs will install to your Quest and you have to Click Sync to Beat Saber once it appears.
 # Contributers
