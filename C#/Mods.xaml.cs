@@ -54,6 +54,9 @@ namespace BMBF_Manager
             JSONNode json = JSON.Parse("{}");
             JSONNode BMBF = JSON.Parse("{}");
 
+            Dictionary<String, String> Modplusversion = new Dictionary<string, string>();
+            Dictionary<String, int> ModplusIndex = new Dictionary<string, int>();
+
             try
             {
                 json = SimpleJSON.JSON.Parse(client.DownloadString("http://www.questboard.xyz/api/mods/"));
@@ -122,6 +125,10 @@ namespace BMBF_Manager
                             CompatibleMods.Add(json["mods"][i]["downloads"][z]["download"].ToString().Replace("\"", ""));
                             ModDescriptions.Add(json["mods"][i]["details"].ToString().Replace("\"", "").Replace("\\r\\n", System.Environment.NewLine));
                             ModNames.Add(Name);
+
+
+                            ModplusIndex.Add(Name, ModList.Items.Count - 1);
+                            Modplusversion.Add(Name, Version);
                             break;
                         }
                     }
@@ -167,13 +174,60 @@ namespace BMBF_Manager
                                 }
                             }
                             catch { }
-                            if (existent) continue;
-                            Version = json["mods"][i]["downloads"][z]["modversion"];
-                            ModVersions.Add(json["mods"][i]["downloads"][z]["gameversion"][u].ToString().Replace("\"", ""));
-                            ModList.Items.Add(new ModItem { Name = Name, Creator = Creator, GameVersion = json["mods"][i]["downloads"][z]["gameversion"][u], ModVersion = Version });
-                            CompatibleMods.Add(json["mods"][i]["downloads"][z]["download"].ToString().Replace("\"", ""));
-                            ModDescriptions.Add(json["mods"][i]["details"].ToString().Replace("\"", "").Replace("\\r\\n", System.Environment.NewLine));
-                            ModNames.Add(Name);
+                            if(!Modplusversion.ContainsKey(Name))
+                            {
+                                if (existent) continue;
+                                Version = json["mods"][i]["downloads"][z]["modversion"];
+                                ModVersions.Add(json["mods"][i]["downloads"][z]["gameversion"][u].ToString().Replace("\"", ""));
+                                ModList.Items.Add(new ModItem { Name = Name, Creator = Creator, GameVersion = json["mods"][i]["downloads"][z]["gameversion"][u], ModVersion = Version });
+                                CompatibleMods.Add(json["mods"][i]["downloads"][z]["download"].ToString().Replace("\"", ""));
+                                ModDescriptions.Add(json["mods"][i]["details"].ToString().Replace("\"", "").Replace("\\r\\n", System.Environment.NewLine));
+                                ModNames.Add(Name);
+                            } else
+                            {
+                                String oldModver = "";
+                                Modplusversion.TryGetValue(Name, out oldModver);
+                                String[] allver = oldModver.Replace("\"", "").Split('.');
+                                List<int> finishedver = new List<int>();
+                                String[] newver = Version.Replace("\"", "").Split('.');
+                                Boolean newer = false;
+                                try
+                                {
+                                    for(int e = 0; allver[e] != null; e++)
+                                    {
+                                        finishedver.Add(Convert.ToInt32(allver[e]));
+                                    }
+                                } catch { }
+                                try
+                                {
+                                    for (int e = 0; newver[e] != null; e++)
+                                    {
+                                        if(Convert.ToInt32(newver[e]) > finishedver[e])
+                                        {
+                                            newer = true;
+                                        }
+                                    }
+                                }
+                                catch { }
+                                if (!newer) return;
+                                txtbox.AppendText("\n\nNewer Version of " + Name + " (" + oldModver + ") available " + Version);
+                                int ListIndex = 0;
+                                ModplusIndex.TryGetValue(Name, out ListIndex);
+
+
+                                ModNames.RemoveAt(ListIndex);
+                                CompatibleMods.RemoveAt(ListIndex);
+                                ModDescriptions.RemoveAt(ListIndex);
+                                ModVersions.RemoveAt(ListIndex);
+
+                                CompatibleMods.Add(json["mods"][i]["downloads"][z]["download"].ToString().Replace("\"", ""));
+                                ModDescriptions.Add(json["mods"][i]["details"].ToString().Replace("\"", "").Replace("\\r\\n", System.Environment.NewLine));
+                                ModNames.Add(Name);
+                                ModVersions.Add(json["mods"][i]["downloads"][z]["gameversion"][u].ToString().Replace("\"", ""));
+
+                                ModList.Items.RemoveAt(ListIndex);
+                                ModList.Items.Add(new ModItem { Name = Name, Creator = Creator, GameVersion = json["mods"][i]["downloads"][z]["gameversion"][u], ModVersion = Version });
+                            }
                             break;
                         }
                     }

@@ -169,9 +169,6 @@
     <Resource Include="Support.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Main6.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="HitSound2.png" />
   </ItemGroup>
   <ItemGroup>
