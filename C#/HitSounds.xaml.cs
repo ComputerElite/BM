@@ -208,7 +208,7 @@ namespace BMBF_Manager
                 } else
                 {
                     SelectedSound = "Nothing";
-                    MessageBox.Show("Please select a valid file", "BMBF Manager", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show("Please select a valid file", "BMBF Manager - HitSound installing", MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
                 
             }
@@ -249,14 +249,14 @@ namespace BMBF_Manager
                     Support s = new Support();
                     s.Show();
                     s.StartSupport("bm://mods/install/QuestSounds");
-                    MessageBox.Show("Please start Beat Saber and check if it works. Then press the install button again.", "BMBF Manager", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show("Please start Beat Saber and check if it works. Then press the install button again.", "BMBF Manager - HitSound Installing", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
             } catch
             {
                 if (!MainWindow.QuestSoundsInstalled)
                 {
-                    MessageBoxResult result = MessageBox.Show("Do you have the QuestSounds mod installed;", "BMBF Manager Hitsound Installing", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                    MessageBoxResult result = MessageBox.Show("Do you have the QuestSounds mod installed;", "BMBF Manager - Hitsound Installing", MessageBoxButton.YesNo, MessageBoxImage.Question);
                     switch (result)
                     {
                         case MessageBoxResult.No:
@@ -265,7 +265,7 @@ namespace BMBF_Manager
                             Support s = new Support();
                             s.Show();
                             s.StartSupport("bm://mods/install/QuestSounds");
-                            MessageBox.Show("Please start Beat Saber and check if it works. Then press the install button again.", "BMBF Manager", MessageBoxButton.OK, MessageBoxImage.Warning);
+                            MessageBox.Show("Please start Beat Saber and check if it works. Then press the install button again.", "BMBF Manager - HitSound Installing", MessageBoxButton.OK, MessageBoxImage.Warning);
                             return;
                     }
                 }

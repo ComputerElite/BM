@@ -290,7 +290,7 @@ namespace BMBF_Manager
         }
         public void MoreInfo(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Mod Name: " + ModNames[ModList.SelectedIndex] + "\n\nDescription:\n" + ModDescriptions[ModList.SelectedIndex], "BMBF Manager Mod Info", MessageBoxButton.OK);
+            MessageBox.Show("Mod Name: " + ModNames[ModList.SelectedIndex] + "\n\nDescription:\n" + ModDescriptions[ModList.SelectedIndex], "BMBF Manager - Mod Info", MessageBoxButton.OK);
         }
 
         public void InstallMod(object sender, RoutedEventArgs e)
@@ -317,7 +317,7 @@ namespace BMBF_Manager
 
             if (ModVersions[Index].ToString() != BSVersion)
             {
-                MessageBoxResult result1 = MessageBox.Show("The latest Version of the Mod " + ModNames[Index] + " on QuestBoard has been made for Beat Saber Version " + ModVersions[Index].ToString() + ". It'll be compatible with your Game but you have to enable it manually. I'll open the BMBF mod tab after installing the mod. For it to activate you scroll to the mod you installed and flip the switch to on. If you get a compatibility warning click \"Enable Mod\" and then click \"Sync to Beat Saber\" in the top right.\nDo you wish to continue?", "BMBF Manager Mod Installing", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                MessageBoxResult result1 = MessageBox.Show("The latest Version of the Mod " + ModNames[Index] + " on QuestBoard has been made for Beat Saber Version " + ModVersions[Index].ToString() + ". It'll be compatible with your Game but you have to enable it manually. I'll open the BMBF mod tab after installing the mod. For it to activate you scroll to the mod you installed and flip the switch to on. If you get a compatibility warning click \"Enable Mod\" and then click \"Sync to Beat Saber\" in the top right.\nDo you wish to continue?", "BMBF Manager - Mod Installing", MessageBoxButton.YesNo, MessageBoxImage.Warning);
                 switch (result1)
                 {
                     case MessageBoxResult.No:

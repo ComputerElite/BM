@@ -27,8 +27,8 @@ namespace BMBF_Manager
     public partial class MainWindow : Window
     {
         int MajorV = 1;
-        int MinorV = 4;
-        int PatchV = 1;
+        int MinorV = 5;
+        int PatchV = 0;
         Boolean Preview = false;
 
         public static Boolean CustomProtocols = false;
@@ -37,7 +37,7 @@ namespace BMBF_Manager
         Boolean Running = false;
         String exe = AppDomain.CurrentDomain.BaseDirectory.Substring(0, AppDomain.CurrentDomain.BaseDirectory.Length - 1);
         public static String IP = "";
-        String BMBF = "https://bmbf.dev/stable/27153984";
+        public static String BMBF = "https://bmbf.dev/stable/27153984";
         JSONNode json = JSON.Parse("{}");
 
 
@@ -550,7 +550,7 @@ namespace BMBF_Manager
             if (Directory.Exists(exe + "\\ModChecks\\mods"))
             {
                 //game is modded
-                MessageBoxResult result1 = MessageBox.Show("Modded Beat Saber has been detected. If you press yes I'll uninstall Beat Saber and BMBF and make a Backup of it to restore. If you press no you'll cancle Updating.", "BMBF Manager BMBF Updater", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                MessageBoxResult result1 = MessageBox.Show("Modded Beat Saber has been detected. If you press yes I'll uninstall Beat Saber and BMBF and make a Backup of it to restore. If you press no you'll cancle Updating.", "BMBF Manager - BMBF Updater", MessageBoxButton.YesNo, MessageBoxImage.Warning);
                 switch (result1)
                 {
                     case MessageBoxResult.No:
@@ -624,8 +624,8 @@ namespace BMBF_Manager
                     Running = false;
                     return;
                 }
-                MessageBoxResult result2 = MessageBox.Show("Please download Beat Saber from the oculus score, play a song and then close it. Press OK once you finished.", "BMBF Manager BMBF Updater", MessageBoxButton.OK, MessageBoxImage.Warning);
-                MessageBoxResult result3 = MessageBox.Show("I want to make sure. Do you have unmodded Beat Saber installed and opened it at least once?", "BMBF Manager BMBF Updater", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                MessageBoxResult result2 = MessageBox.Show("Please download Beat Saber from the oculus score, play a song and then close it. Press OK once you finished.", "BMBF Manager - BMBF Updater", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBoxResult result3 = MessageBox.Show("I want to make sure. Do you have unmodded Beat Saber installed and opened it at least once?", "BMBF Manager - BMBF Updater", MessageBoxButton.YesNo, MessageBoxImage.Warning);
                 switch (result3)
                 {
                     case MessageBoxResult.No:
@@ -644,7 +644,7 @@ namespace BMBF_Manager
                     Running = false;
                     return;
                 }
-                MessageBoxResult result = MessageBox.Show("Looks like you have unmodded Beat Saber installed. Did you open it at least once?", "BMBF Manager BMBF Updater", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                MessageBoxResult result = MessageBox.Show("Looks like you have unmodded Beat Saber installed. Did you open it at least once?", "BMBF Manager - BMBF Updater", MessageBoxButton.YesNo, MessageBoxImage.Warning);
                 switch (result)
                 {
                     case MessageBoxResult.No:
@@ -811,7 +811,7 @@ namespace BMBF_Manager
             }
         }
 
-        private void SwitchVersion(object sender, RoutedEventArgs e)
+        public void SwitchVersion(object sender, RoutedEventArgs e)
         {
             if (Running)
             {
@@ -844,7 +844,7 @@ namespace BMBF_Manager
                 if (File.Exists(exe + "\\Backups\\modded.apk"))
                 {
                     //Unmodded Beat Saber may be installed
-                    MessageBoxResult result = MessageBox.Show("It looks like your last Action was installing unmodded Beat Saber. If you continue and have unmodded Beat Saber installed you must mod Beat Saber By hand.\nDo you wish to continue?", "BMBF Manager Version Switcher", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                    MessageBoxResult result = MessageBox.Show("It looks like your last Action was installing unmodded Beat Saber. If you continue and have unmodded Beat Saber installed you must mod Beat Saber By hand.\nDo you wish to continue?", "BMBF Manager - Version Switcher", MessageBoxButton.YesNo, MessageBoxImage.Warning);
                     switch (result)
                     {
                         case MessageBoxResult.No:
@@ -1016,6 +1016,13 @@ namespace BMBF_Manager
             CheckIP();
             HitSounds HitSoundsWindow = new HitSounds();
             HitSoundsWindow.Show();
+        }
+
+        private void BBBU(object sender, RoutedEventArgs e)
+        {
+            CheckIP();
+            BBBU BBBUWindow = new BBBU();
+            BBBUWindow.Show();
         }
 
         internal void CustomProto(string Link)

@@ -63,6 +63,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="BBBU.xaml.cs">
+      <DependentUpon>BBBU.xaml</DependentUpon>
+    </Compile>
     <Compile Include="BPLists.xaml.cs">
       <DependentUpon>BPLists.xaml</DependentUpon>
     </Compile>
@@ -83,6 +86,10 @@
     <Compile Include="TimeoutWebClient.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Page Include="BBBU.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="BPLists.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -166,6 +173,12 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="HitSound2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="BBBU.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Main7.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
