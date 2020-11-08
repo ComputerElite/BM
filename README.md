@@ -24,11 +24,18 @@ Connect your Quest to your PC with a USB cable, open "BMBF Manager.exe" and hit 
 Open "BMBF Manager.exe", put in your Quests IP (if it hasn't picked it up automatically) and click "Install HitSounds". Then choose your desired sound via the choose button and then check the box which sound it should bee. Then hit the install button and the Song (and meybe the QuestSounds mod if you don't have it) will install.
 ## Download BPLists
 Open "BMBF Manager.exe", put in your Quests IP (if it hasn't picked it up automatically) and click "Download BPLists". Then put in how many songs you want and click "Install ranked Songs from ScoreSaber" to get ranked songs from Scoresaber. The Songs will install to your Quest and you have to Click Sync to Beat Saber once it appears.
+## Backup BMBF and Beat Saber
+Open "BMBF Manager.exe", put in your Quests IP (if it hasn't picked it up automatically) and click "BMBF and Beat Saber Backup Utility".Then click "Backup" and wait a few minutes until everything has finished.
+
+## Restore BMBF and Beat Saber
+Open "BMBF Manager.exe", put in your Quests IP (if it hasn't picked it up automatically) and click "BMBF and Beat Saber Backup Utility". Then Click the Boxes to choose what to restore and select a Backup in the dropdown Menu. After that click "Restore" and wait a few minutes until it has finished.
 # Contributers
 - Bunny83 with [SimpleJSON.cs](https://github.com/Bunny83/SimpleJSON/blob/master/SimpleJSON.cs)
+- darkuni (helped me making the Playlist backuping and restoring possible. Check out his nice program: [Playlist Editor Pro](https://beatsaberquest.com/bmbf/my-tools/playlist-editor-pro/#:~:text=Playlist%20Editor%20Pro%20is%20a,details%20and%20download%20it%20here.))
 # [wiki](https://github.com/ComputerElite/wiki)
 
 # Known Issues
 - N/A
 
 # To-Do
+- N/A
