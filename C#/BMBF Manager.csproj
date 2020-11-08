@@ -153,25 +153,16 @@
     <Resource Include="Logo.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Main4.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Mods3.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="BPLists.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Main5.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Support.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Main6.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="HitSound.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="HitSound2.png" />

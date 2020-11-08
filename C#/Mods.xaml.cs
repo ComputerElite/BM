@@ -328,11 +328,12 @@ namespace BMBF_Manager
                 }
             }
 
-            String Download = CompatibleMods[Index].ToString().Substring(1, CompatibleMods[Index].ToString().Length - 2);
+            String Download = CompatibleMods[Index].ToString().Replace("\"", "");
             WebClient c = new WebClient();
             Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
             {
                 txtbox.AppendText("\n\nDownloading Mod " + ModNames[Index] + "\n");
+                txtbox.ScrollToEnd();
             }));
             Uri uri = new Uri(Download);
             try
@@ -347,6 +348,7 @@ namespace BMBF_Manager
             catch
             {
                 txtbox.AppendText("\n\nError (Code: BM200). Couldn't download Mod");
+                txtbox.ScrollToEnd();
                 Running = false;
                 return;
             }
@@ -359,6 +361,7 @@ namespace BMBF_Manager
             Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
             {
                 txtbox.AppendText("\nDownloaded Mod " + ModNames[Index] + "\n");
+                txtbox.ScrollToEnd();
             }));
             upload(exe + "\\tmp\\Mod" + C + ".zip");
             Running = false;
@@ -371,6 +374,7 @@ namespace BMBF_Manager
             TimeoutWebClient client = new TimeoutWebClient();
 
             txtbox.AppendText("\n\nUploading Mod " + ModNames[Index] + " to BMBF");
+            txtbox.ScrollToEnd();
             Uri uri = new Uri("http://" + MainWindow.IP + ":50000/host/beatsaber/upload?overwrite");
             try
             {
@@ -383,6 +387,7 @@ namespace BMBF_Manager
             catch
             {
                 txtbox.AppendText("\n\nA error Occured (Code: BMBF100)");
+                txtbox.ScrollToEnd();
             }
 
             /*
@@ -444,10 +449,12 @@ namespace BMBF_Manager
                         Sync();
                     }));
                     txtbox.AppendText("\n\nMod " + ModNames[Index] + " was synced to your Quest.");
+                    txtbox.ScrollToEnd();
                 }
                 catch
                 {
                     txtbox.AppendText("\n\nCouldn't sync with BeatSaber. Needs to be done manually.");
+                    txtbox.ScrollToEnd();
                     Running = false;
                     return;
                 }
