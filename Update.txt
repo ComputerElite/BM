@@ -1,4 +1,4 @@
-https://github.com/ComputerElite/BM/releases/download/1.5.1/BM.V.1.5.1.zip
+https://github.com/ComputerElite/BM/releases/download/1.5.2/BM.V.1.5.2.zip
 1
 5
-1
+2
