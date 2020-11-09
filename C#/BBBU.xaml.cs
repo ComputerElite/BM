@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using SimpleJSON;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -15,6 +15,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Threading;
@@ -541,38 +542,11 @@ namespace BMBF_Manager
 
                 PlaylistsX = Playlists + "\\Playlists.json";
 
-                StreamReader reader = new StreamReader(@Config);
-                String line;
-                String CContent = "";
-                int Index = 0;
-                while ((line = reader.ReadLine()) != null)
-                {
-                    Index = line.IndexOf("\"Mods\":", 0, line.Length);
-                    CContent = line.Substring(Index, line.Length - Index);
-                }
+                var j = JSON.Parse(File.ReadAllText(Config));
+                var p = JSON.Parse(File.ReadAllText(PlaylistsX));
 
-                StreamReader Preader = new StreamReader(@PlaylistsX);
-                String Pline;
-                String Content = "";
-                while ((Pline = Preader.ReadLine()) != null)
-                {
-                    Content = Pline;
-                }
-
-                String finished = Content + CContent;
-
-                JObject o = JObject.Parse(finished);
-                o.Property("SyncConfig").Remove();
-                o.Property("IsCommitted").Remove();
-                o.Property("BeatSaberVersion").Remove();
-
-
-                JProperty lrs = o.Property("Config");
-                o.Add(lrs.Value.Children<JProperty>());
-                lrs.Remove();
-
-                String FConfig = o.ToString();
-                File.WriteAllText(exe + "\\tmp\\config.json", FConfig);
+                j["Config"]["Playlists"] = p["Playlists"];
+                File.WriteAllText(exe + "\\tmp\\config.json", j["Config"].ToString());
 
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate {
                     postChanges(exe + "\\tmp\\config.json");
@@ -789,18 +763,10 @@ namespace BMBF_Manager
                 }
 
 
-                String Config = exe + "\\tmp\\config.json";
+                String Config = exe + "\\tmp\\Config.json";
 
-
-
-                StreamReader reader = new StreamReader(@Config);
-                String line;
-                while ((line = reader.ReadLine()) != null)
-                {
-                    int Index = line.IndexOf("\"Mods\":[{", 0, line.Length);
-                    String PlaylistsX = line.Substring(0, Index);
-                    File.WriteAllText(Playlists + "\\Playlists.json", PlaylistsX);
-                }
+                var j = JSON.Parse(File.ReadAllText(Config));
+                File.WriteAllText(Playlists + "\\Playlists.json", j["Config"].ToString()); 
                 txtbox.AppendText("\n\nBacked up Playlists to " + Playlists + "Playlists.json");
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
             }

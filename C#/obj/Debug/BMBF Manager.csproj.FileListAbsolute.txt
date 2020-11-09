@@ -15,3 +15,13 @@ D:\Visual Studio\BMBF Manager\BMBF Manager\obj\Debug\BMBF Manager.csproj.Generat
 D:\Visual Studio\BMBF Manager\BMBF Manager\obj\Debug\BMBF Manager.csproj.CoreCompileInputs.cache
 D:\Visual Studio\BMBF Manager\BMBF Manager\obj\Debug\BMBF Manager.exe
 D:\Visual Studio\BMBF Manager\BMBF Manager\obj\Debug\BMBF Manager.pdb
+D:\Visual Studio\BMBF Manager\BMBF Manager\obj\Debug\BBBU.g.cs
+D:\Visual Studio\BMBF Manager\BMBF Manager\obj\Debug\BPLists.g.cs
+D:\Visual Studio\BMBF Manager\BMBF Manager\obj\Debug\HitSounds.g.cs
+D:\Visual Studio\BMBF Manager\BMBF Manager\obj\Debug\Mods.g.cs
+D:\Visual Studio\BMBF Manager\BMBF Manager\obj\Debug\Support.g.cs
+D:\Visual Studio\BMBF Manager\BMBF Manager\obj\Debug\BBBU.baml
+D:\Visual Studio\BMBF Manager\BMBF Manager\obj\Debug\BPLists.baml
+D:\Visual Studio\BMBF Manager\BMBF Manager\obj\Debug\HitSounds.baml
+D:\Visual Studio\BMBF Manager\BMBF Manager\obj\Debug\Mods.baml
+D:\Visual Studio\BMBF Manager\BMBF Manager\obj\Debug\Support.baml
