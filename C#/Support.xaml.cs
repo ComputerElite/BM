@@ -1,4 +1,5 @@
-﻿using SimpleJSON;
+﻿using Microsoft.Win32;
+using SimpleJSON;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -26,7 +27,7 @@ namespace BMBF_Manager
     /// </summary>
     public partial class Support : Window
     {
-        
+        /////////////////    Settings Now!!!!
         Boolean draggable = true;
         Boolean Running = false;
         String exe = AppDomain.CurrentDomain.BaseDirectory.Substring(0, AppDomain.CurrentDomain.BaseDirectory.Length - 1);
@@ -45,6 +46,66 @@ namespace BMBF_Manager
             } else
             {
                 CustomP.Content = "Enable BM Custom Protocol";
+            }
+            if(MainWindow.CustomImage)
+            {
+                ImageBrush uniformBrush = new ImageBrush();
+                uniformBrush.ImageSource = new BitmapImage(new Uri(MainWindow.CustomImageSource, UriKind.Absolute));
+                uniformBrush.Stretch = Stretch.UniformToFill;
+                this.Background = uniformBrush;
+            } else
+            {
+                ImageBrush uniformBrush = new ImageBrush();
+                uniformBrush.ImageSource = new BitmapImage(new Uri("pack://application:,,,/Support2.png", UriKind.Absolute));
+                uniformBrush.Stretch = Stretch.UniformToFill;
+                this.Background = uniformBrush;
+            }
+        }
+
+        private void ChooseImage(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.Filter = "Pictures (*.jpg, *.png, *.bmp, *.img, *.tif, *.tiff, *.webp)|*.jpg;*.png;*.bmp;*.img;*.tif;*.tiff;*.webp";
+            bool? result = ofd.ShowDialog();
+            if (result == true)
+            {
+                //Get the path of specified file
+                if (File.Exists(ofd.FileName))
+                {
+                    MainWindow.CustomImageSource = ofd.FileName;
+                    MainWindow.CustomImage = true;
+                    UpdateImage();
+                    txtbox.AppendText("\n\nFor the changes to take effect program wide you have to restert it.");
+                }
+                else
+                {
+                    MessageBox.Show("Please select a valid file", "BMBF Manager - Settings", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
+
+            }
+        }
+
+        private void ResetImage(object sender, RoutedEventArgs e)
+        {
+            MainWindow.CustomImage = false;
+            UpdateImage();
+        }
+
+        private void UpdateImage()
+        {
+            if (MainWindow.CustomImage)
+            {
+                ImageBrush uniformBrush = new ImageBrush();
+                uniformBrush.ImageSource = new BitmapImage(new Uri(MainWindow.CustomImageSource, UriKind.Absolute));
+                uniformBrush.Stretch = Stretch.UniformToFill;
+                this.Background = uniformBrush;
+            }
+            else
+            {
+                ImageBrush uniformBrush = new ImageBrush();
+                uniformBrush.ImageSource = new BitmapImage(new Uri("pack://application:,,,/Support2.png", UriKind.Absolute));
+                uniformBrush.Stretch = Stretch.UniformToFill;
+                this.Background = uniformBrush;
             }
         }
 
@@ -679,7 +740,7 @@ namespace BMBF_Manager
                 }));
                 adb("shell pm grant com.beatgames.beatsaber android.permission.READ_EXTERNAL_STORAGE"); //Grant permission read
                 adb("shell pm grant com.beatgames.beatsaber android.permission.WRITE_EXTERNAL_STORAGE"); //Grant permission write
-                //Directory.Delete(exe + "\\Backups", true);
+                Directory.Delete(exe + "\\Backups", true);
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate {
                     txtbox.AppendText("\n\nfinished. You can now play your Custom Songs again.");
                     txtbox.ScrollToEnd();

@@ -10,9 +10,6 @@
         MouseMove="Drag"
         Title="BMBF Manager HitSound Changing" Height="355" Width="420" Background="#FF282828">
     <Grid>
-        <Grid.Background>
-            <ImageBrush ImageSource="HitSound2.png" Stretch="UniformToFill"/>
-        </Grid.Background>
         <Image Source="Logo.png" HorizontalAlignment="Left" Height="25" VerticalAlignment="Top" Width="25" Margin="10,2,0,0"/>
         <Button MouseEnter="noDrag" MouseLeave="doDrag" Click="Close" Content="X" HorizontalAlignment="Left" Margin="378,4,0,0" VerticalAlignment="Top" Width="31" Background="#00000000" BorderBrush="#FFCBCBCB"/>
         <Button MouseEnter="noDrag" MouseLeave="doDrag" Click="Mini" Content="|" HorizontalAlignment="Left" Margin="345,-2,0,0" VerticalAlignment="Top" Width="20" Background="#00000000" BorderBrush="#FFCBCBCB" RenderTransformOrigin="0.5,0.5" Height="31">

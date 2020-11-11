@@ -10,9 +10,6 @@
         MouseMove="Drag"
         Title="BMBF Manager BMBF and BS Backup Utility" Height="491" Width="510" Background="#FF282828" >
     <Grid>
-        <Grid.Background>
-            <ImageBrush ImageSource="BBBU.png" Stretch="UniformToFill"/>
-        </Grid.Background>
         <Image Source="Logo.png" HorizontalAlignment="Left" Height="25" VerticalAlignment="Top" Width="25" Margin="10,2,0,0"/>
 
         <AccessText MouseEnter="noDrag" MouseLeave="doDrag" Opacity="0.8" HorizontalAlignment="Left" Height="24" VerticalAlignment="Top" Width="295" RenderTransformOrigin="0.5,0.5" Text="BMBF Manager - BMBF and BS Backup Utility" FontSize="14" Foreground="Black" Margin="36,4,0,0"/>

@@ -62,6 +62,21 @@ namespace BMBF_Manager
             RReplays.IsChecked = true;
             RSounds.IsChecked = true;
             RConfigs.IsChecked = true;
+
+            if (MainWindow.CustomImage)
+            {
+                ImageBrush uniformBrush = new ImageBrush();
+                uniformBrush.ImageSource = new BitmapImage(new Uri(MainWindow.CustomImageSource, UriKind.Absolute));
+                uniformBrush.Stretch = Stretch.UniformToFill;
+                this.Background = uniformBrush;
+            }
+            else
+            {
+                ImageBrush uniformBrush = new ImageBrush();
+                uniformBrush.ImageSource = new BitmapImage(new Uri("pack://application:,,,/BBBU.png", UriKind.Absolute));
+                uniformBrush.Stretch = Stretch.UniformToFill;
+                this.Background = uniformBrush;
+            }
         }
 
         public void BackupLink(String Name)
@@ -1090,10 +1105,6 @@ namespace BMBF_Manager
 
         private void Close(object sender, RoutedEventArgs e)
         {
-            if (Directory.Exists(exe + "\\tmp"))
-            {
-                Directory.Delete(exe + "\\tmp", true);
-            }
             this.Close();
         }
 

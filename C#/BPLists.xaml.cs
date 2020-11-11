@@ -38,10 +38,25 @@ namespace BMBF_Manager
         {
             InitializeComponent();
             Quest.Text = MainWindow.IP;
+            if (MainWindow.CustomImage)
+            {
+                ImageBrush uniformBrush = new ImageBrush();
+                uniformBrush.ImageSource = new BitmapImage(new Uri(MainWindow.CustomImageSource, UriKind.Absolute));
+                uniformBrush.Stretch = Stretch.UniformToFill;
+                this.Background = uniformBrush;
+            }
+            else
+            {
+                ImageBrush uniformBrush = new ImageBrush();
+                uniformBrush.ImageSource = new BitmapImage(new Uri("pack://application:,,,/BPLists.png", UriKind.Absolute));
+                uniformBrush.Stretch = Stretch.UniformToFill;
+                this.Background = uniformBrush;
+            }
             try
             {
                 DownloadScrappedData();
             } catch { }
+
         }
 
         private void Drag(object sender, RoutedEventArgs e)

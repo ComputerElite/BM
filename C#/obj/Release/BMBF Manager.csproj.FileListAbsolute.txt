@@ -1,0 +1,27 @@
+D:\Visual Studio\BMBF Manager\BMBF Manager\bin\Release\BMBF Manager.exe.config
+D:\Visual Studio\BMBF Manager\BMBF Manager\bin\Release\BMBF Manager.exe
+D:\Visual Studio\BMBF Manager\BMBF Manager\bin\Release\BMBF Manager.pdb
+D:\Visual Studio\BMBF Manager\BMBF Manager\obj\Release\MainWindow.g.cs
+D:\Visual Studio\BMBF Manager\BMBF Manager\obj\Release\Songs.g.cs
+D:\Visual Studio\BMBF Manager\BMBF Manager\obj\Release\App.g.cs
+D:\Visual Studio\BMBF Manager\BMBF Manager\obj\Release\BMBF Manager_MarkupCompile.cache
+D:\Visual Studio\BMBF Manager\BMBF Manager\obj\Release\BMBF Manager_MarkupCompile.lref
+D:\Visual Studio\BMBF Manager\BMBF Manager\obj\Release\MainWindow.baml
+D:\Visual Studio\BMBF Manager\BMBF Manager\obj\Release\Songs.baml
+D:\Visual Studio\BMBF Manager\BMBF Manager\obj\Release\BMBF Manager.g.resources
+D:\Visual Studio\BMBF Manager\BMBF Manager\obj\Release\BMBF_Manager.Properties.Resources.resources
+D:\Visual Studio\BMBF Manager\BMBF Manager\obj\Release\BMBF Manager.csproj.GenerateResource.cache
+D:\Visual Studio\BMBF Manager\BMBF Manager\obj\Release\BMBF Manager.csproj.CoreCompileInputs.cache
+D:\Visual Studio\BMBF Manager\BMBF Manager\obj\Release\BMBF Manager.exe
+D:\Visual Studio\BMBF Manager\BMBF Manager\obj\Release\BMBF Manager.pdb
+D:\Visual Studio\BMBF Manager\BMBF Manager\obj\Release\BMBF Manager.csprojAssemblyReference.cache
+D:\Visual Studio\BMBF Manager\BMBF Manager\obj\Release\Mods.g.cs
+D:\Visual Studio\BMBF Manager\BMBF Manager\obj\Release\Mods.baml
+D:\Visual Studio\BMBF Manager\BMBF Manager\obj\Release\BPLists.g.cs
+D:\Visual Studio\BMBF Manager\BMBF Manager\obj\Release\BPLists.baml
+D:\Visual Studio\BMBF Manager\BMBF Manager\obj\Release\Support.g.cs
+D:\Visual Studio\BMBF Manager\BMBF Manager\obj\Release\Support.baml
+D:\Visual Studio\BMBF Manager\BMBF Manager\obj\Release\HitSounds.g.cs
+D:\Visual Studio\BMBF Manager\BMBF Manager\obj\Release\HitSounds.baml
+D:\Visual Studio\BMBF Manager\BMBF Manager\obj\Release\BBBU.g.cs
+D:\Visual Studio\BMBF Manager\BMBF Manager\obj\Release\BBBU.baml

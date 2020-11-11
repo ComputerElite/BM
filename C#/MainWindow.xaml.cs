@@ -26,17 +26,19 @@ namespace BMBF_Manager
     public partial class MainWindow : Window
     {
         int MajorV = 1;
-        int MinorV = 5;
-        int PatchV = 2;
+        int MinorV = 6;
+        int PatchV = 0;
         Boolean Preview = false;
 
         public static Boolean CustomProtocols = false;
         public static Boolean QuestSoundsInstalled = false;
+        public static Boolean CustomImage = false;
         Boolean draggable = true;
         Boolean Running = false;
         String exe = AppDomain.CurrentDomain.BaseDirectory.Substring(0, AppDomain.CurrentDomain.BaseDirectory.Length - 1);
         public static String IP = "";
         public static String BMBF = "https://bmbf.dev/stable/27153984";
+        public static String CustomImageSource = "N/A";
         JSONNode json = JSON.Parse("{}");
 
 
@@ -56,6 +58,20 @@ namespace BMBF_Manager
             Quest.Text = IP;
             Update();
             BMBF_Link();
+            if (MainWindow.CustomImage)
+            {
+                ImageBrush uniformBrush = new ImageBrush();
+                uniformBrush.ImageSource = new BitmapImage(new Uri(MainWindow.CustomImageSource, UriKind.Absolute));
+                uniformBrush.Stretch = Stretch.UniformToFill;
+                this.Background = uniformBrush;
+            }
+            else
+            {
+                ImageBrush uniformBrush = new ImageBrush();
+                uniformBrush.ImageSource = new BitmapImage(new Uri("pack://application:,,,/Main7.png", UriKind.Absolute));
+                uniformBrush.Stretch = Stretch.UniformToFill;
+                this.Background = uniformBrush;
+            }
         }
 
         public void loadConfig()
@@ -82,6 +98,9 @@ namespace BMBF_Manager
             {
                 enablecustom();
             }
+
+            CustomImage = json["CustomImage"].AsBool;
+            CustomImageSource = json["CustomImageSource"];
             
         }
 
@@ -111,6 +130,8 @@ namespace BMBF_Manager
             json["Location"] = System.Reflection.Assembly.GetEntryAssembly().Location;
             json["CustomProtocols"] = CustomProtocols;
             json["QSoundsInstalled"] = QuestSoundsInstalled;
+            json["CustomImage"] = CustomImage;
+            json["CustomImageSource"] = CustomImageSource;
             File.WriteAllText(exe + "\\Config.json", json.ToString());
         }
 
@@ -819,6 +840,15 @@ namespace BMBF_Manager
                             return;
                     }
                 }
+                MessageBoxResult result2 = MessageBox.Show("I'll unmod Beat Saber for you.\nDo you want to proceed?", "BMBF Manager - Version Switcher", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                switch (result2)
+                {
+                    case MessageBoxResult.No:
+                        txtbox.AppendText("\n\nAborted.");
+                        txtbox.ScrollToEnd();
+                        Running = false;
+                        return;
+                }
                 //Install the unmodded Version of Beat Saber
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate {
                     txtbox.AppendText("\n\nBacking up everything.");
@@ -897,6 +927,15 @@ namespace BMBF_Manager
                     txtbox.AppendText("\n\nPlease Click \"Install/Update BMBF\" to mod Beat Saber the first time.");
                     Running = false;
                     return;
+                }
+                MessageBoxResult result2 = MessageBox.Show("I'll switch back to the modded Version of Beat Saber for you.\nDo you want to proceed?", "BMBF Manager - Version Switcher", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                switch (result2)
+                {
+                    case MessageBoxResult.No:
+                        txtbox.AppendText("\n\nAborted.");
+                        txtbox.ScrollToEnd();
+                        Running = false;
+                        return;
                 }
                 adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/LocalDailyLeaderboards.dat \"" + exe + "\\Backups\\files\\LocalDailyLeaderboards.dat\"");
                 adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/LocalLeaderboards.dat \"" + exe + "\\Backups\\files\\LocalLeaderboards.dat\"");
