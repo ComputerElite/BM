@@ -39,6 +39,4 @@ Open "BMBF Manager.exe", put in your Quests IP (if it hasn't picked it up automa
 - N/A
 
 # To-Do
-- add deleting of the temporary backup folder back in. (ETA 11.11.2020)
-- make UI customization possible. (ETA 11.11.2020)
-- add confirm button to version switching and bmbf updating. (ETA. 11.11.2020)
+- N/A
