@@ -30,11 +30,8 @@ namespace BMBF_Manager
         Boolean draggable = true;
         Boolean Running = false;
         String exe = AppDomain.CurrentDomain.BaseDirectory.Substring(0, AppDomain.CurrentDomain.BaseDirectory.Length - 1);
-        ArrayList CompatibleMods = new ArrayList();
-        ArrayList ModNames = new ArrayList();
-        ArrayList ModVersions = new ArrayList();
-        ArrayList ModDescriptions = new ArrayList();
-        ArrayList ToForward = new ArrayList();
+        //Name, Version, DownloadLink, Creator, gameVersion, Desciption, Forward
+        List<Tuple<String, String, String, String, String, String, Boolean>> AllModsList = new List<Tuple<String, String, String, String, String, String, Boolean>>();
         String BSVersion = "1.12.2";
         int C = 0;
         int Index = 0;
@@ -68,8 +65,6 @@ namespace BMBF_Manager
             JSONNode json = JSON.Parse("{}");
             JSONNode BMBF = JSON.Parse("{}");
 
-            Dictionary<String, String> Modplusversion = new Dictionary<string, string>();
-            Dictionary<String, int> ModplusIndex = new Dictionary<string, int>();
 
             try
             {
@@ -93,8 +88,8 @@ namespace BMBF_Manager
                 return;
             }
             BSVersion = BMBF["BeatSaberVersion"].ToString().Replace("\"", "");
-            String[] GameVersion = BMBF["BeatSaberVersion"].ToString().Replace("\"", "").Split('.');
-            //String[] GameVersion = "1.11.1".Replace("\"", "").Split('.');
+            //String[] GameVersion = BMBF["BeatSaberVersion"].ToString().Replace("\"", "").Split('.');
+            String[] GameVersion = "1.13.0".Replace("\"", "").Split('.');
             int major = Convert.ToInt32(GameVersion[0]);
             int minor = Convert.ToInt32(GameVersion[1]);
             int patch = Convert.ToInt32(GameVersion[2]);
@@ -118,15 +113,22 @@ namespace BMBF_Manager
                         String[] MGameVersion = json["mods"][i]["downloads"][z]["gameversion"][u].ToString().Replace("\"", "").Split('.');
                         int Mmajor = Convert.ToInt32(MGameVersion[0]);
                         int Mminor = Convert.ToInt32(MGameVersion[1]);
-                        int Mpatch = Convert.ToInt32(MGameVersion[2]);
+                        int Mpatch = 0;
+                        if(MGameVersion.Count() == 2)
+                        {
+                            Mpatch = 0;
+                        } else
+                        {
+                            Mpatch = Convert.ToInt32(MGameVersion[2]);
+                        }
                         if (major == Mmajor && minor == Mminor && patch >= Mpatch)
                         {
                             Boolean existent = false;
                             try
                             {
-                                for (int o = 0; ModNames[o] != null; o++)
+                                for (int o = 0; AllModsList[o] != null; o++)
                                 {
-                                    if ((String)ModNames[o] == Name)
+                                    if ((String)AllModsList[o].Item1 == Name)
                                     {
                                         existent = true;
                                     }
@@ -136,23 +138,9 @@ namespace BMBF_Manager
                             if (existent) continue;
                             
                             Version = json["mods"][i]["downloads"][z]["modversion"];
-                            ModVersions.Add(json["mods"][i]["downloads"][z]["gameversion"][u].ToString().Replace("\"", ""));
+                            //Name, Version, DownloadLink, Creator, gameVersion, Desciption, Forward
+                            AllModsList.Add(new Tuple<string, string, string, string, string, string, bool>(Name, Version, json["mods"][i]["downloads"][z]["download"].ToString().Replace("\"", ""), Creator, json["mods"][i]["downloads"][z]["gameversion"][u].ToString().Replace("\"", ""), json["mods"][i]["details"].ToString().Replace("\"", "").Replace("\\r\\n", System.Environment.NewLine), json["mods"][i]["downloads"][z]["forward"].AsBool));
                             ModList.Items.Add(new ModItem { Name = Name, Creator = Creator, GameVersion = json["mods"][i]["downloads"][z]["gameversion"][u], ModVersion = Version });
-                            CompatibleMods.Add(json["mods"][i]["downloads"][z]["download"].ToString().Replace("\"", ""));
-                            ModDescriptions.Add(json["mods"][i]["details"].ToString().Replace("\"", "").Replace("\\r\\n", System.Environment.NewLine));
-                            ModNames.Add(Name);
-                            if (json["mods"][i]["downloads"][z]["forward"].AsBool)
-                            {
-                                ToForward.Add(true);
-                            }
-                            else
-                            {
-                                ToForward.Add(false);
-                            }
-
-
-                            ModplusIndex.Add(Name, ModList.Items.Count - 1);
-                            Modplusversion.Add(Name, Version);
                             break;
                         }
                     }
@@ -188,39 +176,31 @@ namespace BMBF_Manager
                         if (major == Mmajor && minor == Mminor && patch >= Mpatch)
                         {
                             Boolean existent = false;
+                            int ListIndex = 0;
                             try
                             {
-                                for (int o = 0; ModNames[o] != null; o++)
+                                for (int o = 0; AllModsList[o] != null; o++)
                                 {
-                                    if ((String)ModNames[o] == Name)
+                                    if ((String)AllModsList[o].Item1 == Name)
                                     {
                                         existent = true;
+                                        ListIndex = o;
+                                        break;
                                     }
                                 }
                             }
                             catch { }
-                            if (!Modplusversion.ContainsKey(Name))
+                            if (!existent)
                             {
-                                if (existent) continue;
                                 Version = json["mods"][i]["downloads"][z]["modversion"];
-                                ModVersions.Add(json["mods"][i]["downloads"][z]["gameversion"][u].ToString().Replace("\"", ""));
+                                AllModsList.Add(new Tuple<string, string, string, string, string, string, bool>(Name, Version, json["mods"][i]["downloads"][z]["download"].ToString().Replace("\"", ""), Creator, json["mods"][i]["downloads"][z]["gameversion"][u].ToString().Replace("\"", ""), json["mods"][i]["details"].ToString().Replace("\"", "").Replace("\\r\\n", System.Environment.NewLine), json["mods"][i]["downloads"][z]["forward"].AsBool));
+
                                 ModList.Items.Add(new ModItem { Name = Name, Creator = Creator, GameVersion = json["mods"][i]["downloads"][z]["gameversion"][u], ModVersion = Version });
-                                CompatibleMods.Add(json["mods"][i]["downloads"][z]["download"].ToString().Replace("\"", ""));
-                                ModDescriptions.Add(json["mods"][i]["details"].ToString().Replace("\"", "").Replace("\\r\\n", System.Environment.NewLine));
-                                ModNames.Add(Name);
-                                if (json["mods"][i]["downloads"][z]["forward"].AsBool)
-                                {
-                                    ToForward.Add(true);
-                                }
-                                else
-                                {
-                                    ToForward.Add(false);
-                                }
                             }
                             else
                             {
-                                String oldModver = "";
-                                Modplusversion.TryGetValue(Name, out oldModver);
+                                //Name, Version, DownloadLink, Creator, gameVersion, Desciption, Forward
+                                String oldModver = AllModsList[ListIndex].Item2.ToString();
                                 String[] allver = oldModver.Replace("\"", "").Split('.');
                                 List<int> finishedver = new List<int>();
                                 String[] newver = Version.Replace("\"", "").Split('.');
@@ -245,29 +225,13 @@ namespace BMBF_Manager
                                 }
                                 catch { }
                                 if (!newer) return;
-                                int ListIndex = 0;
-                                ModplusIndex.TryGetValue(Name, out ListIndex);
-
-                                ModNames.RemoveAt(ListIndex);
-                                CompatibleMods.RemoveAt(ListIndex);
-                                ModDescriptions.RemoveAt(ListIndex);
-                                ModVersions.RemoveAt(ListIndex);
-                                ToForward.RemoveAt(ListIndex);
-
-                                CompatibleMods.Add(json["mods"][i]["downloads"][z]["download"].ToString().Replace("\"", ""));
-                                ModDescriptions.Add(json["mods"][i]["details"].ToString().Replace("\"", "").Replace("\\r\\n", System.Environment.NewLine));
-                                ModNames.Add(Name);
-                                ModVersions.Add(json["mods"][i]["downloads"][z]["gameversion"][u].ToString().Replace("\"", ""));
-                                if (json["mods"][i]["downloads"][z]["forward"].AsBool)
-                                {
-                                    ToForward.Add(true);
-                                }
-                                else
-                                {
-                                    ToForward.Add(false);
-                                }
 
                                 ModList.Items.RemoveAt(ListIndex);
+                                AllModsList.RemoveAt(ListIndex);
+
+                                AllModsList.Add(new Tuple<string, string, string, string, string, string, bool>(Name, Version, json["mods"][i]["downloads"][z]["download"].ToString().Replace("\"", ""), Creator, json["mods"][i]["downloads"][z]["gameversion"][u].ToString().Replace("\"", ""), json["mods"][i]["details"].ToString().Replace("\"", "").Replace("\\r\\n", System.Environment.NewLine), json["mods"][i]["downloads"][z]["forward"].AsBool));
+
+                                
                                 ModList.Items.Add(new ModItem { Name = Name, Creator = Creator, GameVersion = json["mods"][i]["downloads"][z]["gameversion"][u], ModVersion = Version });
                             }
                             break;
@@ -385,7 +349,8 @@ namespace BMBF_Manager
         }
         public void MoreInfo(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Mod Name: " + ModNames[ModList.SelectedIndex] + "\n\nDescription:\n" + ModDescriptions[ModList.SelectedIndex], "BMBF Manager - Mod Info", MessageBoxButton.OK);
+            //Name, Version, DownloadLink, Creator, gameVersion, Desciption, Forward
+            MessageBox.Show("Mod Name: " + AllModsList[ModList.SelectedIndex].Item1 + "\n\nDescription:\n" + AllModsList[ModList.SelectedIndex].Item6, "BMBF Manager - Mod Info", MessageBoxButton.OK);
         }
 
         public void InstallMod(object sender, RoutedEventArgs e)
@@ -412,7 +377,7 @@ namespace BMBF_Manager
 
             Index = ModList.SelectedIndex;
 
-            if((bool)ToForward[Index])
+            if((bool)AllModsList[Index].Item7)
             {
                 MessageBoxResult result1 = MessageBox.Show("You have to download and install this mod manually. If you click yes I'll redirect you to the download page and open BMBF for you.\nDo you wish to continue?", "BMBF Manager - Mod Installing", MessageBoxButton.YesNo, MessageBoxImage.Warning);
                 switch (result1)
@@ -424,13 +389,13 @@ namespace BMBF_Manager
                         return;
                 }
                 Process.Start("http://" + MainWindow.IP + ":50000/main/upload");
-                Process.Start(CompatibleMods[Index].ToString().Replace("\"", ""));
+                Process.Start(AllModsList[Index].Item3.ToString().Replace("\"", ""));
                 return;
             }
 
-            if (ModVersions[Index].ToString() != BSVersion)
+            if (AllModsList[Index].Item5.ToString() != BSVersion)
             {
-                MessageBoxResult result1 = MessageBox.Show("The latest Version of the Mod " + ModNames[Index] + " (That is indexed) has been made for Beat Saber Version " + ModVersions[Index].ToString() + ". It'll be compatible with your Game but you have to enable it manually. I'll open the BMBF mod tab after installing the mod. For it to activate you scroll to the mod you installed and flip the switch to on. If you get a compatibility warning click \"Enable Mod\" and then click \"Sync to Beat Saber\" in the top right.\nDo you wish to continue?", "BMBF Manager - Mod Installing", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                MessageBoxResult result1 = MessageBox.Show("The latest Version of the Mod " + AllModsList[Index].Item1 + " (That is indexed) has been made for Beat Saber Version " + AllModsList[Index].Item5.ToString() + ". It'll be compatible with your Game but you have to enable it manually. I'll open the BMBF mod tab after installing the mod. For it to activate you scroll to the mod you installed and flip the switch to on. If you get a compatibility warning click \"Enable Mod\" and then click \"Sync to Beat Saber\" in the top right.\nDo you wish to continue?", "BMBF Manager - Mod Installing", MessageBoxButton.YesNo, MessageBoxImage.Warning);
                 switch (result1)
                 {
                     case MessageBoxResult.No:
@@ -441,11 +406,11 @@ namespace BMBF_Manager
                 }
             }
 
-            String Download = CompatibleMods[Index].ToString().Replace("\"", "");
+            String Download = AllModsList[Index].Item3.ToString().Replace("\"", "");
             WebClient c = new WebClient();
             Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
             {
-                txtbox.AppendText("\n\nDownloading Mod " + ModNames[Index] + "\n");
+                txtbox.AppendText("\n\nDownloading Mod " + AllModsList[Index].Item1 + "\n");
                 txtbox.ScrollToEnd();
             }));
             Uri uri = new Uri(Download);
@@ -473,7 +438,7 @@ namespace BMBF_Manager
         {
             Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
             {
-                txtbox.AppendText("\nDownloaded Mod " + ModNames[Index] + "\n");
+                txtbox.AppendText("\nDownloaded Mod " + AllModsList[Index].Item1 + "\n");
                 txtbox.ScrollToEnd();
             }));
             upload(exe + "\\tmp\\Mod" + C + ".zip");
@@ -486,7 +451,7 @@ namespace BMBF_Manager
 
             TimeoutWebClient client = new TimeoutWebClient();
 
-            txtbox.AppendText("\n\nUploading Mod " + ModNames[Index] + " to BMBF");
+            txtbox.AppendText("\n\nUploading Mod " + AllModsList[Index].Item1 + " to BMBF");
             txtbox.ScrollToEnd();
             Uri uri = new Uri("http://" + MainWindow.IP + ":50000/host/beatsaber/upload?overwrite");
             try
@@ -553,7 +518,7 @@ namespace BMBF_Manager
 
         private void finished_upload(object sender, AsyncCompletedEventArgs e)
         {
-            if (ModVersions[Index].ToString() == BSVersion)
+            if (AllModsList[Index].Item5.ToString() == BSVersion)
             {
                 try
                 {
@@ -561,7 +526,7 @@ namespace BMBF_Manager
                     {
                         Sync();
                     }));
-                    txtbox.AppendText("\n\nMod " + ModNames[Index] + " was synced to your Quest.");
+                    txtbox.AppendText("\n\nMod " + AllModsList[Index].Item1 + " was synced to your Quest.");
                     txtbox.ScrollToEnd();
                 }
                 catch
