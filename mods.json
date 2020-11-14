@@ -83,7 +83,7 @@
             ]
         },
         {
-            "name": "ParticleTuner",
+            "name": "Quest Particles",
             "details": "Partially ported ParticleOverdrive to the Quest. Particles (a.k.a. ParticleTuner) allows you to adjust the particles spawned after slicing a note, remove saber clashing effects, and reduce environmental dust. There's also a built-in rainbow mode for particles :)",
             "creator": [
                 "marcuszhou"
@@ -198,7 +198,7 @@
             ]
         },
         {
-            "name": "CustomFailText",
+            "name": "Custom Fail Text",
             "details": "Allows you to customize the text that appears when you fail a level.",
             "creator": [
                 "Lauriethefish"
