@@ -88,8 +88,8 @@ namespace BMBF_Manager
                 return;
             }
             BSVersion = BMBF["BeatSaberVersion"].ToString().Replace("\"", "");
-            String[] GameVersion = BMBF["BeatSaberVersion"].ToString().Replace("\"", "").Split('.');
-            //String[] GameVersion = "1.13.0".Replace("\"", "").Split('.');
+            //String[] GameVersion = BMBF["BeatSaberVersion"].ToString().Replace("\"", "").Split('.');
+            String[] GameVersion = "1.13.0".Replace("\"", "").Split('.');
             int major = Convert.ToInt32(GameVersion[0]);
             int minor = Convert.ToInt32(GameVersion[1]);
             int patch = Convert.ToInt32(GameVersion[2]);
@@ -124,17 +124,13 @@ namespace BMBF_Manager
                         if (major == Mmajor && minor == Mminor && patch >= Mpatch)
                         {
                             Boolean existent = false;
-                            try
+                            for (int o = 0; o < AllModsList.Count; o++)
                             {
-                                for (int o = 0; AllModsList[o] != null; o++)
+                                if ((String)AllModsList[o].Item1 == Name)
                                 {
-                                    if ((String)AllModsList[o].Item1 == Name)
-                                    {
-                                        existent = true;
-                                    }
+                                    existent = true;
                                 }
                             }
-                            catch { }
                             if (existent) continue;
                             
                             Version = json["mods"][i]["downloads"][z]["modversion"];
@@ -177,19 +173,15 @@ namespace BMBF_Manager
                         {
                             Boolean existent = false;
                             int ListIndex = 0;
-                            try
+                            for (int o = 0; o < AllModsList.Count; o++)
                             {
-                                for (int o = 0; AllModsList[o] != null; o++)
+                                if ((String)AllModsList[o].Item1 == Name)
                                 {
-                                    if ((String)AllModsList[o].Item1 == Name)
-                                    {
-                                        existent = true;
-                                        ListIndex = o;
-                                        break;
-                                    }
+                                    existent = true;
+                                    ListIndex = o;
+                                    break;
                                 }
                             }
-                            catch { }
                             if (!existent)
                             {
                                 Version = json["mods"][i]["downloads"][z]["modversion"];
@@ -205,25 +197,17 @@ namespace BMBF_Manager
                                 List<int> finishedver = new List<int>();
                                 String[] newver = Version.Replace("\"", "").Split('.');
                                 Boolean newer = false;
-                                try
+                                for (int e = 0; e < allver.Count(); e++)
                                 {
-                                    for (int e = 0; allver[e] != null; e++)
-                                    {
-                                        finishedver.Add(Convert.ToInt32(allver[e]));
-                                    }
+                                    finishedver.Add(Convert.ToInt32(allver[e]));
                                 }
-                                catch { }
-                                try
-                                {
-                                    for (int e = 0; newver[e] != null; e++)
+                                    for (int e = 0; e < newver.Count(); e++)
                                     {
                                         if (Convert.ToInt32(newver[e]) >= finishedver[e])
                                         {
                                             newer = true;
                                         }
                                     }
-                                }
-                                catch { }
                                 if (!newer) return;
 
                                 ModList.Items.RemoveAt(ListIndex);
