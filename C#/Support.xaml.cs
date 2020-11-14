@@ -187,15 +187,8 @@ namespace BMBF_Manager
             MainWindow.IP = MainWindow.IP.Replace("Http", "");
             MainWindow.IP = MainWindow.IP.Replace("Https", "");
 
-            int count = 0;
-            for (int i = 0; i < MainWindow.IP.Length; i++)
-            {
-                if (MainWindow.IP.Substring(i, 1) == ".")
-                {
-                    count++;
-                }
-            }
-            if (count != 3)
+            int count = MainWindow.IP.Split('.').Count();
+            if (count != 4)
             {
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
                 {
@@ -387,23 +380,23 @@ namespace BMBF_Manager
             int minor = Convert.ToInt32(GameVersion[1]);
             int patch = Convert.ToInt32(GameVersion[2]);
 
-            for (int i = 0; json["mods"][i]["name"] != null; i++)
+            foreach (JSONNode mod in json["mods"])
             {
-                String Name = json["mods"][i]["name"];
+                String Name = mod["name"];
                 String Creator = "";
 
-                for (int u = 0; json["mods"][i]["creator"][u] != null; u++)
+                foreach (JSONNode Creat in mod["creator"])
                 {
-                    Creator = Creator + json["mods"][i]["creator"][u] + ", ";
+                    Creator = Creator + Creat + ", ";
                 }
                 Creator = Creator.Substring(0, Creator.Length - 2);
-                String Version = json["mods"][i]["downloads"][0]["modversion"];
+                String Version = mod["downloads"][0]["modversion"];
 
-                for (int z = 0; json["mods"][i]["downloads"][z]["modversion"] != null; z++)
+                foreach (JSONNode download in mod["downloads"])
                 {
-                    for (int u = 0; json["mods"][i]["downloads"][z]["gameversion"][u] != null; u++)
+                    foreach (JSONNode gameversion in download["gameversion"])
                     {
-                        String[] MGameVersion = json["mods"][i]["downloads"][z]["gameversion"][u].ToString().Replace("\"", "").Split('.');
+                        String[] MGameVersion = gameversion.ToString().Replace("\"", "").Split('.');
                         int Mmajor = Convert.ToInt32(MGameVersion[0]);
                         int Mminor = Convert.ToInt32(MGameVersion[1]);
                         int Mpatch = 0;
@@ -418,18 +411,19 @@ namespace BMBF_Manager
                         if (major == Mmajor && minor == Mminor && patch >= Mpatch)
                         {
                             Boolean existent = false;
-                            for (int o = 0; o < AllModsList.Count; o++)
+                            foreach (Tuple<string, string, string, string, string, string, bool> t in AllModsList)
                             {
-                                if ((String)AllModsList[o].Item1 == Name)
+                                if ((String)t.Item1 == Name)
                                 {
                                     existent = true;
+                                    break;
                                 }
                             }
                             if (existent) continue;
 
-                            Version = json["mods"][i]["downloads"][z]["modversion"];
+                            Version = download["modversion"];
                             //Name, Version, DownloadLink, Creator, gameVersion, Desciption, Forward
-                            AllModsList.Add(new Tuple<string, string, string, string, string, string, bool>(Name, Version, json["mods"][i]["downloads"][z]["download"].ToString().Replace("\"", ""), Creator, json["mods"][i]["downloads"][z]["gameversion"][u].ToString().Replace("\"", ""), json["mods"][i]["details"].ToString().Replace("\"", "").Replace("\\r\\n", System.Environment.NewLine), json["mods"][i]["downloads"][z]["forward"].AsBool));
+                            AllModsList.Add(new Tuple<string, string, string, string, string, string, bool>(Name, Version, download["download"].ToString().Replace("\"", ""), Creator, gameversion.ToString().Replace("\"", ""), mod["details"].ToString().Replace("\"", "").Replace("\\r\\n", System.Environment.NewLine), download["forward"].AsBool));
                             break;
                         }
                     }
@@ -442,43 +436,52 @@ namespace BMBF_Manager
             //json = JSON.Parse(c.DownloadString("https://raw.githubusercontent.com/ComputerElite/BM/main/testing.json"));
             json = JSON.Parse(c.DownloadString("https://raw.githubusercontent.com/ComputerElite/BM/main/mods.json"));
 
-            for (int i = 0; json["mods"][i]["name"] != null; i++)
+            foreach (JSONNode mod in json["mods"])
             {
-                String Name = json["mods"][i]["name"];
+                String Name = mod["name"];
                 String Creator = "";
 
-                for (int u = 0; json["mods"][i]["creator"][u] != null; u++)
+                foreach (JSONNode Creat in mod["creator"])
                 {
-                    Creator = Creator + json["mods"][i]["creator"][u] + ", ";
+                    Creator = Creator + Creat + ", ";
                 }
                 Creator = Creator.Substring(0, Creator.Length - 2);
-                String Version = json["mods"][i]["downloads"][0]["modversion"];
+                String Version = mod["downloads"][0]["modversion"];
 
-                for (int z = 0; json["mods"][i]["downloads"][z]["modversion"] != null; z++)
+                foreach (JSONNode download in mod["downloads"])
                 {
-                    for (int u = 0; json["mods"][i]["downloads"][z]["gameversion"][u] != null; u++)
+                    foreach (JSONNode gameversion in download["gameversion"])
                     {
-                        String[] MGameVersion = json["mods"][i]["downloads"][z]["gameversion"][u].ToString().Replace("\"", "").Split('.');
+                        String[] MGameVersion = gameversion.ToString().Replace("\"", "").Split('.');
                         int Mmajor = Convert.ToInt32(MGameVersion[0]);
                         int Mminor = Convert.ToInt32(MGameVersion[1]);
-                        int Mpatch = Convert.ToInt32(MGameVersion[2]);
+                        int Mpatch = 0;
+                        if (MGameVersion.Count() == 2)
+                        {
+                            Mpatch = 0;
+                        }
+                        else
+                        {
+                            Mpatch = Convert.ToInt32(MGameVersion[2]);
+                        }
                         if (major == Mmajor && minor == Mminor && patch >= Mpatch)
                         {
                             Boolean existent = false;
                             int ListIndex = 0;
-                            for (int o = 0; o < AllModsList.Count; o++)
+                            foreach (Tuple<string, string, string, string, string, string, bool> t in AllModsList)
                             {
-                                if ((String)AllModsList[o].Item1 == Name)
+                                if ((String)t.Item1 == Name)
                                 {
                                     existent = true;
-                                    ListIndex = o;
                                     break;
                                 }
+                                ListIndex++;
                             }
                             if (!existent)
                             {
-                                Version = json["mods"][i]["downloads"][z]["modversion"];
-                                AllModsList.Add(new Tuple<string, string, string, string, string, string, bool>(Name, Version, json["mods"][i]["downloads"][z]["download"].ToString().Replace("\"", ""), Creator, json["mods"][i]["downloads"][z]["gameversion"][u].ToString().Replace("\"", ""), json["mods"][i]["details"].ToString().Replace("\"", "").Replace("\\r\\n", System.Environment.NewLine), json["mods"][i]["downloads"][z]["forward"].AsBool));
+                                Version = download["modversion"];
+                                //Name, Version, DownloadLink, Creator, gameVersion, Desciption, Forward
+                                AllModsList.Add(new Tuple<string, string, string, string, string, string, bool>(Name, Version, download["download"].ToString().Replace("\"", ""), Creator, gameversion.ToString().Replace("\"", ""), mod["details"].ToString().Replace("\"", "").Replace("\\r\\n", System.Environment.NewLine), download["forward"].AsBool));
                             }
                             else
                             {
@@ -503,19 +506,22 @@ namespace BMBF_Manager
 
                                 AllModsList.RemoveAt(ListIndex);
 
-                                AllModsList.Add(new Tuple<string, string, string, string, string, string, bool>(Name, Version, json["mods"][i]["downloads"][z]["download"].ToString().Replace("\"", ""), Creator, json["mods"][i]["downloads"][z]["gameversion"][u].ToString().Replace("\"", ""), json["mods"][i]["details"].ToString().Replace("\"", "").Replace("\\r\\n", System.Environment.NewLine), json["mods"][i]["downloads"][z]["forward"].AsBool));
+                                //Name, Version, DownloadLink, Creator, gameVersion, Desciption, Forward
+                                AllModsList.Add(new Tuple<string, string, string, string, string, string, bool>(Name, Version, download["download"].ToString().Replace("\"", ""), Creator, gameversion.ToString().Replace("\"", ""), mod["details"].ToString().Replace("\"", "").Replace("\\r\\n", System.Environment.NewLine), download["forward"].AsBool));
                             }
+
+
                             break;
                         }
                     }
                 }
 
             }
-            for(int i = 0; i < AllModsList.Count; i++)
+            foreach (Tuple<string, string, string, string, string, string, bool> mod in AllModsList)
             {
-                if(AllModsList[i].Item1.ToString().Replace("\"", "").ToLower() == ModName.ToLower())
+                if(mod.Item1.ToString().Replace("\"", "").ToLower() == ModName.ToLower())
                 {
-                    return AllModsList[i].Item3;
+                    return mod.Item3;
                 }
             }
             return "Error";

@@ -176,5 +176,8 @@
   <ItemGroup>
     <Resource Include="Support2.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="HitSound3.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

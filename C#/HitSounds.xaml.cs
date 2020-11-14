@@ -47,7 +47,7 @@ namespace BMBF_Manager
             else
             {
                 ImageBrush uniformBrush = new ImageBrush();
-                uniformBrush.ImageSource = new BitmapImage(new Uri("pack://application:,,,/HitSound2.png", UriKind.Absolute));
+                uniformBrush.ImageSource = new BitmapImage(new Uri("pack://application:,,,/HitSound3.png", UriKind.Absolute));
                 uniformBrush.Stretch = Stretch.UniformToFill;
                 this.Background = uniformBrush;
             }
@@ -129,15 +129,8 @@ namespace BMBF_Manager
             MainWindow.IP = MainWindow.IP.Replace("Http", "");
             MainWindow.IP = MainWindow.IP.Replace("Https", "");
 
-            int count = 0;
-            for (int i = 0; i < MainWindow.IP.Length; i++)
-            {
-                if (MainWindow.IP.Substring(i, 1) == ".")
-                {
-                    count++;
-                }
-            }
-            if (count != 3)
+            int count = MainWindow.IP.Split('.').Count();
+            if (count != 4)
             {
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
                 {
@@ -228,6 +221,48 @@ namespace BMBF_Manager
             }
         }
 
+        private void Reset(object sender, RoutedEventArgs e)
+        {
+            txtbox.AppendText("\n\nChanging Sound to default");
+            if (!adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/mod_cfgs/QuestSounds.json \"" + exe + "\\tmp\\QSounds.json\"")) return;
+            if (!File.Exists(exe + "\\tmp\\QSounds.json"))
+            {
+                txtbox.AppendText("\n\nDo you have your Quest pluggwd into your PC? Do you have the QuestSounds mod installed? I was unable to change the config");
+                return;
+            }
+            JSONNode config = JSON.Parse(File.ReadAllText(exe + "\\tmp\\QSounds.json"));
+            if ((bool)GoodHitSound.IsChecked)
+            {
+                if (!adb("shell rm -f " + config["Sounds"]["HitSound"]["filepath"])) return;
+            }
+            else if ((bool)BadHitSounds.IsChecked)
+            {
+                if (!adb("shell rm -f " + config["Sounds"]["BadHitSound"]["filepath"])) return;
+            }
+            else if ((bool)MenuMusic.IsChecked)
+            {
+                if (!adb("shell rm -f " + config["Sounds"]["MenuMusic"]["filepath"])) return;
+            }
+            else if ((bool)MenuClickSound.IsChecked)
+            {
+                if (!adb("shell rm -f " + config["Sounds"]["MenuClick"]["filepath"])) return;
+            }
+            else if ((bool)FireWorks.IsChecked)
+            {
+                if (!adb("shell rm -f " + config["Sounds"]["Firework"]["filepath"])) return;
+            }
+            else if ((bool)LevelCleared.IsChecked)
+            {
+                if (!adb("shell rm -f " + config["Sounds"]["LevelCleared"]["filepath"])) return;
+            }
+            else
+            {
+                txtbox.AppendText("\n\nPlease choose a Sound Type.");
+                return;
+            }
+            txtbox.AppendText("\nChanged Sound to default");
+        }
+
         private void Install(object sender, RoutedEventArgs e)
         {
             if (!CheckIP()) return;
@@ -248,9 +283,9 @@ namespace BMBF_Manager
                 WebClient c = new WebClient();
                 BMBF = JSON.Parse(c.DownloadString("http://" + MainWindow.IP + ":50000/host/beatsaber/config"));
                 Boolean Installed = false;
-                for(int i = 0; BMBF["Config"]["Mods"][i]["ID"] != null; i++)
+                foreach(JSONNode mod in BMBF["Config"]["Mods"])
                 {
-                    if(BMBF["Config"]["Mods"][i]["ID"] == "questsounds" && BMBF["Config"]["Mods"][i]["Status"] == "Installed")
+                    if(mod["ID"] == "questsounds" && mod["Status"] == "Installed")
                     {
                         Installed = true;
                         break;

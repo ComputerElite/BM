@@ -489,15 +489,8 @@ namespace BMBF_Manager
             MainWindow.IP = MainWindow.IP.Replace("Http", "");
             MainWindow.IP = MainWindow.IP.Replace("Https", "");
 
-            int count = 0;
-            for (int i = 0; i < MainWindow.IP.Length; i++)
-            {
-                if (MainWindow.IP.Substring(i, 1) == ".")
-                {
-                    count++;
-                }
-            }
-            if (count != 3)
+            int count = MainWindow.IP.Split('.').Count();
+            if (count != 4)
             {
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate {
                     Quest.Text = MainWindow.IP;

@@ -263,15 +263,8 @@ namespace BMBF_Manager
             IP = IP.Replace("Http", "");
             IP = IP.Replace("Https", "");
 
-            int count = 0;
-            for (int i = 0; i < IP.Length; i++)
-            {
-                if (IP.Substring(i, 1) == ".")
-                {
-                    count++;
-                }
-            }
-            if (count != 3)
+            int count = MainWindow.IP.Split('.').Count();
+            if (count != 4)
             {
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
                 {
@@ -536,12 +529,12 @@ namespace BMBF_Manager
             var json = SimpleJSON.JSON.Parse(f);
             String id = "";
             String name;
-            for (int i = 0; i < 5; i++)
+            foreach (JSONNode asset in json[0]["assets"])
             {
-                name = json[0]["assets"][i]["name"].ToString();
+                name = asset["name"].ToString();
                 if (name == "\"com.weloveoculus.BMBF.apk\"")
                 {
-                    id = json[0]["assets"][i]["id"].ToString();
+                    id = asset["id"].ToString();
                     break;
                 }
             }

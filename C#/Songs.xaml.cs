@@ -209,14 +209,14 @@ namespace BMBF_Manager
 
             var result = JSON.Parse(Term);
 
-            for(int i = 0; result["docs"][i]["metadata"]["songName"]; i++)
+            foreach (JSONNode doc in result["docs"])
             {
-                String Name = result["docs"][i]["metadata"]["songName"];
-                String Mapper = result["docs"][i]["metadata"]["levelAuthorName"];
-                String Artist = result["docs"][i]["metadata"]["songAuthorName"];
+                String Name = doc["metadata"]["songName"];
+                String Mapper = doc["metadata"]["levelAuthorName"];
+                String Artist = doc["metadata"]["songAuthorName"];
 
                 SongList.Items.Add(new SongItem { Name = Name, Mapper = Mapper, Artist = Artist });
-                SongKeys.Add(result["docs"][i]["key"]);
+                SongKeys.Add(doc["key"]);
             }
 
             if(SongKeys.Count < 1)
@@ -248,15 +248,8 @@ namespace BMBF_Manager
             MainWindow.IP = MainWindow.IP.Replace("Http", "");
             MainWindow.IP = MainWindow.IP.Replace("Https", "");
 
-            int count = 0;
-            for (int i = 0; i < MainWindow.IP.Length; i++)
-            {
-                if (MainWindow.IP.Substring(i, 1) == ".")
-                {
-                    count++;
-                }
-            }
-            if (count != 3)
+            int count = MainWindow.IP.Split('.').Count();
+            if (count != 4)
             {
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
                 {
