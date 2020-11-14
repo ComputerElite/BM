@@ -88,8 +88,8 @@ namespace BMBF_Manager
                 return;
             }
             BSVersion = BMBF["BeatSaberVersion"].ToString().Replace("\"", "");
-            //String[] GameVersion = BMBF["BeatSaberVersion"].ToString().Replace("\"", "").Split('.');
-            String[] GameVersion = "1.13.0".Replace("\"", "").Split('.');
+            String[] GameVersion = BMBF["BeatSaberVersion"].ToString().Replace("\"", "").Split('.');
+            //String[] GameVersion = "1.13.0".Replace("\"", "").Split('.');
             int major = Convert.ToInt32(GameVersion[0]);
             int minor = Convert.ToInt32(GameVersion[1]);
             int patch = Convert.ToInt32(GameVersion[2]);
