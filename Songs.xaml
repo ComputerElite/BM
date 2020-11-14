@@ -1,0 +1,56 @@
+﻿<Window x:Class="BMBF_Manager.Songs"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:BMBF_Manager"
+        mc:Ignorable="d"
+        ResizeMode="CanMinimize"
+        WindowStyle="None"
+        MouseMove="Drag"
+        Title="BMBF Manager Song Installing" Height="407" Width="700" Background="#FF282828">
+    <Grid>
+        <Image Source="Logo.png" HorizontalAlignment="Left" Height="25" VerticalAlignment="Top" Width="25" Margin="10,2,0,0"/>
+        <Button MouseEnter="noDrag" MouseLeave="doDrag" Click="Close" Content="X" HorizontalAlignment="Left" Margin="658,4,0,0" VerticalAlignment="Top" Width="31" Background="#00000000" BorderBrush="#FFCBCBCB"/>
+        <Button MouseEnter="noDrag" MouseLeave="doDrag" Click="Mini" Content="|" HorizontalAlignment="Left" Margin="625,-2,0,0" VerticalAlignment="Top" Width="20" Background="#00000000" BorderBrush="#FFCBCBCB" RenderTransformOrigin="0.5,0.5" Height="31">
+            <Button.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform Angle="90"/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Button.RenderTransform>
+        </Button>
+        <TextBox LostFocus="QuestIPCheck" FontFamily="lucida console" GotFocus="ClearText" MouseEnter="noDrag" MouseLeave="doDrag" Opacity="0.8" x:Name="Quest" HorizontalAlignment="Left" Height="23" Margin="218,30,0,0" TextWrapping="Wrap" Text="Quest IP" VerticalAlignment="Top" Width="471" Background="#FF494949" BorderBrush="#FFD30000" Foreground="White"/>
+
+        <TextBox MouseEnter="noDrag" MouseLeave="doDrag" FontFamily="lucida console" Opacity="0.8" IsReadOnly="True" x:Name="txtbox" HorizontalAlignment="Left" Height="367" Margin="10,30,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="203" Background="#FF494949" Foreground="#FFA6A6A6" BorderBrush="#FFD30000"/>
+        <AccessText MouseEnter="noDrag" MouseLeave="doDrag" Opacity="0.8" HorizontalAlignment="Left" Height="24" VerticalAlignment="Top" Width="249" RenderTransformOrigin="0.5,0.5" Text="BMBF Manager - Song Installing" FontSize="14" Foreground="Black" Margin="40,4,0,0"/>
+        <Button MouseEnter="noDrag" MouseLeave="doDrag" FontFamily="lucida console" Opacity="0.8" Click="LoadSongData" Content="See complete Song Metadata" HorizontalAlignment="Left" Margin="218,326,0,0" VerticalAlignment="Top" Width="471" Height="33" RenderTransformOrigin="-0.858,0.891" Background="#FF005654" Foreground="#FFF3F3F3" BorderBrush="#FFB94747"/>
+        <Button MouseEnter="noDrag" MouseLeave="doDrag" FontFamily="lucida console" Opacity="0.8" Click="InstallSong" Content="Install Song" HorizontalAlignment="Left" Margin="218,364,0,0" VerticalAlignment="Top" Width="471" Height="33" RenderTransformOrigin="-0.858,0.891" Background="#FF005654" Foreground="#FFF3F3F3" BorderBrush="#FFB94747"/>
+        <TextBox LostFocus="SongKeyCheck" FontFamily="lucida console" GotFocus="ClearKey" MouseEnter="noDrag" MouseLeave="doDrag" Opacity="0.8" x:Name="SongKey" HorizontalAlignment="Left" Height="23" Margin="218,298,0,0" TextWrapping="Wrap" Text="Song Key" VerticalAlignment="Top" Width="471" Background="#FF494949" BorderBrush="#FFD30000" Foreground="White"/>
+        <ListView SelectionChanged="SelectionChanged" MouseEnter="noDrag" MouseLeave="doDrag" FontFamily="lucida console" x:Name="SongList" HorizontalAlignment="Left" Height="170" Margin="218,123,0,0" Opacity="0.8" VerticalAlignment="Top" Width="471" Background="#0065a3" Foreground="#171717" BorderBrush="#FFB94747">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Width="170" DisplayMemberBinding="{Binding Name}">
+                        <GridViewColumn.Header>
+                            <GridViewColumnHeader Tag="Name">Song Name</GridViewColumnHeader>
+                        </GridViewColumn.Header>
+                    </GridViewColumn>
+                    <GridViewColumn Width="140" DisplayMemberBinding="{Binding Mapper}">
+                        <GridViewColumn.Header>
+                            <GridViewColumnHeader Tag="Mapper">Mapper</GridViewColumnHeader>
+                        </GridViewColumn.Header>
+                    </GridViewColumn>
+                    <GridViewColumn Width="150" DisplayMemberBinding="{Binding Artist}">
+                        <GridViewColumn.Header>
+                            <GridViewColumnHeader Tag="Artist">Artist</GridViewColumnHeader>
+                        </GridViewColumn.Header>
+                    </GridViewColumn>
+                </GridView>
+            </ListView.View>
+        </ListView>
+        <TextBox LostFocus="SearchTermCheck" FontFamily="lucida console" GotFocus="ClearSearch" MouseEnter="noDrag" MouseLeave="doDrag" Opacity="0.8" x:Name="SearchTerm" HorizontalAlignment="Left" Height="23" Margin="218,58,0,0" TextWrapping="Wrap" Text="Search Term" VerticalAlignment="Top" Width="471" Background="#FF494949" BorderBrush="#FFD30000" Foreground="White"/>
+        <Button MouseEnter="noDrag" MouseLeave="doDrag" FontFamily="lucida console" Opacity="0.8" Click="Search" Content="Search" HorizontalAlignment="Left" Margin="218,90,0,0" VerticalAlignment="Top" Width="471" Height="33" RenderTransformOrigin="-0.858,0.891" Background="#FF005654" Foreground="#FFF3F3F3" BorderBrush="#FFB94747"/>
+    </Grid>
+</Window>
