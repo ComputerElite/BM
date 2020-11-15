@@ -156,12 +156,6 @@
     <Resource Include="Mods3.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="BPLists.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Support.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="HitSound2.png" />
   </ItemGroup>
   <ItemGroup>
@@ -178,6 +172,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="HitSound3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="BPLists2.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

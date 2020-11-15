@@ -546,11 +546,19 @@ namespace BMBF_Manager
 
         public void Sync()
         {
-            System.Threading.Thread.Sleep(2000);
-            using (WebClient client = new WebClient())
+            try
             {
-                client.QueryString.Add("foo", "foo");
-                client.UploadValues("http://" + MainWindow.IP + ":50000/host/beatsaber/commitconfig", "POST", client.QueryString);
+                System.Threading.Thread.Sleep(2000);
+                using (WebClient client = new WebClient())
+                {
+                    client.QueryString.Add("foo", "foo");
+                    client.UploadValues("http://" + MainWindow.IP + ":50000/host/beatsaber/commitconfig", "POST", client.QueryString);
+                }
+            }
+            catch
+            {
+                txtbox.AppendText("\n\nA error Occured (Code: BMBF100)");
+                Running = false;
             }
         }
     }
