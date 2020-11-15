@@ -1,5 +1,5 @@
 # BM
-The Utility to install new Songs, Mods, Switch between the modded and unmodded Version of Beat Saber and Update BMBF.
+The Utility to Install Songs, Install Mods, Install/Update BMBF, Install HitSounds, download automatically made Playlists, get better support and switch between the modded and unmodded Version of Beat Saber
 # How-to
 ## **Go to releases (Right Side) and download the zip file first. Then right click the downloaded zip and click extract.**
 ## **Before you do anything you should enable developer mode if you didn't**
