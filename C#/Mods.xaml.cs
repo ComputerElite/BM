@@ -30,9 +30,8 @@ namespace BMBF_Manager
         Boolean draggable = true;
         Boolean Running = false;
         String exe = AppDomain.CurrentDomain.BaseDirectory.Substring(0, AppDomain.CurrentDomain.BaseDirectory.Length - 1);
-        //Name, Version, DownloadLink, Creator, gameVersion, Desciption, Forward
-        List<Tuple<String, String, String, String, String, String, Boolean>> AllModsList = new List<Tuple<String, String, String, String, String, String, Boolean>>();
-        String BSVersion = "1.12.2";
+        //Name, Version, DownloadLink, Creator, gameVersion, Desciption, Forward, new Tuple (CoreMod)
+        List<Tuple<String, String, String, String, String, String, Boolean, Tuple<bool>>> AllModsList = new List<Tuple<String, String, String, String, String, String, Boolean, Tuple<bool>>>();
         int C = 0;
         int Index = 0;
 
@@ -60,11 +59,11 @@ namespace BMBF_Manager
         public void getMods()
         {
             getQuestIP();
-            System.Net.WebClient client = new System.Net.WebClient();
+            TimeoutWebClientShort client = new TimeoutWebClientShort();
 
             JSONNode json = JSON.Parse("{}");
             JSONNode BMBF = JSON.Parse("{}");
-
+            Boolean Reaching = true;
 
             try
             {
@@ -72,24 +71,23 @@ namespace BMBF_Manager
             }
             catch
             {
-                txtbox.AppendText("\n\nError (Code: BM100). Couldn't reach the Quest Boards Website to get available Mods. You can't install mods. Please restart the program.");
-                return;
+                txtbox.AppendText("\n\nError (Code: BM100). Couldn't reach the Quest Boards Website to get some available Mods.");
             }
 
             try
             {
                 BMBF = SimpleJSON.JSON.Parse(client.DownloadString("http://" + MainWindow.IP + ":50000/host/beatsaber/config"));
+                MainWindow.GameVersion = BMBF["BeatSaberVersion"];
             }
             catch
             {
                 txtbox.AppendText("\n\n\nError (Code: BMBF100). Couldn't acces BMBF Web Interface. Check Following:");
                 txtbox.AppendText("\n\n- You've put in the right IP");
                 txtbox.AppendText("\n\n- BMBF is opened");
-                return;
+                Reaching = false;
             }
-            BSVersion = BMBF["BeatSaberVersion"].ToString().Replace("\"", "");
-            //String[] GameVersion = BMBF["BeatSaberVersion"].ToString().Replace("\"", "").Split('.');
-            String[] GameVersion = "1.13.0".Replace("\"", "").Split('.');
+            String[] GameVersion = MainWindow.GameVersion.ToString().Replace("\"", "").Split('.');
+            //String[] GameVersion = "1.13.0".Replace("\"", "").Split('.');
             int major = Convert.ToInt32(GameVersion[0]);
             int minor = Convert.ToInt32(GameVersion[1]);
             int patch = Convert.ToInt32(GameVersion[2]);
@@ -124,7 +122,7 @@ namespace BMBF_Manager
                         if (major == Mmajor && minor == Mminor && patch >= Mpatch)
                         {
                             Boolean existent = false;
-                            foreach (Tuple<string, string, string, string, string, string, bool> t in AllModsList)
+                            foreach (Tuple<string, string, string, string, string, string, bool, Tuple<bool>> t in AllModsList)
                             {
                                 if ((String)t.Item1 == Name)
                                 {
@@ -136,7 +134,7 @@ namespace BMBF_Manager
                             
                             Version = download["modversion"];
                             //Name, Version, DownloadLink, Creator, gameVersion, Desciption, Forward
-                            AllModsList.Add(new Tuple<string, string, string, string, string, string, bool>(Name, Version, download["download"].ToString().Replace("\"", ""), Creator, gameversion.ToString().Replace("\"", ""), mod["details"].ToString().Replace("\"", "").Replace("\\r\\n", System.Environment.NewLine), download["forward"].AsBool));
+                            AllModsList.Add(new Tuple<string, string, string, string, string, string, bool, Tuple<bool>>(Name, Version, download["download"].ToString().Replace("\"", ""), Creator, gameversion.ToString().Replace("\"", ""), mod["details"].ToString().Replace("\"", "").Replace("\\r\\n", System.Environment.NewLine), download["forward"].AsBool, new Tuple<bool>(download["coremod"].AsBool)));
                             ModList.Items.Add(new ModItem { Name = Name, Creator = Creator, GameVersion = gameversion, ModVersion = Version });
                             break;
                         }
@@ -147,8 +145,8 @@ namespace BMBF_Manager
 
             WebClient c = new WebClient();
 
-            //json = JSON.Parse(c.DownloadString("https://raw.githubusercontent.com/ComputerElite/BM/main/testing.json"));
-            json = JSON.Parse(c.DownloadString("https://raw.githubusercontent.com/ComputerElite/BM/main/mods.json"));
+            json = JSON.Parse(c.DownloadString("https://raw.githubusercontent.com/ComputerElite/BM/main/testing.json"));
+            //json = JSON.Parse(c.DownloadString("https://raw.githubusercontent.com/ComputerElite/BM/main/mods.json"));
 
             foreach (JSONNode mod in json["mods"])
             {
@@ -182,7 +180,7 @@ namespace BMBF_Manager
                         {
                             Boolean existent = false;
                             int ListIndex = 0;
-                            foreach (Tuple<string, string, string, string, string, string, bool> t in AllModsList)
+                            foreach (Tuple<string, string, string, string, string, string, bool, Tuple<bool>> t in AllModsList)
                             {
                                 if ((String)t.Item1 == Name)
                                 {
@@ -195,7 +193,7 @@ namespace BMBF_Manager
                             {
                                 Version = download["modversion"];
                                 //Name, Version, DownloadLink, Creator, gameVersion, Desciption, Forward
-                                AllModsList.Add(new Tuple<string, string, string, string, string, string, bool>(Name, Version, download["download"].ToString().Replace("\"", ""), Creator, gameversion.ToString().Replace("\"", ""), mod["details"].ToString().Replace("\"", "").Replace("\\r\\n", System.Environment.NewLine), download["forward"].AsBool));
+                                AllModsList.Add(new Tuple<string, string, string, string, string, string, bool, Tuple<bool>>(Name, Version, download["download"].ToString().Replace("\"", ""), Creator, gameversion.ToString().Replace("\"", ""), mod["details"].ToString().Replace("\"", "").Replace("\\r\\n", System.Environment.NewLine), download["forward"].AsBool, new Tuple<bool>(download["coremod"].AsBool)));
                                 ModList.Items.Add(new ModItem { Name = Name, Creator = Creator, GameVersion = gameversion, ModVersion = Version });
                             }
                             else
@@ -206,24 +204,29 @@ namespace BMBF_Manager
                                 List<int> finishedver = new List<int>();
                                 String[] newver = Version.Replace("\"", "").Split('.');
                                 Boolean newer = false;
-                                for (int e = 0; e < allver.Count(); e++)
+                                foreach (String CV in allver)
                                 {
-                                    finishedver.Add(Convert.ToInt32(allver[e]));
+                                    finishedver.Add(Convert.ToInt32(CV));
                                 }
-                                for (int e = 0; e < newver.Count(); e++)
+                                int e = 0;
+                                try
                                 {
-                                    if (Convert.ToInt32(newver[e]) >= finishedver[e])
+                                    if (Convert.ToInt32(newver[0]) >= finishedver[0] && Convert.ToInt32(newver[1]) >= finishedver[1] && Convert.ToInt32(newver[2]) >= finishedver[2])
                                     {
                                         newer = true;
                                     }
+                                } catch
+                                {
+                                    continue;
                                 }
-                                if (!newer) return;
+                                e++;
+                                if (!newer) continue;
 
                                 ModList.Items.RemoveAt(ListIndex);
                                 AllModsList.RemoveAt(ListIndex);
 
                                 //Name, Version, DownloadLink, Creator, gameVersion, Desciption, Forward
-                                AllModsList.Add(new Tuple<string, string, string, string, string, string, bool>(Name, Version, download["download"].ToString().Replace("\"", ""), Creator, gameversion.ToString().Replace("\"", ""), mod["details"].ToString().Replace("\"", "").Replace("\\r\\n", System.Environment.NewLine), download["forward"].AsBool));
+                                AllModsList.Add(new Tuple<string, string, string, string, string, string, bool, Tuple<bool>>(Name, Version, download["download"].ToString().Replace("\"", ""), Creator, gameversion.ToString().Replace("\"", ""), mod["details"].ToString().Replace("\"", "").Replace("\\r\\n", System.Environment.NewLine), download["forward"].AsBool, new Tuple<bool>(download["coremod"].AsBool)));
                                 ModList.Items.Add(new ModItem { Name = Name, Creator = Creator, GameVersion = gameversion, ModVersion = Version });
                             }
 
@@ -235,6 +238,10 @@ namespace BMBF_Manager
 
             }
             ModList.SelectedIndex = 0;
+            if(!Reaching)
+            {
+                MessageBox.Show("I couldn't reach BMBF. All the mods displayed are for the last Version of BMBF you used while I noticed (" + MainWindow.GameVersion + "). Please check if you can reach BMBF so I can install mods.", "BMBF Manager - Mod Installing", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
         }
 
         private void Drag(object sender, RoutedEventArgs e)
@@ -380,7 +387,22 @@ namespace BMBF_Manager
                 return;
             }
 
-            if (AllModsList[Index].Item5.ToString() != BSVersion)
+            if ((bool)AllModsList[Index].Rest.Item1)
+            {
+                MessageBox.Show("The Mod you are about to install is a Core Mod. That means the Mod should get installed when you exit BMBF and open it again. Please make sure you DON'T have the mod installed. I'll open BMBF for you once you click OK.", "BMBF Manager - Mod Installing", MessageBoxButton.OK, MessageBoxImage.Warning);
+                Process.Start("http://" + MainWindow.IP + ":50000/main/mods");
+                MessageBoxResult result1 = MessageBox.Show("Do you have the mod " + AllModsList[Index].Item1 + " installed?", "BMBF Manager - Mod Installing", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                switch (result1)
+                {
+                    case MessageBoxResult.Yes:
+                        txtbox.AppendText("\n\nMod is already installed aborted.");
+                        txtbox.ScrollToEnd();
+                        Running = false;
+                        return;
+                }
+            }
+
+            if (AllModsList[Index].Item5.ToString() != MainWindow.GameVersion)
             {
                 MessageBoxResult result1 = MessageBox.Show("The latest Version of the Mod " + AllModsList[Index].Item1 + " (That is indexed) has been made for Beat Saber Version " + AllModsList[Index].Item5.ToString() + ". It'll be compatible with your Game but you have to enable it manually. I'll open the BMBF mod tab after installing the mod. For it to activate you scroll to the mod you installed and flip the switch to on. If you get a compatibility warning click \"Enable Mod\" and then click \"Sync to Beat Saber\" in the top right.\nDo you wish to continue?", "BMBF Manager - Mod Installing", MessageBoxButton.YesNo, MessageBoxImage.Warning);
                 switch (result1)
@@ -505,7 +527,7 @@ namespace BMBF_Manager
 
         private void finished_upload(object sender, AsyncCompletedEventArgs e)
         {
-            if (AllModsList[Index].Item5.ToString() == BSVersion)
+            if (AllModsList[Index].Item5.ToString() == MainWindow.GameVersion)
             {
                 try
                 {

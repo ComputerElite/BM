@@ -27,7 +27,7 @@ namespace BMBF_Manager
     {
         int MajorV = 1;
         int MinorV = 6;
-        int PatchV = 6;
+        int PatchV = 7;
         Boolean Preview = false;
 
         public static Boolean CustomProtocols = false;
@@ -39,6 +39,7 @@ namespace BMBF_Manager
         public static String IP = "";
         public static String BMBF = "https://bmbf.dev/stable/27153984";
         public static String CustomImageSource = "N/A";
+        public static String GameVersion = "1.13.0";
         JSONNode json = JSON.Parse("{}");
 
 
@@ -86,6 +87,10 @@ namespace BMBF_Manager
 
             CustomProtocols = json["CustomProtocols"].AsBool;
             IP = json["IP"];
+            if(json["GameVersion"] != null)
+            {
+                GameVersion = json["GameVersion"];
+            }
             QuestSoundsInstalled = json["QSoundsInstalled"].AsBool;
 
             Quest.Text = IP;
@@ -132,6 +137,7 @@ namespace BMBF_Manager
             json["QSoundsInstalled"] = QuestSoundsInstalled;
             json["CustomImage"] = CustomImage;
             json["CustomImageSource"] = CustomImageSource;
+            json["GameVersion"] = GameVersion;
             File.WriteAllText(exe + "\\Config.json", json.ToString());
         }
 
@@ -629,7 +635,7 @@ namespace BMBF_Manager
                     Running = false;
                     return;
                 }
-                MessageBoxResult result2 = MessageBox.Show("Please download Beat Saber from the oculus score, play a song and then close it. Press OK once you finished.", "BMBF Manager - BMBF Updater", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBoxResult result2 = MessageBox.Show("Please download Beat Saber from the oculus store, play a song and then close it. Press OK once you finished.", "BMBF Manager - BMBF Updater", MessageBoxButton.OK, MessageBoxImage.Warning);
                 MessageBoxResult result3 = MessageBox.Show("I want to make sure. Do you have unmodded Beat Saber installed and opened it at least once?", "BMBF Manager - BMBF Updater", MessageBoxButton.YesNo, MessageBoxImage.Warning);
                 switch (result3)
                 {

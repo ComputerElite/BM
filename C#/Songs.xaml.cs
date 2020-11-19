@@ -1,11 +1,15 @@
-﻿using SimpleJSON;
+﻿using Microsoft.Win32;
+using SimpleJSON;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Net;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -268,6 +272,265 @@ namespace BMBF_Manager
         {
             MainWindow.IP = Quest.Text;
             return;
+        }
+
+        public static Boolean adb(String Argument)
+        {
+            String User = System.Environment.GetEnvironmentVariable("USERPROFILE");
+            ProcessStartInfo s = new ProcessStartInfo();
+            s.CreateNoWindow = false;
+            s.UseShellExecute = false;
+            s.FileName = "adb.exe";
+            s.WindowStyle = ProcessWindowStyle.Minimized;
+            s.Arguments = Argument;
+            try
+            {
+                // Start the process with the info we specified.
+                // Call WaitForExit and then the using statement will close.
+                using (Process exeProcess = Process.Start(s))
+                {
+                    exeProcess.WaitForExit();
+                    return true;
+                }
+            }
+            catch
+            {
+
+                ProcessStartInfo se = new ProcessStartInfo();
+                se.CreateNoWindow = false;
+                se.UseShellExecute = false;
+                se.FileName = User + "\\AppData\\Roaming\\SideQuest\\platform-tools\\adb.exe";
+                se.WindowStyle = ProcessWindowStyle.Minimized;
+                se.Arguments = Argument;
+                try
+                {
+                    // Start the process with the info we specified.
+                    // Call WaitForExit and then the using statement will close.
+                    using (Process exeProcess = Process.Start(se))
+                    {
+                        exeProcess.WaitForExit();
+                        return true;
+                    }
+                }
+                catch
+                {
+                    // Log error.
+                    return false;
+                }
+            }
+        }
+
+        private void InstallZip(object sender, RoutedEventArgs e)
+        {
+            if (!CheckIP())
+            {
+                txtbox.AppendText("\n\nChoose a valid IP.");
+                return;
+            }
+            if (Running)
+            {
+                txtbox.AppendText("\n\nA Song Install is already running.");
+                return;
+            }
+            Running = true;
+
+            String Input = "";
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.Filter = "Zip Files (*.zip)|*.zip";
+            bool? result = ofd.ShowDialog();
+            if (result == true)
+            {
+                //Get the path of specified file
+                if (File.Exists(ofd.FileName))
+                {
+                    Input = ofd.FileName;
+                }
+                else
+                {
+                    MessageBox.Show("Please select a valid Zip File", "BMBF Manager - Zip Song Installing", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    Running = false;
+                    return;
+                }
+
+            }
+
+            FileInfo fi = new FileInfo(Input);
+            long ZipSize = fi.Length;
+            if(ZipSize < 35000000) //35 MB
+            {
+                upload(Input);
+                Running = false;
+                return;
+            }
+
+            MessageBoxResult result1 = MessageBox.Show("This Song is over 35MB. I will install it manually is your Quest connected?", "BMBF Manager - Zip Song installing", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+
+            switch (result1)
+            {
+                case MessageBoxResult.No:
+                    txtbox.AppendText("\n\nSong Installing Aborted");
+                    txtbox.ScrollToEnd();
+                    Running = false;
+                    return;
+            }
+
+            if (Directory.Exists(exe + "\\tmp\\unzipped")) Directory.Delete(exe + "\\tmp\\unzipped", true);
+
+            txtbox.AppendText("\n\nunzipping Song");
+            txtbox.AppendText("\n\nunzipped Song");
+            ZipFile.ExtractToDirectory(Input, exe + "\\tmp\\unzipped");
+
+            String[] f = Directory.GetDirectories(exe + "\\tmp\\unzipped");
+            if (f.Count() != 0)
+            {
+                Input = f[0];
+            }
+            else
+            {
+                Input = exe + "\\tmp\\unzipped";
+            }
+
+
+
+            String hash = GetCustomLevelHash(Input);
+
+            txtbox.AppendText("\n\nGenerated hash: " + hash);
+            if (Directory.Exists(exe + "\\tmp\\custom_level_" + hash)) Directory.Delete(exe + "\\tmp\\custom_level_" + hash, true);
+            Directory.Move(Input, exe + "\\tmp\\custom_level_" + hash);
+            if (!adb("push \"" + exe + "\\tmp\\custom_level_" + hash + "\" /sdcard/BMBFData/CustomSongs")) return;
+            Directory.Delete(exe + "\\tmp\\custom_level_" + hash, true);
+
+            //Playlist Backup
+            BackupPlaylists();
+
+            txtbox.AppendText("\n\nsyncing Song to Beat Saber");
+            Sync();
+            txtbox.AppendText("\n\nsynced Song to Beat Saber");
+
+            reloadsongsfolder();
+
+            //RestorePlaylists();
+
+            //txtbox.AppendText("\n\nInstalled Song.");
+        }
+
+        public void BackupPlaylists()
+        {
+            try
+            {
+                Sync();
+                txtbox.AppendText("\n\nBacking up Playlist to " + exe + "\\Backup\\Playlists.json");
+                txtbox.ScrollToEnd();
+                Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
+                String BMBF = "";
+                using (TimeoutWebClient client2 = new TimeoutWebClient())
+                {
+                    BMBF = client2.DownloadString("http://" + MainWindow.IP + ":50000/host/beatsaber/config");
+                }
+                var json = JSON.Parse(BMBF);
+                json["IsCommitted"] = false;
+                File.WriteAllText(exe + "\\tmp\\Config.json", json.ToString());
+
+                String Config = exe + "\\tmp\\config.json";
+
+                var j = JSON.Parse(File.ReadAllText(Config));
+                File.WriteAllText(exe + "\\tmp\\Playlists.json", j["Config"].ToString());
+                txtbox.AppendText("\n\nBacked up Playlists to " + exe + "\\tmp\\Playlists.json");
+                txtbox.ScrollToEnd();
+                Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
+            }
+            catch
+            {
+                txtbox.AppendText("\n\n\nAn error occured (Code: PL100). Check following:");
+                txtbox.AppendText("\n\n- You put in the Quests IP right.");
+                txtbox.AppendText("\n\n- You've choosen a Backup Name.");
+                txtbox.AppendText("\n\n- Your Quest is on.");
+
+            }
+        }
+
+        public void reloadsongsfolder()
+        {
+            System.Threading.Thread.Sleep(3000);
+            TimeoutWebClient client = new TimeoutWebClient();
+            client.QueryString.Add("foo", "foo");
+            client.UploadValues("http://" + MainWindow.IP + ":50000/host/beatsaber/reloadsongfolders", "POST", client.QueryString);
+        }
+
+        public void RestorePlaylists()
+        {
+            System.Threading.Thread.Sleep(5000);
+            try
+            {
+                using (TimeoutWebClient client3 = new TimeoutWebClient())
+                {
+                    Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate {
+                        client3.DownloadFile("http://" + MainWindow.IP + ":50000/host/beatsaber/config", exe + "\\tmp\\OConfig.json");
+                    }));
+
+                }
+
+                String Config = exe + "\\tmp\\OConfig.json";
+
+                String Playlists = exe + "\\tmp\\Playlists.json";
+
+                var j = JSON.Parse(File.ReadAllText(Config));
+                var p = JSON.Parse(File.ReadAllText(Playlists));
+
+                j["Config"]["Playlists"] = p["Playlists"];
+                File.WriteAllText(exe + "\\tmp\\FUCKINBMBF.json", j["Config"].ToString());
+                Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate {
+                    postChanges(exe + "\\tmp\\FUCKINBMBF.json");
+                }));
+            }
+            catch
+            {
+                txtbox.AppendText("\n\n\nAn error occured (Code: PL100). Check following:");
+                txtbox.AppendText("\n\n- You put in the Quests IP right.");
+                txtbox.AppendText("\n\n- Your Quest is on.");
+            }
+        }
+
+        public void postChanges(String Config)
+        {
+            System.Threading.Thread.Sleep(5000);
+            using (TimeoutWebClient client = new TimeoutWebClient())
+            {
+                client.QueryString.Add("foo", "foo");
+                client.UploadFile("http://" + MainWindow.IP + ":50000/host/beatsaber/config", "PUT", Config);
+                client.UploadValues("http://" + MainWindow.IP + ":50000/host/beatsaber/commitconfig", "POST", client.QueryString);
+            }
+        }
+
+        public static string CreateSha1FromBytes(byte[] input)
+        {
+            // Use input string to calculate MD5 hash
+            using (var sha1 = SHA1.Create())
+            {
+                var inputBytes = input;
+                var hashBytes = sha1.ComputeHash(inputBytes);
+
+                return BitConverter.ToString(hashBytes).Replace("-", string.Empty);
+            }
+        }
+
+        public static string GetCustomLevelHash(String Path)
+        {
+            byte[] combinedBytes = new byte[0];
+            combinedBytes = combinedBytes.Concat(File.ReadAllBytes(Path + "\\info.dat")).ToArray();
+            String CustomLevelPath = Path;
+            var json = JSON.Parse(File.ReadAllText(Path + "\\info.dat"));
+
+            for (int i = 0; i < json["_difficultyBeatmapSets"].Count; i++)
+            {
+                for (int i2 = 0; i2 < json["_difficultyBeatmapSets"][i]["_difficultyBeatmaps"].Count; i2++)
+                    if (File.Exists(Path + "\\" + json["_difficultyBeatmapSets"][i]["_difficultyBeatmaps"][i2]["_beatmapFilename"]))
+                        combinedBytes = combinedBytes.Concat(File.ReadAllBytes(Path + "\\" + json["_difficultyBeatmapSets"][i]["_difficultyBeatmaps"][i2]["_beatmapFilename"])).ToArray();
+            }
+
+
+            String hash = CreateSha1FromBytes(combinedBytes.ToArray());
+            return hash.ToLower();
         }
 
         private void InstallSong(object sender, RoutedEventArgs e)

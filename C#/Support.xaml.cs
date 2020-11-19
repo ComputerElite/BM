@@ -31,7 +31,7 @@ namespace BMBF_Manager
         Boolean draggable = true;
         Boolean Running = false;
         String exe = AppDomain.CurrentDomain.BaseDirectory.Substring(0, AppDomain.CurrentDomain.BaseDirectory.Length - 1);
-        String BSVersion = "1.12.2";
+        String BSVersion = "1.13.0";
         Boolean ForThisVersion = true;
         int C = 0;
         String Key = "abcd";
