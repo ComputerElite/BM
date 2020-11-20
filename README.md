@@ -39,4 +39,5 @@ Open "BMBF Manager.exe", put in your Quests IP (if it hasn't picked it up automa
 - N/A
 
 # To-Do
-- N/A
+- I might add a full version switcher for BMBF and Beat Saber. E.g. Switch from BMBF 1.13.2 and Beat Saber 1.13.0 to BMBF 1.10 and Beat Saber 1.11.2 if you made a backup of that version. (ETA. 22.11.2020)
+
