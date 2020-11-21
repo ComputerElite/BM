@@ -26,9 +26,12 @@ Open "BMBF Manager.exe", put in your Quests IP (if it hasn't picked it up automa
 Open "BMBF Manager.exe", put in your Quests IP (if it hasn't picked it up automatically) and click "Download BPLists". Then put in how many songs you want and click "Install ranked Songs from ScoreSaber" to get ranked songs from Scoresaber. The Songs will install to your Quest and you have to Click Sync to Beat Saber once it appears.
 ## Backup BMBF and Beat Saber
 Open "BMBF Manager.exe", put in your Quests IP (if it hasn't picked it up automatically) and click "BMBF and Beat Saber Backup Utility".Then click "Backup" and wait a few minutes until everything has finished.
+## Backup game Version
+Open "BMBF Manager.exe", put in your Quests IP (if it hasn't picked it up automatically) and click "BMBF and Beat Saber Backup Utility".Then click "Advanced Backup" and wait a few minutes until everything has finished.
 
 ## Restore BMBF and Beat Saber
 Open "BMBF Manager.exe", put in your Quests IP (if it hasn't picked it up automatically) and click "BMBF and Beat Saber Backup Utility". Then Click the Boxes to choose what to restore and select a Backup in the dropdown Menu. After that click "Restore" and wait a few minutes until it has finished.
+
 # Contributers
 - Bunny83 with [SimpleJSON.cs](https://github.com/Bunny83/SimpleJSON/blob/master/SimpleJSON.cs)
 - darkuni (helped me making the Playlist backuping and restoring possible. Check out his nice program: [Playlist Editor Pro](https://beatsaberquest.com/bmbf/my-tools/playlist-editor-pro/#:~:text=Playlist%20Editor%20Pro%20is%20a,details%20and%20download%20it%20here.))
@@ -39,5 +42,5 @@ Open "BMBF Manager.exe", put in your Quests IP (if it hasn't picked it up automa
 - N/A
 
 # To-Do
-- I might add a full version switcher for BMBF and Beat Saber. E.g. Switch from BMBF 1.13.2 and Beat Saber 1.13.0 to BMBF 1.10 and Beat Saber 1.11.2 if you made a backup of that version. (ETA. N/A)
+- N/A
 
