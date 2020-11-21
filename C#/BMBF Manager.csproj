@@ -159,9 +159,6 @@
     <Resource Include="HitSound2.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="BBBU.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Main7.png" />
   </ItemGroup>
   <ItemGroup>
@@ -175,6 +172,10 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="BPLists2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="BBBU2_A.png" />
+    <Resource Include="BBBU2_B.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

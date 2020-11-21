@@ -34,7 +34,9 @@ namespace BMBF_Manager
         String Playlists = "";
         String Mods = "";
         String Scores = "";
+        String APKs = "";
         String BackupF = "";
+        JSONNode BackupConfig = JSON.Parse("{}");
 
         public BBBU()
         {
@@ -62,103 +64,33 @@ namespace BMBF_Manager
             RReplays.IsChecked = true;
             RSounds.IsChecked = true;
             RConfigs.IsChecked = true;
+            RAPK.IsChecked = false;
+            RAPK.Visibility = Visibility.Hidden;
 
-            if (MainWindow.CustomImage)
-            {
-                ImageBrush uniformBrush = new ImageBrush();
-                uniformBrush.ImageSource = new BitmapImage(new Uri(MainWindow.CustomImageSource, UriKind.Absolute));
-                uniformBrush.Stretch = Stretch.UniformToFill;
-                this.Background = uniformBrush;
-            }
-            else
-            {
-                ImageBrush uniformBrush = new ImageBrush();
-                uniformBrush.ImageSource = new BitmapImage(new Uri("pack://application:,,,/BBBU.png", UriKind.Absolute));
-                uniformBrush.Stretch = Stretch.UniformToFill;
-                this.Background = uniformBrush;
-            }
+            ChangeImage("BBBU2_B.png");
         }
 
         public void BackupLink(String Name)
         {
-            StartBMBF();
-            if (running)
-            {
-                running = false;
-                return;
-            }
-            running = true;
+            StartBackup(Name, false);
+        }
 
-            BName.Text = Name;
-
-            //Check Quest IP
-            Boolean good = CheckIP();
-            if (!good)
-            {
-                txtbox.AppendText("\n\nChoose a valid IP!");
-                running = false;
-                return;
-            }
-
-            //Create all Backup Folders
-            Boolean good2 = BackupFSet();
-            if (!good2)
-            {
-                txtbox.AppendText("\n\nThis Backup already exists!");
-                running = false;
-                return;
-            }
-
-            //Scores
-            txtbox.AppendText("\n\nBacking up scores");
-            adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/LocalDailyLeaderboards.dat \"" + Scores + "\"");
-            adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/LocalLeaderboards.dat \"" + Scores + "\"");
-            adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/PlayerData.dat \"" + Scores + "\"");
-            adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/AvatarData.dat \"" + Scores + "\"");
-            txtbox.AppendText("\nBacked up scores\n");
-            txtbox.ScrollToEnd();
-
-            //Songs
-
-            QSE();
-            //adb("pull /sdcard/BMBFData/CustomSongs \"" + BackupF + "\"");
-
-            //Playlists
-
-            PlaylistB();
-            adb("pull /sdcard/BMBFData/Playlists/ \"" + Playlists + "\"");
-            txtbox.ScrollToEnd();
-
-            //Replays
-
-            txtbox.AppendText("\n\nBacking up replays");
-            adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/replays \"" + BackupF + "\"");
-            txtbox.AppendText("\nBacked up replays\n");
-            txtbox.ScrollToEnd();
-
-            //Sounds
-
-            txtbox.AppendText("\n\nBacking up sounds");
-            adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/sounds \"" + BackupF + "\"");
-            txtbox.AppendText("\nBacked up sounds\n");
-            txtbox.ScrollToEnd();
-
-            //Mods
-
-            ModsB();
-
-
-            //Mod cfgs
-            txtbox.AppendText("\n\nBacking up Mod Configs");
-            adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/mod_cfgs \"" + BackupF + "\"");
-            txtbox.AppendText("\nBacked up Mod Configs\n");
-
-            txtbox.AppendText("\n\n\nBMBF and Beat Saber Backup has been made.");
-            txtbox.ScrollToEnd();
-            running = false;
+        public void ABackupLink(String Name)
+        {
+            StartBackup(Name, true);
         }
 
         public void Backup(object sender, RoutedEventArgs e)
+        {
+            StartBackup("", false);
+        }
+
+        public void ABackup(object sender, RoutedEventArgs e)
+        {
+            StartBackup("", true);
+        }
+
+        public void StartBackup(String BackupName, Boolean Advanced)
         {
             StartBMBF();
             if (running)
@@ -168,23 +100,39 @@ namespace BMBF_Manager
             }
             running = true;
 
+            if(BackupName != "")
+            {
+                BName.Text = Name;
+            }
+
             //Check Quest IP
-            Boolean good = CheckIP();
-            if (!good)
+            if (!CheckIP())
             {
                 txtbox.AppendText("\n\nChoose a valid IP!");
                 running = false;
                 return;
             }
 
+            if(Advanced)
+            {
+                MessageBoxResult r = MessageBox.Show("This Backup Method will Backup the Beat Saber APK and BMBF APK as well. If you don't make another Backup before you restore this Backup you have to mod Beat Saber again. Only do this when you know what you're doing. Note: This has only been tested on Quest 1. If you are on Quest 2 feel free to contact me and say if it worked.\nDo you want to continue?", "BMBF Manager - BMBF Beat Saber Backup Utility", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                switch (r)
+                {
+                    case MessageBoxResult.No:
+                        txtbox.AppendText("\n\nBackup Aborted.");
+                        return;
+                }
+            }
+
             //Create all Backup Folders
-            Boolean good2 = BackupFSet();
-            if (!good2)
+            if (!BackupFSet())
             {
                 txtbox.AppendText("\n\nThis Backup already exists!");
                 running = false;
                 return;
             }
+
+            BackupConfig = JSON.Parse("{}");
 
             //Scores
             txtbox.AppendText("\n\nBacking up scores");
@@ -192,6 +140,7 @@ namespace BMBF_Manager
             adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/LocalLeaderboards.dat \"" + Scores + "\"");
             adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/PlayerData.dat \"" + Scores + "\"");
             adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/AvatarData.dat \"" + Scores + "\"");
+            adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/settings.cfg \"" + Scores + "\"");
             txtbox.AppendText("\nBacked up scores\n");
             txtbox.ScrollToEnd();
 
@@ -229,6 +178,28 @@ namespace BMBF_Manager
             txtbox.AppendText("\n\nBacking up Mod Configs");
             adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/mod_cfgs \"" + BackupF + "\"");
             txtbox.AppendText("\nBacked up Mod Configs\n");
+
+            if (Advanced)
+            {
+                BackupAPK();
+                if(!BackupConfig["BMBFBackup"])
+                {
+                    MessageBox.Show("I couldn't make a BMBF APK Backup. If you want to restore to this game Version you may want to install the right BMBF Version.", "BMBF Manager - BMBF Beat Saber Backup Utility", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                if (!BackupConfig["BSBackup"])
+                {
+                    MessageBox.Show("I couldn't make a Beat Saber APK Backup. If you want to restore to this game Version it will not work.", "BMBF Manager - BMBF Beat Saber Backup Utility", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+
+            if(Advanced)
+            {
+                BackupConfig["BackupType"] = 1;
+            } else
+            {
+                BackupConfig["BackupType"] = 0;
+            }
+            File.WriteAllText(BackupF + "\\Backup.json", BackupConfig.ToString());
 
             txtbox.AppendText("\n\n\nBMBF and Beat Saber Backup has been made.");
             txtbox.ScrollToEnd();
@@ -268,22 +239,39 @@ namespace BMBF_Manager
             BackupFGet();
 
             //Check Quest IP
-            Boolean good = CheckIP();
-            if (!good)
+            if (!CheckIP())
             {
                 txtbox.AppendText("\n\nChoose a valid IP!");
                 running = false;
                 return;
             }
 
+            if ((bool)RAPK.IsChecked)
+            {
+                MessageBoxResult r = MessageBox.Show("You choose to restore the Beat Saber APK. This will install another Beat Saber version. If you didn't make a Backup you have to mod Beat Saber again. If you want to go back to the current Beat Saber Version make a Advanced Backup first. Also if you restore, BMBF Mods will be messed up a bit. Note: This has only been tested on Quest 1. If you are on Quest 2 feel free to contact me and say if it worked.\nDo you wish to abort?", "BMBF Manager - BMBF Beat Saber Backup Utility", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                switch (r)
+                {
+                    case MessageBoxResult.Yes:
+                        txtbox.AppendText("\n\nRestoring aborted.");
+                        return;
+                }
+            }
+
+            //APKs
+            if ((bool)RAPK.IsChecked)
+            {
+                RestoreAPK();
+            }
+
             //Scores
-            if ((bool)RScores.IsChecked == true)
+            if ((bool)RScores.IsChecked == true && (bool)RAPK.IsChecked == false)
             {
                 txtbox.AppendText("\n\nPushing Scores");
                 adb("push \"" + Scores + "\\LocalDailyLeaderboards.dat\" /sdcard/Android/data/com.beatgames.beatsaber/files/LocalDailyLeaderboards.dat");
                 adb("push \"" + Scores + "\\LocalLeaderboards.dat\" /sdcard/Android/data/com.beatgames.beatsaber/files/LocalLeaderboards.dat");
                 adb("push \"" + Scores + "\\PlayerData.dat\" /sdcard/Android/data/com.beatgames.beatsaber/files/PlayerData.dat");
                 adb("push \"" + Scores + "\\AvatarData.dat\" /sdcard/Android/data/com.beatgames.beatsaber/files/AvatarData.dat");
+                adb("push \"" + Scores + "\\AvatarData.dat\" /sdcard/Android/data/com.beatgames.beatsaber/files/setting.cfg");
                 txtbox.AppendText("\nPushed Scores");
                 txtbox.ScrollToEnd();
             }
@@ -341,6 +329,7 @@ namespace BMBF_Manager
                 txtbox.ScrollToEnd();
             }
 
+            //Mod Configs
             if ((bool)RConfigs.IsChecked)
             {
                 txtbox.AppendText("\n\nPushing Configs");
@@ -354,7 +343,69 @@ namespace BMBF_Manager
             running = false;
         }
 
+        public void BackupAPK()
+        {
+            BackupConfig["BSBackup"] = false;
+            BackupConfig["BMBFBackup"] = false;
+            txtbox.AppendText("\n\nBacking up Beat Saber APK");
+            String moddedBS = adbS("shell pm path com.beatgames.beatsaber").Replace("package:", "").Replace(System.Environment.NewLine, "");
+            if (adb("pull " + moddedBS + " \"" + APKs + "\\BeatSaber.apk\""))
+            {
+                BackupConfig["BSBackup"] = true;
+                if(!File.Exists(APKs + "\\BeatSaber.apk")) BackupConfig["BSBackup"] = false;
+                txtbox.AppendText("\nBacked up Beat Saber APK");
+            }
 
+            txtbox.AppendText("\n\nBacking up BMBF APK");
+            String BMBF = adbS("shell pm path com.weloveoculus.BMBF").Replace("package:", "").Replace(System.Environment.NewLine, "");
+            if (adb("pull " + BMBF + " \"" + APKs + "\\BMBF.apk\""))
+            {
+                BackupConfig["BMBFBackup"] = true;
+                if (!File.Exists(APKs + "\\BMBF.apk")) BackupConfig["BMBFBackup"] = false;
+                txtbox.AppendText("\nBacked up BMBF APK");
+            }
+
+            txtbox.AppendText("\n\nBacking up Game Data");
+            if (adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files \"" + BackupF + "\""))
+            {
+                txtbox.AppendText("\nBacked up Game Data");
+            }
+        }
+
+        public void RestoreAPK()
+        {
+            if (!BackupConfig["BSBackup"].AsBool)
+            {
+                MessageBox.Show("You Backup doesn't contain any Beat Saber APK backup. I must abort to prevent anything from going wrong.", "BMBF Manager - BMBF Beat Saber Backup Utility", MessageBoxButton.OK, MessageBoxImage.Error);
+                txtbox.AppendText("\n\nAPK Backup Restoring Aborted.");
+                return;
+            }
+            txtbox.AppendText("\n\nBacking up scores");
+            adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/LocalDailyLeaderboards.dat \"" + Scores + "\"");
+            adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/LocalLeaderboards.dat \"" + Scores + "\"");
+            adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/PlayerData.dat \"" + Scores + "\"");
+            adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/AvatarData.dat \"" + Scores + "\"");
+            adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/settings.cfg \"" + Scores + "\"");
+            txtbox.AppendText("\nBacked up scores");
+            txtbox.AppendText("\n\nInstalling Beat Saber");
+            if (!adb("uninstall com.beatgames.beatsaber")) return;
+            if (!adb("install \"" + APKs + "\\BeatSaber.apk\"")) return;
+            txtbox.AppendText("\nInstalled Beat Saber");
+            txtbox.AppendText("\n\nInstalling BMBF");
+            if (!adb("uninstall com.weloveoculus.BMBF")) return;
+            if (!adb("install \"" + APKs + "\\BMBF.apk\"")) return;
+            txtbox.AppendText("\nInstalled BMBF");
+            txtbox.AppendText("\n\nRestoring Game Data");
+            if (!adb("push \"" + BackupF + "\\files\" /sdcard/Android/data/com.beatgames.beatsaber/")) return;
+            txtbox.AppendText("\n\nPushing Scores");
+            adb("push \"" + Scores + "\\LocalDailyLeaderboards.dat\" /sdcard/Android/data/com.beatgames.beatsaber/files/LocalDailyLeaderboards.dat");
+            adb("push \"" + Scores + "\\LocalLeaderboards.dat\" /sdcard/Android/data/com.beatgames.beatsaber/files/LocalLeaderboards.dat");
+            adb("push \"" + Scores + "\\PlayerData.dat\" /sdcard/Android/data/com.beatgames.beatsaber/files/PlayerData.dat");
+            adb("push \"" + Scores + "\\AvatarData.dat\" /sdcard/Android/data/com.beatgames.beatsaber/files/AvatarData.dat");
+            adb("push \"" + Scores + "\\AvatarData.dat\" /sdcard/Android/data/com.beatgames.beatsaber/files/setting.cfg");
+            txtbox.AppendText("\nPushed Scores");
+            txtbox.AppendText("\nRestored game Data");
+        }
 
         public String adbS(String Argument)
         {
@@ -633,6 +684,7 @@ namespace BMBF_Manager
             Mods = BackupF + "\\Mods";
             Scores = BackupF + "\\Scores";
             Playlists = BackupF + "\\Playlists";
+            APKs = BackupF + "\\APK";
         }
 
         public void ModsB()
@@ -973,6 +1025,7 @@ namespace BMBF_Manager
             Mods = BackupF + "\\Mods";
             Scores = BackupF + "\\Scores";
             Playlists = BackupF + "\\Playlists";
+            APKs = BackupF + "\\APK";
 
             if (!Directory.Exists(Songs))
             {
@@ -989,6 +1042,10 @@ namespace BMBF_Manager
             if (!Directory.Exists(Playlists))
             {
                 Directory.CreateDirectory(Playlists);
+            }
+            if (!Directory.Exists(APKs))
+            {
+                Directory.CreateDirectory(APKs);
             }
             return true;
         }
@@ -1017,7 +1074,7 @@ namespace BMBF_Manager
             MainWindow.IP = Quest.Text;
         }
 
-        public void adb(String Argument)
+        public Boolean adb(String Argument)
         {
             String User = System.Environment.GetEnvironmentVariable("USERPROFILE");
             ProcessStartInfo s = new ProcessStartInfo();
@@ -1033,6 +1090,7 @@ namespace BMBF_Manager
                 using (Process exeProcess = Process.Start(s))
                 {
                     exeProcess.WaitForExit();
+                    return true;
                 }
             }
             catch
@@ -1051,6 +1109,7 @@ namespace BMBF_Manager
                     using (Process exeProcess = Process.Start(se))
                     {
                         exeProcess.WaitForExit();
+                        return true;
                     }
                 }
                 catch
@@ -1059,6 +1118,7 @@ namespace BMBF_Manager
                     txtbox.AppendText("\n\n\nAn error Occured (Code: ADB100). Check following");
                     txtbox.AppendText("\n\n- Your Quest is connected and USB Debugging enabled.");
                     txtbox.AppendText("\n\n- You have adb installed.");
+                    return false;
                 }
 
             }
@@ -1131,6 +1191,51 @@ namespace BMBF_Manager
             if (BName.Text == "Backup Name")
             {
                 BName.Text = "";
+            }
+        }
+
+        private void GetBackupInfo(object sender, SelectionChangedEventArgs e)
+        {
+            if (Backups.SelectedIndex == 0) return;
+            if(File.Exists(exe + "\\BBBUBackups\\" + Backups.SelectedValue + "\\Backup.json"))
+            {
+                BackupConfig = JSON.Parse(File.ReadAllText(exe + "\\BBBUBackups\\" + Backups.SelectedValue + "\\Backup.json"));
+            } else
+            {
+                BackupConfig = JSON.Parse("{}");
+                BackupConfig["BackupType"] = 0;
+            }
+
+            if(BackupConfig["BackupType"] == 0)
+            {
+                RAPK.Visibility = Visibility.Hidden;
+                RAPK.IsChecked = false;
+                //Change Background Image
+                ChangeImage("BBBU2_B.png");
+            } else
+            {
+                RAPK.Visibility = Visibility.Visible;
+                RAPK.IsChecked = true;
+                //Change Background Image
+                ChangeImage("BBBU2_A.png");
+            }
+        }
+
+        public void ChangeImage(String ImageName)
+        {
+            if (MainWindow.CustomImage)
+            {
+                ImageBrush uniformBrush = new ImageBrush();
+                uniformBrush.ImageSource = new BitmapImage(new Uri(MainWindow.CustomImageSource, UriKind.Absolute));
+                uniformBrush.Stretch = Stretch.UniformToFill;
+                this.Background = uniformBrush;
+            }
+            else
+            {
+                ImageBrush uniformBrush = new ImageBrush();
+                uniformBrush.ImageSource = new BitmapImage(new Uri("pack://application:,,,/" + ImageName, UriKind.Absolute));
+                uniformBrush.Stretch = Stretch.UniformToFill;
+                this.Background = uniformBrush;
             }
         }
     }

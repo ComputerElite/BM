@@ -35,7 +35,7 @@ namespace BMBF_Manager
         Boolean ForThisVersion = true;
         int C = 0;
         String Key = "abcd";
-        List<Tuple<String, String, String, String, String, String, Boolean>> AllModsList = new List<Tuple<String, String, String, String, String, String, Boolean>>();
+        List<Tuple<string, string, string, string, string, string, bool, Tuple<bool>>> AllModsList = new List<Tuple<string, string, string, string, string, string, bool, Tuple<bool>>>();
 
 
         public Support()
@@ -346,11 +346,11 @@ namespace BMBF_Manager
         {
 
             getQuestIP();
-            System.Net.WebClient client = new System.Net.WebClient();
+            TimeoutWebClientShort client = new TimeoutWebClientShort();
 
             JSONNode json = JSON.Parse("{}");
             JSONNode BMBF = JSON.Parse("{}");
-
+            Boolean Reaching = true;
 
             try
             {
@@ -358,24 +358,23 @@ namespace BMBF_Manager
             }
             catch
             {
-                txtbox.AppendText("\n\nError (Code: BM100). Couldn't reach the Quest Boards Website to get available Mods. You can't install mods. Please restart the program.");
-                return "Error";
+                txtbox.AppendText("\n\nError (Code: BM100). Couldn't reach the Quest Boards Website to get some available Mods.");
             }
 
             try
             {
                 BMBF = SimpleJSON.JSON.Parse(client.DownloadString("http://" + MainWindow.IP + ":50000/host/beatsaber/config"));
+                MainWindow.GameVersion = BMBF["BeatSaberVersion"];
             }
             catch
             {
                 txtbox.AppendText("\n\n\nError (Code: BMBF100). Couldn't acces BMBF Web Interface. Check Following:");
                 txtbox.AppendText("\n\n- You've put in the right IP");
                 txtbox.AppendText("\n\n- BMBF is opened");
-                return "Error";
+                Reaching = false;
             }
-            BSVersion = BMBF["BeatSaberVersion"].ToString().Replace("\"", "");
-            //String[] GameVersion = BMBF["BeatSaberVersion"].ToString().Replace("\"", "").Split('.');
-            String[] GameVersion = "1.13.0".Replace("\"", "").Split('.');
+            String[] GameVersion = MainWindow.GameVersion.ToString().Replace("\"", "").Split('.');
+            //String[] GameVersion = "1.13.0".Replace("\"", "").Split('.');
             int major = Convert.ToInt32(GameVersion[0]);
             int minor = Convert.ToInt32(GameVersion[1]);
             int patch = Convert.ToInt32(GameVersion[2]);
@@ -411,7 +410,7 @@ namespace BMBF_Manager
                         if (major == Mmajor && minor == Mminor && patch >= Mpatch)
                         {
                             Boolean existent = false;
-                            foreach (Tuple<string, string, string, string, string, string, bool> t in AllModsList)
+                            foreach (Tuple<string, string, string, string, string, string, bool, Tuple<bool>> t in AllModsList)
                             {
                                 if ((String)t.Item1 == Name)
                                 {
@@ -423,7 +422,7 @@ namespace BMBF_Manager
 
                             Version = download["modversion"];
                             //Name, Version, DownloadLink, Creator, gameVersion, Desciption, Forward
-                            AllModsList.Add(new Tuple<string, string, string, string, string, string, bool>(Name, Version, download["download"].ToString().Replace("\"", ""), Creator, gameversion.ToString().Replace("\"", ""), mod["details"].ToString().Replace("\"", "").Replace("\\r\\n", System.Environment.NewLine), download["forward"].AsBool));
+                            AllModsList.Add(new Tuple<string, string, string, string, string, string, bool, Tuple<bool>>(Name, Version, download["download"].ToString().Replace("\"", ""), Creator, gameversion.ToString().Replace("\"", ""), mod["details"].ToString().Replace("\"", "").Replace("\\r\\n", System.Environment.NewLine), download["forward"].AsBool, new Tuple<bool>(download["coremod"].AsBool)));
                             break;
                         }
                     }
@@ -468,7 +467,7 @@ namespace BMBF_Manager
                         {
                             Boolean existent = false;
                             int ListIndex = 0;
-                            foreach (Tuple<string, string, string, string, string, string, bool> t in AllModsList)
+                            foreach (Tuple<string, string, string, string, string, string, bool, Tuple<bool>> t in AllModsList)
                             {
                                 if ((String)t.Item1 == Name)
                                 {
@@ -481,7 +480,7 @@ namespace BMBF_Manager
                             {
                                 Version = download["modversion"];
                                 //Name, Version, DownloadLink, Creator, gameVersion, Desciption, Forward
-                                AllModsList.Add(new Tuple<string, string, string, string, string, string, bool>(Name, Version, download["download"].ToString().Replace("\"", ""), Creator, gameversion.ToString().Replace("\"", ""), mod["details"].ToString().Replace("\"", "").Replace("\\r\\n", System.Environment.NewLine), download["forward"].AsBool));
+                                AllModsList.Add(new Tuple<string, string, string, string, string, string, bool, Tuple<bool>>(Name, Version, download["download"].ToString().Replace("\"", ""), Creator, gameversion.ToString().Replace("\"", ""), mod["details"].ToString().Replace("\"", "").Replace("\\r\\n", System.Environment.NewLine), download["forward"].AsBool, new Tuple<bool>(download["coremod"].AsBool)));
                             }
                             else
                             {
@@ -491,23 +490,29 @@ namespace BMBF_Manager
                                 List<int> finishedver = new List<int>();
                                 String[] newver = Version.Replace("\"", "").Split('.');
                                 Boolean newer = false;
-                                for (int e = 0; e < allver.Count(); e++)
+                                foreach (String CV in allver)
                                 {
-                                    finishedver.Add(Convert.ToInt32(allver[e]));
+                                    finishedver.Add(Convert.ToInt32(CV));
                                 }
-                                for (int e = 0; e < newver.Count(); e++)
+                                int e = 0;
+                                try
                                 {
-                                    if (Convert.ToInt32(newver[e]) >= finishedver[e])
+                                    if (Convert.ToInt32(newver[0]) >= finishedver[0] && Convert.ToInt32(newver[1]) >= finishedver[1] && Convert.ToInt32(newver[2]) >= finishedver[2])
                                     {
                                         newer = true;
                                     }
                                 }
-                                if (!newer) return "Error";
+                                catch
+                                {
+                                    continue;
+                                }
+                                e++;
+                                if (!newer) continue;
 
                                 AllModsList.RemoveAt(ListIndex);
 
                                 //Name, Version, DownloadLink, Creator, gameVersion, Desciption, Forward
-                                AllModsList.Add(new Tuple<string, string, string, string, string, string, bool>(Name, Version, download["download"].ToString().Replace("\"", ""), Creator, gameversion.ToString().Replace("\"", ""), mod["details"].ToString().Replace("\"", "").Replace("\\r\\n", System.Environment.NewLine), download["forward"].AsBool));
+                                AllModsList.Add(new Tuple<string, string, string, string, string, string, bool, Tuple<bool>>(Name, Version, download["download"].ToString().Replace("\"", ""), Creator, gameversion.ToString().Replace("\"", ""), mod["details"].ToString().Replace("\"", "").Replace("\\r\\n", System.Environment.NewLine), download["forward"].AsBool, new Tuple<bool>(download["coremod"].AsBool)));
                             }
 
 
@@ -517,7 +522,11 @@ namespace BMBF_Manager
                 }
 
             }
-            foreach (Tuple<string, string, string, string, string, string, bool> mod in AllModsList)
+            if (!Reaching)
+            {
+                MessageBox.Show("I couldn't reach BMBF. All the mods displayed are for the last Version of BMBF you used while I noticed (" + MainWindow.GameVersion + "). Please check if you can reach BMBF so I can install mods.", "BMBF Manager - Mod Installing", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+            foreach (Tuple<string, string, string, string, string, string, bool, Tuple<bool>> mod in AllModsList)
             {
                 if(mod.Item1.ToString().Replace("\"", "").ToLower() == ModName.ToLower())
                 {
@@ -1144,7 +1153,7 @@ namespace BMBF_Manager
 
             public async void StartSupport(String Link)
         {
-            String section = Link.Replace("bm://", "").Replace("%20", " ");
+            String section = Link.Replace("bm://", "").Replace("%20", " ").ToLower();
             if(section.StartsWith("support/resetassets"))
             {
                 BackupPlaylists();
@@ -1186,7 +1195,16 @@ namespace BMBF_Manager
                 BBBU.Show();
                 BBBU.BackupLink(Name);
                 this.Close();
-            } else if (section.StartsWith("bbbu/restore"))
+            }
+            else if (section.StartsWith("bbbu/abackup/"))
+            {
+                String Name = section.Replace("bbbu/abackup/", "");
+                BBBU BBBU = new BBBU();
+                BBBU.Show();
+                BBBU.BackupLink(Name);
+                this.Close();
+            }
+            else if (section.StartsWith("bbbu/restore"))
             {
                 String Name = section.Replace("bbbu/restore/", "");
                 BBBU BBBU = new BBBU();

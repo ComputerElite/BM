@@ -1003,8 +1003,18 @@ namespace BMBF_Manager
 
         private void OpenBMBF(object sender, RoutedEventArgs e)
         {
+            StartBMBF();
             CheckIP();
-            Process.Start("http://" + IP + ":50000/main/upload");
+            try
+            {
+                TimeoutWebClientShort c = new TimeoutWebClientShort();
+                c.DownloadString("http://" + IP + ":50000/host/beatsaber/config");
+                Process.Start("http://" + IP + ":50000/main/upload");
+            } catch 
+            {
+                MessageBox.Show("I couldn't reach BMBF. The IP you typed is: \"" + IP + "\". Is this right? If it is check that BMBF is opened on your Quest and that your Quest and PC are on the same Wifi network.", "BMBF Manager - BMBF opening", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+            
         }
 
         private void Support(object sender, RoutedEventArgs e)
