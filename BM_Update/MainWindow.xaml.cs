@@ -1,5 +1,7 @@
-﻿using System;
+﻿using SimpleJSON;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
@@ -27,16 +29,28 @@ namespace BM_Update
     public partial class MainWindow : Window
     {
         String exe = AppDomain.CurrentDomain.BaseDirectory.Substring(0, AppDomain.CurrentDomain.BaseDirectory.Length - 1);
+        int MajorU = 0;
+        int MinorU = 0;
+        int PatchU = 0;
 
         public MainWindow()
         {
             InitializeComponent();
             Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
-            Thread.Sleep(5000);
 
             if (File.Exists(exe + "\\BMBF Manager.exe"))
             {
                 File.Delete(exe + "\\BMBF Manager.exe");
+            }
+
+            if (File.Exists(exe + "\\Newtonsoft.Json.dll"))
+            {
+                File.Delete(exe + "\\Newtonsoft.Json.dll");
+            }
+
+            if (File.Exists(exe + "\\Newtonsoft.Json.xml"))
+            {
+                File.Delete(exe + "\\Newtonsoft.Json.xml");
             }
 
             if (!Directory.Exists(exe + "\\tmp"))
@@ -44,67 +58,47 @@ namespace BM_Update
                 Directory.CreateDirectory(exe + "\\tmp");
             }
 
-            using (WebClient client = new WebClient())
-            {
-                client.DownloadFile("https://raw.githubusercontent.com/ComputerElite/BM/main/Update.txt", exe + "\\tmp\\Update.txt");
-            }
-
-            StreamReader VReader = new StreamReader(exe + "\\tmp\\Update.txt");
-
-            String line;
-            int l = 0;
-
-            int MajorU = 0;
-            int MinorU = 0;
-            int PatchU = 0;
-            String URL = "";
-            while ((line = VReader.ReadLine()) != null)
-            {
-                if (l == 0)
-                {
-                    URL = line;
-                }
-                if (l == 1)
-                {
-                    MajorU = Convert.ToInt32(line);
-                }
-                if (l == 2)
-                {
-                    MinorU = Convert.ToInt32(line);
-                }
-                if (l == 3)
-                {
-                    PatchU = Convert.ToInt32(line);
-                }
-                l++;
-            }
+            JSONNode Update = JSON.Parse("{}");
 
             using (WebClient client = new WebClient())
             {
-                client.DownloadFile(URL, exe + "\\tmp\\BM_V_" + MajorU + "_" + MinorU + "_" + PatchU + ".zip");
+                Update = JSON.Parse(client.DownloadString("https://raw.githubusercontent.com/ComputerElite/BM/main/update.json"));
             }
+
+            MajorU = Update["Updates"][0]["Major"];
+            MinorU = Update["Updates"][0]["Minor"];
+            PatchU = Update["Updates"][0]["Patch"];
+
+            txtbox.Text = "Downloading BMBF Manager";
+
+            using (WebClient client = new WebClient())
+            {
+                client.DownloadProgressChanged += new DownloadProgressChangedEventHandler(client_DownloadProgressChanged);
+                client.DownloadFileCompleted += new AsyncCompletedEventHandler(client_DownloadFileCompleted);
+                client.DownloadFileAsync(new Uri(Update["Updates"][0]["Download"]), exe + "\\tmp\\BM_V_" + MajorU + "_" + MinorU + "_" + PatchU + ".zip");
+            }
+        }
+
+        private void client_DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
+        {
             ZipFile.ExtractToDirectory(exe + "\\tmp\\BM_V_" + MajorU + "_" + MinorU + "_" + PatchU + ".zip", exe);
-            txtbox.AppendText("\nFinished Updating");
             File.Delete(exe + "\\tmp\\BM_V_" + MajorU + "_" + MinorU + "_" + PatchU + ".zip");
-            this.Close();
-            ProcessStartInfo s = new ProcessStartInfo();
-            s.CreateNoWindow = false;
-            s.UseShellExecute = false;
-            s.FileName = exe + "\\BMBF Manager.exe";
             try
             {
-                // Start the process with the info we specified.
-                // Call WaitForExit and then the using statement will close.
-                using (Process exeProcess = Process.Start(s))
-                {
-                }
-                this.Close();
+                Process.Start(exe + "\\BMBF Manager.exe");
+                Process.GetCurrentProcess().Kill();
             }
             catch
             {
-
             }
-            
+        }
+
+        private void client_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
+        {
+            double bytesIn = double.Parse(e.BytesReceived.ToString());
+            double totalBytes = double.Parse(e.TotalBytesToReceive.ToString());
+            double percentage = bytesIn / totalBytes * 100;
+            Progress.Value = int.Parse(Math.Truncate(percentage).ToString());
         }
     }
 }

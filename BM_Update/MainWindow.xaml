@@ -5,9 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BM_Update"
         mc:Ignorable="d"
-        Title="BMBF Manager Update" Height="78" Width="388">
+        Title="BMBF Manager Update" Height="110" Width="400">
     <Grid>
-        <TextBox x:Name="txtbox" FontFamily="lucida console" IsReadOnly="True" HorizontalAlignment="Left" Height="29.237" Margin="0,10,0,0" TextWrapping="Wrap" Text="Updating BMF Manager... Please be patient." VerticalAlignment="Top" Width="372.032"/>
+        <AccessText x:Name="txtbox" HorizontalAlignment="Left" Height="24" VerticalAlignment="Top" Width="362" RenderTransformOrigin="0.5,0.5" Text="BMBF Manager" FontSize="14" Foreground="Black" Margin="10,16,0,0"/>
+        <ProgressBar x:Name="Progress" HorizontalAlignment="Left" Height="19" Margin="10,45,0,0" VerticalAlignment="Top" Width="362"/>
 
     </Grid>
 </Window>
