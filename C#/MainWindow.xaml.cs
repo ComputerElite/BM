@@ -27,7 +27,7 @@ namespace BMBF_Manager
     {
         int MajorV = 1;
         int MinorV = 7;
-        int PatchV = 0;
+        int PatchV = 1;
         Boolean Preview = false;
 
         public static Boolean CustomProtocols = false;
@@ -35,12 +35,14 @@ namespace BMBF_Manager
         public static Boolean CustomImage = false;
         Boolean draggable = true;
         Boolean Running = false;
+        Boolean ComeFromUpdate = false;
         String exe = AppDomain.CurrentDomain.BaseDirectory.Substring(0, AppDomain.CurrentDomain.BaseDirectory.Length - 1);
         public static String IP = "";
         public static String BMBF = "https://bmbf.dev/stable/27153984";
         public static String CustomImageSource = "N/A";
         public static String GameVersion = "1.13.0";
         JSONNode json = JSON.Parse("{}");
+        JSONNode UpdateJSON = JSON.Parse("{}");
 
 
         public MainWindow()
@@ -73,6 +75,29 @@ namespace BMBF_Manager
                 uniformBrush.Stretch = Stretch.UniformToFill;
                 this.Background = uniformBrush;
             }
+            Changelog();
+            ComeFromUpdate = false;
+        }
+
+        public void Changelog()
+        {
+            if(ComeFromUpdate)
+            {
+                String creators = "";
+                foreach(JSONNode Creator in UpdateJSON["Updates"][0]["Creators"])
+                {
+                    creators = creators + Creator.ToString().Replace("\"", "") + ", ";
+                }
+                if(creators.Length >= 2)
+                {
+                    creators = creators.Substring(0, creators.Length - 2);
+                } else
+                {
+                    creators = "ComputerElite";
+                }
+                txtbox.AppendText("\n\n\nYou installed a Update (Version: " + MajorV + "." + MinorV + "." + PatchV + ").\n\nUpdate posted by: " + creators + "\n\nChangelog:\n" + UpdateJSON["Updates"][0]["Changelog"]);
+            }
+            
         }
 
         public void loadConfig()
@@ -92,6 +117,8 @@ namespace BMBF_Manager
                 GameVersion = json["GameVersion"];
             }
             QuestSoundsInstalled = json["QSoundsInstalled"].AsBool;
+
+            ComeFromUpdate = json["ComeFromUpdate"].AsBool;
 
             Quest.Text = IP;
 
@@ -138,6 +165,7 @@ namespace BMBF_Manager
             json["CustomImage"] = CustomImage;
             json["CustomImageSource"] = CustomImageSource;
             json["GameVersion"] = GameVersion;
+            json["ComeFromUpdate"] = ComeFromUpdate;
             File.WriteAllText(exe + "\\Config.json", json.ToString());
         }
 
@@ -391,42 +419,19 @@ namespace BMBF_Manager
                 {
                     try
                     {
-                        client.DownloadFile("https://raw.githubusercontent.com/ComputerElite/BM/main/Update.txt", exe + "\\tmp\\Update.txt");
+                        UpdateJSON = JSON.Parse(client.DownloadString("https://raw.githubusercontent.com/ComputerElite/BM/main/update.json"));
                     }
                     catch
                     {
                         txtbox.AppendText("\n\n\nAn error Occured (Code: UD100). Couldn't check for Updates. Check following");
                         txtbox.AppendText("\n\n- Your PC has internet.");
+                        return;
                     }
                 }
-                StreamReader VReader = new StreamReader(exe + "\\tmp\\Update.txt");
 
-                String line;
-                int l = 0;
-
-                int MajorU = 0;
-                int MinorU = 0;
-                int PatchU = 0;
-                while ((line = VReader.ReadLine()) != null)
-                {
-                    if (l == 0)
-                    {
-                        String URL = line;
-                    }
-                    if (l == 1)
-                    {
-                        MajorU = Convert.ToInt32(line);
-                    }
-                    if (l == 2)
-                    {
-                        MinorU = Convert.ToInt32(line);
-                    }
-                    if (l == 3)
-                    {
-                        PatchU = Convert.ToInt32(line);
-                    }
-                    l++;
-                }
+                int MajorU = UpdateJSON["Updates"][0]["Major"];
+                int MinorU = UpdateJSON["Updates"][0]["Minor"];
+                int PatchU = UpdateJSON["Updates"][0]["Patch"];
 
                 if (MajorU > MajorV || MinorU > MinorV || PatchU > PatchV)
                 {
@@ -458,38 +463,26 @@ namespace BMBF_Manager
                     txtbox.AppendText("\n\nLooks like you have a preview version. The release version has been released. Please Update now. ");
                     UpdateB.Visibility = Visibility.Visible;
                 }
-                VReader.Close();
             }
             catch
             {
 
-            }
-            try
-            {
-                File.Delete(exe + "\\tmp\\Update.txt");
-            }
-            catch
-            {
             }
         }
 
         private void Start_Update(object sender, RoutedEventArgs e)
         {
-            using (WebClient client = new WebClient())
-            {
-                client.DownloadFile("https://github.com/ComputerElite/BM/raw/main/BM_Update.exe", exe + "\\BM_Update.exe");
-            }
-            //Process.Start(exe + "\\QSU_Update.exe");
-            ProcessStartInfo s = new ProcessStartInfo();
-            s.CreateNoWindow = false;
-            s.UseShellExecute = false;
-            s.FileName = exe + "\\BM_Update.exe";
             try
             {
-                using (Process exeProcess = Process.Start(s))
+                using (WebClient client = new WebClient())
                 {
+                    client.DownloadFile("https://github.com/ComputerElite/BM/raw/main/BM_Update.exe", exe + "\\BM_Update.exe");
                 }
-                this.Close();
+            
+                Process.Start(exe + "\\BM_Update.exe");
+                ComeFromUpdate = true;
+                saveConfig();
+                Process.GetCurrentProcess().Kill();
             }
             catch
             {
