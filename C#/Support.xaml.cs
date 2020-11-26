@@ -49,19 +49,7 @@ namespace BMBF_Manager
             {
                 CustomP.Content = "Enable BM Custom Protocol";
             }
-            if(MainWindow.CustomImage)
-            {
-                ImageBrush uniformBrush = new ImageBrush();
-                uniformBrush.ImageSource = new BitmapImage(new Uri(MainWindow.CustomImageSource, UriKind.Absolute));
-                uniformBrush.Stretch = Stretch.UniformToFill;
-                this.Background = uniformBrush;
-            } else
-            {
-                ImageBrush uniformBrush = new ImageBrush();
-                uniformBrush.ImageSource = new BitmapImage(new Uri("pack://application:,,,/Support2.png", UriKind.Absolute));
-                uniformBrush.Stretch = Stretch.UniformToFill;
-                this.Background = uniformBrush;
-            }
+            UpdateImage();
         }
 
         private void ChooseImage(object sender, RoutedEventArgs e)
@@ -105,7 +93,7 @@ namespace BMBF_Manager
             else
             {
                 ImageBrush uniformBrush = new ImageBrush();
-                uniformBrush.ImageSource = new BitmapImage(new Uri("pack://application:,,,/Support2.png", UriKind.Absolute));
+                uniformBrush.ImageSource = new BitmapImage(new Uri("pack://application:,,,/Support3.png", UriKind.Absolute));
                 uniformBrush.Stretch = Stretch.UniformToFill;
                 this.Background = uniformBrush;
             }
@@ -207,6 +195,13 @@ namespace BMBF_Manager
         {
             MainWindow.IP = Quest.Text;
             return;
+        }
+
+        private void EnableBBBUMove(object sender, RoutedEventArgs e)
+        {
+            MainWindow.BBBUTransfered = false;
+            BBBU BBBUWindow = new BBBU();
+            BBBUWindow.Show();
         }
 
         private void EnableCustom(object sender, RoutedEventArgs e)

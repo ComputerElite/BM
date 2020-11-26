@@ -1,4 +1,5 @@
-﻿using SimpleJSON;
+﻿using Microsoft.WindowsAPICodePack.Dialogs;
+using SimpleJSON;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -54,8 +55,11 @@ namespace BMBF_Manager
             {
                 Directory.CreateDirectory(exe + "\\tmp");
             }
-            getBackups();
+            
             QuestIP();
+            TransferFromBBBU();
+            Convert();
+            getBackups();
 
             RSongs.IsChecked = true;
             RPlaylists.IsChecked = true;
@@ -68,6 +72,62 @@ namespace BMBF_Manager
             RAPK.Visibility = Visibility.Hidden;
 
             ChangeImage("BBBU2_B.png");
+        }
+
+        public void TransferFromBBBU()
+        {
+            if (MainWindow.BBBUTransfered) return;
+            MainWindow.BBBUTransfered = true;
+            MessageBoxResult r = MessageBox.Show("Hi. I'm asking you if I should import Backups from BMBF Beat Saber Backup Utility. Only click yes if you've used the seperate program before. You can always import again if you wish to from the settings.", "BMBF Manager - BMBF Beat Saber Backup Utility", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            switch (r)
+            {
+                case MessageBoxResult.No:
+                    txtbox.AppendText("\n\nNothing Imported");
+                    return;
+            }
+            MessageBox.Show("I'll open a window for you. Please choose the folder in which your BMBF Beat Saber Backup Utility Installation is located. I'll then transfer all Backups", "BMBF Manager - BMBF Beat Saber Backup Utility", MessageBoxButton.OK, MessageBoxImage.Information);
+
+            CommonOpenFileDialog ofd = new CommonOpenFileDialog();
+            ofd.IsFolderPicker = true;
+            if (ofd.ShowDialog() == CommonFileDialogResult.Ok)
+            {
+                //Get the path of specified file
+                if (Directory.Exists(ofd.FileName))
+                {
+                    foreach(String folder in Directory.GetDirectories(ofd.FileName))
+                    {
+                        Console.WriteLine(folder);
+                        String backupName = new DirectoryInfo(folder).Name;
+                        Directory.Move(folder, exe + "\\BBBUBackups\\" + backupName);
+                        txtbox.AppendText("\n\nMoved Backup " + backupName);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Please select a valid Directory", "BMBF Manager - BMBF Beat Saber backup Utility", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
+
+            }
+
+            txtbox.AppendText("\n\nAll Backups moved");
+        }
+
+        public void Convert()
+        {
+            foreach(String file in Directory.GetDirectories(exe + "\\BBBUBackups"))
+            {
+                if (file.EndsWith(".json"))
+                {
+                    String contents = File.ReadAllText(file);
+                    if (contents.EndsWith(","))
+                    {
+                        contents = contents.Substring(0, contents.Length - 1) + "}}";
+                        JSONNode c = JSON.Parse(contents);
+                        File.Delete(file);
+                        File.WriteAllText(file, c["Config"].ToString());
+                    }
+                }
+            }
         }
 
         public void BackupLink(String Name)

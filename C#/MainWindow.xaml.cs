@@ -27,12 +27,13 @@ namespace BMBF_Manager
     {
         int MajorV = 1;
         int MinorV = 7;
-        int PatchV = 1;
+        int PatchV = 2;
         Boolean Preview = false;
 
         public static Boolean CustomProtocols = false;
         public static Boolean QuestSoundsInstalled = false;
         public static Boolean CustomImage = false;
+        public static Boolean BBBUTransfered = false;
         Boolean draggable = true;
         Boolean Running = false;
         Boolean ComeFromUpdate = false;
@@ -112,6 +113,7 @@ namespace BMBF_Manager
 
             CustomProtocols = json["CustomProtocols"].AsBool;
             IP = json["IP"];
+            BBBUTransfered = json["BBBUTransfered"].AsBool;
             if(json["GameVersion"] != null)
             {
                 GameVersion = json["GameVersion"];
@@ -166,6 +168,7 @@ namespace BMBF_Manager
             json["CustomImageSource"] = CustomImageSource;
             json["GameVersion"] = GameVersion;
             json["ComeFromUpdate"] = ComeFromUpdate;
+            json["BBBUTransfered"] = BBBUTransfered;
             File.WriteAllText(exe + "\\Config.json", json.ToString());
         }
 
