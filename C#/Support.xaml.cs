@@ -902,7 +902,9 @@ namespace BMBF_Manager
                 // Call WaitForExit and then the using statement will close.
                 using (Process exeProcess = Process.Start(s))
                 {
+                    String IPS = exeProcess.StandardOutput.ReadToEnd();
                     exeProcess.WaitForExit();
+                    if (IPS.Contains("no devices/emulators found")) return false;
                     return true;
                 }
             }
@@ -921,7 +923,9 @@ namespace BMBF_Manager
                     // Call WaitForExit and then the using statement will close.
                     using (Process exeProcess = Process.Start(se))
                     {
+                        String IPS = exeProcess.StandardOutput.ReadToEnd();
                         exeProcess.WaitForExit();
+                        if (IPS.Contains("no devices/emulators found")) return false;
                         return true;
                     }
                 }
