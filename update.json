@@ -4,7 +4,7 @@
         "v1.13.1"
     ],
     "ADBPaths": [
-      "User\\AppData\\Roaming\\SideQuest\\platform-tools\\adb.exe"
+      "User\\\\AppData\\\\Roaming\\SideQuest\\\\platform-tools\\\\adb.exe"
     ],
     "Updates": [
         {
