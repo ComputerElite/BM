@@ -274,54 +274,59 @@ namespace BMBF_Manager
             return;
         }
 
-        public static Boolean adb(String Argument)
+        public Boolean adb(String Argument)
         {
             String User = System.Environment.GetEnvironmentVariable("USERPROFILE");
-            ProcessStartInfo s = new ProcessStartInfo();
-            s.CreateNoWindow = false;
-            s.UseShellExecute = false;
-            s.FileName = "adb.exe";
-            s.WindowStyle = ProcessWindowStyle.Minimized;
-            s.Arguments = Argument;
-            try
-            {
-                // Start the process with the info we specified.
-                // Call WaitForExit and then the using statement will close.
-                using (Process exeProcess = Process.Start(s))
-                {
-                    String IPS = exeProcess.StandardOutput.ReadToEnd();
-                    exeProcess.WaitForExit();
-                    if (IPS.Contains("no devices/emulators found")) return false;
-                    return true;
-                }
-            }
-            catch
-            {
 
-                ProcessStartInfo se = new ProcessStartInfo();
-                se.CreateNoWindow = false;
-                se.UseShellExecute = false;
-                se.FileName = User + "\\AppData\\Roaming\\SideQuest\\platform-tools\\adb.exe";
-                se.WindowStyle = ProcessWindowStyle.Minimized;
-                se.Arguments = Argument;
+            foreach (String ADB in MainWindow.ADBPaths)
+            {
+                ProcessStartInfo s = new ProcessStartInfo();
+                s.CreateNoWindow = true;
+                s.UseShellExecute = false;
+                s.FileName = ADB.Replace("User", User);
+                s.WindowStyle = ProcessWindowStyle.Minimized;
+                s.Arguments = Argument;
+                s.RedirectStandardOutput = true;
+                if (MainWindow.ShowADB)
+                {
+                    s.RedirectStandardOutput = false;
+                    s.CreateNoWindow = false;
+                }
                 try
                 {
                     // Start the process with the info we specified.
                     // Call WaitForExit and then the using statement will close.
-                    using (Process exeProcess = Process.Start(se))
+                    using (Process exeProcess = Process.Start(s))
                     {
-                        String IPS = exeProcess.StandardOutput.ReadToEnd();
-                        exeProcess.WaitForExit();
-                        if (IPS.Contains("no devices/emulators found")) return false;
+                        if (!MainWindow.ShowADB)
+                        {
+                            String IPS = exeProcess.StandardOutput.ReadToEnd();
+                            exeProcess.WaitForExit();
+                            if (IPS.Contains("no devices/emulators found"))
+                            {
+                                txtbox.AppendText("\n\n\nAn error Occured (Code: ADB110). Check following");
+                                txtbox.AppendText("\n\n- Your Quest is connected, Developer Mode enabled and USB Debugging enabled.");
+                                txtbox.ScrollToEnd();
+                                return false;
+                            }
+                        }
+                        else
+                        {
+                            exeProcess.WaitForExit();
+                        }
+
                         return true;
                     }
                 }
                 catch
                 {
-                    // Log error.
-                    return false;
+                    continue;
                 }
             }
+            txtbox.AppendText("\n\n\nAn error Occured (Code: ADB100). Check following not");
+            txtbox.AppendText("\n\n- You have adb installed.");
+            txtbox.ScrollToEnd();
+            return false;
         }
 
         private void InstallZip(object sender, RoutedEventArgs e)
@@ -466,19 +471,11 @@ namespace BMBF_Manager
             System.Threading.Thread.Sleep(5000);
             try
             {
-                using (TimeoutWebClient client3 = new TimeoutWebClient())
-                {
-                    Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate {
-                        client3.DownloadFile("http://" + MainWindow.IP + ":50000/host/beatsaber/config", exe + "\\tmp\\OConfig.json");
-                    }));
-
-                }
-
-                String Config = exe + "\\tmp\\OConfig.json";
+                TimeoutWebClient client3 = new TimeoutWebClient();
 
                 String Playlists = exe + "\\tmp\\Playlists.json";
 
-                var j = JSON.Parse(File.ReadAllText(Config));
+                var j = JSON.Parse(client3.DownloadString("http://" + MainWindow.IP + ":50000/host/beatsaber/config"));
                 var p = JSON.Parse(File.ReadAllText(Playlists));
 
                 j["Config"]["Playlists"] = p["Playlists"];
@@ -598,6 +595,7 @@ namespace BMBF_Manager
 
         public void finished_download(object sender, AsyncCompletedEventArgs e)
         {
+            adb("shell am start -n com.weloveoculus.BMBF/com.weloveoculus.BMBF.MainActivity");
             txtbox.AppendText("\nDownloaded BeatMap " + Key + "\n");
             upload(exe + "\\tmp\\Song" + C + ".zip");
             Running = false;

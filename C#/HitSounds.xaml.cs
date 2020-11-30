@@ -154,54 +154,56 @@ namespace BMBF_Manager
         public Boolean adb(String Argument)
         {
             String User = System.Environment.GetEnvironmentVariable("USERPROFILE");
-            ProcessStartInfo s = new ProcessStartInfo();
-            s.CreateNoWindow = false;
-            s.UseShellExecute = false;
-            s.FileName = "adb.exe";
-            s.WindowStyle = ProcessWindowStyle.Minimized;
-            s.Arguments = Argument;
-            try
-            {
-                // Start the process with the info we specified.
-                // Call WaitForExit and then the using statement will close.
-                using (Process exeProcess = Process.Start(s))
-                {
-                    String IPS = exeProcess.StandardOutput.ReadToEnd();
-                    exeProcess.WaitForExit();
-                    if (IPS.Contains("no devices/emulators found")) return false;
-                    return true;
-                }
-            }
-            catch
-            {
 
-                ProcessStartInfo se = new ProcessStartInfo();
-                se.CreateNoWindow = false;
-                se.UseShellExecute = false;
-                se.FileName = User + "\\AppData\\Roaming\\SideQuest\\platform-tools\\adb.exe";
-                se.WindowStyle = ProcessWindowStyle.Minimized;
-                se.Arguments = Argument;
+            foreach (String ADB in MainWindow.ADBPaths)
+            {
+                ProcessStartInfo s = new ProcessStartInfo();
+                s.CreateNoWindow = true;
+                s.UseShellExecute = false;
+                s.FileName = ADB.Replace("User", User);
+                s.WindowStyle = ProcessWindowStyle.Minimized;
+                s.Arguments = Argument;
+                s.RedirectStandardOutput = true;
+                if (MainWindow.ShowADB)
+                {
+                    s.RedirectStandardOutput = false;
+                    s.CreateNoWindow = false;
+                }
                 try
                 {
                     // Start the process with the info we specified.
                     // Call WaitForExit and then the using statement will close.
-                    using (Process exeProcess = Process.Start(se))
+                    using (Process exeProcess = Process.Start(s))
                     {
-                        String IPS = exeProcess.StandardOutput.ReadToEnd();
-                        exeProcess.WaitForExit();
-                        if (IPS.Contains("no devices/emulators found")) return false;
+                        if (!MainWindow.ShowADB)
+                        {
+                            String IPS = exeProcess.StandardOutput.ReadToEnd();
+                            exeProcess.WaitForExit();
+                            if (IPS.Contains("no devices/emulators found"))
+                            {
+                                txtbox.AppendText("\n\n\nAn error Occured (Code: ADB110). Check following");
+                                txtbox.AppendText("\n\n- Your Quest is connected, Developer Mode enabled and USB Debugging enabled.");
+                                txtbox.ScrollToEnd();
+                                return false;
+                            }
+                        }
+                        else
+                        {
+                            exeProcess.WaitForExit();
+                        }
+
                         return true;
                     }
                 }
                 catch
                 {
-                    // Log error.
-                    txtbox.AppendText("\n\n\nAn error Occured (Code: ADB100). Check following");
-                    txtbox.AppendText("\n\n- Your Quest is connected and USB Debugging enabled.");
-                    txtbox.AppendText("\n\n- You have adb installed.");
-                    return false;
+                    continue;
                 }
             }
+            txtbox.AppendText("\n\n\nAn error Occured (Code: ADB100). Check following not");
+            txtbox.AppendText("\n\n- You have adb installed.");
+            txtbox.ScrollToEnd();
+            return false;
         }
 
         private void Choose(object sender, RoutedEventArgs e)

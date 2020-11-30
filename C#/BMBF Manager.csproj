@@ -183,7 +183,7 @@
     <Resource Include="BBBU2_B.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Support3.png" />
+    <Resource Include="Support4.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

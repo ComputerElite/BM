@@ -443,8 +443,64 @@ namespace BMBF_Manager
 
         }
 
+        public Boolean adb(String Argument)
+        {
+            String User = System.Environment.GetEnvironmentVariable("USERPROFILE");
+
+            foreach (String ADB in MainWindow.ADBPaths)
+            {
+                ProcessStartInfo s = new ProcessStartInfo();
+                s.CreateNoWindow = true;
+                s.UseShellExecute = false;
+                s.FileName = ADB.Replace("User", User);
+                s.WindowStyle = ProcessWindowStyle.Minimized;
+                s.Arguments = Argument;
+                s.RedirectStandardOutput = true;
+                if (MainWindow.ShowADB)
+                {
+                    s.RedirectStandardOutput = false;
+                    s.CreateNoWindow = false;
+                }
+                try
+                {
+                    // Start the process with the info we specified.
+                    // Call WaitForExit and then the using statement will close.
+                    using (Process exeProcess = Process.Start(s))
+                    {
+                        if (!MainWindow.ShowADB)
+                        {
+                            String IPS = exeProcess.StandardOutput.ReadToEnd();
+                            exeProcess.WaitForExit();
+                            if (IPS.Contains("no devices/emulators found"))
+                            {
+                                txtbox.AppendText("\n\n\nAn error Occured (Code: ADB110). Check following");
+                                txtbox.AppendText("\n\n- Your Quest is connected, Developer Mode enabled and USB Debugging enabled.");
+                                txtbox.ScrollToEnd();
+                                return false;
+                            }
+                        }
+                        else
+                        {
+                            exeProcess.WaitForExit();
+                        }
+
+                        return true;
+                    }
+                }
+                catch
+                {
+                    continue;
+                }
+            }
+            txtbox.AppendText("\n\n\nAn error Occured (Code: ADB100). Check following not");
+            txtbox.AppendText("\n\n- You have adb installed.");
+            txtbox.ScrollToEnd();
+            return false;
+        }
+
         private void finished_download(object sender, AsyncCompletedEventArgs e)
         {
+            adb("shell am start -n com.weloveoculus.BMBF/com.weloveoculus.BMBF.MainActivity");
             Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
             {
                 txtbox.AppendText("\nDownloaded Mod " + AllModsList[Index].Item1 + "\n");

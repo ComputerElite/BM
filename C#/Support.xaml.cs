@@ -36,7 +36,7 @@ namespace BMBF_Manager
         int C = 0;
         String Key = "abcd";
         List<Tuple<string, string, string, string, string, string, bool, Tuple<bool>>> AllModsList = new List<Tuple<string, string, string, string, string, string, bool, Tuple<bool>>>();
-
+        JSONNode BMBFStable = JSON.Parse("{}");
 
         public Support()
         {
@@ -50,6 +50,39 @@ namespace BMBF_Manager
                 CustomP.Content = "Enable BM Custom Protocol";
             }
             UpdateImage();
+            if(MainWindow.ShowADB)
+            {
+                ADB.Content = "Disable ADB output";
+            } else
+            {
+                ADB.Content = "Enable ADB output";
+            }
+        }
+
+        private void ADBshow(object sender, RoutedEventArgs e)
+        {
+            if(MainWindow.ShowADB)
+            {
+                //Disable
+                MainWindow.ShowADB = false;
+                txtbox.AppendText("\n\nADB output disabled.");
+                ADB.Content = "Enable ADB output";
+            } else
+            {
+                //enable
+                MessageBoxResult result = MessageBox.Show("Are you sure you want to enable ADB output? I won't check if your Quest is connected anymore and you will be able to pause the adb process when you click it.\nDo you really want to enable ADB output?", "BMBF Manager - Settings", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                switch (result)
+                {
+                    case MessageBoxResult.No:
+                        txtbox.AppendText("\n\nAborted.");
+                        txtbox.ScrollToEnd();
+                        Running = false;
+                        return;
+                }
+                MainWindow.ShowADB = true;
+                txtbox.AppendText("\n\nADB output enabled.");
+                ADB.Content = "Disable ADB output";
+            }
         }
 
         private void ChooseImage(object sender, RoutedEventArgs e)
@@ -93,7 +126,7 @@ namespace BMBF_Manager
             else
             {
                 ImageBrush uniformBrush = new ImageBrush();
-                uniformBrush.ImageSource = new BitmapImage(new Uri("pack://application:,,,/Support3.png", UriKind.Absolute));
+                uniformBrush.ImageSource = new BitmapImage(new Uri("pack://application:,,,/Support4.png", UriKind.Absolute));
                 uniformBrush.Stretch = Stretch.UniformToFill;
                 this.Background = uniformBrush;
             }
@@ -283,19 +316,11 @@ namespace BMBF_Manager
             System.Threading.Thread.Sleep(5000);
             try
             {
-                using (TimeoutWebClient client3 = new TimeoutWebClient())
-                {
-                    Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate {
-                        client3.DownloadFile("http://" + MainWindow.IP + ":50000/host/beatsaber/config", exe + "\\tmp\\OConfig.json");
-                    }));
-
-                }
-
-                String Config = exe + "\\tmp\\OConfig.json";
+                WebClient client3 = new WebClient();
 
                 String Playlists = exe + "\\tmp\\Playlists.json";
 
-                var j = JSON.Parse(File.ReadAllText(Config));
+                var j = JSON.Parse(client3.DownloadString("http://" + MainWindow.IP + ":50000/host/beatsaber/config"));
                 var p = JSON.Parse(File.ReadAllText(Playlists));
 
                 j["Config"]["Playlists"] = p["Playlists"];
@@ -839,113 +864,123 @@ namespace BMBF_Manager
         public String adbS(String Argument)
         {
             String User = System.Environment.GetEnvironmentVariable("USERPROFILE");
-            ProcessStartInfo s = new ProcessStartInfo();
-            s.CreateNoWindow = false;
-            s.UseShellExecute = false;
-            s.FileName = "adb.exe";
-            s.WindowStyle = ProcessWindowStyle.Minimized;
-            s.RedirectStandardOutput = true;
-            s.Arguments = Argument;
-            try
-            {
-                // Start the process with the info we specified.
-                // Call WaitForExit and then the using statement will close.
-                using (Process exeProcess = Process.Start(s))
-                {
-                    String IPS = exeProcess.StandardOutput.ReadToEnd();
-                    exeProcess.WaitForExit();
-                    return IPS;
-                }
-            }
-            catch
-            {
 
-                ProcessStartInfo se = new ProcessStartInfo();
-                se.CreateNoWindow = false;
-                se.UseShellExecute = false;
-                se.FileName = User + "\\AppData\\Roaming\\SideQuest\\platform-tools\\adb.exe";
-                se.WindowStyle = ProcessWindowStyle.Minimized;
-                se.RedirectStandardOutput = true;
-                se.Arguments = Argument;
+            foreach (String ADB in MainWindow.ADBPaths)
+            {
+                ProcessStartInfo s = new ProcessStartInfo();
+                s.CreateNoWindow = true;
+                s.UseShellExecute = false;
+                s.FileName = ADB.Replace("User", User);
+                s.WindowStyle = ProcessWindowStyle.Minimized;
+                s.Arguments = Argument;
+                s.RedirectStandardOutput = true;
                 try
                 {
                     // Start the process with the info we specified.
                     // Call WaitForExit and then the using statement will close.
-                    using (Process exeProcess = Process.Start(se))
+                    using (Process exeProcess = Process.Start(s))
                     {
                         String IPS = exeProcess.StandardOutput.ReadToEnd();
                         exeProcess.WaitForExit();
-                        return IPS;
+                        if (IPS.Contains("no devices/emulators found"))
+                        {
+                            txtbox.AppendText("\n\n\nAn error Occured (Code: ADB110). Check following");
+                            txtbox.AppendText("\n\n- Your Quest is connected, Developer Mode enabled and USB Debugging enabled.");
+                            txtbox.ScrollToEnd();
+                            return "Error";
+                        }
 
+                        return IPS;
                     }
                 }
                 catch
                 {
-                    // Log error.
-                    return "Error";
+                    continue;
                 }
             }
+            txtbox.AppendText("\n\n\nAn error Occured (Code: ADB100). Check following not");
+            txtbox.AppendText("\n\n- You have adb installed.");
+            txtbox.ScrollToEnd();
+            return "Error";
         }
 
         public Boolean adb(String Argument)
         {
             String User = System.Environment.GetEnvironmentVariable("USERPROFILE");
-            ProcessStartInfo s = new ProcessStartInfo();
-            s.CreateNoWindow = false;
-            s.UseShellExecute = false;
-            s.FileName = "adb.exe";
-            s.WindowStyle = ProcessWindowStyle.Minimized;
-            s.Arguments = Argument;
-            try
-            {
-                // Start the process with the info we specified.
-                // Call WaitForExit and then the using statement will close.
-                using (Process exeProcess = Process.Start(s))
-                {
-                    String IPS = exeProcess.StandardOutput.ReadToEnd();
-                    exeProcess.WaitForExit();
-                    if (IPS.Contains("no devices/emulators found")) return false;
-                    return true;
-                }
-            }
-            catch
-            {
 
-                ProcessStartInfo se = new ProcessStartInfo();
-                se.CreateNoWindow = false;
-                se.UseShellExecute = false;
-                se.FileName = User + "\\AppData\\Roaming\\SideQuest\\platform-tools\\adb.exe";
-                se.WindowStyle = ProcessWindowStyle.Minimized;
-                se.Arguments = Argument;
+            foreach (String ADB in MainWindow.ADBPaths)
+            {
+                ProcessStartInfo s = new ProcessStartInfo();
+                s.CreateNoWindow = true;
+                s.UseShellExecute = false;
+                s.FileName = ADB.Replace("User", User);
+                s.WindowStyle = ProcessWindowStyle.Minimized;
+                s.Arguments = Argument;
+                s.RedirectStandardOutput = true;
+                if (MainWindow.ShowADB)
+                {
+                    s.RedirectStandardOutput = false;
+                    s.CreateNoWindow = false;
+                }
                 try
                 {
                     // Start the process with the info we specified.
                     // Call WaitForExit and then the using statement will close.
-                    using (Process exeProcess = Process.Start(se))
+                    using (Process exeProcess = Process.Start(s))
                     {
-                        String IPS = exeProcess.StandardOutput.ReadToEnd();
-                        exeProcess.WaitForExit();
-                        if (IPS.Contains("no devices/emulators found")) return false;
+                        if (!MainWindow.ShowADB)
+                        {
+                            String IPS = exeProcess.StandardOutput.ReadToEnd();
+                            exeProcess.WaitForExit();
+                            if (IPS.Contains("no devices/emulators found"))
+                            {
+                                txtbox.AppendText("\n\n\nAn error Occured (Code: ADB110). Check following");
+                                txtbox.AppendText("\n\n- Your Quest is connected, Developer Mode enabled and USB Debugging enabled.");
+                                txtbox.ScrollToEnd();
+                                return false;
+                            }
+                        }
+                        else
+                        {
+                            exeProcess.WaitForExit();
+                        }
+
                         return true;
                     }
                 }
                 catch
                 {
-                    // Log error.
-                    return false;
+                    continue;
                 }
+            }
+            txtbox.AppendText("\n\n\nAn error Occured (Code: ADB100). Check following not");
+            txtbox.AppendText("\n\n- You have adb installed.");
+            txtbox.ScrollToEnd();
+            return false;
+        }
+
+        private void BMBF_Link()
+        {
+            using (WebClient client = new WebClient())
+            {
+                BMBFStable = JSON.Parse(client.DownloadString("https://bmbf.dev/stable/json"));
             }
         }
 
         private void UpdateBMBF()
         {
+            if (Running)
+            {
+                txtbox.AppendText("\n\nA operation is already running. Please try again after it has finished.");
+                return;
+            }
+            Running = true;
             CheckIP();
             getQuestIP();
+            BMBF_Link();
             if (!adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/mods \"" + exe + "\\ModChecks"))
             {
-                txtbox.AppendText("\n\n\nAn error Occured (Code: ADB100). Check following");
-                txtbox.AppendText("\n\n- Your Quest is connected and USB Debugging enabled.");
-                txtbox.AppendText("\n\n- You have adb installed.");
+                Running = false;
                 return;
             }
 
@@ -958,13 +993,12 @@ namespace BMBF_Manager
                     case MessageBoxResult.No:
                         txtbox.AppendText("\n\nBMBF Updating aborted.");
                         txtbox.ScrollToEnd();
+                        Running = false;
                         return;
                 }
                 if (!adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/ \"" + exe + "\\Backup\""))
                 {
-                    txtbox.AppendText("\n\n\nAn error Occured (Code: ADB100). Check following");
-                    txtbox.AppendText("\n\n- Your Quest is connected and USB Debugging enabled.");
-                    txtbox.AppendText("\n\n- You have adb installed.");
+                    Running = false;
                     return;
                 }
 
@@ -977,18 +1011,9 @@ namespace BMBF_Manager
 
                     if (!adb("pull /sdcard/BMBFData/Playlists/ \"" + exe + "\\Backup\"")) return;
 
-                    using (WebClient client2 = new WebClient())
-                    {
-                        client2.DownloadFile("http://" + MainWindow.IP + ":50000/host/beatsaber/config", exe + "\\tmp\\Config.json");
-                    }
+                    WebClient client2 = new WebClient();
 
-
-
-                    String Config = exe + "\\tmp\\config.json";
-
-
-
-                    var j = JSON.Parse(File.ReadAllText(Config));
+                    var j = JSON.Parse(client2.DownloadString("http://" + MainWindow.IP + ":50000/host/beatsaber/config"));
                     File.WriteAllText(exe + "\\Backup\\Playlists.json", j["Config"].ToString());
                     txtbox.AppendText("\n\nBacked up Playlists to " + exe + "\\Backup\\Playlists.json");
                     txtbox.ScrollToEnd();
@@ -1006,25 +1031,22 @@ namespace BMBF_Manager
 
                 if (!adb("uninstall com.beatgames.beatsaber"))
                 {
-                    txtbox.AppendText("\n\n\nAn error Occured (Code: ADB100). Check following");
-                    txtbox.AppendText("\n\n- Your Quest is connected and USB Debugging enabled.");
-                    txtbox.AppendText("\n\n- You have adb installed.");
+                    Running = false;
                     return;
                 }
                 if (!adb("uninstall com.weloveoculus.BMBF"))
                 {
-                    txtbox.AppendText("\n\n\nAn error Occured (Code: ADB100). Check following");
-                    txtbox.AppendText("\n\n- Your Quest is connected and USB Debugging enabled.");
-                    txtbox.AppendText("\n\n- You have adb installed.");
+                    Running = false;
                     return;
                 }
-                MessageBoxResult result2 = MessageBox.Show("Please download Beat Saber from the oculus score, play a song and then close it. Press OK once you finished.", "BMBF Manager - BMBF Updater", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBoxResult result2 = MessageBox.Show("Please download Beat Saber from the oculus store, play a song and then close it. Press OK once you finished.", "BMBF Manager - BMBF Updater", MessageBoxButton.OK, MessageBoxImage.Warning);
                 MessageBoxResult result3 = MessageBox.Show("I want to make sure. Do you have unmodded Beat Saber installed and opened it at least once?", "BMBF Manager - BMBF Updater", MessageBoxButton.YesNo, MessageBoxImage.Warning);
                 switch (result3)
                 {
                     case MessageBoxResult.No:
                         txtbox.AppendText("\n\nBMBF Updating aborted. Please Install unmodded Beat Saber and start it once");
                         txtbox.ScrollToEnd();
+                        Running = false;
                         return;
                 }
             }
@@ -1032,9 +1054,7 @@ namespace BMBF_Manager
             {
                 if (!adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/ \"" + exe + "\\Backup\""))
                 {
-                    txtbox.AppendText("\n\n\nAn error Occured (Code: ADB100). Check following");
-                    txtbox.AppendText("\n\n- Your Quest is connected and USB Debugging enabled.");
-                    txtbox.AppendText("\n\n- You have adb installed.");
+                    Running = false;
                     return;
                 }
                 MessageBoxResult result = MessageBox.Show("Looks like you have unmodded Beat Saber installed. Did you open it at least once?", "BMBF Manager - BMBF Updater", MessageBoxButton.YesNo, MessageBoxImage.Warning);
@@ -1043,6 +1063,7 @@ namespace BMBF_Manager
                     case MessageBoxResult.No:
                         txtbox.AppendText("\n\nBMBF Updating aborted. Please Install unmodded Beat Saber and start it once");
                         txtbox.ScrollToEnd();
+                        Running = false;
                         return;
                 }
             }
@@ -1051,14 +1072,83 @@ namespace BMBF_Manager
 
             if (Directory.Exists(exe + "\\Backup\\files\\mods")) Directory.Delete(exe + "\\Backup\\files\\mods", true);
             if (Directory.Exists(exe + "\\Backup\\files\\libs")) Directory.Delete(exe + "\\Backup\\files\\libs", true);
-            txtbox.AppendText("\n\nDownloading BMBF");
-            txtbox.ScrollToEnd();
             Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
+
+            List<String> BadBMBF = new List<String>();
+            foreach (JSONNode version in MainWindow.UpdateJSON["BadBMBF"])
+            {
+                foreach (JSONNode bmbf in BMBFStable)
+                {
+                    if (bmbf["tag"].ToString().Replace("\"", "") == version.ToString().Replace("\"", ""))
+                    {
+                        BadBMBF.Add(bmbf["id"].ToString().Replace("\"", ""));
+                        break;
+                    }
+                }
+            }
+
+            if (BadBMBF.Contains(BMBFStable[0]["id"].ToString().Replace("\"", "")))
+            {
+                JSONNode lastBMBF = JSON.Parse("{}");
+                foreach (JSONNode bmbf in BMBFStable)
+                {
+                    if (!BadBMBF.Contains(bmbf["id"].ToString().Replace("\"", "")))
+                    {
+                        lastBMBF = bmbf;
+                        break;
+                    }
+                }
+                MessageBoxResult result4 = MessageBox.Show("The newest BMBF Version (" + BMBFStable[0]["tag"] + ") doesn't work for many people. I'd suggest you update to a more stable version. The last entry that's not listed as not working is BMBF version " + lastBMBF["tag"] + ".\nIf you want to install the recommended version of BMBF press yes. If you want to install the newest one press no. ", "BMBF Manager - BMBF Updater", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                switch (result4)
+                {
+                    case MessageBoxResult.No:
+                        txtbox.AppendText("\n\nDownloading newest BMBF version");
+                        txtbox.ScrollToEnd();
+                        foreach (JSONNode asset in BMBFStable[0]["assets"])
+                        {
+                            if (asset["name"].ToString().Replace("\"", "") == "com.weloveoculus.BMBF.apk")
+                            {
+                                MainWindow.BMBF = "https://bmbf.dev/stable/" + asset["id"];
+                                break;
+                            }
+                        }
+                        break;
+                    case MessageBoxResult.Yes:
+                        txtbox.AppendText("\n\nDownloading recommended BMBF version");
+                        txtbox.ScrollToEnd();
+                        foreach (JSONNode asset in lastBMBF["assets"])
+                        {
+                            if (asset["name"].ToString().Replace("\"", "") == "com.weloveoculus.BMBF.apk")
+                            {
+                                MainWindow.BMBF = "https://bmbf.dev/stable/" + asset["id"];
+                                break;
+                            }
+                        }
+                        break;
+                }
+            }
+            else
+            {
+                foreach (JSONNode asset in BMBFStable[0]["assets"])
+                {
+                    if (asset["name"].ToString().Replace("\"", "") == "com.weloveoculus.BMBF.apk")
+                    {
+                        MainWindow.BMBF = "https://bmbf.dev/stable/" + asset["id"];
+                        break;
+                    }
+                }
+            }
 
             using (TimeoutWebClient client2 = new TimeoutWebClient())
             {
-                client2.DownloadFile(MainWindow.BMBF, exe + "\\tmp\\BMBF.apk");
+                client2.DownloadFileAsync(new Uri(MainWindow.BMBF), exe + "\\tmp\\BMBF.apk");
+                client2.DownloadFileCompleted += new AsyncCompletedEventHandler(finishedBMBFDownload);
             }
+
+        }
+
+        private void finishedBMBFDownload(object sender, AsyncCompletedEventArgs e)
+        {
             txtbox.AppendText("\nDownload Complete");
             txtbox.ScrollToEnd();
             Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
@@ -1088,12 +1178,29 @@ namespace BMBF_Manager
             adb("shell am start -n com.weloveoculus.BMBF/com.weloveoculus.BMBF.MainActivity"); //Start BMBF
             System.Threading.Thread.Sleep(5000);
             TimeoutWebClient client = new TimeoutWebClient();
-            client.UploadData("http://" + MainWindow.IP + ":50000/host/mod/install/step1", "POST", new byte[0]);
+            client.UploadDataAsync(new Uri("http://" + MainWindow.IP + ":50000/host/mod/install/step1"), "POST", new byte[0]);
+            client.UploadDataCompleted += new UploadDataCompletedEventHandler(finishedstep1);
+        }
+
+        private void finishedstep1(object sender, AsyncCompletedEventArgs e)
+        {
+            TimeoutWebClient client = new TimeoutWebClient();
             adb("uninstall com.beatgames.beatsaber");
-            client.UploadData("http://" + MainWindow.IP + ":50000/host/mod/install/step2", "POST", new byte[0]);
+            client.UploadDataAsync(new Uri("http://" + MainWindow.IP + ":50000/host/mod/install/step2"), "POST", new byte[0]);
+            client.UploadDataCompleted += new UploadDataCompletedEventHandler(finishedstep2);
+        }
+
+        private void finishedstep2(object sender, UploadDataCompletedEventArgs e)
+        {
+            TimeoutWebClient client = new TimeoutWebClient();
             adb("pull /sdcard/Android/data/com.weloveoculus.BMBF/cache/beatsabermod.apk \"" + exe + "\\tmp\\beatsabermod.apk\"");
             adb("install -r \"" + exe + "\\tmp\\beatsabermod.apk\"");
-            client.UploadData("http://" + MainWindow.IP + ":50000/host/mod/install/step3", "POST", new byte[0]);
+            client.UploadDataAsync(new Uri("http://" + MainWindow.IP + ":50000/host/mod/install/step3"), "POST", new byte[0]);
+            client.UploadDataCompleted += new UploadDataCompletedEventHandler(finishedstep3);
+        }
+
+        private void finishedstep3(object sender, UploadDataCompletedEventArgs e)
+        {
             adb("shell am force-stop com.weloveoculus.BMBF");
             adb("shell am start -n com.weloveoculus.BMBF/com.weloveoculus.BMBF.MainActivity"); //Start BMBF
             adb("shell pm grant com.beatgames.beatsaber android.permission.READ_EXTERNAL_STORAGE"); //Grant permission read
@@ -1101,37 +1208,36 @@ namespace BMBF_Manager
 
             if (!adb("push \"" + exe + "\\Backup\\files\" /sdcard/Android/data/com.beatgames.beatsaber"))
             {
-                txtbox.AppendText("\n\n\nAn error Occured (Code: ADB100). Check following");
-                txtbox.AppendText("\n\n- Your Quest is connected and USB Debugging enabled.");
-                txtbox.AppendText("\n\n- You have adb installed.");
                 Running = false;
                 return;
             }
 
+            System.Threading.Thread.Sleep(6000);
+
+            reloadsongsfolder();
+
             //restore Playlists
             try
             {
-                using (WebClient client3 = new WebClient())
+                if (!File.Exists(exe + "\\Backup\\Playlists.json"))
                 {
-                    Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
-                    {
-                        client3.DownloadFile("http://" + MainWindow.IP + ":50000/host/beatsaber/config", exe + "\\tmp\\OConfig.json");
-                    }));
-
+                    txtbox.AppendText("\n\n\nFinished Installing BMBF and modding Beat Saber. Please click \"Reload Songs Folder\" in BMBF to reload your Songs if you Updated BMBF.");
+                    txtbox.ScrollToEnd();
+                    Running = false;
+                    return;
                 }
 
-                String Config = exe + "\\tmp\\OConfig.json";
+                WebClient client3 = new WebClient();
 
                 String Playlists = exe + "\\Backup\\Playlists.json";
 
-                var j = JSON.Parse(File.ReadAllText(Config));
+                var j = JSON.Parse(client3.DownloadString("http://" + MainWindow.IP + ":50000/host/beatsaber/config"));
                 var p = JSON.Parse(File.ReadAllText(Playlists));
 
                 j["Config"]["Playlists"] = p["Playlists"];
                 File.WriteAllText(exe + "\\tmp\\config.json", j["Config"].ToString());
 
-                Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
-                {
+                Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate {
                     postChanges(exe + "\\tmp\\config.json");
                 }));
                 txtbox.AppendText("\n\nRestored old Playlists.");
@@ -1147,10 +1253,10 @@ namespace BMBF_Manager
 
             txtbox.AppendText("\n\n\nFinished Installing BMBF and modding Beat Saber. Please click \"Reload Songs Folder\" in BMBF to reload your Songs if you Updated BMBF.");
             txtbox.ScrollToEnd();
-
+            Running = false;
         }
 
-            public async void StartSupport(String Link)
+        public async void StartSupport(String Link)
         {
             String section = Link.Replace("bm://", "").Replace("%20", " ").ToLower();
             if(section.StartsWith("support/resetassets"))

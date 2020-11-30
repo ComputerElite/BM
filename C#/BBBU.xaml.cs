@@ -470,55 +470,44 @@ namespace BMBF_Manager
         public String adbS(String Argument)
         {
             String User = System.Environment.GetEnvironmentVariable("USERPROFILE");
-            ProcessStartInfo s = new ProcessStartInfo();
-            s.CreateNoWindow = false;
-            s.UseShellExecute = false;
-            s.FileName = "adb.exe";
-            s.WindowStyle = ProcessWindowStyle.Hidden;
-            s.RedirectStandardOutput = true;
-            s.Arguments = Argument;
-            try
-            {
-                // Start the process with the info we specified.
-                // Call WaitForExit and then the using statement will close.
-                using (Process exeProcess = Process.Start(s))
-                {
-                    String IPS = exeProcess.StandardOutput.ReadToEnd();
-                    exeProcess.WaitForExit();
-                    return IPS;
-                }
-            }
-            catch
-            {
 
-                ProcessStartInfo se = new ProcessStartInfo();
-                se.CreateNoWindow = false;
-                se.UseShellExecute = false;
-                se.FileName = User + "\\AppData\\Roaming\\SideQuest\\platform-tools\\adb.exe";
-                se.WindowStyle = ProcessWindowStyle.Hidden;
-                se.RedirectStandardOutput = true;
-                se.Arguments = Argument;
+            foreach (String ADB in MainWindow.ADBPaths)
+            {
+                ProcessStartInfo s = new ProcessStartInfo();
+                s.CreateNoWindow = true;
+                s.UseShellExecute = false;
+                s.FileName = ADB.Replace("User", User);
+                s.WindowStyle = ProcessWindowStyle.Minimized;
+                s.Arguments = Argument;
+                s.RedirectStandardOutput = true;
                 try
                 {
                     // Start the process with the info we specified.
                     // Call WaitForExit and then the using statement will close.
-                    using (Process exeProcess = Process.Start(se))
+                    using (Process exeProcess = Process.Start(s))
                     {
                         String IPS = exeProcess.StandardOutput.ReadToEnd();
                         exeProcess.WaitForExit();
-                        return IPS;
+                        if (IPS.Contains("no devices/emulators found"))
+                        {
+                            txtbox.AppendText("\n\n\nAn error Occured (Code: ADB110). Check following");
+                            txtbox.AppendText("\n\n- Your Quest is connected, Developer Mode enabled and USB Debugging enabled.");
+                            txtbox.ScrollToEnd();
+                            return "Error";
+                        }
 
+                        return IPS;
                     }
                 }
                 catch
                 {
-                    // Log error.
-                    txtbox.AppendText("\n\n\nAn error Occured (Code: ADB100). Check following");
-                    txtbox.AppendText("\n\n- Your Quest is connected and USB Debugging enabled.");
-                    txtbox.AppendText("\n\n- You have adb installed.");
+                    continue;
                 }
             }
-            return "";
+            txtbox.AppendText("\n\n\nAn error Occured (Code: ADB100). Check following not");
+            txtbox.AppendText("\n\n- You have adb installed.");
+            txtbox.ScrollToEnd();
+            return "Error";
         }
 
         public void QuestIP()
@@ -649,19 +638,11 @@ namespace BMBF_Manager
                 {
                     Directory.CreateDirectory(exe + "\\tmp");
                 }
-                using (WebClient client = new WebClient())
-                {
-                    Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate {
-                        client.DownloadFile("http://" + MainWindow.IP + ":50000/host/beatsaber/config", exe + "\\tmp\\OConfig.json");
-                    }));
-
-                }
-
-                String Config = exe + "\\tmp\\OConfig.json";
+                WebClient client = new WebClient();
 
                 PlaylistsX = Playlists + "\\Playlists.json";
 
-                var j = JSON.Parse(File.ReadAllText(Config));
+                var j = JSON.Parse(client.DownloadString("http://" + MainWindow.IP + ":50000/host/beatsaber/config"));
                 var p = JSON.Parse(File.ReadAllText(PlaylistsX));
 
                 j["Config"]["Playlists"] = p["Playlists"];
@@ -767,86 +748,72 @@ namespace BMBF_Manager
                 Source = exe + "\\tmp";
             }
 
-            string[] directories = Directory.GetDirectories(Source);
 
-
-
-            for (int i = 0; i < directories.Length; i++)
+            foreach (String cd in Directory.GetDirectories(Source))
             {
                 txtbox.AppendText("\n");
 
                 try
                 {
-                    String dat = directories[i] + "\\" + "bmbfmod.json";
-                    StreamReader reader = new StreamReader(@dat);
-                    String line;
-                    while ((line = reader.ReadLine()) != null)
+                    JSONNode bmbfmod = JSON.Parse(File.ReadAllText(cd + "\\" + "bmbfmod.json"));
+                    Name = bmbfmod["name"];
+
+                    Name = Name.Substring(0, Name.Length - 1);
+
+                    Name = Name.Replace("/", "");
+                    Name = Name.Replace(":", "");
+                    Name = Name.Replace("*", "");
+                    Name = Name.Replace("?", "");
+                    Name = Name.Replace("\"", "");
+                    Name = Name.Replace("<", "");
+                    Name = Name.Replace(">", "");
+                    Name = Name.Replace("|", "");
+
+                    for (int f = 0; f < Name.Length; f++)
                     {
-
-                        if (line.Contains("\"name\":"))
+                        if (Name.Substring(f, 1).Equals("\\"))
                         {
-                            Name = Strings(line, 3);
-
-                            Name = Name.Substring(0, Name.Length - 1);
-
-                            Name = Name.Replace("/", "");
-                            Name = Name.Replace(":", "");
-                            Name = Name.Replace("*", "");
-                            Name = Name.Replace("?", "");
-                            Name = Name.Replace("\"", "");
-                            Name = Name.Replace("<", "");
-                            Name = Name.Replace(">", "");
-                            Name = Name.Replace("|", "");
-
-                            for (int f = 0; f < Name.Length; f++)
-                            {
-                                if (Name.Substring(f, 1).Equals("\\"))
-                                {
-                                    Name = Name.Substring(0, f - 1) + Name.Substring(f + 1, Name.Length - f - 1);
-                                }
-                            }
-                            int Time = 0;
-                            while (Name.Substring(Name.Length - 1, 1).Equals(" "))
-                            {
-                                Name = Name.Substring(0, Name.Length - 1);
-                            }
-
-                            while (list.Contains(Name.ToLower()))
-                            {
-                                Time++;
-                                if (Time > 1)
-                                {
-                                    Name = Name.Substring(0, Name.Length - 1);
-                                    Name = Name + Time;
-                                }
-                                else
-                                {
-                                    Name = Name + " " + Time;
-                                }
-
-                            }
-                            list.Add(Name.ToLower());
-                            txtbox.AppendText("\nMod Name: " + Name);
-                            txtbox.AppendText("\nFolder: " + directories[i]);
-
-                            bool v = File.Exists(Mods + "\\" + Name + ".zip");
-                            if (v)
-                            {
-                                File.Delete(Mods + "\\" + Name + ".zip");
-                                txtbox.AppendText("\noverwritten file: " + Mods + "\\" + Name + ".zip");
-
-                                overwritten++;
-                            }
-
-                            zip(directories[i], Mods + "\\" + Name + ".zip");
-                            exported++;
-                            Name = "";
+                            Name = Name.Substring(0, f - 1) + Name.Substring(f + 1, Name.Length - f - 1);
                         }
-                        Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
-                        txtbox.ScrollToEnd();
+                    }
+                    int Time = 0;
+                    while (Name.Substring(Name.Length - 1, 1).Equals(" "))
+                    {
+                        Name = Name.Substring(0, Name.Length - 1);
+                    }
+
+                    while (list.Contains(Name.ToLower()))
+                    {
+                        Time++;
+                        if (Time > 1)
+                        {
+                            Name = Name.Substring(0, Name.Length - 1);
+                            Name = Name + Time;
+                        }
+                        else
+                        {
+                            Name = Name + " " + Time;
+                        }
 
                     }
-                    reader.Close();
+                    list.Add(Name.ToLower());
+                    txtbox.AppendText("\nMod Name: " + Name);
+                    txtbox.AppendText("\nFolder: " + cd);
+
+                    bool v = File.Exists(Mods + "\\" + Name + ".zip");
+                    if (v)
+                    {
+                        File.Delete(Mods + "\\" + Name + ".zip");
+                        txtbox.AppendText("\noverwritten file: " + Mods + "\\" + Name + ".zip");
+
+                        overwritten++;
+                    }
+
+                    zip(cd, Mods + "\\" + Name + ".zip");
+                    exported++;
+                    Name = "";
+                    Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
+                    txtbox.ScrollToEnd();
                 }
                 catch
                 {
@@ -877,15 +844,9 @@ namespace BMBF_Manager
                 {
                     Directory.CreateDirectory(exe + "\\tmp");
                 }
-                using (WebClient client = new WebClient())
-                {
-                    client.DownloadFile("http://" + MainWindow.IP + ":50000/host/beatsaber/config", exe + "\\tmp\\Config.json");
-                }
+                WebClient client = new WebClient();
 
-
-                String Config = exe + "\\tmp\\Config.json";
-
-                var j = JSON.Parse(File.ReadAllText(Config));
+                var j = JSON.Parse(client.DownloadString("http://" + MainWindow.IP + ":50000/host/beatsaber/config"));
                 File.WriteAllText(Playlists + "\\Playlists.json", j["Config"].ToString()); 
                 txtbox.AppendText("\n\nBacked up Playlists to " + Playlists + "Playlists.json");
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
@@ -921,43 +882,30 @@ namespace BMBF_Manager
                 Source = exe + "\\tmp";
             }
 
-            string[] directories = Directory.GetDirectories(Source);
-
-
-
-            for (int i = 0; i < directories.Length; i++)
+            foreach (String cd in Directory.GetDirectories(Source))
             {
                 txtbox.AppendText("\n");
 
 
-                if (!File.Exists(directories[i] + "\\" + "Info.dat") && !File.Exists(directories[i] + "\\" + "info.dat"))
+                if (!File.Exists(cd + "\\" + "Info.dat") && !File.Exists(cd + "\\" + "info.dat"))
                 {
-                    txtbox.AppendText("\n" + directories[i] + " is no Song");
+                    txtbox.AppendText("\n" + cd + " is no Song");
                     continue;
                 }
                 String dat = "";
-                if (File.Exists(directories[i] + "\\" + "Info.dat"))
+                if (File.Exists(cd + "\\" + "Info.dat"))
                 {
-                    dat = directories[i] + "\\" + "Info.dat";
+                    dat = cd + "\\" + "Info.dat";
 
                 }
-                if (File.Exists(directories[i] + "\\" + "info.dat"))
+                if (File.Exists(cd + "\\" + "info.dat"))
                 {
-                    dat = directories[i] + "\\" + "info.dat";
+                    dat = cd + "\\" + "info.dat";
 
                 }
                 try
                 {
-                    StreamReader reader = new StreamReader(@dat);
-                    String text = "";
-                    String line;
-
-                    while ((line = reader.ReadLine()) != null)
-                    {
-                        text = text + line;
-                    }
-
-                    var json = SimpleJSON.JSON.Parse(text);
+                    var json = SimpleJSON.JSON.Parse(File.ReadAllText(dat));
                     Name = json["_songName"].ToString();
 
                     Name = Name.Replace("/", "");
@@ -998,17 +946,15 @@ namespace BMBF_Manager
                     }
                     list.Add(Name.ToLower());
                     txtbox.AppendText("\nSong Name: " + Name);
-                    txtbox.AppendText("\nFolder: " + directories[i]);
+                    txtbox.AppendText("\nFolder: " + cd);
 
 
 
-                    zip(directories[i], Songs + "\\" + Name + ".zip");
+                    zip(cd, Songs + "\\" + Name + ".zip");
                     exported++;
                     Name = "";
                     Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
                     txtbox.ScrollToEnd();
-
-                    reader.Close();
                 }
                 catch
                 {
@@ -1137,55 +1083,56 @@ namespace BMBF_Manager
         public Boolean adb(String Argument)
         {
             String User = System.Environment.GetEnvironmentVariable("USERPROFILE");
-            ProcessStartInfo s = new ProcessStartInfo();
-            s.CreateNoWindow = false;
-            s.UseShellExecute = false;
-            s.FileName = "adb.exe";
-            s.WindowStyle = ProcessWindowStyle.Hidden;
-            s.Arguments = Argument;
-            try
-            {
-                // Start the process with the info we specified.
-                // Call WaitForExit and then the using statement will close.
-                using (Process exeProcess = Process.Start(s))
-                {
-                    String IPS = exeProcess.StandardOutput.ReadToEnd();
-                    exeProcess.WaitForExit();
-                    if (IPS.Contains("no devices/emulators found")) return false;
-                    return true;
-                }
-            }
-            catch
-            {
 
-                ProcessStartInfo se = new ProcessStartInfo();
-                se.CreateNoWindow = false;
-                se.UseShellExecute = false;
-                se.FileName = User + "\\AppData\\Roaming\\SideQuest\\platform-tools\\adb.exe";
-                se.WindowStyle = ProcessWindowStyle.Hidden;
-                se.Arguments = Argument;
+            foreach (String ADB in MainWindow.ADBPaths)
+            {
+                ProcessStartInfo s = new ProcessStartInfo();
+                s.CreateNoWindow = true;
+                s.UseShellExecute = false;
+                s.FileName = ADB.Replace("User", User);
+                s.WindowStyle = ProcessWindowStyle.Minimized;
+                s.Arguments = Argument;
+                s.RedirectStandardOutput = true;
+                if (MainWindow.ShowADB)
+                {
+                    s.RedirectStandardOutput = false;
+                    s.CreateNoWindow = false;
+                }
                 try
                 {
                     // Start the process with the info we specified.
                     // Call WaitForExit and then the using statement will close.
-                    using (Process exeProcess = Process.Start(se))
+                    using (Process exeProcess = Process.Start(s))
                     {
-                        String IPS = exeProcess.StandardOutput.ReadToEnd();
-                        exeProcess.WaitForExit();
-                        if (IPS.Contains("no devices/emulators found")) return false;
+                        if (!MainWindow.ShowADB)
+                        {
+                            String IPS = exeProcess.StandardOutput.ReadToEnd();
+                            exeProcess.WaitForExit();
+                            if (IPS.Contains("no devices/emulators found"))
+                            {
+                                txtbox.AppendText("\n\n\nAn error Occured (Code: ADB110). Check following");
+                                txtbox.AppendText("\n\n- Your Quest is connected, Developer Mode enabled and USB Debugging enabled.");
+                                txtbox.ScrollToEnd();
+                                return false;
+                            }
+                        }
+                        else
+                        {
+                            exeProcess.WaitForExit();
+                        }
+
                         return true;
                     }
                 }
                 catch
                 {
-                    // Log error.
-                    txtbox.AppendText("\n\n\nAn error Occured (Code: ADB100). Check following");
-                    txtbox.AppendText("\n\n- Your Quest is connected and USB Debugging enabled.");
-                    txtbox.AppendText("\n\n- You have adb installed.");
-                    return false;
+                    continue;
                 }
-
             }
+            txtbox.AppendText("\n\n\nAn error Occured (Code: ADB100). Check following not");
+            txtbox.AppendText("\n\n- You have adb installed.");
+            txtbox.ScrollToEnd();
+            return false;
         }
 
 
