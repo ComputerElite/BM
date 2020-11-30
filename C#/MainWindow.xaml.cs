@@ -116,6 +116,11 @@ namespace BMBF_Manager
             }
             json = JSON.Parse(File.ReadAllText(exe + "\\Config.json"));
 
+            foreach(JSONNode ADBPath in json["CachedADBPaths"])
+            {
+                ADBPaths.Add(ADBPath.ToString().Replace("\"", ""));
+            }
+
             CustomProtocols = json["CustomProtocols"].AsBool;
             IP = json["IP"];
             BBBUTransfered = json["BBBUTransfered"].AsBool;
@@ -176,6 +181,12 @@ namespace BMBF_Manager
             json["ComeFromUpdate"] = ComeFromUpdate;
             json["BBBUTransfered"] = BBBUTransfered;
             json["ShowADB"] = ShowADB;
+            int i = 0;
+            foreach(String ADBPath in ADBPaths)
+            {
+                json["CachedADBPaths"][i] = ADBPath.Replace("\\\\", "\\");
+                i++;
+            }
             File.WriteAllText(exe + "\\Config.json", json.ToString());
         }
 
@@ -439,6 +450,12 @@ namespace BMBF_Manager
                     }
                 }
 
+                ADBPaths.Clear();
+                foreach (JSONNode adbp in UpdateJSON["ADBPaths"])
+                {
+                    ADBPaths.Add(adbp.ToString().Replace("\"", ""));
+                }
+
                 int MajorU = UpdateJSON["Updates"][0]["Major"];
                 int MinorU = UpdateJSON["Updates"][0]["Minor"];
                 int PatchU = UpdateJSON["Updates"][0]["Patch"];
@@ -477,11 +494,6 @@ namespace BMBF_Manager
             catch
             {
 
-            }
-
-            foreach(JSONNode adbp in UpdateJSON["ADBPaths"])
-            {
-                ADBPaths.Add(adbp.ToString().Replace("\"", ""));
             }
         }
 
