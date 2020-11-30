@@ -5,8 +5,8 @@
     ],
     "ADBPaths": [
       "adb.exe",
-      "User\\\\Android\\\\platform-tools_r29.0.4-windows\\\\platform-tools\\\\adb.exe",
-      "User\\\\AppData\\\\Roaming\\SideQuest\\\\platform-tools\\\\adb.exe"
+      "User\\Android\\platform-tools_r29.0.4-windows\\platform-tools\\adb.exe",
+      "User\\AppData\\Roaming\\SideQuest\\platform-tools\\adb.exe"
     ],
     "Updates": [
         {
