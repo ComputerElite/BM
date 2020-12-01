@@ -32,6 +32,36 @@ Open "BMBF Manager.exe", put in your Quests IP (if it hasn't picked it up automa
 ## Restore BMBF and Beat Saber
 Open "BMBF Manager.exe", put in your Quests IP (if it hasn't picked it up automatically) and click "BMBF and Beat Saber Backup Utility". Then Click the Boxes to choose what to restore and select a Backup in the dropdown Menu. After that click "Restore" and wait a few minutes until it has finished.
 
+## Save Songs
+Open "BMBF Manager.exe", put in your Quests IP (if it hasn't picked it up automatically) and click "Quest Song Utilities" Check "Auto Mode (Quest only)" (adb or SideQuest required). Then click start and wait a few minutes (about 1 - 6). After it has finished it'll let you know how many Songs it zipped.
+<br/>
+<br/>
+
+## Make Song List
+Do everything as above and check "Make List of all songs". This will create a List of all Your Songs with information like Song name, BPM, Song sub name, song author, etc.
+<br/>
+<br/>
+
+## How to do Playlist Backups
+Open "BMBF Manager.exe", put in your Quests IP (if it hasn't picked it up automatically) and click "Quest Song Utilities". Then enter a Backup name and click "Backup Playlists". The It'll save your Playlists.
+
+**Note: It Does Not save Songs. Only Playlist Configuration gets saved.**
+<br/>
+<br/>
+
+## How to restore Playlists
+Open "BMBF Manager.exe", put in your Quests IP (if it hasn't picked it up automatically) and click "Quest Song Utilities". Then choose the Backup in the drop down menu. Then press Restore Playlists.
+
+**Note: No Songs get restored. Be sure that you have all Songs that you had when you made the Backup.**
+## How to make BPLists from your Playlists
+Open "BMBF Manager.exe", put in your Quests IP (if it hasn't picked it up automatically) and click "Quest Song Utilities". Then click "Load Playlists". Then choose the Playlist you want and click "Make BPList". It'll save a .bplist file in the BPLists folder. 
+<br/>
+<br/>
+## How to delete Playlists with the Songs
+Open "BMBF Manager.exe", put in your Quests IP (if it hasn't picked it up automatically) and click "Quest Song Utilities". Then click "Load Playlists". Then choose the Playlist you want to delete and click "Delete selected Playlists".
+<br/>
+<br/>
+
 # Contributers
 - Bunny83 with [SimpleJSON.cs](https://github.com/Bunny83/SimpleJSON/blob/master/SimpleJSON.cs)
 - darkuni (helped me making the Playlist backuping and restoring possible. Check out his nice program: [Playlist Editor Pro](https://beatsaberquest.com/bmbf/my-tools/playlist-editor-pro/#:~:text=Playlist%20Editor%20Pro%20is%20a,details%20and%20download%20it%20here.))
