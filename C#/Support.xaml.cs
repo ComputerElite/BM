@@ -31,7 +31,6 @@ namespace BMBF_Manager
         Boolean draggable = true;
         Boolean Running = false;
         String exe = AppDomain.CurrentDomain.BaseDirectory.Substring(0, AppDomain.CurrentDomain.BaseDirectory.Length - 1);
-        String BSVersion = "1.13.0";
         Boolean ForThisVersion = true;
         int C = 0;
         String Key = "abcd";
@@ -49,6 +48,14 @@ namespace BMBF_Manager
             {
                 CustomP.Content = "Enable BM Custom Protocol";
             }
+            if (MainWindow.OneClick)
+            {
+                BSaver.Content = "Disable BeatSaver OneClick install";
+            }
+            else
+            {
+                BSaver.Content = "Enable BeatSaver OneClick install";
+            }
             UpdateImage();
             if(MainWindow.ShowADB)
             {
@@ -56,6 +63,29 @@ namespace BMBF_Manager
             } else
             {
                 ADB.Content = "Enable ADB output";
+            }
+        }
+
+        private void KeepAlive(object sender, RoutedEventArgs e)
+        {
+            if(MainWindow.KeepAlive)
+            {
+                MainWindow.KeepAlive = false;
+                txtbox.AppendText("Keep Alive has been disabled.");
+
+            } else
+            {
+                MessageBoxResult result = MessageBox.Show("Are you sure you want to enable Keep Alive? That will result in your Quest not going to sleep until the program get's closed.\nThis will only work as long as your Quest is reachable via ADB (connected via cable)\nRightly recommended for Quest 2 Users", "BMBF Manager - Settings", MessageBoxButton.YesNo, MessageBoxImage.Information);
+                switch (result)
+                {
+                    case MessageBoxResult.No:
+                        txtbox.AppendText("\n\nAborted.");
+                        txtbox.ScrollToEnd();
+                        Running = false;
+                        return;
+                }
+                MainWindow.KeepAlive = true;
+                txtbox.AppendText("Keep Alive has been enabled.");
             }
         }
 
@@ -126,7 +156,7 @@ namespace BMBF_Manager
             else
             {
                 ImageBrush uniformBrush = new ImageBrush();
-                uniformBrush.ImageSource = new BitmapImage(new Uri("pack://application:,,,/Support4.png", UriKind.Absolute));
+                uniformBrush.ImageSource = new BitmapImage(new Uri("pack://application:,,,/Support5.png", UriKind.Absolute));
                 uniformBrush.Stretch = Stretch.UniformToFill;
                 this.Background = uniformBrush;
             }
@@ -237,6 +267,13 @@ namespace BMBF_Manager
             BBBUWindow.Show();
         }
 
+        private void EnableQSUMove(object sender, RoutedEventArgs e)
+        {
+            MainWindow.QSUTransfered = false;
+            QSU QSUWindow = new QSU();
+            QSUWindow.Show();
+        }
+
         private void EnableCustom(object sender, RoutedEventArgs e)
         {
             if(!MainWindow.CustomProtocols)
@@ -274,6 +311,65 @@ namespace BMBF_Manager
                 CustomP.Content = "Enable BM Custom Protocol";
                 MainWindow.CustomProtocols = false;
             }
+        }
+
+        public void enable_BeatSaver(object sender, RoutedEventArgs e)
+        {
+            if (!MainWindow.OneClick)
+            {
+                MessageBoxResult result = MessageBox.Show("This will disable OneClick Install via Mod Assistent.\nDo you wish to continue?", "BMBF Manager - Settings", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                switch (result)
+                {
+                    case MessageBoxResult.No:
+                        txtbox.AppendText("\n\nOneClick Install enabeling aborted");
+                        Running = false;
+                        txtbox.ScrollToEnd();
+                        return;
+                }
+                txtbox.AppendText("\n\nChanging Registry to enable OneClick Custom protocols");
+                String regFile = "Windows Registry Editor Version 5.00\n\n[HKEY_CLASSES_ROOT\\beatsaver]\n@=\"URL: beatsaver\"\n\"URL Protocol\"=\"beatsaver\"\n\n[HKEY_CLASSES_ROOT\\beatsaver]\n@=\"" + System.Reflection.Assembly.GetEntryAssembly().Location.Replace("\\", "\\\\") + "\"\n\n[HKEY_CLASSES_ROOT\\beatsaver\\shell]\n\n[HKEY_CLASSES_ROOT\\beatsaver\\shell\\open]\n\n[HKEY_CLASSES_ROOT\\beatsaver\\shell\\open\\command]\n@=\"" + System.Reflection.Assembly.GetEntryAssembly().Location.Replace("\\", "\\\\") + " \\\"%1\\\"\"";
+                File.WriteAllText(exe + "\\registry.reg", regFile);
+                try
+                {
+                    Process.Start(exe + "\\registry.reg");
+                    txtbox.AppendText("\n\nOneClick Install via BeatSaver enabled");
+                }
+                catch
+                {
+                    txtbox.AppendText("\n\nRegistry was unable to change... no Custom protocol disabled.");
+                    return;
+                }
+                BSaver.Content = "Disable BeatSaver OneClick install";
+                MainWindow.OneClick = true;
+            }
+            else
+            {
+                MessageBoxResult result = MessageBox.Show("This will disable OneClick Install via BMBF Manager.\nDo you wish to continue?", "BMBF manager - Settings", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                switch (result)
+                {
+                    case MessageBoxResult.No:
+                        txtbox.AppendText("\n\nOneClick disabeling enabeling aborted");
+                        Running = false;
+                        txtbox.ScrollToEnd();
+                        return;
+                }
+                txtbox.AppendText("\n\nChanging Registry to disable OneClick Custom protocols");
+                String regFile = "Windows Registry Editor Version 5.00\n\n[-HKEY_CLASSES_ROOT\\beatsaver]";
+                File.WriteAllText(exe + "\\registry.reg", regFile);
+                try
+                {
+                    Process.Start(exe + "\\registry.reg");
+                    txtbox.AppendText("\n\nOneClick Install via BeatSaver disabled");
+                }
+                catch
+                {
+                    txtbox.AppendText("\n\nRegistry was unable to change.");
+                    return;
+                }
+                BSaver.Content = "Enable BeatSaver OneClick install";
+                MainWindow.OneClick = false;
+            }
+
         }
 
         public void BackupPlaylists()
@@ -550,6 +646,10 @@ namespace BMBF_Manager
             {
                 if(mod.Item1.ToString().Replace("\"", "").ToLower() == ModName.ToLower())
                 {
+                    if(mod.Item7)
+                    {
+                        return "Forward" + mod.Item3;
+                    }
                     return mod.Item3;
                 }
             }
@@ -1258,8 +1358,14 @@ namespace BMBF_Manager
 
         public async void StartSupport(String Link)
         {
+            txtbox.AppendText("\n\n" + Link);
             String section = Link.Replace("bm://", "").Replace("%20", " ").ToLower();
-            if(section.StartsWith("support/resetassets"))
+            if(Link.ToLower().StartsWith("beatsaver://"))
+            {
+                String bsr = section.Replace("beatsaver://", "").ToLower();
+                DownloadSong(bsr);
+            }
+            else if(section.StartsWith("support/resetassets"))
             {
                 BackupPlaylists();
                 resetassets();
@@ -1281,12 +1387,19 @@ namespace BMBF_Manager
                     txtbox.AppendText("\nThe Mod couldn't be found for your GameVersion.");
                     return;
                 }
-                if(DownloadLink == "https://new.scoresaber.com/quest")
+                if(DownloadLink.StartsWith("Forward"))
                 {
+                    MessageBoxResult result1 = MessageBox.Show("You have to download and install the mod " + section.Replace("mods/install/", "") + " manually. If you click yes I'll redirect you to the download page and open BMBF for you.\nDo you wish to continue?", "BMBF Manager - Mod Installing", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                    switch (result1)
+                    {
+                        case MessageBoxResult.No:
+                            txtbox.AppendText("\n\nMod Installing Aborted.");
+                            txtbox.ScrollToEnd();
+                            Running = false;
+                            return;
+                    }
                     Process.Start("http://" + MainWindow.IP + ":50000/main/upload");
-                    Process.Start(DownloadLink);
-                    txtbox.AppendText("ScoreSaber needs to be installed manually cause of you requiered to sign in.");
-                    return;
+                    Process.Start(DownloadLink.Replace("Forward", "").Replace("\"", ""));
                 }
                 installtoquest(DownloadLink);
             } else if(section.StartsWith("songs/install/"))

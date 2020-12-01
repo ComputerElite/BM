@@ -80,6 +80,9 @@
       <DependentUpon>Mods.xaml</DependentUpon>
     </Compile>
     <Compile Include="OnStart.cs" />
+    <Compile Include="QSU.xaml.cs">
+      <DependentUpon>QSU.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SimpleJSON.cs" />
     <Compile Include="Songs.xaml.cs">
       <DependentUpon>Songs.xaml</DependentUpon>
@@ -115,6 +118,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Mods.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="QSU.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -184,6 +191,18 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Support4.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="QSU.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="QSU2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Support5.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Main8.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -36,7 +36,11 @@ namespace BMBF_Manager
         public static Boolean QuestSoundsInstalled = false;
         public static Boolean CustomImage = false;
         public static Boolean BBBUTransfered = false;
+        public static Boolean QSUTransfered = false;
         public static Boolean ShowADB = false;
+        public static Boolean Converted = false;
+        public static Boolean OneClick = false;
+        public static Boolean KeepAlive = true;
         Boolean draggable = true;
         Boolean Running = false;
         Boolean ComeFromUpdate = false;
@@ -77,12 +81,25 @@ namespace BMBF_Manager
             else
             {
                 ImageBrush uniformBrush = new ImageBrush();
-                uniformBrush.ImageSource = new BitmapImage(new Uri("pack://application:,,,/Main7.png", UriKind.Absolute));
+                uniformBrush.ImageSource = new BitmapImage(new Uri("pack://application:,,,/Main8.png", UriKind.Absolute));
                 uniformBrush.Stretch = Stretch.UniformToFill;
                 this.Background = uniformBrush;
             }
             Changelog();
             ComeFromUpdate = false;
+            KeepAliveTask();
+        }
+
+        private async Task KeepAliveTask()
+        {
+            while(true)
+            {
+                if(KeepAlive)
+                {
+                    adb("shell input keyevent KEYCODE_WAKEUP");
+                }
+                await Task.Delay(15000);
+            }
         }
 
         public void Changelog()
@@ -122,8 +139,12 @@ namespace BMBF_Manager
             }
 
             CustomProtocols = json["CustomProtocols"].AsBool;
+            Converted = json["Converted"].AsBool;
+            OneClick = json["OneClick"].AsBool;
+            KeepAlive = json["KeepAlive"].AsBool;
             IP = json["IP"];
             BBBUTransfered = json["BBBUTransfered"].AsBool;
+            QSUTransfered = json["QSUTransfered"].AsBool;
             ShowADB = json["ShowADB"].AsBool;
             if (json["GameVersion"] != null)
             {
@@ -180,7 +201,11 @@ namespace BMBF_Manager
             json["GameVersion"] = GameVersion;
             json["ComeFromUpdate"] = ComeFromUpdate;
             json["BBBUTransfered"] = BBBUTransfered;
+            json["QSUTransfered"] = QSUTransfered;
             json["ShowADB"] = ShowADB;
+            json["Converted"] = Converted;
+            json["OneClick"] = OneClick;
+            json["KeepAlive"] = KeepAlive;
             int i = 0;
             foreach(String ADBPath in ADBPaths)
             {
@@ -1077,6 +1102,13 @@ namespace BMBF_Manager
             CheckIP();
             BBBU BBBUWindow = new BBBU();
             BBBUWindow.Show();
+        }
+
+        private void QSU(object sender, RoutedEventArgs e)
+        {
+            CheckIP();
+            QSU QSUWindow = new QSU();
+            QSUWindow.Show();
         }
 
         internal void CustomProto(string Link)

@@ -27,7 +27,6 @@ namespace BMBF_Manager
     {
 
         Boolean draggable = true;
-        Boolean Running = false;
         String exe = AppDomain.CurrentDomain.BaseDirectory.Substring(0, AppDomain.CurrentDomain.BaseDirectory.Length - 1);
 
         String SelectedSound = "Nothing";
