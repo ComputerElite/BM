@@ -148,6 +148,27 @@
             ]
         },
         {
+            "name": "Mapping Extensions",
+            "details": "This adds a host of new things you can do with your maps as a mapper, and allows you to play said maps as a player.",
+            "ModID": "MappingExtensions",
+            "creator": [
+                "Kyle 1413",
+                "MichaelZoller",
+                "StackDoubleFlow"
+            ],
+            "downloads": [
+                {
+                    "modversion": "0.18.0",
+                    "gameversion": [
+                        "1.13.0"
+                    ],
+                    "download": "https://github.com/StackDoubleFlow/QuestMods/releases/download/0.18.0/MappingExtensions_v0.18.0.zip",
+                    "forward": false,
+                    "coremod": false
+                }
+            ]
+        },
+        {
             "name": "Score Percentage",
             "details": "Now with Settings UI! wait does pc even have that????\r\n\r\nChangelog:\r\n-Added Settings UI\r\n-Revamped Config code thanks to darknight1050 \r\n-Updated for 1.12.2\r\n-Fixed a bug with the average option",
             "ModID": "ScorePercentage",
@@ -369,6 +390,25 @@
                         "1.13.0"
                     ],
                     "download": "https://cdn.discordapp.com/attachments/776551464117075978/781950389163130900/mplighting_v0.1.4.zip",
+                    "forward": false,
+                    "coremod": false
+                }
+            ]
+        },
+        {
+            "name": "Recorder",
+            "details": "A temporary pre-replay update mod that makes replay files.",
+            "ModID":"replay",
+            "creator": [
+                "Henwill8"
+            ],
+            "downloads":[
+                {
+                    "modversion": "0.1.0",
+                    "gameversion": [
+                        "1.13.0"
+                    ],
+                    "download": "https://github.com/henwill8/ReplayDownload/releases/download/0.1.0/recorder_v0.1.0.zip",
                     "forward": false,
                     "coremod": false
                 }
