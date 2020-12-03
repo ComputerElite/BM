@@ -168,15 +168,6 @@
     <Resource Include="Logo.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Mods3.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="HitSound2.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Main7.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Songs3.png" />
   </ItemGroup>
   <ItemGroup>
@@ -190,12 +181,6 @@
     <Resource Include="BBBU2_B.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Support4.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="QSU.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="QSU2.png" />
   </ItemGroup>
   <ItemGroup>
@@ -203,6 +188,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Main8.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Mods4.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
