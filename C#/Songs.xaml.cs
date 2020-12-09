@@ -36,6 +36,7 @@ namespace BMBF_Manager
         int C = 0;
         private static Songs instance = new Songs();
         ArrayList SongKeys = new ArrayList();
+        List<String> downloadqueue = new List<String>();
 
         public Songs()
         {
@@ -183,7 +184,7 @@ namespace BMBF_Manager
             if (SubName == "") SubName = "N/A";
             if (BPM == "") BPM = "N/A";
 
-            txtbox.Text = "Metadata of the Song you choose:";
+            txtbox.AppendText("\n\nMetadata of the Song you choose:");
 
             txtbox.AppendText("\n\nSong Name: " + SongName);
             txtbox.AppendText("\nSong Artist: " + SongArtist);
@@ -534,7 +535,37 @@ namespace BMBF_Manager
             return hash.ToLower();
         }
 
-        private void InstallSong(object sender, RoutedEventArgs e)
+        public void checkqueue()
+        {
+            if (downloadqueue.Count != 0)
+            {
+                InstallSong();
+            }
+            else
+            {
+                txtbox.AppendText("\n\nAll downloads finished.");
+            }
+        }
+
+        public void AddSelectedSongToQueue(object sender, RoutedEventArgs e)
+        {
+            if (downloadqueue.Contains(SongKey.Text))
+            {
+                txtbox.AppendText("\nThe Song " + SongKey.Text + " is already in the download queue");
+                return;
+            }
+            if (SongKey.Text == "Song Key")
+            {
+                txtbox.AppendText("\n\nPlease Choose a Song.");
+                Running = false;
+                return;
+            }
+            txtbox.AppendText("\n\nThe Song " + SongKey.Text + " was added to the queue");
+            downloadqueue.Add(SongKey.Text);
+            checkqueue();
+        }
+
+        private void InstallSong()
         {
             if (!CheckIP())
             {
@@ -543,19 +574,12 @@ namespace BMBF_Manager
             }
             if (Running)
             {
-                txtbox.AppendText("\n\nA Song Install is already running.");
                 return;
             }
             Running = true;
-            Key = SongKey.Text;
+            Key = downloadqueue[0];
             WebClient c = new WebClient();
             c.Headers.Add("user-agent", "BMBF Manager/1.0");
-            if(SongKey.Text == "Song Key")
-            {
-                txtbox.AppendText("\n\nPlease Choose a Song.");
-                Running = false;
-                return;
-            }
             try
             {
                 c.OpenRead("https://beatsaver.com/api/download/key/" + Key);
@@ -587,7 +611,7 @@ namespace BMBF_Manager
             }
             catch
             {
-                txtbox.AppendText("\n\nAn Error Occured");
+                txtbox.AppendText("\n\nIf you see this something in the code messed up or ComputerElite is dumb");
                 Running = false;
                 return;
             }
@@ -637,6 +661,7 @@ namespace BMBF_Manager
             {
                 txtbox.AppendText("\n\nCouldn't sync with BeatSaber. Needs to be done manually.");
             }
+            downloadqueue.RemoveAt(0);
         }
 
         public void Sync()

@@ -190,7 +190,7 @@
     <Resource Include="Main8.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Mods4.png" />
+    <Resource Include="Mods5.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

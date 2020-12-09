@@ -758,8 +758,6 @@ namespace BMBF_Manager
                     JSONNode bmbfmod = JSON.Parse(File.ReadAllText(cd + "\\" + "bmbfmod.json"));
                     Name = bmbfmod["name"];
 
-                    Name = Name.Substring(0, Name.Length - 1);
-
                     Name = Name.Replace("/", "");
                     Name = Name.Replace(":", "");
                     Name = Name.Replace("*", "");

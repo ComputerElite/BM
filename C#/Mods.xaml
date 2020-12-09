@@ -5,14 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BMBF_Manager"
         mc:Ignorable="d"
-        ResizeMode="CanMinimize"
         WindowStyle="None"
         MouseMove="Drag"
-        Title="BMBF Manager Mod Installing" Height="413" Width="660" Background="#FF282828">
+        ResizeMode="CanMinimize"
+        Title="BMBF Manager Mod Installing" Height="548" Width="883" Background="#FF282828">
     <Grid>
         <Image Source="Logo.png" HorizontalAlignment="Left" Height="25" VerticalAlignment="Top" Width="25" Margin="10,2,0,0"/>
-        <Button MouseEnter="noDrag" MouseLeave="doDrag" Click="Close" Content="X" HorizontalAlignment="Left" Margin="616,4,0,0" VerticalAlignment="Top" Width="31" Background="#00000000" BorderBrush="#FFCBCBCB"/>
-        <Button MouseEnter="noDrag" MouseLeave="doDrag" Click="Mini" Content="|" HorizontalAlignment="Left" Margin="583,-2,0,0" VerticalAlignment="Top" Width="20" Background="#00000000" BorderBrush="#FFCBCBCB" RenderTransformOrigin="0.5,0.5" Height="31">
+        <Button MouseEnter="noDrag" MouseLeave="doDrag" Click="Close" Content="X" HorizontalAlignment="Left" Margin="843,6,0,0" VerticalAlignment="Top" Width="31" Background="#00000000" BorderBrush="#FFCBCBCB"/>
+        <Button MouseEnter="noDrag" MouseLeave="doDrag" Click="Mini" Content="|" HorizontalAlignment="Left" Margin="810,0,0,0" VerticalAlignment="Top" Width="20" Background="#00000000" BorderBrush="#FFCBCBCB" RenderTransformOrigin="0.5,0.5" Height="31">
             <Button.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform/>
@@ -22,39 +22,30 @@
                 </TransformGroup>
             </Button.RenderTransform>
         </Button>
-        <TextBox LostFocus="QuestIPCheck" FontFamily="lucida console" GotFocus="ClearText" MouseEnter="noDrag" MouseLeave="doDrag" Opacity="0.8" x:Name="Quest" HorizontalAlignment="Left" Height="23" Margin="203,30,0,0" TextWrapping="Wrap" Text="Quest IP" VerticalAlignment="Top" Width="445" Background="#FF494949" BorderBrush="#FFD30000" Foreground="White"/>
+        <TextBox LostFocus="QuestIPCheck" FontFamily="lucida console" GotFocus="ClearText" MouseEnter="noDrag" MouseLeave="doDrag" Opacity="0.8" x:Name="Quest" HorizontalAlignment="Left" Height="23" Margin="203,30,0,0" TextWrapping="Wrap" Text="Quest IP" VerticalAlignment="Top" Width="670" Background="#FF494949" BorderBrush="#FFD30000" Foreground="White"/>
 
-        <TextBox MouseEnter="noDrag" MouseLeave="doDrag" FontFamily="lucida console" Opacity="0.8" IsReadOnly="True" x:Name="txtbox" HorizontalAlignment="Left" Height="371" Margin="10,30,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="188" Background="#FF494949" Foreground="#FFA6A6A6" BorderBrush="#FFD30000"/>
+        <TextBox MouseEnter="noDrag" MouseLeave="doDrag" FontFamily="lucida console" Opacity="0.8" IsReadOnly="True" x:Name="txtbox" HorizontalAlignment="Left" Height="508" Margin="10,30,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="188" Background="#FF494949" Foreground="#FFA6A6A6" BorderBrush="#FFD30000"/>
         <AccessText Opacity="0.8" HorizontalAlignment="Left" Height="24" VerticalAlignment="Top" Width="249" RenderTransformOrigin="0.5,0.5" Text="BMBF Manager - Mod Installing" FontSize="14" Foreground="Black" Margin="40,4,0,0"/>
-        <Button MouseEnter="noDrag" MouseLeave="doDrag" FontFamily="lucida console" Opacity="0.8" Click="AddSelectedModToQueue" Content="Install selected Mod" HorizontalAlignment="Left" Margin="417,330,0,0" VerticalAlignment="Top" Width="230" Height="33" RenderTransformOrigin="-0.858,0.891" Background="#FF005654" Foreground="#FFF3F3F3" BorderBrush="#FFB94747"/>
-        <ListView MouseEnter="noDrag" MouseLeave="doDrag" FontFamily="lucida console" x:Name="ModList" HorizontalAlignment="Left" Height="267" Margin="203,58,0,0" Opacity="0.8" VerticalAlignment="Top" Width="445" Background="#0065a3" Foreground="#171717" BorderBrush="#FFB94747">
+        <Button MouseEnter="noDrag" MouseLeave="doDrag" FontFamily="lucida console" Opacity="0.8" Click="AddSelectedModToQueue" Content="Install/Update selected Mod" HorizontalAlignment="Left" Margin="525,463,0,0" VerticalAlignment="Top" Width="348" Height="33" RenderTransformOrigin="-0.858,0.891" Background="#FF005654" Foreground="#FFF3F3F3" BorderBrush="#FFB94747"/>
+        <ListView MouseEnter="noDrag" MouseLeave="doDrag" FontFamily="lucida console" x:Name="ModList" HorizontalAlignment="Left" Height="400" Margin="203,58,0,0" Opacity="0.8" VerticalAlignment="Top" Width="670" Background="#aaaaaa" Foreground="#171717" BorderBrush="#FFB94747">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Width="160" DisplayMemberBinding="{Binding Name}">
-                        <GridViewColumn.Header>
-                            <GridViewColumnHeader Tag="Name">Mod Name</GridViewColumnHeader>
-                        </GridViewColumn.Header>
+                    <GridViewColumn Header="Mod Name" Width="200" DisplayMemberBinding="{Binding Name}"/>
+                    <GridViewColumn Header="Creator(s)" Width="160" DisplayMemberBinding="{Binding Creator}"/>
+                    <GridViewColumn Header="installed" Width="80">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Path=ModVersion}" Foreground="{Binding Color}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-                    <GridViewColumn Width="120" DisplayMemberBinding="{Binding Creator}">
-                        <GridViewColumn.Header>
-                            <GridViewColumnHeader Tag="Creator">Creator</GridViewColumnHeader>
-                        </GridViewColumn.Header>
-                    </GridViewColumn>
-                    <GridViewColumn Width="60" DisplayMemberBinding="{Binding ModVersion}">
-                        <GridViewColumn.Header>
-                            <GridViewColumnHeader Tag="ModVersion">Version</GridViewColumnHeader>
-                        </GridViewColumn.Header>
-                    </GridViewColumn>
-                    <GridViewColumn Width="100" DisplayMemberBinding="{Binding GameVersion}">
-                        <GridViewColumn.Header>
-                            <GridViewColumnHeader Tag="GameVersion">Game Version</GridViewColumnHeader>
-                        </GridViewColumn.Header>
-                    </GridViewColumn>
+                    <GridViewColumn Header="latest" Width="80" DisplayMemberBinding="{Binding latest}"/>
+                    <GridViewColumn Header="Game Version" Width="140" DisplayMemberBinding="{Binding GameVersion}"/>
                 </GridView>
             </ListView.View>
         </ListView>
-        <Button MouseEnter="noDrag" MouseLeave="doDrag" FontFamily="lucida console" Opacity="0.8" Click="MoreInfo" Content="More Info" HorizontalAlignment="Left" Margin="205,330,0,0" VerticalAlignment="Top" Width="207" Height="33" RenderTransformOrigin="-0.858,0.891" Background="#FF005654" Foreground="#FFF3F3F3" BorderBrush="#FFB94747"/>
-        <Button MouseEnter="noDrag" MouseLeave="doDrag" FontFamily="lucida console" Opacity="0.8" Click="UpdateMods" Content="Update all Mods" HorizontalAlignment="Left" Margin="205,368,0,0" VerticalAlignment="Top" Width="442" Height="33" RenderTransformOrigin="-0.858,0.891" Background="#FF005654" Foreground="#FFF3F3F3" BorderBrush="#FFB94747"/>
+        <Button MouseEnter="noDrag" MouseLeave="doDrag" FontFamily="lucida console" Opacity="0.8" Click="MoreInfo" Content="More Info" HorizontalAlignment="Left" Margin="203,463,0,0" VerticalAlignment="Top" Width="315" Height="33" RenderTransformOrigin="-0.858,0.891" Background="#FF005654" Foreground="#FFF3F3F3" BorderBrush="#FFB94747"/>
+        <Button MouseEnter="noDrag" MouseLeave="doDrag" FontFamily="lucida console" Opacity="0.8" Click="UpdateMods" Content="Update all Mods" HorizontalAlignment="Left" Margin="203,505,0,0" VerticalAlignment="Top" Width="670" Height="33" RenderTransformOrigin="-0.858,0.891" Background="#FF005654" Foreground="#FFF3F3F3" BorderBrush="#FFB94747"/>
 
     </Grid>
 </Window>
