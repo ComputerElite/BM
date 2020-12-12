@@ -145,7 +145,7 @@ namespace BMBF_Manager
                                     BMBFVersion = BMBFMod["Version"];
                                 }
                             }
-                            AllModsList.Add(new Tuple<string, string, string, string, string, string, bool, Tuple<bool, String, String>>(Name, Version, download["download"].ToString().Replace("\"", ""), Creator, gameversion.ToString().Replace("\"", ""), mod["details"].ToString().Replace("\"", "").Replace("\\r\\n", System.Environment.NewLine), download["forward"].AsBool, new Tuple<bool, String, String>(download["coremod"].AsBool, mod["ModID"], BMBFVersion)));
+                            AllModsList.Add(new Tuple<string, string, string, string, string, string, bool, Tuple<bool, String, String>>(Name, Version, download["download"].ToString().Replace("\"", ""), Creator, gameversion.ToString().Replace("\"", ""), mod["details"].ToString().Replace("\"", "").Replace("\\r\\n", System.Environment.NewLine), download["forward"].AsBool, new Tuple<bool, String, String>(download["coremod"].AsBool, Name, BMBFVersion)));
                             break;
                         }
                     }
@@ -250,6 +250,7 @@ namespace BMBF_Manager
                                         BMBFVersion = BMBFMod["Version"];
                                     }
                                 }
+                                if (BMBFVersion == "0.0.0") BMBFVersion = "N/A";
                                 AllModsList.Add(new Tuple<string, string, string, string, string, string, bool, Tuple<bool, String, String>>(Name, Version, download["download"].ToString().Replace("\"", ""), Creator, gameversion.ToString().Replace("\"", ""), mod["details"].ToString().Replace("\"", "").Replace("\\r\\n", System.Environment.NewLine), download["forward"].AsBool, new Tuple<bool, String, String>(download["coremod"].AsBool, mod["ModID"], BMBFVersion)));
                             }
 
@@ -291,15 +292,19 @@ namespace BMBF_Manager
                 Boolean installed = false;
                 foreach (JSONNode BMBFMod in BMBF["Config"]["Mods"])
                 {
-                    if (BMBFMod["ID"].ToString().ToLower().Replace("\"", "") == cmod.Rest.Item2.ToLower().Replace("\"", ""))
+                    if(!BMBFMod["ID"].IsNull)
                     {
-                        BMBFVersion = BMBFMod["Version"];
-                        installed = true;
-                        break;
+                        if (BMBFMod["ID"].ToString().ToLower().Replace("\"", "") == cmod.Rest.Item2.ToLower().Replace("\"", ""))
+                        {
+                            BMBFVersion = BMBFMod["Version"];
+                            installed = true;
+                            break;
+                        }
                     }
                 }
+                
                 //Name, Version, DownloadLink, Creator, gameVersion, Desciption, Forward, new Tuple (CoreMod, ModID, currentversion)
-                ModList.Items.Add(new ModItem(cmod.Item1, cmod.Item4, cmod.Item5,cmod.Rest.Item3 , cmod.Item2, installed));
+                ModList.Items.Add(new ModItem(cmod.Item1, cmod.Item4, cmod.Item5, BMBFVersion , cmod.Item2, installed));
             }
         }
 
