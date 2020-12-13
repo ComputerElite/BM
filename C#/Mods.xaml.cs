@@ -516,14 +516,19 @@ namespace BMBF_Manager
         }
 
         public void AddSelectedModToQueue(object sender, RoutedEventArgs e)
-        {
-            if(downloadqueue.Contains(ModList.SelectedIndex))
+        {   
+            if(ModList.SelectedIndex < 0 || ModList.SelectedIndex > (ModList.Items.Count - 1))
+            {
+                txtbox.AppendText("\n\nPlease select a mod");
+                return;
+            }
+            if (downloadqueue.Contains(ModList.SelectedIndex))
             {
                 txtbox.AppendText("\nThe Mod " + AllModsList[ModList.SelectedIndex].Item1 + " is already in the download queue");
                 return;
             }
-            txtbox.AppendText("\n\nThe Mod " + AllModsList[ModList.SelectedIndex].Item1 + " was added to the queue");
             downloadqueue.Add(ModList.SelectedIndex);
+            txtbox.AppendText("\n\nThe Mod " + AllModsList[ModList.SelectedIndex].Item1 + " was added to the queue");
             checkqueue();
         }
 
@@ -677,7 +682,9 @@ namespace BMBF_Manager
                     txtbox.ScrollToEnd();
                     Running = false;
                     downloadqueue.RemoveAt(0);
+                    updatemodlist();
                     checkqueue();
+                    return;
                 }
                 catch
                 {
@@ -685,6 +692,7 @@ namespace BMBF_Manager
                     txtbox.ScrollToEnd();
                     Running = false;
                     downloadqueue.RemoveAt(0);
+                    updatemodlist();
                     checkqueue();
                     return;
                 }
@@ -695,6 +703,7 @@ namespace BMBF_Manager
                 txtbox.AppendText("\n\nSince you choose to install this mod... you need to enable it manually. I uploaded it.");
                 Running = false;
                 downloadqueue.RemoveAt(0);
+                updatemodlist();
                 checkqueue();
                 return;
             }
