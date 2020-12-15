@@ -16,11 +16,15 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using Application = System.Windows.Application;
+using MessageBox = System.Windows.MessageBox;
+using MouseEventArgs = System.Windows.Input.MouseEventArgs;
 
 namespace BMBF_Manager
 {
@@ -36,7 +40,7 @@ namespace BMBF_Manager
         int C = 0;
         private static Songs instance = new Songs();
         ArrayList SongKeys = new ArrayList();
-        List<String> downloadqueue = new List<String>();
+        List<Tuple<String, bool>> downloadqueue = new List<Tuple<String, bool>>();
 
         public Songs()
         {
@@ -337,18 +341,13 @@ namespace BMBF_Manager
                 txtbox.AppendText("\n\nChoose a valid IP.");
                 return;
             }
-            if (Running)
-            {
-                txtbox.AppendText("\n\nA Song Install is already running.");
-                return;
-            }
-            Running = true;
 
             String Input = "";
-            OpenFileDialog ofd = new OpenFileDialog();
+            System.Windows.Forms.OpenFileDialog ofd = new System.Windows.Forms.OpenFileDialog();
             ofd.Filter = "Zip Files (*.zip)|*.zip";
-            bool? result = ofd.ShowDialog();
-            if (result == true)
+            DialogResult result = ofd.ShowDialog();
+            if (result == System.Windows.Forms.DialogResult.Cancel) { Running = false; return; }
+            if (result == System.Windows.Forms.DialogResult.OK)
             {
                 //Get the path of specified file
                 if (File.Exists(ofd.FileName))
@@ -358,18 +357,22 @@ namespace BMBF_Manager
                 else
                 {
                     MessageBox.Show("Please select a valid Zip File", "BMBF Manager - Zip Song Installing", MessageBoxButton.OK, MessageBoxImage.Warning);
-                    Running = false;
                     return;
                 }
 
             }
-
             FileInfo fi = new FileInfo(Input);
             long ZipSize = fi.Length;
             if(ZipSize < 35000000) //35 MB
             {
-                upload(Input);
-                Running = false;
+                if (downloadqueue.Contains(new Tuple<string, bool>(Input, true)))
+                {
+                    txtbox.AppendText("\nThe Song " + System.IO.Path.GetFileName(Input) + " is already in the queue");
+                    return;
+                }
+                downloadqueue.Add(new Tuple<string, bool>(Input, true));
+                txtbox.AppendText("\n\n" + System.IO.Path.GetFileName(Input) + " has been added to the queue");
+                checkqueue();
                 return;
             }
 
@@ -380,7 +383,6 @@ namespace BMBF_Manager
                 case MessageBoxResult.No:
                     txtbox.AppendText("\n\nSong Installing Aborted");
                     txtbox.ScrollToEnd();
-                    Running = false;
                     return;
             }
 
@@ -419,9 +421,9 @@ namespace BMBF_Manager
 
             reloadsongsfolder();
 
-            //RestorePlaylists();
+            RestorePlaylists();
 
-            //txtbox.AppendText("\n\nInstalled Song.");
+            txtbox.AppendText("\n\nInstalled Song.");
         }
 
         public void BackupPlaylists()
@@ -439,12 +441,7 @@ namespace BMBF_Manager
                 }
                 var json = JSON.Parse(BMBF);
                 json["IsCommitted"] = false;
-                File.WriteAllText(exe + "\\tmp\\Config.json", json.ToString());
-
-                String Config = exe + "\\tmp\\config.json";
-
-                var j = JSON.Parse(File.ReadAllText(Config));
-                File.WriteAllText(exe + "\\tmp\\Playlists.json", j["Config"].ToString());
+                File.WriteAllText(exe + "\\tmp\\Playlists.json", json["Config"].ToString());
                 txtbox.AppendText("\n\nBacked up Playlists to " + exe + "\\tmp\\Playlists.json");
                 txtbox.ScrollToEnd();
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
@@ -549,7 +546,7 @@ namespace BMBF_Manager
 
         public void AddSelectedSongToQueue(object sender, RoutedEventArgs e)
         {
-            if (downloadqueue.Contains(SongKey.Text))
+            if (downloadqueue.Contains(new Tuple<string, bool>(SongKey.Text, false)))
             {
                 txtbox.AppendText("\nThe Song " + SongKey.Text + " is already in the download queue");
                 return;
@@ -561,7 +558,7 @@ namespace BMBF_Manager
                 return;
             }
             txtbox.AppendText("\n\nThe Song " + SongKey.Text + " was added to the queue");
-            downloadqueue.Add(SongKey.Text);
+            downloadqueue.Add(new Tuple<string, bool>(SongKey.Text, false));
             checkqueue();
         }
 
@@ -577,7 +574,13 @@ namespace BMBF_Manager
                 return;
             }
             Running = true;
-            Key = downloadqueue[0];
+            Key = downloadqueue[0].Item1;
+            if(downloadqueue[0].Item2)
+            {
+                adb("shell am start -n com.weloveoculus.BMBF/com.weloveoculus.BMBF.MainActivity");
+                upload(Key, true);
+                return;
+            }
             WebClient c = new WebClient();
             c.Headers.Add("user-agent", "BMBF Manager/1.0");
             try
@@ -625,18 +628,19 @@ namespace BMBF_Manager
             Running = false;
         }
 
-        public void upload(String path)
+        public void upload(String path, bool uploadfile = false)
         {
             getQuestIP();
 
             WebClient client = new WebClient();
             Uri uri = new Uri("http://" + MainWindow.IP + ":50000/host/beatsaber/upload?overwrite");
-            txtbox.AppendText("\n\nUploading BeatMap " + SongKey.Text + " to BMBF");
+            if(uploadfile) txtbox.AppendText("\n\nUploading BeatMap " + System.IO.Path.GetFileName(downloadqueue[0].Item1) + " to BMBF");
+            else txtbox.AppendText("\n\nUploading BeatMap " + downloadqueue[0].Item1 + " to BMBF");
             try
             {
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
                 {
-                    client.UploadFileCompleted += new UploadFileCompletedEventHandler(finished_upload);
+                    client.UploadFileCompleted += (sender, e) => finished_upload(sender, e, uploadfile);
                     client.UploadFileAsync(uri, path);
                 }));
 
@@ -647,7 +651,7 @@ namespace BMBF_Manager
             }
         }
 
-        private void finished_upload(object sender, AsyncCompletedEventArgs e)
+        private void finished_upload(object sender, AsyncCompletedEventArgs e, bool uploadfile)
         {
             try
             {
@@ -655,13 +659,17 @@ namespace BMBF_Manager
                 {
                     Sync();
                 }));
-                txtbox.AppendText("\n\nSong " + SongKey.Text + " was synced to your Quest.");
+                txtbox.AppendText("\n\nSong " + downloadqueue[0].Item1 + " was synced to your Quest.");
             }
             catch
             {
                 txtbox.AppendText("\n\nCouldn't sync with BeatSaber. Needs to be done manually.");
             }
             downloadqueue.RemoveAt(0);
+            if(uploadfile)
+            {
+                Running = false;
+            }
         }
 
         public void Sync()

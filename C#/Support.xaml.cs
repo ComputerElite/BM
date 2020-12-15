@@ -119,6 +119,7 @@ namespace BMBF_Manager
         {
             OpenFileDialog ofd = new OpenFileDialog();
             ofd.Filter = "Pictures (*.jpg, *.png, *.bmp, *.img, *.tif, *.tiff, *.webp)|*.jpg;*.png;*.bmp;*.img;*.tif;*.tiff;*.webp";
+            ofd.Multiselect = false;
             bool? result = ofd.ShowDialog();
             if (result == true)
             {
