@@ -168,9 +168,6 @@
     <Resource Include="Logo.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Songs3.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="HitSound3.png" />
   </ItemGroup>
   <ItemGroup>
@@ -190,7 +187,10 @@
     <Resource Include="Main8.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Mods5.png" />
+    <Resource Include="Mods6.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Songs5.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

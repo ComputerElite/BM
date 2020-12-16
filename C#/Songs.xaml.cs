@@ -46,6 +46,7 @@ namespace BMBF_Manager
         {
             InitializeComponent();
             Quest.Text = MainWindow.IP;
+            DownloadLable.Text = "All finished";
             if (MainWindow.CustomImage)
             {
                 ImageBrush uniformBrush = new ImageBrush();
@@ -56,7 +57,7 @@ namespace BMBF_Manager
             else
             {
                 ImageBrush uniformBrush = new ImageBrush();
-                uniformBrush.ImageSource = new BitmapImage(new Uri("pack://application:,,,/Songs3.png", UriKind.Absolute));
+                uniformBrush.ImageSource = new BitmapImage(new Uri("pack://application:,,,/Songs5.png", UriKind.Absolute));
                 uniformBrush.Stretch = Stretch.UniformToFill;
                 this.Background = uniformBrush;
             }
@@ -171,6 +172,7 @@ namespace BMBF_Manager
             catch
             {
                 txtbox.AppendText("\n\nThe BeatMap " + Key + " doesn't exist.");
+                txtbox.ScrollToEnd();
                 return;
             }
 
@@ -196,6 +198,7 @@ namespace BMBF_Manager
             txtbox.AppendText("\nSong Sub Name: " + SubName);
             txtbox.AppendText("\nBPM: " + BPM);
             txtbox.AppendText("\nBeatMap Key: " + Key);
+            txtbox.ScrollToEnd();
         }
 
         private void Search(object sender, RoutedEventArgs e)
@@ -213,6 +216,7 @@ namespace BMBF_Manager
             catch
             {
                 txtbox.AppendText("BeatSaver error");
+                txtbox.ScrollToEnd();
                 return;
             }
 
@@ -231,6 +235,7 @@ namespace BMBF_Manager
             if(SongKeys.Count < 1)
             {
                 txtbox.AppendText("\n\nNo results found. Try another Search Term");
+                txtbox.ScrollToEnd();
             }
 
             SongList.SelectedIndex = 0;
@@ -339,6 +344,7 @@ namespace BMBF_Manager
             if (!CheckIP())
             {
                 txtbox.AppendText("\n\nChoose a valid IP.");
+                txtbox.ScrollToEnd();
                 return;
             }
 
@@ -363,7 +369,7 @@ namespace BMBF_Manager
             }
             FileInfo fi = new FileInfo(Input);
             long ZipSize = fi.Length;
-            if(ZipSize < 35000000) //35 MB
+            if(ZipSize < 50000000) //35 MB
             {
                 if (downloadqueue.Contains(new Tuple<string, bool>(Input, true)))
                 {
@@ -376,7 +382,7 @@ namespace BMBF_Manager
                 return;
             }
 
-            MessageBoxResult result1 = MessageBox.Show("This Song is over 35MB. I will install it manually is your Quest connected?", "BMBF Manager - Zip Song installing", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+            MessageBoxResult result1 = MessageBox.Show("This Song is over 50MB. A experimental method to install sogns will be used. Is your Quest connected?", "BMBF Manager - Zip Song installing", MessageBoxButton.YesNo, MessageBoxImage.Warning);
 
             switch (result1)
             {
@@ -416,14 +422,17 @@ namespace BMBF_Manager
             BackupPlaylists();
 
             txtbox.AppendText("\n\nsyncing Song to Beat Saber");
+            txtbox.ScrollToEnd();
             Sync();
             txtbox.AppendText("\n\nsynced Song to Beat Saber");
+            txtbox.ScrollToEnd();
 
             reloadsongsfolder();
 
             RestorePlaylists();
 
             txtbox.AppendText("\n\nInstalled Song.");
+            txtbox.ScrollToEnd();
         }
 
         public void BackupPlaylists()
@@ -540,7 +549,9 @@ namespace BMBF_Manager
             }
             else
             {
-                txtbox.AppendText("\n\nAll downloads finished.");
+                txtbox.AppendText("\n\nAll finished.");
+                txtbox.ScrollToEnd();
+                DownloadLable.Text = "All finished";
             }
         }
 
@@ -549,11 +560,13 @@ namespace BMBF_Manager
             if (downloadqueue.Contains(new Tuple<string, bool>(SongKey.Text, false)))
             {
                 txtbox.AppendText("\nThe Song " + SongKey.Text + " is already in the download queue");
+                txtbox.ScrollToEnd();
                 return;
             }
             if (SongKey.Text == "Song Key")
             {
                 txtbox.AppendText("\n\nPlease Choose a Song.");
+                txtbox.ScrollToEnd();
                 Running = false;
                 return;
             }
@@ -567,6 +580,7 @@ namespace BMBF_Manager
             if (!CheckIP())
             {
                 txtbox.AppendText("\n\nChoose a valid IP.");
+                txtbox.ScrollToEnd();
                 return;
             }
             if (Running)
@@ -590,16 +604,18 @@ namespace BMBF_Manager
             catch
             {
                 txtbox.AppendText("\n\nThe BeatMap " + Key + " doesn't exist.");
+                txtbox.ScrollToEnd();
                 Running = false;
                 return;
             }
             C = 0;
-            while (File.Exists(exe + "\\tmp\\Song" + C + ".zip"))
+            while (File.Exists(exe + "\\tmp\\" + Key + C + ".zip"))
             {
                 C++;
             }
 
             txtbox.AppendText("\nDownloading BeatMap " + Key);
+            txtbox.ScrollToEnd();
             WebClient cl = new WebClient();
             cl.Headers.Add("user-agent", "BMBF Manager/1.0");
             Uri keys = new Uri("https://beatsaver.com/api/download/key/" + Key);
@@ -608,24 +624,36 @@ namespace BMBF_Manager
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
                 {
+                    DownloadLable.Text = "Downloading BeatMap " + Key;
+                    txtbox.ScrollToEnd();
+                    cl.DownloadProgressChanged += new DownloadProgressChangedEventHandler(client_DownloadProgressChanged);
                     cl.DownloadFileCompleted += new AsyncCompletedEventHandler(finished_download);
-                    cl.DownloadFileAsync(keys, exe + "\\tmp\\Song" + C + ".zip");
+                    cl.DownloadFileAsync(keys, exe + "\\tmp\\" + Key + C + ".zip");
                 }));
             }
             catch
             {
                 txtbox.AppendText("\n\nIf you see this something in the code messed up or ComputerElite is dumb");
+                txtbox.ScrollToEnd();
                 Running = false;
                 return;
             }
+        }
+
+        private void client_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
+        {
+            double bytesIn = double.Parse(e.BytesReceived.ToString());
+            double totalBytes = double.Parse(e.TotalBytesToReceive.ToString());
+            double percentage = bytesIn / totalBytes * 100;
+            Progress.Value = int.Parse(Math.Truncate(percentage).ToString());
         }
 
         public void finished_download(object sender, AsyncCompletedEventArgs e)
         {
             adb("shell am start -n com.weloveoculus.BMBF/com.weloveoculus.BMBF.MainActivity");
             txtbox.AppendText("\nDownloaded BeatMap " + Key + "\n");
-            upload(exe + "\\tmp\\Song" + C + ".zip");
-            Running = false;
+            txtbox.ScrollToEnd();
+            upload(exe + "\\tmp\\" + Key + C + ".zip");
         }
 
         public void upload(String path, bool uploadfile = false)
@@ -636,10 +664,14 @@ namespace BMBF_Manager
             Uri uri = new Uri("http://" + MainWindow.IP + ":50000/host/beatsaber/upload?overwrite");
             if(uploadfile) txtbox.AppendText("\n\nUploading BeatMap " + System.IO.Path.GetFileName(downloadqueue[0].Item1) + " to BMBF");
             else txtbox.AppendText("\n\nUploading BeatMap " + downloadqueue[0].Item1 + " to BMBF");
+            txtbox.ScrollToEnd();
             try
             {
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
                 {
+                    if (uploadfile) DownloadLable.Text = "Uploading " + System.IO.Path.GetFileName(downloadqueue[0].Item1) + " to BMBF";
+                    else DownloadLable.Text = "Uploading BeatMap " + downloadqueue[0].Item1 + " to BMBF";
+                    client.UploadProgressChanged += new UploadProgressChangedEventHandler(client_uploadchanged);
                     client.UploadFileCompleted += (sender, e) => finished_upload(sender, e, uploadfile);
                     client.UploadFileAsync(uri, path);
                 }));
@@ -648,7 +680,16 @@ namespace BMBF_Manager
             catch
             {
                 txtbox.AppendText("\n\nA error Occured (Code: BMBF100)");
+                txtbox.ScrollToEnd();
             }
+        }
+
+        private void client_uploadchanged(object sender, UploadProgressChangedEventArgs e)
+        {
+            double bytesIn = double.Parse(e.BytesSent.ToString());
+            double totalBytes = double.Parse(e.TotalBytesToSend.ToString());
+            double percentage = bytesIn / totalBytes * 100;
+            Progress.Value = int.Parse(Math.Truncate(percentage).ToString());
         }
 
         private void finished_upload(object sender, AsyncCompletedEventArgs e, bool uploadfile)
@@ -660,16 +701,17 @@ namespace BMBF_Manager
                     Sync();
                 }));
                 txtbox.AppendText("\n\nSong " + downloadqueue[0].Item1 + " was synced to your Quest.");
+                txtbox.ScrollToEnd();
             }
             catch
             {
                 txtbox.AppendText("\n\nCouldn't sync with BeatSaber. Needs to be done manually.");
+                txtbox.ScrollToEnd();
             }
             downloadqueue.RemoveAt(0);
-            if(uploadfile)
-            {
-                Running = false;
-            }
+            Running = false;
+            Progress.Value = 0;
+            checkqueue();
         }
 
         public void Sync()

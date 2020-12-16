@@ -36,13 +36,12 @@ namespace BMBF_Manager
         JSONNode BMBF = JSON.Parse("{}");
         int C = 0;
         int Index = 0;
-        double WindowWidth = 883;
-        double WindowHeight = 548;
 
         public Mods()
         {
             InitializeComponent();
             Quest.Text = MainWindow.IP;
+            DownloadLable.Text = "All finished";
             getMods();
             if (MainWindow.CustomImage)
             {
@@ -54,7 +53,7 @@ namespace BMBF_Manager
             else
             {
                 ImageBrush uniformBrush = new ImageBrush();
-                uniformBrush.ImageSource = new BitmapImage(new Uri("pack://application:,,,/Mods5.png", UriKind.Absolute));
+                uniformBrush.ImageSource = new BitmapImage(new Uri("pack://application:,,,/Mods6.png", UriKind.Absolute));
                 uniformBrush.Stretch = Stretch.UniformToFill;
                 this.Background = uniformBrush;
             }
@@ -74,7 +73,7 @@ namespace BMBF_Manager
             }
             catch
             {
-                txtbox.AppendText("\n\nError (Code: BM100). Couldn't reach the Quest Boards Website to get some available Mods.");
+                txtbox.AppendText("\n\nError (Code: BM100). Couldn't reach the Quest Boards Website to get some available Mods. Nothing crucial.");
             }
 
             try
@@ -283,6 +282,7 @@ namespace BMBF_Manager
                     txtbox.AppendText("\n\n\nError (Code: BMBF100). Couldn't acces BMBF Web Interface. Check Following:");
                     txtbox.AppendText("\n\n- You've put in the right IP");
                     txtbox.AppendText("\n\n- BMBF is opened");
+                    txtbox.ScrollToEnd();
                 }
             }
             ModList.Items.Clear();
@@ -418,7 +418,8 @@ namespace BMBF_Manager
                 InstallMod();
             } else
             {
-                txtbox.AppendText("\n\nAll downloads finished.");
+                txtbox.AppendText("\n\nAll finished.");
+                txtbox.ScrollToEnd();
             }
         }
 
@@ -427,6 +428,7 @@ namespace BMBF_Manager
             if (!CheckIP())
             {
                 txtbox.AppendText("\n\nChoose a valid IP.");
+                txtbox.ScrollToEnd();
                 return;
             }
             if (Running)
@@ -438,7 +440,7 @@ namespace BMBF_Manager
 
 
             C = 0;
-            while (File.Exists(exe + "\\tmp\\Mod" + C + ".zip"))
+            while (File.Exists(exe + "\\tmp\\" + AllModsList[downloadqueue[0]].Item1 + C + ".zip"))
             {
                 C++;
             }
@@ -502,8 +504,10 @@ namespace BMBF_Manager
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
                 {
+                    DownloadLable.Text = "Downloading " + AllModsList[Index].Item1;
                     c.DownloadFileCompleted += new AsyncCompletedEventHandler(finished_download);
-                    c.DownloadFileAsync(uri, exe + "\\tmp\\Mod" + C + ".zip");
+                    c.DownloadProgressChanged += new DownloadProgressChangedEventHandler(client_DownloadProgressChanged);
+                    c.DownloadFileAsync(uri, exe + "\\tmp\\" + AllModsList[Index].Item1 + C + ".zip");
                 }));
             }
             catch
@@ -515,6 +519,14 @@ namespace BMBF_Manager
             }
         }
 
+        private void client_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
+        {
+            double bytesIn = double.Parse(e.BytesReceived.ToString());
+            double totalBytes = double.Parse(e.TotalBytesToReceive.ToString());
+            double percentage = bytesIn / totalBytes * 100;
+            Progress.Value = int.Parse(Math.Truncate(percentage).ToString());
+        }
+
         public void AddSelectedModToQueue(object sender, RoutedEventArgs e)
         {   
             if(ModList.SelectedIndex < 0 || ModList.SelectedIndex > (ModList.Items.Count - 1))
@@ -524,11 +536,13 @@ namespace BMBF_Manager
             }
             if (downloadqueue.Contains(ModList.SelectedIndex))
             {
-                txtbox.AppendText("\nThe Mod " + AllModsList[ModList.SelectedIndex].Item1 + " is already in the download queue");
+                txtbox.AppendText("\n" + AllModsList[ModList.SelectedIndex].Item1 + " is already in the download queue");
+                txtbox.ScrollToEnd();
                 return;
             }
             downloadqueue.Add(ModList.SelectedIndex);
-            txtbox.AppendText("\n\nThe Mod " + AllModsList[ModList.SelectedIndex].Item1 + " was added to the queue");
+            txtbox.AppendText("\n\n" + AllModsList[ModList.SelectedIndex].Item1 + " was added to the queue");
+            txtbox.ScrollToEnd();
             checkqueue();
         }
 
@@ -568,7 +582,7 @@ namespace BMBF_Manager
                         if((MajorD >= Major && MinorD >= Minor && PatchD > Patch) || (MajorD >= Major && MinorD > Minor) || (MajorD > Major))
                         {
                             downloadqueue.Add(i);
-                            txtbox.AppendText("\nAdded mod " + m.Item1 + " version " + m.Item2 + " to queue");
+                            txtbox.AppendText("\nAdded " + m.Item1 + " version " + m.Item2 + " to queue");
                         }
                         break;
                     }
@@ -641,7 +655,7 @@ namespace BMBF_Manager
                 txtbox.AppendText("\nDownloaded Mod " + AllModsList[Index].Item1 + "\n");
                 txtbox.ScrollToEnd();
             }));
-            upload(exe + "\\tmp\\Mod" + C + ".zip");
+            upload(exe + "\\tmp\\" + AllModsList[Index].Item1 + C + ".zip");
         }
 
         public void upload(String path)
@@ -650,13 +664,15 @@ namespace BMBF_Manager
 
             TimeoutWebClient client = new TimeoutWebClient();
 
-            txtbox.AppendText("\n\nUploading Mod " + AllModsList[Index].Item1 + " to BMBF");
+            txtbox.AppendText("\n\nUploading " + AllModsList[Index].Item1 + " to BMBF");
             txtbox.ScrollToEnd();
             Uri uri = new Uri("http://" + MainWindow.IP + ":50000/host/beatsaber/upload?overwrite");
             try
             {
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
                 {
+                    DownloadLable.Text = "Uploading " + AllModsList[Index].Item1 + " to BMBF";
+                    client.UploadProgressChanged += new UploadProgressChangedEventHandler(client_uploadchanged);
                     client.UploadFileCompleted += new UploadFileCompletedEventHandler(finished_upload);
                     client.UploadFileAsync(uri, path);
                 }));
@@ -666,6 +682,14 @@ namespace BMBF_Manager
                 txtbox.AppendText("\n\nA error Occured (Code: BMBF100)");
                 txtbox.ScrollToEnd();
             }
+        }
+
+        private void client_uploadchanged(object sender, UploadProgressChangedEventArgs e)
+        {
+            double bytesIn = double.Parse(e.BytesSent.ToString());
+            double totalBytes = double.Parse(e.TotalBytesToSend.ToString());
+            double percentage = bytesIn / totalBytes * 100;
+            Progress.Value = int.Parse(Math.Truncate(percentage).ToString());
         }
 
         private void finished_upload(object sender, AsyncCompletedEventArgs e)
@@ -680,33 +704,26 @@ namespace BMBF_Manager
                     }));
                     txtbox.AppendText("\n\nMod " + AllModsList[Index].Item1 + " was synced to your Quest.");
                     txtbox.ScrollToEnd();
-                    Running = false;
-                    downloadqueue.RemoveAt(0);
-                    updatemodlist();
-                    checkqueue();
-                    return;
                 }
                 catch
                 {
                     txtbox.AppendText("\n\nCouldn't sync with BeatSaber. Needs to be done manually.");
                     txtbox.ScrollToEnd();
-                    Running = false;
-                    downloadqueue.RemoveAt(0);
-                    updatemodlist();
-                    checkqueue();
-                    return;
                 }
             }
             else
             {
                 Process.Start("http://" + MainWindow.IP + ":50000/main/mods");
                 txtbox.AppendText("\n\nSince you choose to install this mod... you need to enable it manually. I uploaded it.");
-                Running = false;
-                downloadqueue.RemoveAt(0);
-                updatemodlist();
-                checkqueue();
-                return;
+                txtbox.ScrollToEnd();
             }
+            Running = false;
+            DownloadLable.Text = "All finished";
+            Progress.Value = 0;
+            downloadqueue.RemoveAt(0);
+            updatemodlist();
+            checkqueue();
+            return;
         }
 
         public void postChanges(String Config)

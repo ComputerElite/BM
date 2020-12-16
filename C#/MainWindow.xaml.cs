@@ -29,7 +29,7 @@ namespace BMBF_Manager
     {
         int MajorV = 1;
         int MinorV = 8;
-        int PatchV = 4;
+        int PatchV = 6;
         Boolean Preview = false;
 
         public static Boolean CustomProtocols = false;
@@ -578,7 +578,12 @@ namespace BMBF_Manager
                 return;
             }
             Running = true;
-            CheckIP();
+            if(!CheckIP())
+            {
+                txtbox.AppendText("Please Type a valid IP");
+                Running = false;
+                return;
+            }
             getQuestIP();
             BMBF_Link();
             if (!adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/mods \"" + exe + "\\ModChecks"))
@@ -787,6 +792,7 @@ namespace BMBF_Manager
             adb("uninstall com.beatgames.beatsaber");
             client.UploadDataAsync(new Uri("http://" + MainWindow.IP + ":50000/host/mod/install/step2"), "POST", new byte[0]);
             client.UploadDataCompleted += new UploadDataCompletedEventHandler(finishedstep2);
+            txtbox.AppendText("\nStep 1 finished");
         }
 
         private void finishedstep2(object sender, UploadDataCompletedEventArgs e)
@@ -796,10 +802,12 @@ namespace BMBF_Manager
             adb("install -r \"" + exe + "\\tmp\\beatsabermod.apk\"");
             client.UploadDataAsync(new Uri("http://" + MainWindow.IP + ":50000/host/mod/install/step3"), "POST", new byte[0]);
             client.UploadDataCompleted += new UploadDataCompletedEventHandler(finishedstep3);
+            txtbox.AppendText("\nStep 2 finished");
         }
 
         private void finishedstep3(object sender, UploadDataCompletedEventArgs e)
         {
+            txtbox.AppendText("\nStep 3 finished");
             adb("shell am force-stop com.weloveoculus.BMBF");
             adb("shell am start -n com.weloveoculus.BMBF/com.weloveoculus.BMBF.MainActivity"); //Start BMBF
             adb("shell pm grant com.beatgames.beatsaber android.permission.READ_EXTERNAL_STORAGE"); //Grant permission read
