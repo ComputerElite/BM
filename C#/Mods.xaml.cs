@@ -89,7 +89,7 @@ namespace BMBF_Manager
                 Reaching = false;
             }
             String[] GameVersion = MainWindow.GameVersion.ToString().Replace("\"", "").Split('.');
-            //String[] GameVersion = "1.13.0".Replace("\"", "").Split('.');
+            //String[] GameVersion = "1.12.2".Replace("\"", "").Split('.');
             int major = Convert.ToInt32(GameVersion[0]);
             int minor = Convert.ToInt32(GameVersion[1]);
             int patch = Convert.ToInt32(GameVersion[2]);
@@ -104,26 +104,29 @@ namespace BMBF_Manager
                     Creator = Creator + Creat + ", ";
                 }
                 Creator = Creator.Substring(0, Creator.Length - 2);
-                String Version = mod["downloads"][0]["modversion"];
 
                 foreach (JSONNode download in mod["downloads"])
                 {
+                    String Version = download["modversion"];
+                    bool stop = false;
                     foreach (JSONNode gameversion in download["gameversion"])
                     {
                         String[] MGameVersion = gameversion.ToString().Replace("\"", "").Split('.');
                         int Mmajor = Convert.ToInt32(MGameVersion[0]);
                         int Mminor = Convert.ToInt32(MGameVersion[1]);
                         int Mpatch = 0;
-                        if(MGameVersion.Count() == 2)
+                        if (MGameVersion.Count() == 2)
                         {
                             Mpatch = 0;
-                        } else
+                        }
+                        else
                         {
                             Mpatch = Convert.ToInt32(MGameVersion[2]);
                         }
                         if (major == Mmajor && minor == Mminor && patch >= Mpatch)
                         {
                             Boolean existent = false;
+                            int ListIndex = 0;
                             foreach (Tuple<string, string, string, string, string, string, bool, Tuple<bool, String, String>> t in AllModsList)
                             {
                                 if ((String)t.Item1 == Name)
@@ -131,11 +134,11 @@ namespace BMBF_Manager
                                     existent = true;
                                     break;
                                 }
+                                ListIndex++;
                             }
                             if (existent) continue;
-                            
                             Version = download["modversion"];
-                            //Name, Version, DownloadLink, Creator, gameVersion, Desciption, Forward, new Tuple (CoreMod, ModID, currentversion)
+                            //Name, Version, DownloadLink, Creator, gameVersion, Desciption, Forward, new Tuple (CoreMod, ModID, currentversion, islatest)
                             String BMBFVersion = "0.0.0";
                             foreach (JSONNode BMBFMod in BMBF["Config"]["Mods"])
                             {
@@ -144,10 +147,13 @@ namespace BMBF_Manager
                                     BMBFVersion = BMBFMod["Version"];
                                 }
                             }
-                            AllModsList.Add(new Tuple<string, string, string, string, string, string, bool, Tuple<bool, String, String>>(Name, Version, download["download"].ToString().Replace("\"", ""), Creator, gameversion.ToString().Replace("\"", ""), mod["details"].ToString().Replace("\"", "").Replace("\\r\\n", System.Environment.NewLine), download["forward"].AsBool, new Tuple<bool, String, String>(download["coremod"].AsBool, Name, BMBFVersion)));
+                            AllModsList.Add(new Tuple<string, string, string, string, string, string, bool, Tuple<bool, String, String>>(Name, Version, download["download"].ToString().Replace("\"", ""), Creator, gameversion.ToString().Replace("\"", ""), mod["details"].ToString().Replace("\"", "").Replace("\\r\\n", System.Environment.NewLine), download["forward"].AsBool, new Tuple<bool, String, String>(download["coremod"].AsBool, mod["ModID"], BMBFVersion)));
+
+                            stop = true;
                             break;
                         }
                     }
+                    if (stop) break;
                 }
 
             }
@@ -167,10 +173,11 @@ namespace BMBF_Manager
                     Creator = Creator + Creat + ", ";
                 }
                 Creator = Creator.Substring(0, Creator.Length - 2);
-                String Version = mod["downloads"][0]["modversion"];
 
                 foreach (JSONNode download in mod["downloads"])
                 {
+                    String Version = download["modversion"];
+                    bool stop = false;
                     foreach (JSONNode gameversion in download["gameversion"])
                     {
                         String[] MGameVersion = gameversion.ToString().Replace("\"", "").Split('.');
@@ -253,10 +260,11 @@ namespace BMBF_Manager
                                 AllModsList.Add(new Tuple<string, string, string, string, string, string, bool, Tuple<bool, String, String>>(Name, Version, download["download"].ToString().Replace("\"", ""), Creator, gameversion.ToString().Replace("\"", ""), mod["details"].ToString().Replace("\"", "").Replace("\\r\\n", System.Environment.NewLine), download["forward"].AsBool, new Tuple<bool, String, String>(download["coremod"].AsBool, mod["ModID"], BMBFVersion)));
                             }
 
-                            
+                            stop = true;
                             break;
                         }
                     }
+                    if (stop) break;
                 }
 
             }
