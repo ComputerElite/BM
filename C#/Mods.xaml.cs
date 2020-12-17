@@ -808,7 +808,7 @@ namespace BMBF_Manager
                     PatchD = Convert.ToInt32(ModVD[2]);
                 }
                 catch { }
-                if (!(MajorD >= Major && MinorD >= Minor && PatchD > Patch) || !(MajorD >= Major && MinorD > Minor) || !(MajorD > Major))
+                if (!(MajorD >= Major && MinorD >= Minor && PatchD > Patch) && !(MajorD >= Major && MinorD > Minor) && !(MajorD > Major))
                 {
                     newColor.Color = Colors.Green;
                 }

@@ -40,7 +40,7 @@
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
                     <GridViewColumn Header="latest" Width="80" DisplayMemberBinding="{Binding latest}"/>
-                    <GridViewColumn Header="Game Version" Width="140" DisplayMemberBinding="{Binding GameVersion}"/>
+                    <GridViewColumn Header="Game Version" Width="110" DisplayMemberBinding="{Binding GameVersion}"/>
                 </GridView>
             </ListView.View>
         </ListView>
