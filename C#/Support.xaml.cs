@@ -19,6 +19,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using BeatSaverAPI;
 
 namespace BMBF_Manager
 {
@@ -36,6 +37,7 @@ namespace BMBF_Manager
         String Key = "abcd";
         List<Tuple<String, String, String, String, String, String, Boolean, Tuple<bool, String, String>>> AllModsList = new List<Tuple<String, String, String, String, String, String, Boolean, Tuple<bool, String, String>>>();
         JSONNode BMBFStable = JSON.Parse("{}");
+        BeatSaverAPIInteractor interactor = new BeatSaverAPIInteractor();
 
         public Support()
         {
@@ -781,11 +783,17 @@ namespace BMBF_Manager
             {
                 C++;
             }
-
+            BeatSaverAPISong song = interactor.GetBeatSaverAPISong(Key);
+            if(!song.GoodRequest)
+            {
+                txtbox.AppendText("The song " + Key + " doesn't exist");
+                Running = false;
+                return;
+            }
             txtbox.AppendText("\nDownloading BeatMap " + Key);
             TimeoutWebClient cl = new TimeoutWebClient();
             cl.Headers.Add("user-agent", "BMBF Manager/1.0");
-            Uri keys = new Uri("https://beatsaver.com/api/download/key/" + Key);
+            Uri keys = new Uri(interactor.BeatSaverLink + song.downloadURL);
             try
             {
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));

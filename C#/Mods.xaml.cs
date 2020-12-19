@@ -69,7 +69,7 @@ namespace BMBF_Manager
 
             try
             {
-                json = SimpleJSON.JSON.Parse(client.DownloadString("http://www.questboard.xyz/api/mods/"));
+                json = SimpleJSON.JSON.Parse(client.DownloadString("http://www.questmodding.com/api/mods/"));
             }
             catch
             {

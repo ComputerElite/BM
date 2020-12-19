@@ -25,6 +25,7 @@ using System.Windows.Threading;
 using Application = System.Windows.Application;
 using MessageBox = System.Windows.MessageBox;
 using MouseEventArgs = System.Windows.Input.MouseEventArgs;
+using BeatSaverAPI;
 
 namespace BMBF_Manager
 {
@@ -41,6 +42,7 @@ namespace BMBF_Manager
         private static Songs instance = new Songs();
         ArrayList SongKeys = new ArrayList();
         List<Tuple<String, bool>> downloadqueue = new List<Tuple<String, bool>>();
+        BeatSaverAPIInteractor interactor = new BeatSaverAPIInteractor();
 
         public Songs()
         {
@@ -164,25 +166,20 @@ namespace BMBF_Manager
             WebClient c = new WebClient();
             c.Headers.Add("user-agent", "BMBF Manager/1.0");
             Key = SongKey.Text;
-            String Details = "";
-            try
-            {
-                Details = c.DownloadString("https://beatsaver.com/api/maps/detail/" + Key);
-            }
-            catch
+
+            BeatSaberSong song = interactor.GetBeatSaberSong(Key);
+            if(!song.RequestGood)
             {
                 txtbox.AppendText("\n\nThe BeatMap " + Key + " doesn't exist.");
                 txtbox.ScrollToEnd();
                 return;
             }
-
-            var json = JSON.Parse(Details);
-
-            String SongName = json["metadata"]["songName"];
-            String SongArtist = json["metadata"]["songAuthorName"];
-            String MapAuthor = json["metadata"]["levelAuthorName"];
-            String SubName = json["metadata"]["songSubName"];
-            String BPM = json["metadata"]["bpm"];
+            
+            String SongName = song.SongName;
+            String SongArtist = song.SongArtist;
+            String MapAuthor = song.Mapper;
+            String SubName = song.SubName;
+            String BPM = song.BPM.ToString();
 
             if (SongName == "") SongName = "N/A";
             if (SongArtist == "") SongArtist = "N/A";
@@ -205,31 +202,22 @@ namespace BMBF_Manager
         {
             SongList.Items.Clear();
 
-            WebClient c = new WebClient();
-            c.Headers.Add("user-agent", "BMBF Manager/1.0");
-            String Term = "";
-            Uri u = new Uri("https://beatsaver.com/api/search/text?q=%22" + SearchTerm.Text + "%22");
-            try
-            {
-                Term = c.DownloadString(u);
-            }
-            catch
+            BeatSaverAPISearchResult result = interactor.SearchText(SearchTerm.Text);
+            if(!result.RequestGood)
             {
                 txtbox.AppendText("BeatSaver error");
                 txtbox.ScrollToEnd();
                 return;
             }
 
-            var result = JSON.Parse(Term);
-
-            foreach (JSONNode doc in result["docs"])
+            foreach (BeatSaverAPISong doc in result.docs)
             {
-                String Name = doc["metadata"]["songName"];
-                String Mapper = doc["metadata"]["levelAuthorName"];
-                String Artist = doc["metadata"]["songAuthorName"];
+                String Name = doc.name;
+                String Mapper = doc.metadata.levelAuthorName;
+                String Artist = doc.metadata.songAuthorName;
 
                 SongList.Items.Add(new SongItem { Name = Name, Mapper = Mapper, Artist = Artist });
-                SongKeys.Add(doc["key"]);
+                SongKeys.Add(doc.key);
             }
 
             if(SongKeys.Count < 1)
@@ -595,17 +583,14 @@ namespace BMBF_Manager
                 upload(Key, true);
                 return;
             }
-            WebClient c = new WebClient();
-            c.Headers.Add("user-agent", "BMBF Manager/1.0");
-            try
-            {
-                c.OpenRead("https://beatsaver.com/api/download/key/" + Key);
-            }
-            catch
+            BeatSaverAPISong song = interactor.GetBeatSaverAPISong(Key);
+            if(!song.GoodRequest)
             {
                 txtbox.AppendText("\n\nThe BeatMap " + Key + " doesn't exist.");
                 txtbox.ScrollToEnd();
                 Running = false;
+                downloadqueue.RemoveAt(0);
+                checkqueue();
                 return;
             }
             C = 0;
@@ -618,7 +603,7 @@ namespace BMBF_Manager
             txtbox.ScrollToEnd();
             WebClient cl = new WebClient();
             cl.Headers.Add("user-agent", "BMBF Manager/1.0");
-            Uri keys = new Uri("https://beatsaver.com/api/download/key/" + Key);
+            Uri keys = new Uri(interactor.BeatSaverLink + song.downloadURL);
             try
             {
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));

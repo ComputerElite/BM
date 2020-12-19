@@ -331,7 +331,7 @@ namespace BMBF_Manager
                 adb("push \"" + Scores + "\\LocalLeaderboards.dat\" /sdcard/Android/data/com.beatgames.beatsaber/files/LocalLeaderboards.dat");
                 adb("push \"" + Scores + "\\PlayerData.dat\" /sdcard/Android/data/com.beatgames.beatsaber/files/PlayerData.dat");
                 adb("push \"" + Scores + "\\AvatarData.dat\" /sdcard/Android/data/com.beatgames.beatsaber/files/AvatarData.dat");
-                adb("push \"" + Scores + "\\AvatarData.dat\" /sdcard/Android/data/com.beatgames.beatsaber/files/setting.cfg");
+                adb("push \"" + Scores + "\\settings.cfg\" /sdcard/Android/data/com.beatgames.beatsaber/files/setting.cfg");
                 txtbox.AppendText("\nPushed Scores");
                 txtbox.ScrollToEnd();
             }
