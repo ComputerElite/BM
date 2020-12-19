@@ -53,6 +53,13 @@ namespace BM_Update
                 File.Delete(exe + "\\Newtonsoft.Json.xml");
             }
 
+            if (File.Exists(exe + "\\Black_Background.png")) File.Delete(exe + "\\Black_Background.png");
+            if (File.Exists(exe + "\\Dark_Grey_Background.png")) File.Delete(exe + "\\Dark_Grey_Background.png");
+            if (File.Exists(exe + "\\Light_Grey_Background.png")) File.Delete(exe + "\\Light_Grey_Background.png");
+            if (File.Exists(exe + "\\White_Background.png")) File.Delete(exe + "\\White_Background.png");
+            if (File.Exists(exe + "\\Microsoft.WindowsAPICodePack.dll")) File.Delete(exe + "\\Microsoft.WindowsAPICodePack.dll");
+            if (File.Exists(exe + "\\Microsoft.WindowsAPICodePack.Shell.dll")) File.Delete(exe + "\\Microsoft.WindowsAPICodePack.Shell.dll");
+
             if (!Directory.Exists(exe + "\\tmp"))
             {
                 Directory.CreateDirectory(exe + "\\tmp");
