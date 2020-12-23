@@ -1,20 +1,6 @@
 {
     "modelerQSabers": [
         {
-            "name": "St.Nick",
-            "author": "Kentros",
-            "imageURL": "https://cdn.discordapp.com/attachments/738483586822570046/786402721585692713/unknown.png",
-            "downloadURL": "https://cdn.discordapp.com/attachments/738483586822570046/786119947109138482/SIVASaberV1.0.0.zip",
-            "msgID": "779815384861507665"
-        },
-        {
-            "name": "NeonCity",
-            "author": "Kentros",
-            "imageURL": "https://cdn.discordapp.com/attachments/738483586822570046/779815319949934702/unknown.png",
-            "downloadURL": "https://cdn.discordapp.com/attachments/738483586822570046/779815384869240862/NeonCityV1.0.0.zip",
-            "msgID": "779815321665273858"
-        },
-        {
             "name": "Neon City",
             "author": "Kentros",
             "imageURL": "https://cdn.discordapp.com/attachments/738483586822570046/779815319949934702/unknown.png",
