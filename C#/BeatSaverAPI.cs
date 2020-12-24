@@ -58,6 +58,17 @@ namespace BeatSaverAPI
             if (docs.Count < 1) return false;
             return true;
         }
+
+        public BeatSaverAPISong GetFirstResult()
+        {
+            BeatSaverAPISong song = new BeatSaverAPISong();
+            if (HasResults())
+            {
+                song = docs[0];
+                song.GoodRequest = true;
+            }
+            return song;
+        }
     }
 
     public class BeatSaverAPISong
@@ -241,7 +252,7 @@ namespace BeatSaverAPI
 
         public bool IsThreeSixtyDegree()
         {
-            if (name.ToLower() == "360Degree") return true;
+            if (name.ToLower() == "360degree") return true;
             else return false;
         }
     }
@@ -457,7 +468,7 @@ namespace BeatSaverAPI
         public BeatSaverAPISong GetBeatSaverAPISong(String HashOrKey)
         {
             BeatSaverAPISong song = GetBeatSaverAPISongViaKey(HashOrKey);
-            if(!song.GoodRequest)
+            if (!song.GoodRequest)
             {
                 song = GetBeatSaverAPISongViaHash(HashOrKey);
             }
@@ -467,7 +478,7 @@ namespace BeatSaverAPI
         public BeatSaberSong GetBeatSaberSong(String HashOrKey)
         {
             BeatSaberSong song = GetBeatSaberSongViaKey(HashOrKey);
-            if(!song.RequestGood)
+            if (!song.RequestGood)
             {
                 song = GetBeatSaberSongViaHash(HashOrKey);
             }

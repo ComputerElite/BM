@@ -34,6 +34,7 @@ namespace BMBF_Manager
 
         public static Boolean CustomProtocols = false;
         public static Boolean QuestSoundsInstalled = false;
+        public static bool QosmeticsInstalled = false;
         public static Boolean CustomImage = false;
         public static Boolean BBBUTransfered = false;
         public static Boolean QSUTransfered = false;
@@ -41,6 +42,7 @@ namespace BMBF_Manager
         public static Boolean Converted = false;
         public static Boolean OneClick = false;
         public static Boolean KeepAlive = true;
+        public static bool QosmeticsWarningShown = false;
         Boolean draggable = true;
         Boolean Running = false;
         Boolean ComeFromUpdate = false;
@@ -81,7 +83,7 @@ namespace BMBF_Manager
             else
             {
                 ImageBrush uniformBrush = new ImageBrush();
-                uniformBrush.ImageSource = new BitmapImage(new Uri("pack://application:,,,/Main8.png", UriKind.Absolute));
+                uniformBrush.ImageSource = new BitmapImage(new Uri("pack://application:,,,/Main9.png", UriKind.Absolute));
                 uniformBrush.Stretch = Stretch.UniformToFill;
                 this.Background = uniformBrush;
             }
@@ -143,6 +145,7 @@ namespace BMBF_Manager
             OneClick = json["OneClick"].AsBool;
             KeepAlive = json["KeepAlive"].AsBool;
             IP = json["IP"];
+            QosmeticsWarningShown = json["QosmeticsWarningShown"].AsBool;
             BBBUTransfered = json["BBBUTransfered"].AsBool;
             QSUTransfered = json["QSUTransfered"].AsBool;
             ShowADB = json["ShowADB"].AsBool;
@@ -151,6 +154,7 @@ namespace BMBF_Manager
                 GameVersion = json["GameVersion"];
             }
             QuestSoundsInstalled = json["QSoundsInstalled"].AsBool;
+            QosmeticsInstalled = json["QosmeticsInstalled"].AsBool;
 
             ComeFromUpdate = json["ComeFromUpdate"].AsBool;
 
@@ -196,6 +200,7 @@ namespace BMBF_Manager
             json["Location"] = System.Reflection.Assembly.GetEntryAssembly().Location;
             json["CustomProtocols"] = CustomProtocols;
             json["QSoundsInstalled"] = QuestSoundsInstalled;
+            json["QosmeticsInstalled"] = QosmeticsInstalled;
             json["CustomImage"] = CustomImage;
             json["CustomImageSource"] = CustomImageSource;
             json["GameVersion"] = GameVersion;
@@ -206,6 +211,7 @@ namespace BMBF_Manager
             json["Converted"] = Converted;
             json["OneClick"] = OneClick;
             json["KeepAlive"] = KeepAlive;
+            json["QosmeticsWarningShown"] = QosmeticsWarningShown; 
             int i = 0;
             foreach(String ADBPath in ADBPaths)
             {
@@ -1117,6 +1123,13 @@ namespace BMBF_Manager
             CheckIP();
             QSU QSUWindow = new QSU();
             QSUWindow.Show();
+        }
+
+        private void Qosmetics(object sender, RoutedEventArgs e)
+        {
+            CheckIP();
+            Qosmetics QosmeticsWindow = new Qosmetics();
+            QosmeticsWindow.Show();
         }
 
         internal void CustomProto(string Link)

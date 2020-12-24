@@ -557,7 +557,18 @@ namespace BMBF_Manager
         public void UpdateMods(object sender, RoutedEventArgs e)
         {
             TimeoutWebClientShort c = new TimeoutWebClientShort();
-            JSONNode BMBF = JSON.Parse(c.DownloadString("http://" + MainWindow.IP + ":50000/host/beatsaber/config"));
+            try
+            {
+                BMBF = JSON.Parse(c.DownloadString("http://" + MainWindow.IP + ":50000/host/beatsaber/config"));
+            }
+            catch
+            {
+                txtbox.AppendText("\n\n\nError (Code: BMBF100). Couldn't acces BMBF Web Interface. Check Following:");
+                txtbox.AppendText("\n\n- You've put in the right IP");
+                txtbox.AppendText("\n\n- BMBF is opened");
+                txtbox.ScrollToEnd();
+                return;
+            }
             int i = 0;
             foreach(JSONNode Mod in BMBF["Config"]["Mods"])
             {

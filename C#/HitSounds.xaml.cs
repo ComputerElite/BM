@@ -232,7 +232,7 @@ namespace BMBF_Manager
             if (!adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/mod_cfgs/QuestSounds.json \"" + exe + "\\tmp\\QSounds.json\"")) return;
             if (!File.Exists(exe + "\\tmp\\QSounds.json"))
             {
-                txtbox.AppendText("\n\nDo you have your Quest pluggwd into your PC? Do you have the QuestSounds mod installed? I was unable to change the config");
+                txtbox.AppendText("\n\nDo you have your Quest plugged into your PC? Do you have the QuestSounds mod installed? I was unable to change the config");
                 return;
             }
             JSONNode config = JSON.Parse(File.ReadAllText(exe + "\\tmp\\QSounds.json"));

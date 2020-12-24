@@ -73,11 +73,11 @@ namespace BMBF_Manager
             if(MainWindow.KeepAlive)
             {
                 MainWindow.KeepAlive = false;
-                txtbox.AppendText("Keep Alive has been disabled.");
+                txtbox.AppendText("\n\nKeep Alive has been disabled.");
 
             } else
             {
-                MessageBoxResult result = MessageBox.Show("Are you sure you want to enable Keep Alive? That will result in your Quest not going to sleep until the program get's closed.\nThis will only work as long as your Quest is reachable via ADB (connected via cable)\nRightly recommended for Quest 2 Users", "BMBF Manager - Settings", MessageBoxButton.YesNo, MessageBoxImage.Information);
+                MessageBoxResult result = MessageBox.Show("Are you sure you want to enable Keep Alive? That will result in your Quest not going to sleep until the program get's closed.\nThis will only work as long as your Quest is reachable via ADB (connected via cable)\nHightly recommended for Quest 2 Users", "BMBF Manager - Settings", MessageBoxButton.YesNo, MessageBoxImage.Information);
                 switch (result)
                 {
                     case MessageBoxResult.No:
@@ -87,7 +87,7 @@ namespace BMBF_Manager
                         return;
                 }
                 MainWindow.KeepAlive = true;
-                txtbox.AppendText("Keep Alive has been enabled.");
+                txtbox.AppendText("\n\nKeep Alive has been enabled.");
             }
         }
 
@@ -131,7 +131,7 @@ namespace BMBF_Manager
                     MainWindow.CustomImageSource = ofd.FileName;
                     MainWindow.CustomImage = true;
                     UpdateImage();
-                    txtbox.AppendText("\n\nFor the changes to take effect program wide you have to restert it.");
+                    txtbox.AppendText("\n\nFor the changes to take effect program wide you have to restart it.");
                 }
                 else
                 {
