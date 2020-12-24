@@ -5,62 +5,8 @@ The Utility to Install Songs, Install Mods, Install/Update BMBF, Install HitSoun
 ## **Before you do anything you should enable developer mode if you didn't**
 ## The First Time you launch the program it asks you for administrative access. If you want the best support click yes. otherwise no. (can be changed any time in the support section)
 ![EnableDevMode](https://github.com/ComputerElite/wiki/blob/main/BM/EnableDevMode.png)
-## Install new Songs
-### 1. Option
-Open "BMBF Manager.exe", put in your Quests IP (if it hasn't picked it up automatically) and click "Install Songs". Put a Search term in the box named "Search Term" and hit "Search". Select the Song you want from the list below. Then check if it is the right Song by clicking "See Song Metadata". If it is the right Song click "Install Song". The Song will install to your Quest.
-### 2. Option
-Open "BMBF Manager.exe", put in your Quests IP (if it hasn't picked it up automatically) and click "Install Songs". Then go to [BeatSaver.com](https://beatsaver.com) and search for your Song. Put the Song Key shown in the Song Key box in the new window that appeared.
 
-![SongKey](https://github.com/ComputerElite/wiki/blob/main/BM/BeatSaver%20Key.png)
-
-Check if it is the right Song by clicking "See Song Metadata". If it is the right Song click "Install Song". The Song will install to your Quest.
-## Install new Mods
-Open "BMBF Manager.exe", put in your Quests IP (if it hasn't picked it up automatically) and click "Install Mods". Then choose a mod from the list and click "More Info", if you want more Info about the mod you choose. click "Install selected mod" once you selected a Mod. The Mod will install to your Quest.
-## Install/Update BMBF
-Connect your Quest to your PC with a USB Cable and open "BMBF Manager.exe". Make sure you have unmodded Beat Saber (the one you download from the oculus store) and have at least opened it once. Then hit "Update/Install BMBF". Read the pop ups carefully and follow them.. After it has finished you are ready to go.
-## Switch between modded and unmodded Beat Saber
-Connect your Quest to your PC with a USB cable, open "BMBF Manager.exe" and hit "Switch between modded and unmodded Beat Saber". Wait a bit and you will be able to play multiplayer again/play again with mods and custom Songs.
-## Install HitSounds
-Open "BMBF Manager.exe", put in your Quests IP (if it hasn't picked it up automatically) and click "Install HitSounds". Then choose your desired sound via the choose button and then check the box which sound it should bee. Then hit the install button and the Song (and meybe the QuestSounds mod if you don't have it) will install.
-## Download BPLists
-Open "BMBF Manager.exe", put in your Quests IP (if it hasn't picked it up automatically) and click "Download BPLists". Then put in how many songs you want and click "Install ranked Songs from ScoreSaber" to get ranked songs from Scoresaber. The Songs will install to your Quest and you have to Click Sync to Beat Saber once it appears.
-## Backup BMBF and Beat Saber
-Open "BMBF Manager.exe", put in your Quests IP (if it hasn't picked it up automatically) and click "BMBF and Beat Saber Backup Utility".Then click "Backup" and wait a few minutes until everything has finished.
-## Backup game Version
-Open "BMBF Manager.exe", put in your Quests IP (if it hasn't picked it up automatically) and click "BMBF and Beat Saber Backup Utility".Then click "Advanced Backup" and wait a few minutes until everything has finished.
-
-## Restore BMBF and Beat Saber
-Open "BMBF Manager.exe", put in your Quests IP (if it hasn't picked it up automatically) and click "BMBF and Beat Saber Backup Utility". Then Click the Boxes to choose what to restore and select a Backup in the dropdown Menu. After that click "Restore" and wait a few minutes until it has finished.
-
-## Save Songs
-Open "BMBF Manager.exe", put in your Quests IP (if it hasn't picked it up automatically) and click "Quest Song Utilities" Check "Auto Mode (Quest only)" (adb or SideQuest required). Then click start and wait a few minutes (about 1 - 6). After it has finished it'll let you know how many Songs it zipped.
-<br/>
-<br/>
-
-## Make Song List
-Do everything as above and check "Make List of all songs". This will create a List of all Your Songs with information like Song name, BPM, Song sub name, song author, etc.
-<br/>
-<br/>
-
-## How to do Playlist Backups
-Open "BMBF Manager.exe", put in your Quests IP (if it hasn't picked it up automatically) and click "Quest Song Utilities". Then enter a Backup name and click "Backup Playlists". The It'll save your Playlists.
-
-**Note: It Does Not save Songs. Only Playlist Configuration gets saved.**
-<br/>
-<br/>
-
-## How to restore Playlists
-Open "BMBF Manager.exe", put in your Quests IP (if it hasn't picked it up automatically) and click "Quest Song Utilities". Then choose the Backup in the drop down menu. Then press Restore Playlists.
-
-**Note: No Songs get restored. Be sure that you have all Songs that you had when you made the Backup.**
-## How to make BPLists from your Playlists
-Open "BMBF Manager.exe", put in your Quests IP (if it hasn't picked it up automatically) and click "Quest Song Utilities". Then click "Load Playlists". Then choose the Playlist you want and click "Make BPList". It'll save a .bplist file in the BPLists folder. 
-<br/>
-<br/>
-## How to delete Playlists with the Songs
-Open "BMBF Manager.exe", put in your Quests IP (if it hasn't picked it up automatically) and click "Quest Song Utilities". Then click "Load Playlists". Then choose the Playlist you want to delete and click "Delete selected Playlists".
-<br/>
-<br/>
+## All Instructions are [here](https://github.com/ComputerElite/wiki/wiki/BM)
 
 # Contributers
 - Bunny83 with [SimpleJSON.cs](https://github.com/Bunny83/SimpleJSON/blob/master/SimpleJSON.cs)
