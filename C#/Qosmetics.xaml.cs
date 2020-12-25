@@ -51,7 +51,7 @@ namespace BMBF_Manager
             else
             {
                 ImageBrush uniformBrush = new ImageBrush();
-                uniformBrush.ImageSource = new BitmapImage(new Uri("pack://application:,,,/Qosmetics.png", UriKind.Absolute));
+                uniformBrush.ImageSource = new BitmapImage(new Uri("pack://application:,,,/Qosmetics2.png", UriKind.Absolute));
                 uniformBrush.Stretch = Stretch.UniformToFill;
                 this.Background = uniformBrush;
             }
@@ -320,6 +320,16 @@ namespace BMBF_Manager
             Process.Start(qj.AllQSabers[QSaberList.SelectedIndex].imageURL);
         }
 
+        private void QSaberMessage(object sender, RoutedEventArgs e)
+        {
+            if (QSaberList.SelectedIndex < 0 || QSaberList.SelectedIndex > (qj.AllQSabers.Count - 1))
+            {
+                return;
+            }
+
+            MessageBox.Show("QSaber: " + qj.AllQSabers[QSaberList.SelectedIndex].name + "\nMessage Author: " + qj.AllQSabers[QSaberList.SelectedIndex].author + "\nMessage:\n\n" + qj.AllQSabers[QSaberList.SelectedIndex].orgmessage, "BMBF Manager - Qosmetics Installing");
+        }
+
         private void AddQSaberQueue(object sender, RoutedEventArgs e)
         {
             if (QSaberList.SelectedIndex < 0 || QSaberList.SelectedIndex > (qj.AllQSabers.Count - 1))
@@ -356,6 +366,16 @@ namespace BMBF_Manager
                 return;
             }
             Process.Start(qj.qWalls[QWallList.SelectedIndex].imageURL);
+        }
+
+        private void QWallMessage(object sender, RoutedEventArgs e)
+        {
+            if (QWallList.SelectedIndex < 0 || QWallList.SelectedIndex > (qj.qWalls.Count - 1))
+            {
+                return;
+            }
+
+            MessageBox.Show("QWall: " + qj.qWalls[QWallList.SelectedIndex].name + "\nMessage Author: " + qj.qWalls[QWallList.SelectedIndex].author + "\nMessage:\n\n" + qj.qWalls[QWallList.SelectedIndex].orgmessage, "BMBF Manager - Qosmetics Installing");
         }
 
         private void AddQWallQueue(object sender, RoutedEventArgs e)
@@ -404,6 +424,16 @@ namespace BMBF_Manager
             }));
         }
 
+        private void QBloqMessage(object sender, RoutedEventArgs e)
+        {
+            if (QBloqList.SelectedIndex < 0 || QBloqList.SelectedIndex > (qj.qBloqs.Count - 1))
+            {
+                return;
+            }
+
+            MessageBox.Show("QBloq: " + qj.qBloqs[QBloqList.SelectedIndex].name + "\nMessage Author: " + qj.qBloqs[QBloqList.SelectedIndex].author + "\nMessage:\n\n" + qj.qBloqs[QBloqList.SelectedIndex].orgmessage, "BMBF Manager - Qosmetics Installing");
+        }
+
         private void AddQBloqQueue(object sender, RoutedEventArgs e)
         {
             if (QBloqList.SelectedIndex < 0 || QBloqList.SelectedIndex > (qj.qBloqs.Count - 1))
@@ -411,7 +441,7 @@ namespace BMBF_Manager
                 return;
             }
 
-            if(downloadqueue.Contains(qj.qBloqs[QBloqList.SelectedIndex]))
+            if (downloadqueue.Contains(qj.qBloqs[QBloqList.SelectedIndex]))
             {
                 txtbox.AppendText("\n" + qj.qBloqs[QBloqList.SelectedIndex].name + " is already in the download queue");
                 return;

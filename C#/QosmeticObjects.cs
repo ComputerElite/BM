@@ -51,6 +51,7 @@ namespace Qosmetics
     {
         public string name { get; set; } = "N/A";
         public string author { get; set; } = "N/A";
+        public string orgmessage { get; set; } = "N/A";
         public string imageURL { get; set; } = "N/A";
         public string downloadURL { get; set; } = "N/A";
     }

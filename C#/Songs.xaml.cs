@@ -543,6 +543,12 @@ namespace BMBF_Manager
             }
         }
 
+        public void InstallSong(String Key)
+        {
+            downloadqueue.Add(new Tuple<string, bool>(Key, false));
+            checkqueue();
+        }
+
         public void AddSelectedSongToQueue(object sender, RoutedEventArgs e)
         {
             if (downloadqueue.Contains(new Tuple<string, bool>(SongKey.Text, false)))

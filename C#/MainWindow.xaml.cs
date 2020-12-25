@@ -29,7 +29,7 @@ namespace BMBF_Manager
     {
         int MajorV = 1;
         int MinorV = 9;
-        int PatchV = 0;
+        int PatchV = 1;
         Boolean Preview = false;
 
         public static Boolean CustomProtocols = false;
@@ -578,13 +578,18 @@ namespace BMBF_Manager
 
         private void UpdateBMBF(object sender, RoutedEventArgs e)
         {
-            if(Running)
+            StartBMBFUpdate();
+        }
+
+        public void StartBMBFUpdate()
+        {
+            if (Running)
             {
                 txtbox.AppendText("\n\nA operation is already running. Please try again after it has finished.");
                 return;
             }
             Running = true;
-            if(!CheckIP())
+            if (!CheckIP())
             {
                 txtbox.AppendText("Please Type a valid IP");
                 Running = false;
@@ -617,12 +622,13 @@ namespace BMBF_Manager
                 }
 
                 //Backup Playlists
-                try {
+                try
+                {
                     txtbox.AppendText("\n\nBacking up Playlist to " + exe + "\\Backup\\Playlists.json");
                     txtbox.ScrollToEnd();
                     Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
 
-                    if(!adb("pull /sdcard/BMBFData/Playlists/ \"" + exe + "\\Backup\"")) return;
+                    if (!adb("pull /sdcard/BMBFData/Playlists/ \"" + exe + "\\Backup\"")) return;
 
                     WebClient client2 = new WebClient();
 
@@ -631,7 +637,8 @@ namespace BMBF_Manager
                     txtbox.AppendText("\n\nBacked up Playlists to " + exe + "\\Backup\\Playlists.json");
                     txtbox.ScrollToEnd();
                     Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
-                } catch
+                }
+                catch
                 {
                     txtbox.AppendText("\n\n\nAn error occured (Code: PL100). Check following:");
                     txtbox.AppendText("\n\n- You put in the Quests IP right.");
@@ -641,7 +648,7 @@ namespace BMBF_Manager
                 }
 
 
-            if (!adb("uninstall com.beatgames.beatsaber"))
+                if (!adb("uninstall com.beatgames.beatsaber"))
                 {
                     Running = false;
                     return;
@@ -661,7 +668,8 @@ namespace BMBF_Manager
                         Running = false;
                         return;
                 }
-            } else
+            }
+            else
             {
                 if (!adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/ \"" + exe + "\\Backup\""))
                 {
@@ -679,18 +687,18 @@ namespace BMBF_Manager
                 }
             }
 
-            if(Directory.Exists(exe + "\\ModChecks\\mods")) Directory.Delete(exe + "\\ModChecks\\mods", true);
-            
+            if (Directory.Exists(exe + "\\ModChecks\\mods")) Directory.Delete(exe + "\\ModChecks\\mods", true);
+
             if (Directory.Exists(exe + "\\Backup\\files\\mods")) Directory.Delete(exe + "\\Backup\\files\\mods", true);
             if (Directory.Exists(exe + "\\Backup\\files\\libs")) Directory.Delete(exe + "\\Backup\\files\\libs", true);
             Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
 
             List<String> BadBMBF = new List<String>();
-            foreach(JSONNode version in UpdateJSON["BadBMBF"])
+            foreach (JSONNode version in UpdateJSON["BadBMBF"])
             {
-                foreach(JSONNode bmbf in BMBFStable)
+                foreach (JSONNode bmbf in BMBFStable)
                 {
-                    if(bmbf["tag"].ToString().Replace("\"", "") == version.ToString().Replace("\"", ""))
+                    if (bmbf["tag"].ToString().Replace("\"", "") == version.ToString().Replace("\"", ""))
                     {
                         BadBMBF.Add(bmbf["id"].ToString().Replace("\"", ""));
                         break;
@@ -698,12 +706,12 @@ namespace BMBF_Manager
                 }
             }
 
-            if(BadBMBF.Contains(BMBFStable[0]["id"].ToString().Replace("\"", "")))
+            if (BadBMBF.Contains(BMBFStable[0]["id"].ToString().Replace("\"", "")))
             {
                 JSONNode lastBMBF = JSON.Parse("{}");
                 foreach (JSONNode bmbf in BMBFStable)
                 {
-                    if(!BadBMBF.Contains(bmbf["id"].ToString().Replace("\"", "")))
+                    if (!BadBMBF.Contains(bmbf["id"].ToString().Replace("\"", "")))
                     {
                         lastBMBF = bmbf;
                         break;
@@ -737,7 +745,8 @@ namespace BMBF_Manager
                         }
                         break;
                 }
-            } else
+            }
+            else
             {
                 foreach (JSONNode asset in BMBFStable[0]["assets"])
                 {
@@ -754,7 +763,7 @@ namespace BMBF_Manager
                 client2.DownloadFileAsync(new Uri(BMBF), exe + "\\tmp\\BMBF.apk");
                 client2.DownloadFileCompleted += new AsyncCompletedEventHandler(finishedBMBFDownload);
             }
-            
+
         }
 
         private void finishedBMBFDownload(object sender, AsyncCompletedEventArgs e)
@@ -900,6 +909,11 @@ namespace BMBF_Manager
 
         public void SwitchVersion(object sender, RoutedEventArgs e)
         {
+            StartVersionSwitch();
+        }
+
+        public void StartVersionSwitch()
+        {
             if (Running)
             {
                 txtbox.AppendText("\n\nA operation is already running. Please try again after it has finished.");
@@ -921,7 +935,7 @@ namespace BMBF_Manager
             if (Directory.Exists(exe + "\\ModChecks\\mods"))
             {
                 //game is modded
-                
+
                 if (File.Exists(exe + "\\Backups\\modded.apk"))
                 {
                     //Unmodded Beat Saber may be installed
@@ -999,7 +1013,8 @@ namespace BMBF_Manager
                     txtbox.ScrollToEnd();
                 }));
 
-            } else
+            }
+            else
             {
                 //game is unmodded
                 if (!File.Exists(exe + "\\Backups\\modded.apk"))
@@ -1055,7 +1070,7 @@ namespace BMBF_Manager
                 }));
                 adb("shell pm grant com.beatgames.beatsaber android.permission.READ_EXTERNAL_STORAGE"); //Grant permission read
                 adb("shell pm grant com.beatgames.beatsaber android.permission.WRITE_EXTERNAL_STORAGE"); //Grant permission write
-                //Directory.Delete(exe + "\\Backups", true);
+                Directory.Delete(exe + "\\Backups", true);
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate {
                     txtbox.AppendText("\n\nfinished. You can now play your Custom Songs again.");
                     txtbox.ScrollToEnd();

@@ -109,6 +109,7 @@
     <Compile Include="HitSounds.xaml.cs">
       <DependentUpon>HitSounds.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ModObjects.cs" />
     <Compile Include="Mods.xaml.cs">
       <DependentUpon>Mods.xaml</DependentUpon>
     </Compile>
@@ -234,7 +235,7 @@
     <Resource Include="Main9.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Qosmetics.png" />
+    <Resource Include="Qosmetics2.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
