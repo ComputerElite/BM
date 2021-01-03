@@ -281,7 +281,7 @@ namespace BMBF_Manager
         public void MoreInfo(object sender, RoutedEventArgs e)
         {
             //Name, Version, DownloadLink, Creator, gameVersion, Desciption, Forward, new Tuple (CoreMod, ModID, currentversion, islatest)
-            MessageBox.Show("Mod Name: " + AllModList[ModList.SelectedIndex].name + "\n\nDescription:\n" + AllModList[ModList.SelectedIndex].details, "BMBF Manager - Mod Info", MessageBoxButton.OK);
+            MessageBox.Show("Mod Name: " + AllModList[ModList.SelectedIndex].name + "\n\nDescription:\n" + AllModList[ModList.SelectedIndex].details + "\n\nNotes for the latest mod release:\n" + AllModList[ModList.SelectedIndex].downloads[AllModList[ModList.SelectedIndex].MatchingDownload].notes, "BMBF Manager - Mod Info", MessageBoxButton.OK);
         }
 
         public void checkqueue()

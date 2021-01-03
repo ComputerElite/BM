@@ -141,5 +141,6 @@ namespace ModObjects
         public string download { get; set; } = "";
         public bool forward { get; set; } = false;
         public bool coremod { get; set; } = false;
+        public string notes { get; set; } = "N/A";
     }
 }

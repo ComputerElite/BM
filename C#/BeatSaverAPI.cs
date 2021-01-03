@@ -343,31 +343,10 @@ namespace BeatSaverAPI
         public List<BeatSaberSongDifficulty> Difficulties { get; set; } = new List<BeatSaberSongDifficulty>();
     }
 
-    public class WebClientUtilities
-    {
-        public List<string> UAs = new List<string>() { "BeatSaverUtilities/1.0", "BeatSaverUtils/1.1", "BeatSaverBot/1.2", "MSEdge/5.1", "Firefox/59.2", "Something/5.1", "Random/4.3", "lmao/6.5", "Chrome/4.3", "NET/4.3" };
-        public string lastUA = "N/A";
-
-        public string GetRandomUserAgent()
-        {
-            while (true)
-            {
-                Random r = new Random();
-                int rand = r.Next(0, UAs.Count - 1);
-                if (lastUA != UAs[rand])
-                {
-                    lastUA = UAs[rand];
-                    return UAs[rand];
-                }
-            }
-        }
-    }
-
     public class BeatSaverAPIInteractor
     {
         public readonly string BeatSaverAPIBaseLink = "https://beatsaver.com/api/";
         public readonly string BeatSaverLink = "https://beatsaver.com";
-        WebClientUtilities WCU = new WebClientUtilities();
 
         public BeatSaberSong LoadFromInfoDat(String json)
         {
@@ -377,15 +356,13 @@ namespace BeatSaverAPI
 
         internal async Task<BeatSaverAPISong> BeatSaverAPISongHash(string Hash)
         {
-            WebClientUtilities WCU = new WebClientUtilities();
-
             BeatSaverAPISong BeatSaverResult = new BeatSaverAPISong();
 
             bool RateLimit = true;
             while (RateLimit)
             {
                 WebClient cl = new WebClient();
-                cl.Headers.Add("user-agent", WCU.GetRandomUserAgent());
+                cl.Headers.Add("user-agent", "BeatSaverAPIInteractor/1.0");
                 try
                 {
                     String tmp = cl.DownloadString(BeatSaverAPIBaseLink + "maps/by-hash/" + Hash.ToLower());
@@ -417,15 +394,13 @@ namespace BeatSaverAPI
 
         internal async Task<BeatSaverAPISong> BeatSaverAPISongKey(string Key)
         {
-            WebClientUtilities WCU = new WebClientUtilities();
-
             BeatSaverAPISong BeatSaverResult = new BeatSaverAPISong();
 
             bool RateLimit = true;
             while (RateLimit)
             {
                 WebClient cl = new WebClient();
-                cl.Headers.Add("user-agent", WCU.GetRandomUserAgent());
+                cl.Headers.Add("user-agent", "BeatSaverAPIInteractor/1.0");
                 try
                 {
                     String tmp = cl.DownloadString(BeatSaverAPIBaseLink + "maps/detail/" + Key.ToLower());
@@ -499,7 +474,6 @@ namespace BeatSaverAPI
 
         internal async Task<BeatSaverAPISearchResult> SearchTextAPI(String text)
         {
-            WebClientUtilities WCU = new WebClientUtilities();
 
             BeatSaverAPISearchResult BeatSaverResult = new BeatSaverAPISearchResult();
 
@@ -507,7 +481,7 @@ namespace BeatSaverAPI
             while (RateLimit)
             {
                 WebClient cl = new WebClient();
-                cl.Headers.Add("user-agent", WCU.GetRandomUserAgent());
+                cl.Headers.Add("user-agent", "BeatSaverAPIInteractor/1.0");
                 try
                 {
                     String tmp = cl.DownloadString(BeatSaverAPIBaseLink + "search/text?q=%22" + text + "%22");
