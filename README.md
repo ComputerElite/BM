@@ -3,10 +3,10 @@ The Utility to Install Songs, Install Mods, Install/Update BMBF, Install HitSoun
 # How-to
 ## **Go to releases (Right Side) and download the zip file first. Then right click the downloaded zip and click extract.**
 ## **Before you do anything you should enable developer mode if you didn't**
-## The First Time you launch the program it asks you for administrative access. If you want the best support click yes. otherwise no. (can be changed any time in the support section)
+## The First Time you launch the program it asks you for administrative access. If you want the best support click yes. otherwise no. (can be changed any time in the settings)
 ![EnableDevMode](https://github.com/ComputerElite/wiki/blob/main/BM/EnableDevMode.png)
 
-## All Instructions are [here](https://github.com/ComputerElite/wiki/wiki/BM)
+# All Instructions are [here](https://github.com/ComputerElite/wiki/wiki/BM)
 
 # Contributers
 - Bunny83 with [SimpleJSON.cs](https://github.com/Bunny83/SimpleJSON/blob/master/SimpleJSON.cs)
