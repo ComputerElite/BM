@@ -1,10 +1,10 @@
-# BM
-The Utility to Install Songs, Install Mods, Install/Update BMBF, Install HitSounds, download automatically made Playlists, get better support, switch between the modded and unmodded Version of Beat Saber, do full Backups and way more
+# BMBF Manager
+The utility to install songs, install mods, install/update BMBF, install HitSounds, download automatically made playlists, get better support, switch between the modded and unmodded Beat Saber Version, do full backups and way more
 # How-to
-## **Go to releases (Right Side) and download the zip file first. Then right click the downloaded zip and click extract.**
-## **Before you do anything you should enable developer mode if you didn't**
+**Note: BMBF Manager only works on Windows.**
+## **Go to [releases](https://github.com/ComputerElite/BM/releases) and download the latest zip file (named BM.zip) first. Then right click the downloaded zip and click "extract all".**
+## **For BMBF Manager to work properly you have to enable developer mode on your Quest. You can find a written guide [here](https://github.com/ComputerElite/wiki/wiki/Enable-Developer-Mode-for-OQ)**
 ## The First Time you launch the program it asks you for administrative access. If you want the best support click yes. otherwise no. (can be changed any time in the settings)
-![EnableDevMode](https://github.com/ComputerElite/wiki/blob/main/BM/EnableDevMode.png)
 
 # All Instructions are [here](https://github.com/ComputerElite/wiki/wiki/BM)
 
@@ -12,6 +12,7 @@ The Utility to Install Songs, Install Mods, Install/Update BMBF, Install HitSoun
 - Bunny83 with [SimpleJSON.cs](https://github.com/Bunny83/SimpleJSON/blob/master/SimpleJSON.cs)
 - darkuni (helped me making the Playlist backuping and restoring possible. Check out his nice program: [Playlist Editor Pro](https://beatsaberquest.com/bmbf/my-tools/playlist-editor-pro/#:~:text=Playlist%20Editor%20Pro%20is%20a,details%20and%20download%20it%20here.))
 - Sc2ad (made automatic modding possible)
+- ppotatoo (Suggested a change in the readme)
 # [wiki](https://github.com/ComputerElite/wiki)
 
 # Known Issues
