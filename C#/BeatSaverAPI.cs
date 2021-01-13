@@ -484,7 +484,7 @@ namespace BeatSaverAPI
                 cl.Headers.Add("user-agent", "BeatSaverAPIInteractor/1.0");
                 try
                 {
-                    String tmp = cl.DownloadString(BeatSaverAPIBaseLink + "search/text?q=%22" + text + "%22");
+                    String tmp = cl.DownloadString(BeatSaverAPIBaseLink + "search/text?q=\"" + text + "\"");
                     BeatSaverResult = JsonSerializer.Deserialize<BeatSaverAPISearchResult>(tmp);
                     RateLimit = false;
                     BeatSaverResult.RequestGood = true;

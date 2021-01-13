@@ -163,8 +163,6 @@ namespace BMBF_Manager
                 return;
             }
 
-            WebClient c = new WebClient();
-            c.Headers.Add("user-agent", "BMBF Manager/1.0");
             Key = SongKey.Text;
 
             BeatSaberSong song = interactor.GetBeatSaberSong(Key);
@@ -717,7 +715,7 @@ namespace BMBF_Manager
 
         private void SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (SongKeys.Count < 1) return;
+            if (SongList.Items.Count < 1) return;
             int index = SongList.SelectedIndex;
 
             SongKey.Text = SongKeys[index].ToString().Replace("\"", "");
