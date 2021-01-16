@@ -44,6 +44,9 @@ namespace BMBF_Manager
         List<Tuple<String, bool>> downloadqueue = new List<Tuple<String, bool>>();
         BeatSaverAPIInteractor interactor = new BeatSaverAPIInteractor();
 
+        bool OneClick = false;
+        bool PEO = false;
+
         public Songs()
         {
             InitializeComponent();
@@ -300,8 +303,7 @@ namespace BMBF_Manager
                             exeProcess.WaitForExit();
                             if (IPS.Contains("no devices/emulators found"))
                             {
-                                txtbox.AppendText("\n\n\nAn error Occured (Code: ADB110). Check following");
-                                txtbox.AppendText("\n\n- Your Quest is connected, Developer Mode enabled and USB Debugging enabled.");
+                                txtbox.AppendText(MainWindow.ADB110);
                                 txtbox.ScrollToEnd();
                                 return false;
                             }
@@ -319,8 +321,7 @@ namespace BMBF_Manager
                     continue;
                 }
             }
-            txtbox.AppendText("\n\n\nAn error Occured (Code: ADB100). Check following not");
-            txtbox.AppendText("\n\n- You have adb installed.");
+            txtbox.AppendText(MainWindow.ADB100);
             txtbox.ScrollToEnd();
             return false;
         }
@@ -443,10 +444,7 @@ namespace BMBF_Manager
             }
             catch
             {
-                txtbox.AppendText("\n\n\nAn error occured (Code: PL100). Check following:");
-                txtbox.AppendText("\n\n- You put in the Quests IP right.");
-                txtbox.AppendText("\n\n- You've choosen a Backup Name.");
-                txtbox.AppendText("\n\n- Your Quest is on.");
+                txtbox.AppendText(MainWindow.PL100);
 
             }
         }
@@ -479,9 +477,7 @@ namespace BMBF_Manager
             }
             catch
             {
-                txtbox.AppendText("\n\n\nAn error occured (Code: PL100). Check following:");
-                txtbox.AppendText("\n\n- You put in the Quests IP right.");
-                txtbox.AppendText("\n\n- Your Quest is on.");
+                txtbox.AppendText(MainWindow.PL100);
             }
         }
 
@@ -538,12 +534,30 @@ namespace BMBF_Manager
                 txtbox.AppendText("\n\nAll finished.");
                 txtbox.ScrollToEnd();
                 DownloadLable.Text = "All finished";
+                if (PEO)
+                {
+                    PlaylistEditor.waiting = false;
+                    this.Close();
+                }
+                if(OneClick)
+                {
+                    Process.GetCurrentProcess().Kill();
+                }
             }
         }
 
         public void InstallSong(String Key)
         {
             downloadqueue.Add(new Tuple<string, bool>(Key, false));
+            OneClick = true;
+            checkqueue();
+        }
+
+        public void InstallSongPE(String Key)
+        {
+            txtbox.AppendText("\n\nAdded Songs key " + Key + " to download for a BPList");
+            downloadqueue.Add(new Tuple<string, bool>(Key, false));
+            PEO = true;
             checkqueue();
         }
 
@@ -668,7 +682,7 @@ namespace BMBF_Manager
             }
             catch
             {
-                txtbox.AppendText("\n\nA error Occured (Code: BMBF100)");
+                txtbox.AppendText(MainWindow.BMBF100);
                 txtbox.ScrollToEnd();
             }
         }

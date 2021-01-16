@@ -304,7 +304,7 @@ namespace BMBF_Manager
             }
             catch
             {
-                txtbox.AppendText("\n\nA error Occured (Code: BMBF100)");
+                txtbox.AppendText(MainWindow.BMBF100);
                 Running = false;
             }
         }
@@ -333,7 +333,7 @@ namespace BMBF_Manager
             }
             catch
             {
-                txtbox.AppendText("\n\nA error Occured (Code: BMBF110). Please sync to Beat Saber manually.");
+                txtbox.AppendText(MainWindow.BMBF110);
                 Process.Start("http://" + MainWindow.IP + ":50000/main/playlists");
                 Running = false;
             }

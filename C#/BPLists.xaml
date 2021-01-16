@@ -8,7 +8,7 @@
         ResizeMode="CanMinimize"
         WindowStyle="None"
         MouseMove="Drag"
-        Title="BMBF Manager BPList Downloading" Height="237" Width="458" Background="#FF282828">
+        Title="BMBF Manager - BPList Downloading" Height="237" Width="458" Background="#FF282828">
     <Grid>
         <Button MouseEnter="noDrag" MouseLeave="doDrag" Click="Close" Content="X" HorizontalAlignment="Left" Margin="416,4,0,0" VerticalAlignment="Top" Width="31" Background="#00000000" BorderBrush="#FFCBCBCB"/>
         <Button MouseEnter="noDrag" MouseLeave="doDrag" Click="Mini" Content="|" HorizontalAlignment="Left" Margin="383,-2,0,0" VerticalAlignment="Top" Width="20" Background="#00000000" BorderBrush="#FFCBCBCB" RenderTransformOrigin="0.5,0.5" Height="31">

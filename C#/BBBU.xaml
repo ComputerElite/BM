@@ -8,7 +8,7 @@
         ResizeMode="CanMinimize"
         WindowStyle="None"
         MouseMove="Drag"
-        Title="BMBF Manager BMBF and BS Backup Utility" Height="491" Width="510" Background="#FF282828" >
+        Title="BMBF Manager - BMBF and BS Backup Utility" Height="491" Width="510" Background="#FF282828" >
     <Grid>
         <Image Source="Logo.png" HorizontalAlignment="Left" Height="25" VerticalAlignment="Top" Width="25" Margin="10,2,0,0"/>
 

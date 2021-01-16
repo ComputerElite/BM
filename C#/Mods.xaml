@@ -8,7 +8,7 @@
         WindowStyle="None"
         MouseMove="Drag"
         ResizeMode="CanMinimize"
-        Title="BMBF Manager Mod Installing" Height="616" Width="883" Background="#FF282828">
+        Title="BMBF Manager - Mod Installing" Height="616" Width="883" Background="#FF282828">
     <Grid>
         <Image Source="Logo.png" HorizontalAlignment="Left" Height="25" VerticalAlignment="Top" Width="25" Margin="10,2,0,0"/>
         <Button MouseEnter="noDrag" MouseLeave="doDrag" Click="Close" Content="X" HorizontalAlignment="Left" Margin="843,6,0,0" VerticalAlignment="Top" Width="31" Background="#00000000" BorderBrush="#FFCBCBCB"/>

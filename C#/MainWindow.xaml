@@ -8,7 +8,7 @@
         ResizeMode="CanMinimize"
         WindowStyle="None"
         MouseMove="Drag"
-        Title="BMBF Manager" Height="665" Width="503" Background="#FF282828">
+        Title="BMBF Manager" Height="708" Width="503" Background="#FF282828">
     <Grid>
         <Button MouseEnter="noDrag" MouseLeave="doDrag" Click="Close" Content="X" HorizontalAlignment="Left" Margin="457,4,0,0" VerticalAlignment="Top" Width="31" Background="#00000000" BorderBrush="#FFCBCBCB"/>
         <Button MouseEnter="noDrag" MouseLeave="doDrag" Click="Mini" Content="|" HorizontalAlignment="Left" Margin="427,-2,0,0" VerticalAlignment="Top" Width="20" Background="#00000000" BorderBrush="#FFCBCBCB" RenderTransformOrigin="0.5,0.5" Height="31">
@@ -21,7 +21,7 @@
                 </TransformGroup>
             </Button.RenderTransform>
         </Button>
-        <TextBox MouseEnter="noDrag" MouseLeave="doDrag" FontFamily="lucida console" Opacity="0.8" IsReadOnly="True" x:Name="txtbox" HorizontalAlignment="Left" Height="625" Margin="10,30,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="275" Background="#FF494949" Foreground="#FFA6A6A6" BorderBrush="#FFD30000"/>
+        <TextBox MouseEnter="noDrag" MouseLeave="doDrag" FontFamily="lucida console" Opacity="0.8" IsReadOnly="True" x:Name="txtbox" HorizontalAlignment="Left" Height="668" Margin="10,30,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="275" Background="#FF494949" Foreground="#FFA6A6A6" BorderBrush="#FFD30000"/>
         <AccessText Opacity="0.8" HorizontalAlignment="Left" Height="24" VerticalAlignment="Top" Width="249" RenderTransformOrigin="0.5,0.5" Text="BMBF Manager" FontSize="14" Foreground="Black" Margin="40,4,0,0"/>
         <Button MouseEnter="noDrag" MouseLeave="doDrag" FontFamily="lucida console" Opacity="0.8" Click="InstallMods" Content="Install Mods" HorizontalAlignment="Left" Margin="290,199,0,0" VerticalAlignment="Top" Width="200" Height="33" RenderTransformOrigin="-0.858,0.891" Background="#FF005654" Foreground="#FFF3F3F3" BorderBrush="#FFB94747"/>
         <Button Click="Start_Update" FontFamily="lucida console" MouseEnter="noDrag" MouseLeave="doDrag" x:Name="UpdateB" Content="Update" HorizontalAlignment="Left" Margin="290,29.6,0,0" VerticalAlignment="Top" Width="199.865" Height="33" Background="#FFFF3636" Foreground="#FFE7E7E7" FontWeight="Bold"/>
@@ -35,8 +35,9 @@
         <Button MouseEnter="noDrag" MouseLeave="doDrag" FontFamily="lucida console" Opacity="0.8" Click="QSU" Content="Quest Song Utilities" HorizontalAlignment="Left" Margin="290,535,0,0" VerticalAlignment="Top" Width="200" Height="33" RenderTransformOrigin="-0.858,0.891" Background="#FF005654" Foreground="#FFF3F3F3" BorderBrush="#FFB94747"/>
         <Button MouseEnter="noDrag" MouseLeave="doDrag" FontFamily="lucida console" Opacity="0.8" Click="HitSounds" Content="Install Sounds" HorizontalAlignment="Left" Margin="290,447,0,0" VerticalAlignment="Top" Width="200" Height="33" RenderTransformOrigin="-0.858,0.891" Background="#FF005654" Foreground="#FFF3F3F3" BorderBrush="#FFB94747"/>
         <Button MouseEnter="noDrag" MouseLeave="doDrag" FontFamily="lucida console" Opacity="0.8" Click="BBBU" Content="BMBF and Beat Saber&#xD;&#xA;Backup Utility" HorizontalAlignment="Left" Margin="290,493,0,0" VerticalAlignment="Top" Width="200" Height="33" RenderTransformOrigin="-0.858,0.891" Background="#FF005654" Foreground="#FFF3F3F3" BorderBrush="#FFB94747"/>
-        <Button MouseEnter="noDrag" MouseLeave="doDrag" FontFamily="lucida console" Opacity="0.8" Click="Support" Content="Settings" HorizontalAlignment="Left" Margin="290,622,0,0" VerticalAlignment="Top" Width="200" Height="33" RenderTransformOrigin="-0.858,0.891" Background="#FF005654" Foreground="#FFF3F3F3" BorderBrush="#FFB94747"/>
+        <Button MouseEnter="noDrag" MouseLeave="doDrag" FontFamily="lucida console" Opacity="0.8" Click="Support" Content="Settings" HorizontalAlignment="Left" Margin="290,665,0,0" VerticalAlignment="Top" Width="200" Height="33" RenderTransformOrigin="-0.858,0.891" Background="#FF005654" Foreground="#FFF3F3F3" BorderBrush="#FFB94747"/>
         <Button MouseEnter="noDrag" MouseLeave="doDrag" FontFamily="lucida console" Opacity="0.8" Click="Qosmetics" Content="Install Qosmetics" HorizontalAlignment="Left" Margin="290,573,0,0" VerticalAlignment="Top" Width="200" Height="33" RenderTransformOrigin="-0.858,0.891" Background="#FF005654" Foreground="#FFF3F3F3" BorderBrush="#FFB94747"/>
+        <Button MouseEnter="noDrag" MouseLeave="doDrag" FontFamily="lucida console" Opacity="0.8" Click="PE" Content="Playlist Editor" HorizontalAlignment="Left" Margin="290,611,0,0" VerticalAlignment="Top" Width="200" Height="33" RenderTransformOrigin="-0.858,0.891" Background="#FF005654" Foreground="#FFF3F3F3" BorderBrush="#FFB94747"/>
 
     </Grid>
 </Window>

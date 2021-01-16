@@ -399,10 +399,7 @@ namespace BMBF_Manager
             }
             catch
             {
-                txtbox.AppendText("\n\n\nAn error occured (Code: PL100). Check following:");
-                txtbox.AppendText("\n\n- You put in the Quests IP right.");
-                txtbox.AppendText("\n\n- You've choosen a Backup Name.");
-                txtbox.AppendText("\n\n- Your Quest is on.");
+                txtbox.AppendText(MainWindow.PL100);
 
             }
         }
@@ -426,9 +423,7 @@ namespace BMBF_Manager
                 }));
             } catch
             {
-                txtbox.AppendText("\n\n\nAn error occured (Code: PL100). Check following:");
-                txtbox.AppendText("\n\n- You put in the Quests IP right.");
-                txtbox.AppendText("\n\n- Your Quest is on.");
+                txtbox.AppendText(MainWindow.PL100);
             }
         }
 
@@ -492,8 +487,7 @@ namespace BMBF_Manager
                         exeProcess.WaitForExit();
                         if (IPS.Contains("no devices/emulators found"))
                         {
-                            txtbox.AppendText("\n\n\nAn error Occured (Code: ADB110). Check following");
-                            txtbox.AppendText("\n\n- Your Quest is connected, Developer Mode enabled and USB Debugging enabled.");
+                            txtbox.AppendText(MainWindow.ADB100);
                             txtbox.ScrollToEnd();
                             return "Error";
                         }
@@ -506,8 +500,7 @@ namespace BMBF_Manager
                     continue;
                 }
             }
-            txtbox.AppendText("\n\n\nAn error Occured (Code: ADB100). Check following not");
-            txtbox.AppendText("\n\n- You have adb installed.");
+            txtbox.AppendText(MainWindow.ADB100);
             txtbox.ScrollToEnd();
             return "Error";
         }
@@ -542,8 +535,7 @@ namespace BMBF_Manager
                             exeProcess.WaitForExit();
                             if (IPS.Contains("no devices/emulators found"))
                             {
-                                txtbox.AppendText("\n\n\nAn error Occured (Code: ADB110). Check following");
-                                txtbox.AppendText("\n\n- Your Quest is connected, Developer Mode enabled and USB Debugging enabled.");
+                                txtbox.AppendText(MainWindow.ADB110);
                                 txtbox.ScrollToEnd();
                                 return false;
                             }
@@ -561,8 +553,7 @@ namespace BMBF_Manager
                     continue;
                 }
             }
-            txtbox.AppendText("\n\n\nAn error Occured (Code: ADB100). Check following not");
-            txtbox.AppendText("\n\n- You have adb installed.");
+            txtbox.AppendText(MainWindow.ADB100);
             txtbox.ScrollToEnd();
             return false;
         }
@@ -572,7 +563,7 @@ namespace BMBF_Manager
             String section = Link.Replace("bm://", "").Replace("%20", " ").ToLower();
             if(Link.ToLower().StartsWith("beatsaver://"))
             {
-                String bsr = section.Replace("beatsaver://", "").ToLower();
+                String bsr = section.Replace("beatsaver://", "").Replace("/", "").ToLower();
                 Songs s = new Songs();
                 s.Show();
                 s.InstallSong(bsr);
@@ -596,7 +587,7 @@ namespace BMBF_Manager
             } else if(section.StartsWith("mods/install/"))
             {
 
-                String ModName = section.Replace("mods/install/", "");
+                String ModName = section.Replace("mods/install/", "").Replace("/", "");
                 Mods m = new Mods();
                 m.Show();
                 m.InstallMod(ModName);

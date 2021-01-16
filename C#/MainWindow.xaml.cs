@@ -28,8 +28,8 @@ namespace BMBF_Manager
     public partial class MainWindow : Window
     {
         int MajorV = 1;
-        int MinorV = 9;
-        int PatchV = 3;
+        int MinorV = 10;
+        int PatchV = 0;
         Boolean Preview = false;
 
         public static Boolean CustomProtocols = false;
@@ -43,6 +43,7 @@ namespace BMBF_Manager
         public static Boolean OneClick = false;
         public static Boolean KeepAlive = true;
         public static bool QosmeticsWarningShown = false;
+        public static bool PEWarningShown = false;
         Boolean draggable = true;
         Boolean Running = false;
         Boolean ComeFromUpdate = false;
@@ -55,6 +56,18 @@ namespace BMBF_Manager
         public static JSONNode UpdateJSON = JSON.Parse("{}");
         JSONNode BMBFStable = JSON.Parse("{}");
         public static ArrayList ADBPaths = new ArrayList();
+
+        public static String BMBF100 = "\n\n\nAn error occured (Code: BMBF100). Check following:\n\n- Your Quest is on and BMBF opened\n\n- You put in the Quests IP right.\n\n- Your Quest hasn't gone into sleep";
+        public static String BMBF110 = "\n\nA error Occured (Code: BMBF100). Please try to sync manually.";
+        public static String ADB100 = "\n\n\nAn error Occured (Code: ADB100). Check following:\n\n- You have adb installed.";
+        public static String ADB110 = "\n\n\nAn error Occured (Code: ADB110). Check following:\n\n- Your Quest is connected, Developer Mode enabled and USB Debugging enabled.";
+        public static String PL100 = "\n\n\nAn error occured (Code: PL100). Check following:\n\n- You put in the Quests IP right.\n\n- You've choosen a Backup Name.\n\n- Your Quest is on.";
+        public static String UD100 = "\n\n\nAn error Occured (Code: UD100). Couldn't check for Updates. Check following:\n\n- Your PC has internet.";
+        public static String UD200 = "\n\n\nAn error Occured (Code: UD200). Couldn't download Update.";
+        public static String QSU100 = "\n\n\nAn error Occured (Code: QSU100). No Songs were zipped.";
+        public static String QSU110 = "\n\n\nAn error Occured (Code: QSU110). No Songs were zipped.";
+        public static String BM100 = "\n\n\nAn error Occured (Code: BM100). Couldn't reach the Quest Boards Website to get some available Mods. Nothing crucial.";
+        public static String BM200 = "\n\n\nAn error Occured (Code: BM200). Couldn't download Mod";
 
 
         public MainWindow()
@@ -83,7 +96,7 @@ namespace BMBF_Manager
             else
             {
                 ImageBrush uniformBrush = new ImageBrush();
-                uniformBrush.ImageSource = new BitmapImage(new Uri("pack://application:,,,/Main9.png", UriKind.Absolute));
+                uniformBrush.ImageSource = new BitmapImage(new Uri("pack://application:,,,/Main10.png", UriKind.Absolute));
                 uniformBrush.Stretch = Stretch.UniformToFill;
                 this.Background = uniformBrush;
             }
@@ -146,6 +159,7 @@ namespace BMBF_Manager
             KeepAlive = json["KeepAlive"].AsBool;
             IP = json["IP"];
             QosmeticsWarningShown = json["QosmeticsWarningShown"].AsBool;
+            PEWarningShown = json["PEWarningShown"].AsBool;
             BBBUTransfered = json["BBBUTransfered"].AsBool;
             QSUTransfered = json["QSUTransfered"].AsBool;
             ShowADB = json["ShowADB"].AsBool;
@@ -211,7 +225,8 @@ namespace BMBF_Manager
             json["Converted"] = Converted;
             json["OneClick"] = OneClick;
             json["KeepAlive"] = KeepAlive;
-            json["QosmeticsWarningShown"] = QosmeticsWarningShown; 
+            json["QosmeticsWarningShown"] = QosmeticsWarningShown;
+            json["PEWarningShown"] = PEWarningShown;
             int i = 0;
             foreach(String ADBPath in ADBPaths)
             {
@@ -395,8 +410,7 @@ namespace BMBF_Manager
                             exeProcess.WaitForExit();
                             if (IPS.Contains("no devices/emulators found"))
                             {
-                                txtbox.AppendText("\n\n\nAn error Occured (Code: ADB110). Check following");
-                                txtbox.AppendText("\n\n- Your Quest is connected, Developer Mode enabled and USB Debugging enabled.");
+                                txtbox.AppendText(ADB110);
                                 txtbox.ScrollToEnd();
                                 return false;
                             }
@@ -413,8 +427,7 @@ namespace BMBF_Manager
                     continue;
                 }
             }
-            txtbox.AppendText("\n\n\nAn error Occured (Code: ADB100). Check following not");
-            txtbox.AppendText("\n\n- You have adb installed.");
+            txtbox.AppendText(ADB100);
             txtbox.ScrollToEnd();
             return false;
         }
@@ -442,8 +455,7 @@ namespace BMBF_Manager
                         exeProcess.WaitForExit();
                         if (IPS.Contains("no devices/emulators found"))
                         {
-                            txtbox.AppendText("\n\n\nAn error Occured (Code: ADB110). Check following");
-                            txtbox.AppendText("\n\n- Your Quest is connected, Developer Mode enabled and USB Debugging enabled.");
+                            txtbox.AppendText(ADB110);
                             txtbox.ScrollToEnd();
                             return "Error";
                         }
@@ -456,8 +468,7 @@ namespace BMBF_Manager
                     continue;
                 }
             }
-            txtbox.AppendText("\n\n\nAn error Occured (Code: ADB100). Check following not");
-            txtbox.AppendText("\n\n- You have adb installed.");
+            txtbox.AppendText(ADB100);
             txtbox.ScrollToEnd();
             return "Error";
         }
@@ -475,8 +486,7 @@ namespace BMBF_Manager
                     }
                     catch
                     {
-                        txtbox.AppendText("\n\n\nAn error Occured (Code: UD100). Couldn't check for Updates. Check following");
-                        txtbox.AppendText("\n\n- Your PC has internet.");
+                        txtbox.AppendText(UD100);
                         return;
                     }
                 }
@@ -545,7 +555,7 @@ namespace BMBF_Manager
             catch
             {
                 // Log error.
-                txtbox.AppendText("\n\n\nAn error Occured (Code: UD200). Couldn't download Update.");
+                txtbox.AppendText(UD200);
             }
         }
 
@@ -640,10 +650,7 @@ namespace BMBF_Manager
                 }
                 catch
                 {
-                    txtbox.AppendText("\n\n\nAn error occured (Code: PL100). Check following:");
-                    txtbox.AppendText("\n\n- You put in the Quests IP right.");
-                    txtbox.AppendText("\n\n- You've choosen a Backup Name.");
-                    txtbox.AppendText("\n\n- Your Quest is on.");
+                    txtbox.AppendText(PL100);
 
                 }
 
@@ -868,9 +875,7 @@ namespace BMBF_Manager
             }
             catch
             {
-                txtbox.AppendText("\n\n\nAn error occured (Code: BMBF100). Check following:");
-                txtbox.AppendText("\n\n- Your Quest is on and BMBF opened");
-                txtbox.AppendText("\n\n- You put in the Quests IP right.");
+                txtbox.AppendText(BMBF100);
             }
 
             txtbox.AppendText("\n\n\nFinished Installing BMBF and modding Beat Saber. Please click \"Reload Songs Folder\" in BMBF to reload your Songs if you Updated BMBF.");
@@ -1145,6 +1150,13 @@ namespace BMBF_Manager
             CheckIP();
             Qosmetics QosmeticsWindow = new Qosmetics();
             QosmeticsWindow.Show();
+        }
+
+        private void PE(object sender, RoutedEventArgs e)
+        {
+            CheckIP();
+            PlaylistEditor PlaylistEditorWindow = new PlaylistEditor();
+            PlaylistEditorWindow.Show();
         }
 
         internal void CustomProto(string Link)

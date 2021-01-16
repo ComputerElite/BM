@@ -273,8 +273,7 @@ namespace BMBF_Manager
                             exeProcess.WaitForExit();
                             if (IPS.Contains("no devices/emulators found"))
                             {
-                                txtbox.AppendText("\n\n\nAn error Occured (Code: ADB110). Check following");
-                                txtbox.AppendText("\n\n- Your Quest is connected, Developer Mode enabled and USB Debugging enabled.");
+                                txtbox.AppendText(MainWindow.ADB110);
                                 txtbox.ScrollToEnd();
                                 return false;
                             }
@@ -292,8 +291,7 @@ namespace BMBF_Manager
                     continue;
                 }
             }
-            txtbox.AppendText("\n\n\nAn error Occured (Code: ADB100). Check following not");
-            txtbox.AppendText("\n\n- You have adb installed.");
+            txtbox.AppendText(MainWindow.ADB100);
             txtbox.ScrollToEnd();
             return false;
         }
@@ -503,7 +501,7 @@ namespace BMBF_Manager
             }
             catch
             {
-                txtbox.AppendText("\n\nError (Code: BM200). Couldn't download Mod");
+                txtbox.AppendText(MainWindow.BM200);
                 txtbox.ScrollToEnd();
                 Running = false;
                 return;
@@ -550,7 +548,7 @@ namespace BMBF_Manager
             }
             catch
             {
-                txtbox.AppendText("\n\nA error Occured (Code: BMBF100)");
+                txtbox.AppendText(MainWindow.BMBF100);
                 txtbox.ScrollToEnd();
             }
         }
@@ -587,7 +585,7 @@ namespace BMBF_Manager
             }
             catch
             {
-                txtbox.AppendText("\n\nA error Occured (Code: BMBF100)");
+                txtbox.AppendText(MainWindow.BMBF110);
                 Running = false;
             }
         }

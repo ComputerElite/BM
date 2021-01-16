@@ -237,8 +237,7 @@ namespace BMBF_Manager
                             exeProcess.WaitForExit();
                             if (IPS.Contains("no devices/emulators found"))
                             {
-                                txtbox.AppendText("\n\n\nAn error Occured (Code: ADB110). Check following");
-                                txtbox.AppendText("\n\n- Your Quest is connected, Developer Mode enabled and USB Debugging enabled.");
+                                txtbox.AppendText(MainWindow.ADB110);
                                 txtbox.ScrollToEnd();
                                 return false;
                             }
@@ -256,8 +255,7 @@ namespace BMBF_Manager
                     continue;
                 }
             }
-            txtbox.AppendText("\n\n\nAn error Occured (Code: ADB100). Check following not");
-            txtbox.AppendText("\n\n- You have adb installed.");
+            txtbox.AppendText(MainWindow.ADB100);
             txtbox.ScrollToEnd();
             return false;
         }
@@ -285,8 +283,7 @@ namespace BMBF_Manager
                         exeProcess.WaitForExit();
                         if (IPS.Contains("no devices/emulators found"))
                         {
-                            txtbox.AppendText("\n\n\nAn error Occured (Code: ADB110). Check following");
-                            txtbox.AppendText("\n\n- Your Quest is connected, Developer Mode enabled and USB Debugging enabled.");
+                            txtbox.AppendText(MainWindow.ADB110);
                             txtbox.ScrollToEnd();
                             return "Error";
                         }
@@ -299,8 +296,7 @@ namespace BMBF_Manager
                     continue;
                 }
             }
-            txtbox.AppendText("\n\n\nAn error Occured (Code: ADB100). Check following not");
-            txtbox.AppendText("\n\n- You have adb installed.");
+            txtbox.AppendText(MainWindow.ADB100);
             txtbox.ScrollToEnd();
             return "Error";
         }
@@ -402,9 +398,7 @@ namespace BMBF_Manager
                 }
                 catch
                 {
-                    txtbox.AppendText("\n\n\nError (Code: BMBF100). Couldn't acces BMBF Web Interface. Check Following:");
-                    txtbox.AppendText("\n\n- You've put in the right IP");
-                    txtbox.AppendText("\n\n- BMBF is opened");
+                    txtbox.AppendText(MainWindow.BMBF100);
                     txtbox.ScrollToEnd();
                     Running = false;
                     return;
@@ -497,9 +491,7 @@ namespace BMBF_Manager
             }
             catch
             {
-                txtbox.AppendText("\n\n\nAn error occured (Code: BMBF100). Check following:");
-                txtbox.AppendText("\n\n- Your Quest is on and BMBF opened");
-                txtbox.AppendText("\n\n- You put in the Quests IP right.");
+                txtbox.AppendText(MainWindow.BMBF100);
                 txtbox.ScrollToEnd();
             }
             Running = false;
@@ -682,10 +674,7 @@ namespace BMBF_Manager
             }
             catch
             {
-                txtbox.AppendText("\n\n\nAn error occured (Code: PL100). Check following:");
-                txtbox.AppendText("\n\n- You put in the Quests IP right.");
-                txtbox.AppendText("\n\n- You've choosen a Backup Name.");
-                txtbox.AppendText("\n\n- Your Quest is on.");
+                txtbox.AppendText(MainWindow.PL100);
                 txtbox.ScrollToEnd();
 
             }
@@ -784,9 +773,7 @@ namespace BMBF_Manager
             }
             catch
             {
-                txtbox.AppendText("\n\n\nAn error occured (Code: BMBF100). Check following:");
-                txtbox.AppendText("\n\n- Your Quest is on and BMBF opened");
-                txtbox.AppendText("\n\n- You put in the Quests IP right.");
+                txtbox.AppendText(MainWindow.BMBF100);
                 txtbox.ScrollToEnd();
             }
             Running = false;
@@ -1067,11 +1054,11 @@ namespace BMBF_Manager
             txtbox.ScrollToEnd();
             if (exported == 0 && (bool)auto.IsChecked)
             {
-                txtbox.AppendText("\nerror (Code: QSU110). No Songs were zipped.");
+                txtbox.AppendText(MainWindow.QSU110);
             }
             else if (exported == 0 && !(bool)auto.IsChecked)
             {
-                txtbox.AppendText("\nerror (Code: QSU100). No Songs were zipped.");
+                txtbox.AppendText(MainWindow.QSU100);
             }
             else
             {

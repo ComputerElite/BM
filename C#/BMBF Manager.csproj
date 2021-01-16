@@ -103,6 +103,7 @@
       <DependentUpon>BBBU.xaml</DependentUpon>
     </Compile>
     <Compile Include="BeatSaverAPI.cs" />
+    <Compile Include="BMBFConfig.cs" />
     <Compile Include="BPLists.xaml.cs">
       <DependentUpon>BPLists.xaml</DependentUpon>
     </Compile>
@@ -114,6 +115,9 @@
       <DependentUpon>Mods.xaml</DependentUpon>
     </Compile>
     <Compile Include="OnStart.cs" />
+    <Compile Include="PlaylistEditor.xaml.cs">
+      <DependentUpon>PlaylistEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="QosmeticObjects.cs" />
     <Compile Include="Qosmetics.xaml.cs">
       <DependentUpon>Qosmetics.xaml</DependentUpon>
@@ -156,6 +160,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Mods.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PlaylistEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -232,10 +240,13 @@
     <Resource Include="Songs5.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Main9.png" />
+    <Resource Include="Qosmetics2.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Qosmetics2.png" />
+    <Resource Include="Main10.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="PlaylistEditor.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
