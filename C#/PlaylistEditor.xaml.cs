@@ -839,7 +839,7 @@ namespace BMBF_Manager
                 txtbox.ScrollToEnd();
                 return;
             }
-
+            try {
             if (action == 0)
             {
                 BMBFPlaylist newpl = new BMBFPlaylist();
@@ -878,22 +878,16 @@ namespace BMBF_Manager
                 txtbox.ScrollToEnd();
 
                 // Move new Songs
-                int removed3 = 0;
                 foreach (BMBFPlaylist p in current.Config.Playlists)
                 {
-                    if (p.PlaylistName == BPList.playlistTitle) PLExists = true;
-                    List<BMBFSong> tmp2 = new List<BMBFSong>(p.SongList);
-                    foreach (BMBFSong s in tmp2)
+                    foreach (BMBFSong s in p.SongList)
                     {
-                        int i = 0;
                         foreach(BPListSong search in tmp)
                         {
                             if(search.hash.ToLower() == s.SongID.ToLower().Replace("custom_level_", ""))
                             {
                                 txtbox.AppendText("\n\nMoved Songs " + s.SongName + " to BPList");
                                 newpl.SongList.Add(s);
-                                p.SongList.RemoveAt(i - removed3);
-                                removed3++;
                                 break;
                             }
                         }
@@ -943,22 +937,17 @@ namespace BMBF_Manager
                     txtbox.ScrollToEnd();
                 }
 
-                int removed3 = 0;
+                // Move new Songs
                 foreach (BMBFPlaylist p in current.Config.Playlists)
                 {
-                    if (p.PlaylistName == BPList.playlistTitle) PLExists = true;
-                    List<BMBFSong> tmp2 = new List<BMBFSong>(p.SongList);
-                    foreach (BMBFSong s in tmp2)
+                    foreach (BMBFSong s in p.SongList)
                     {
-                        int i = 0;
                         foreach (BPListSong search in tmp)
                         {
                             if (search.hash.ToLower() == s.SongID.ToLower().Replace("custom_level_", ""))
                             {
                                 txtbox.AppendText("\n\nMoved Songs " + s.SongName + " to BPList");
                                 BMBFConfig.Config.Playlists[pl].SongList.Add(s);
-                                p.SongList.RemoveAt(i - removed3);
-                                removed3++;
                                 break;
                             }
                         }
@@ -986,7 +975,7 @@ namespace BMBF_Manager
                     // Move existing Songs
                     int removed2 = 0;
                     int pl2 = 0;
-                    foreach (BMBFPlaylist p in current.Config.Playlists)
+                    foreach (BMBFPlaylist p in BMBFConfig.Config.Playlists)
                     {
                         removed2 = 0;
                         if (p.PlaylistName == BPList.playlistTitle) PLExists = true;
@@ -1015,22 +1004,16 @@ namespace BMBF_Manager
                 }
 
                 // Move new Songs
-                int removed3 = 0;
-                foreach (BMBFPlaylist p in BMBFConfig.Config.Playlists)
+                foreach (BMBFPlaylist p in current.Config.Playlists)
                 {
-                    if (p.PlaylistName == BPList.playlistTitle) PLExists = true;
-                    List<BMBFSong> tmp2 = new List<BMBFSong>(p.SongList);
-                    foreach (BMBFSong s in tmp2)
+                    foreach (BMBFSong s in p.SongList)
                     {
-                        int i = 0;
                         foreach (BPListSong search in tmp)
                         {
                             if (search.hash.ToLower() == s.SongID.ToLower().Replace("custom_level_", ""))
                             {
                                 txtbox.AppendText("\n\nMoved Songs " + s.SongName + " to BPList");
                                 newpl.SongList.Add(s);
-                                p.SongList.RemoveAt(i - removed3);
-                                removed3++;
                                 break;
                             }
                         }
@@ -1055,6 +1038,11 @@ namespace BMBF_Manager
                 return;
             }
             Playlists.SelectedIndex = 0;
+            }
+            catch (Exception eeee)
+            {
+                txtbox.AppendText(eeee.ToString());
+            }
         }
 
         private void ChaPlC(object sender, RoutedEventArgs e)
@@ -1067,7 +1055,7 @@ namespace BMBF_Manager
             if (result == true)
             {
                 //Get the path of specified file
-                if(!File.Exists(ofd.FileName))
+                if (!File.Exists(ofd.FileName))
                 {
                     MessageBox.Show("Please select a valid file", "BMBF Manager - Playlist Editor", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;

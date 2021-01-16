@@ -46,6 +46,7 @@ namespace BMBF_Manager
 
         bool OneClick = false;
         bool PEO = false;
+        bool canceled = false;
 
         public Songs()
         {
@@ -271,6 +272,18 @@ namespace BMBF_Manager
         {
             MainWindow.IP = Quest.Text;
             return;
+        }
+
+        private void cancel(object sender, RoutedEventArgs e)
+        {
+            if(downloadqueue.Count() == 0)
+            {
+                txtbox.AppendText("\n\nYou can't cancle a non active download.");
+            } else
+            {
+                canceled = true;
+                txtbox.AppendText("\n\nremoved all queued downloads");
+            }
         }
 
         public Boolean adb(String Argument)
@@ -525,12 +538,14 @@ namespace BMBF_Manager
 
         public void checkqueue()
         {
-            if (downloadqueue.Count != 0)
+            if (downloadqueue.Count != 0 && !canceled)
             {
                 InstallSong();
             }
             else
             {
+                canceled = false;
+                downloadqueue.Clear();
                 txtbox.AppendText("\n\nAll finished.");
                 txtbox.ScrollToEnd();
                 DownloadLable.Text = "All finished";
