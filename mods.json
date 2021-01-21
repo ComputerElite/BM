@@ -1,1 +1,977 @@
-{"mods":[{"name":"NoHealthAndSafety","details":"Removes the annoying health and safety pop-up when starting the game.","ModID":"no-health-and-safety","creator":["Laurie"],"downloads":[{"modversion":"0.1.0","gameversion":["1.13.0"],"download":"https://github.com/Lauriethefish/NoHealthAndSafety/releases/download/0.1.0/no-health-and-safety_v0.1.0.zip","forward":false,"coremod":false,"notes":"Initial release"}]},{"name":"Clock Mod","details":"Adds a digital clock in the menus of Beat Saber.\r\n\r\nFeatures:\r\n    -Option for 12 hour clock.\r\n    -Customizable size.\r\n    -Customizable color.\r\n    -Option to show clock during song in mod settings (will show when paused if disabled).\r\n\r\nNotes:\r\n    -Compatibility issues with Hitscore Visualizer.","ModID":"clockmod","creator":["BoopetyDoopety"],"downloads":[{"modversion":"0.1.1","gameversion":["1.13.0"],"download":"https://github.com/ChillGunner/ClockMod/releases/download/v0.1.1/clockmod_v0.1.1.zip","notes":"This update adds a few customization options to decide how you like your clock.","forward":false,"coremod":false},{"modversion":"0.1.0","gameversion":["1.13.0"],"download":"https://github.com/ChillGunner/ClockMod/releases/download/v0.1.0/clockmod_v0.1.0.zip","forward":false,"coremod":false,"notes":"Initial release"}]},{"name":"Practice Skipper","details":"Adds the ability to seek and change song speed while in practice mode. Double tap left or right with your left controller's analog stick to skip through the song, and double tap up or down to adjust the song speed. Options are available to change which controller to use, how long to skip, and how much to change speed.","ModID":"practice_skipper","creator":["danrouse"],"downloads":[{"modversion":"1.0.0","gameversion":["1.13.0"],"download":"https://github.com/danrouse/bsq-practice-skipper/releases/download/1.0.0/practice_skipper_v1.0.0.zip","forward":false,"coremod":false,"notes":"N/A"}]},{"name":"PracticePlus","details":"A mod that adds a few features to the practice mode menu\r\n\r\n - Set the NJS and note offset for the song\r\n - Expands the speed slider from 50%-200% to 25%-300% (because why not)\r\n\r\nThis is an updated/refactored version of the mod originally made by L_, and should hopefully be easy to update in the future.\r\n\r\nNOTE: The in-game menu for setting njs/offset is gone for now, until I can figure out why new buttons in the pause menu aren't clickable","ModID":"PracticePlus","creator":["krx"],"downloads":[{"modversion":"0.3.0","gameversion":["1.13.0"],"download":"https://github.com/krx/PracticePlus/releases/download/0.3.0/PracticePlus_v0.3.0.zip","forward":false,"coremod":false,"notes":""}]},{"name":"LOLCAT","details":"A mod that translates most text into LOLCAT (Kingdom of Cats)","ModID":"lolcat_bmbf","creator":["MillzyG"],"downloads":[{"modversion":"0.3.0","gameversion":["1.13.0"],"download":"https://github.com/MillzyG/LOLCAT_BMBF/releases/download/BSABER_1.13.0/lolcat_bmbf_v0.3.0.zip","notes":"CHANGELOG:\r\n\r\n   - Optimised Translations\r\n   - Created Translation Template\r\n   - Translated More Buttons\r\n   - Fixed Edit Avatar Menu\r\n   - Created Translation Map","forward":false,"coremod":false},{"modversion":"0.2.1","gameversion":["1.13.0"],"download":"https://github.com/MillzyG/LOLCAT_BMBF/releases/download/0.2.1/lolcat_bmbf_v0.2.1.zip","notes":"PATCH CHANGELOG:\r\n    - Fixed SoloFreePlayViewer and PartyFreePlayViewer have the same title","forward":false,"coremod":false},{"modversion":"0.2.0","gameversion":["1.13.0"],"download":"https://github.com/MillzyG/LOLCAT_BMBF/releases/download/0.2.0/lolcat_bmbf_v0.2.0.zip","notes":"SoloFreePlayViewer and PartyFreePlayViewer have the same title","forward":false,"coremod":false},{"modversion":"0.1.0","gameversion":["1.13.0"],"download":"https://github.com/MillzyG/LOLCAT_BMBF/releases/download/0.1.0/lolcat_bmbf_v0.1.0.zip","forward":false,"coremod":false,"notes":"Initial Release"}]},{"name":"BeatTogether","details":"Crossplay Multiplayer for Beat Saber 1.13.0\r\n\r\nA private server for multiplayer that allows crossplay between Steam, Oculus Store and Oculus Quest. Allowing you to play custom songs in private lobbies on both platforms.\r\n\r\nDISCLAIMER: PLEASE MAKE SURE TO READ THROUGH THE INSTALL INSTRUCTIONS FOR CUSTOM SUPPORT TO WORK PROPERLY.\r\n\r\n QUICKPLAY IS DISABLED ON THIS MOD AS IT IS NOT IMPLEMENTED YET. PLEASE USE OUR DISCORD IN COMMUNITY HUB CHANNEL TO CONDUCT GAMES\r\n\r\nInstall Instructions:https://github.com/pythonology/BeatTogether.Quest#installation\r\nCustom Song Support Instructions: https://github.com/pythonology/BeatTogether.Quest#custom-song-support","ModID":"BeatTogether","creator":["Kevman95","Python"],"downloads":[{"modversion":"1.0.1","gameversion":["1.13.0"],"download":"https://github.com/pythonology/BeatTogether.Quest/releases/download/v1.0.1/BeatTogether_v1.0.1.zip","forward":false,"coremod":false,"notes":"N/A"}]},{"name":"BTS Yeeter","details":"This mod simply removes the annoying little BTS characters that fly around during the their maps.","ModID":"bts-yeeter","creator":["gabriella"],"downloads":[{"modversion":"0.1.0","gameversion":["1.13.0"],"download":"https://github.com/IsGabriellaCurious/BTSYeeter/releases/download/v0.1.0/bts-yeeter_v0.1.0.zip","forward":false,"coremod":false,"notes":"N/A"}]},{"name":"No Italics","details":"Unslants everything in the menu! WARNING, THIS LOOKS VERY WEIRD. THE GAME WAS NOT DESIGNED FOR THIS.","ModID":"NoItalics","creator":["Pink"],"downloads":[{"modversion":"1.0.0","gameversion":["1.13.0"],"download":"https://github.com/BSMGPink/QuestNoItalics/releases/download/1.0.0/NoItalicsQuestDownload.zip","forward":false,"coremod":false}]},{"name":"Darth Maul","details":"A long awated rewrite of the original Darth Maul mod by Henwill8, which was originally created by riku1227!\r\nThis also contains many config options and is initially toggleable via the in-game modifiers.","ModID":"DarthMaul","creator":["Pink","Henwill8","riku1227"],"downloads":[{"modversion":"1.1.0","gameversion":["1.13.0"],"download":"https://github.com/BSMGPink/QuestDarthMaul/releases/download/1.0.0/DarthMaul.zip","forward":false,"coremod":false}]},{"name":"No Boom","details":"A Port of Spookys NoBoom mod. Disables the bomb particle effects, mainly used for recording.","ModID":"NoBoom","creator":["Pink","Spooky323"],"downloads":[{"modversion":"1.0.0","gameversion":["1.13.0"],"download":"https://github.com/BSMGPink/QuestNoBoom/releases/download/1.0.0/NoBoom.zip","forward":false,"coremod":false}]},{"name":"Burn Marks Keeper","details":"Stops your burn marks from ever disappearing when you collide your sabers with the ground! \r\nRequires PinkCore.","ModID":"BurnMarksKeeper","creator":["Pink"],"downloads":[{"modversion":"1.0.0","gameversion":["1.13.0"],"download":"https://github.com/BSMGPink/BurnMarksKeeper/releases/download/1.0.0/BurnMarksKeeper.zip","forward":false,"coremod":false}]},{"name":"No Miss Text","details":"A Port of CyanSnows NoMissText mod. Disables the Miss and Bad cut text from appearing, mainly used for recording.\r\n\r\nThis comes in two flavors, one with a custom BadHitSound built in Requires QuestSounds and one without!\r\n\r\nRequires PinkCore.\r\n\r\nNote by ComputerElite: Download here is the one without the BadHitSound. The other one is here: https://github.com/BSMGPink/QuestNoMissText/releases/download/1.0.0/NoMissTextOrBadCutSound.zip","ModID":"NoMissText","creator":["Pink","CyanSnow"],"downloads":[{"modversion":"1.0.0","gameversion":["1.13.0"],"download":"https://github.com/BSMGPink/QuestNoMissText/releases/download/1.0.0/NoMissText.zip","forward":false,"coremod":false}]},{"name":"Replay Lite","details":"This mod let's you create and view replays! This is great for recording and for content creators.\r\n\r\nA replay button will appear after playing a song and you can press it to view the replay.\r\nYou can slow down or speed up replays by turning off the speed lock in the pause menu and then using the right trigger to speed it up and the left to slow it down. This feature isn't very useful currently but it is great when paired with a feature that will be in the full version.\r\n\r\nThis is the lite version because it doesn't have any of the camera options or other features that will be in the full version, it is pretty much just an update to the 1.10/1.11 version of the mod. I created this version because the full version still needs lots of bug fixes and polishing.\r\n\r\nStatus on the full mod: I have a lot of bug fixes to do, need to add a full in game mod settings menu, and I plan on making a guide video to go with it so maybe another month or so.","ModID":"replay","creator":["Henwill8"],"downloads":[{"modversion":"0.3.0","gameversion":["1.13.0"],"download":"https://github.com/henwill8/ReplayDownload/releases/download/v0.3.0/ReplayLite.zip","forward":false,"coremod":false}]},{"name":"PauseConfirm","details":"Makes you confirm before going back to the menu, restarting or pressing continue when in the pause menu. This is to avoid you accidentally doing it when you're about to set a really good play, which I'm sure you've all done many times.\r\n\r\nChangelog:\r\n- Added option to decide which controller buttons must be pressed down to pause the game (can be viewed in mod settings)\r\n- Added option to switch controller used for pausing.","ModID":"pause-confirm","creator":["Laurie"],"downloads":[{"modversion":"0.2.0","gameversion":["1.13.0"],"download":"https://github.com/Lauriethefish/PauseConfirm/releases/download/0.2.0/pause-confirm_v0.2.0.zip","forward":false,"coremod":false},{"modversion":"0.1.0","gameversion":["1.13.0"],"download":"https://github.com/Lauriethefish/PauseConfirm/releases/download/0.1.0/pause-confirm_v0.1.0.zip","forward":false,"coremod":false}]},{"name":"SlowResume","details":"Allows you to change how long the countdown takes to resume when paused. Disables score submission if the amount of time is increased, since this makes pausing an easier method to get back your stamina.\r\n\r\nTo change the amount of time, go to the Settings Icon in the main menu -> Mod Settings -> SlowResume.","ModID":"slow-resume","creator":["Laurie"],"downloads":[{"modversion":"0.1.0","gameversion":["1.13.0"],"download":"https://github.com/Lauriethefish/SlowResume/releases/download/0.1.0/slow-resume_v0.1.0.zip","forward":false,"coremod":false}]},{"name":"DebrisTweaks","details":"This mod allows you to modify various note debris settings. Useful for those who wish to reduce vision blocks without disabling debris completely.\\r\\n\\r\\nTo modify the default parameters, navigate to DebrisTweaks in your mod settings panel and click on \\\"Enable Tweaks\\\".\\r\\nCurrent configurable options include lifespan, velocity, scale and gravity.","ModID":"DebrisTweaks","creator":["Raemien"],"downloads":[{"modversion":"0.3.0","gameversion":["1.13.0"],"download":"https://github.com/Raemien/DebrisTweaksQuest/releases/download/0.3.0/DebrisTweaks.zip","forward":false,"coremod":false},{"modversion":"0.2.0","gameversion":["1.13.0"],"download":"https://cdn.discordapp.com/attachments/776551464117075978/789054295823613952/DebrisTweaks_v0.2.0.zip","forward":false,"coremod":false}]},{"name":"RandomEndless","details":"Features:\r\n-Random song button, when clicked it will select a random song from the current playlist.\r\n-Endless button, when clicked it will play all valid songs in the playlist back to back.\r\n-A bunch of settings for both Random and Endless, configurable from the Mod Settings UI in game.\r\n\r\nOST/DLC songs are not currently supported because I cba.\r\nSome songs won't have valid song paths, meaning endless can't find and load them, if there are songs you want to play in endless but have invalid song paths the only thing you can do is delete and reinstall them from beatsaver/beastsaber. If you have PinkCore it should tell you if a song has an invalid path.\r\nIf a song is OST/DLC or has an invalid path endless will skip it.\r\n\r\nIf you have any bug reports or feature requests DM L_#8786.","ModID":"RandomEndless","creator":["L_"],"downloads":[{"modversion":"2.0.0","gameversion":["1.13.0"],"download":"https://cdn.discordapp.com/attachments/776551464117075978/788705187862544384/randomendless.zip","forward":false,"coremod":false}]},{"name":"RedBar","details":"Originally made by Miniwa\r\nChanges the color of your energy bar according to your energy.\r\n\r\nChanges:\r\n- Updated to Beat Saber 1.13.0\r\n- Added settings menu\r\n- Added Always Rainbow setting","ModID":"Redbar","creator":["ComputerElite"],"downloads":[{"modversion":"1.2.0","gameversion":["1.13.0"],"download":"https://github.com/ComputerElite/RedBar/releases/download/1.2.0/RedBar_v1.2.0.zip","forward":false,"coremod":false}]},{"name":"ScoreSaber","details":"Allows you to upload scores to an online leaderboard at https://scoresaber.com. Earn PP from ranked maps, and compare scores with others. Support us on Patreon at https://patreon.com/scoresaber","ModID":"ScoreSaber","creator":["Umbranox"],"downloads":[{"modversion":"0.2.4","gameversion":["1.13.0"],"download":"https://new.scoresaber.com/quest/","forward":true,"coremod":false}]},{"name":"AntiVertigo","details":"Spawns in a cube or cylinder under the player position with configurable size to help those with vertigo\r\n\r\n - Choose between a cube or cylinder\r\n - Change the size in mod settings, you can pretty much stretch it as far as you want\r\n - Can be disabled in mod settings, so you don't have to uninstall the mod if not needed/wanted","ModID":"AntiVertigo","creator":["RedBrumbler"],"downloads":[{"modversion":"1.0.0","gameversion":["1.13.0"],"download":"https://github.com/RedBrumbler/AntiVertigo/releases/download/1.0.0/AntiVertigo.zip","forward":false,"coremod":false}]},{"name":"MorePrecisePlayerHeight","details":"Original mod made by Eris for PC (Ported by Lillie)\r\n\r\nA very small Beat Saber mod that's let you view your own height with higher precision... at least one more decimal.\r\n\r\nConfig:\r\n    - enabled (true | false) - Enables the mod\r\n    - measureInFeet (true | false ) - Changes from meter to Feet. ","ModID":"preciseplayerheight","creator":["Lillie"],"downloads":[{"modversion":"0.1.3","gameversion":["1.13.0"],"download":"https://cdn.discordapp.com/attachments/776551464117075978/776918481831723048/MorePrecisePlayerHeightForQuest.zip","forward":false},{"modversion":"0.1.2","gameversion":["1.12.2"],"download":"https://cdn.discordapp.com/attachments/765630505000894484/773112282913570827/MorePrecisePlayerHeightForQuest.zip","forward":false}]},{"name":"QuestSounds","details":"QuestSounds allows the user to change sounds without asset mods, \r\njust drop them into default path or your custom path!\r\n\r\nFeatures:\r\n  Support for OGG, MP3 and WAV file formats!\r\n  Creates sounds folder at /sdcard/Android/data/com.beatgames.beatsaber/files/ \r\n  AFTER YOU HAVE RAN THE MOD ONCE\r\n  Config for disabling and enabling Custom Sounds!\r\n  Custom filepaths in config, so you can decide where you want the sounds!","ModID":"questsounds","creator":["Lillie"],"downloads":[{"modversion":"0.1.3","gameversion":["1.13.0"],"download":"https://cdn.discordapp.com/attachments/776551464117075978/776918618596048916/QuestSounds.zip","forward":false},{"modversion":"0.1.1","gameversion":["1.12.2"],"download":"https://cdn.discordapp.com/attachments/765630505000894484/773105655040966716/QuestSounds.zip","forward":false}]},{"name":"Goodbye Bug","details":"Fixes playlist scrolling in the wrong direction when you got more than 8 playlists","ModID":"goodbyebug","creator":["Lillie"],"downloads":[{"modversion":"0.1.3","gameversion":["1.13.0"],"download":"https://github.com/Rugtveit/GoodbyeBug/releases/download/0.1.3/GoodbyeBug.zip","forward":false,"coremod":true},{"modversion":"0.1.1","gameversion":["1.12.2"],"download":"https://cdn.discordapp.com/attachments/765630505000894484/772899029985919047/GoodbyeBug.zip","forward":false,"coremod":false}]},{"name":"RumbleRumbleQuest","details":"RumbleRumbleQuest allows you to adjust controller haptics \"rumbles\" in-game. RumbleRumbleQuest is a Quest port of the popular RumbleMod.","ModID":"rumblerumblequest","creator":["marcuszhou"],"downloads":[{"modversion":"1.0.0","gameversion":["1.12.2"],"download":"https://github.com/SuperMarcus/RumbleRumbleQuest/releases/download/1.0.0/RumbleRumbleQuest.zip"}]},{"name":"Quest Particles","details":"Partially ported ParticleOverdrive to the Quest. Particles (a.k.a. ParticleTuner) allows you to adjust the particles spawned after slicing a note, remove saber clashing effects, and reduce environmental dust. There's also a built-in rainbow mode for particles :)","ModID":"particletuner","creator":["marcuszhou"],"downloads":[{"modversion":"1.0.1","gameversion":["1.13.0"],"download":"https://github.com/SuperMarcus/QuestParticleTuner/releases/download/1.0.1/ParticleTuner_1.0.1.zip","forward":false},{"modversion":"1.0.0","gameversion":["1.12.2"],"download":"https://github.com/SuperMarcus/QuestParticleTuner/releases/download/1.0.0/ParticleTuner_1.0.0.zip","forward":false}]},{"name":"Better Menu","details":"A modod that rearranges the main menu into a more organized grid layout.\\r\\nThis is a port of the original mod created by AceofShovels\r\n\r\nRemoved BTS advertisement from the main menu. (Implemented by Laurie)","ModID":"BetterMenu","creator":["StackDoubleFlow","Laurie"],"downloads":[{"modversion":"0.2.1","gameversion":["1.13.0"],"download":"https://cdn.discordapp.com/attachments/776551464117075978/794607261074980894/BetterMenu.zip","forward":false,"coremod":false},{"modversion":"0.2.0","gameversion":["1.13.0"],"download":"https://cdn.discordapp.com/attachments/776551464117075978/776648476418244638/BetterMenu.zip"},{"modversion":"0.1.1","gameversion":["1.12.2"],"download":"https://cdn.discordapp.com/attachments/765630505000894484/771166107708424242/BetterMenu.zip"}]},{"name":"Mapping Extensions","details":"This adds a host of new things you can do with your maps as a mapper, and allows you to play said maps as a player.","ModID":"MappingExtensions","creator":["Kyle 1413","MichaelZoller","StackDoubleFlow"],"downloads":[{"modversion":"0.18.0","gameversion":["1.13.0"],"download":"https://github.com/StackDoubleFlow/QuestMods/releases/download/0.18.0/MappingExtensions_v0.18.0.zip","forward":false,"coremod":false}]},{"name":"Score Percentage","details":"Now with Settings UI! wait does pc even have that????\r\n\r\nChangelog:\r\n-Added Settings UI\r\n-Revamped Config code thanks to darknight1050 \r\n-Updated for 1.12.2\r\n-Fixed a bug with the average option","ModID":"ScorePercentage","creator":["FutureMapper"],"downloads":[{"modversion":"0.3.1","gameversion":["1.12.2"],"download":"https://cdn.discordapp.com/attachments/765630505000894484/775909171714981908/scorepercentage.zip","forward":false},{"modversion":"0.3.0","gameversion":["1.12.2"],"download":"https://cdn.discordapp.com/attachments/765630505000894484/770781443579969556/scorepercentage.zip","forward":false}]},{"name":"QuestTrailOverlap","details":"Makes the saber trails overlap instead of cut into eachother","ModID":"TrailOverlap","creator":["RedBrumbler"],"downloads":[{"modversion":"1.0.1","gameversion":["1.12.2"],"download":"https://github.com/RedBrumbler/QuestTrailOverlap/releases/latest/download/QuestTrailOverlap.zip"}]},{"name":"Motion Blur Disabler","details":"It disables the white area on the trail.","ModID":"MotionBlurDisabler","creator":["ComputerElite"],"downloads":[{"modversion":"1.2.0","gameversion":["1.13.0"],"download":"https://cdn.discordapp.com/attachments/776551464117075978/776806942374625290/MotionBlurDisabler_v1.2.0.zip","forward":false},{"modversion":"1.1.0","gameversion":["1.12.2"],"download":"https://cdn.discordapp.com/attachments/765630505000894484/776483474311741500/MotionBlurDisabler_v0.1.0.zip","forward":false}]},{"name":"Custom Fail Text","details":"Allows you to customize the text that appears when you fail a level.","ModID":"custom-fail-text","creator":["Laurie"],"downloads":[{"modversion":"0.1.7","gameversion":["1.13.0"],"download":"https://github.com/Lauriethefish/CustomFailText/releases/download/0.1.7/custom-fail-text_v0.1.7.zip","forward":false}]},{"name":"Discord Presence","details":"Allows you to see discord rich presence from Beat Saber on discord.\\r\\n\\r\\nMod Installation: https://github.com/Lauriethefish/Quest-Discord-Presence-Client/blob/main/README.md\\r\\n\\r\\nIf it's not working, try these:\\r\\n- Make sure your Quest IP hasn't changed, if so, update it in the config file, see installation.\\r\\n- Make sure you've opened the app.\\r\\n- Make sure Beat Saber is open and your headset is on your head.\\r\\n- You have discord on your PC not in the browser.\\r\\n- Try restarting discord.","ModID":"discord-presence","creator":["Laurie"],"downloads":[{"modversion":"0.2.1","gameversion":["1.13.0"],"download":"https://github.com/Lauriethefish/Quest-Discord-Presence/releases/download/0.2.1/discord-presence_v0.2.1.zip","forward":false,"coremod":false},{"modversion":"0.2.0","gameversion":["1.13.0"],"download":"https://github.com/Lauriethefish/Quest-Discord-Presence/releases/download/0.2.0/discord-presence_v0.2.0.zip","forward":false,"coremod":false},{"modversion":"0.1.3","gameversion":["1.13.0"],"download":"https://github.com/Lauriethefish/Quest-Discord-Presence/releases/download/0.1.3/discord-presence_v0.1.3.zip","forward":false,"coremod":false},{"modversion":"0.1.3","gameversion":["1.13.0"],"download":"https://github.com/Lauriethefish/Quest-Discord-Presence/releases/download/0.1.3/discord-presence_v0.1.3.zip","forward":false}]},{"name":"Qosmetics","details":"Cosmetics for Quest (Walls, Sabers and Bloqs)\r\n\r\nVersion 1.1.7 adds Menu Pointers for all!\r\n\r\n - Adds Qosmetics' own color managers\r\n - Fixes some object instantiations that caused crashes with other mods\r\n - Adds the active saber as menu pointer! this is disabled by default but can be enabled by changing the config. There are no seperate pointer files, it just uses your active saber!","ModID":"Qosmetics","creator":["RedBrumbler"],"downloads":[{"modversion":"1.1.7","gameversion":["1.13.0"],"download":"https://github.com/RedBrumbler/Qosmetics/releases/download/1.1.7/Qosmetics.zip","forward":false,"coremod":false},{"modversion":"1.1.6","gameversion":["1.13.0"],"download":"https://github.com/RedBrumbler/Qosmetics/releases/latest/download/Qosmetics.zip","forward":false,"coremod":false},{"modversion":"1.1.5","gameversion":["1.13.0"],"download":"https://github.com/RedBrumbler/Qosmetics/releases/latest/download/Qosmetics.zip","forward":false,"coremod":false}]},{"name":"AutoDebris","details":"Automatically enables or disables debris based on the NPS, or playlist that a song is in.","ModID":"auto-debris","creator":["Laurie"],"downloads":[{"modversion":"0.1.3","gameversion":["1.13.0"],"download":"https://cdn.discordapp.com/attachments/776551464117075978/777280121291800606/auto-debris_v0.1.3.zip","forward":false}]},{"name":"PinkCore","details":"PinkCore is a Core mod which aims to give you as much of a 'PC experience' as possible! This includes adding information to your game such as the Mappers names, Mod Requirements, Custom Colours, Custom Difficulty names, Burn Marks, Chromalite, and more!","ModID":"PinkCore","creator":["Pink"],"downloads":[{"modversion":"1.3.1","gameversion":["1.13.0"],"download":"https://github.com/BSMGPink/PinkUtils/releases/download/1.3.1/PinkCorev1.3.1.zip","forward":false,"coremod":true}]},{"name":"ModList","details":"Lets you view a list of loaded mods ingame.","ModID":"mod-list","creator":["Laurie"],"downloads":[{"modversion":"0.1.0","gameversion":["1.13.0"],"download":"https://github.com/Lauriethefish/ModList/releases/download/0.1.0/mod-list_v0.1.0.zip","forward":false,"coremod":false}]},{"name":"DebrisKeeper","details":"Prevents any debris within eight meters of the platform from disappearing.\r\nThis is a feature pulled from another project I'm working on called DebrisTweaker, which will Soon TM allow for full configuration of debris lifetime and velocity.","ModID":"debris-keeper","creator":["Raemien"],"downloads":[{"modversion":"0.1.1","gameversion":["1.13.0"],"download":"https://cdn.discordapp.com/attachments/776551464117075978/780981587021791232/DebrisKeeper_v0.1.1.zip","forward":false,"coremod":false}]},{"name":"MultiplayerLighting","details":"A mod that adds basic full color lighting to multiplayer, including ChromaLite (rainbow) support!","ModID":"mplighting","creator":["Kognise"],"downloads":[{"modversion":"0.1.5","gameversion":["1.13.0"],"download":"https://cdn.discordapp.com/attachments/776551464117075978/788886975230246932/mplighting_v0.1.5.zip","forward":false,"coremod":false},{"modversion":"0.1.4","gameversion":["1.13.0"],"download":"https://cdn.discordapp.com/attachments/776551464117075978/781950389163130900/mplighting_v0.1.4.zip","forward":false,"coremod":false}]},{"name":"Recorder","details":"A temporary pre-replay update mod that makes replay files.","ModID":"replay","creator":["Henwill8"],"downloads":[{"modversion":"0.1.0","gameversion":["1.13.0"],"download":"https://github.com/henwill8/ReplayDownload/releases/download/0.1.0/recorder_v0.1.0.zip","forward":false,"coremod":false}]},{"name":"Inverted Arrows","details":"This mod will make the arrows point the opposite direction from how they were mapped. can not reccommend if you want actual good maps.\r\n\r\nYou can toggle the mod on and off in the mod menu in beat saber.\r\n\r\nCompatible with qosmetics.","ModID":"InvertedArrows","creator":["RedBrumbler"],"downloads":[{"modversion":"1.0.0","gameversion":["1.13.0"],"download":"https://github.com/RedBrumbler/InvertedArrows/releases/latest/download/InvertedArrows.zip","forward":false,"coremod":false}]},{"name":"Hitscore Visualizer","details":"Displays your scores for each note with customizable colors, text, images, and even sound!","ModID":"QuestHitscoreVisualizer","creator":["Sc2ad"],"downloads":[{"modversion":"4.2.0","gameversion":["1.13.0"],"download":"https://github.com/sc2ad/QuestHitScoreVisualizer/releases/download/v4.2.0/QuestHitscoreVisualizer_v4.2.0.zip","forward":false,"coremod":false}]}]}
+{
+    "mods": [
+        {
+            "name": "NoHealthAndSafety",
+            "details": "Removes the annoying health and safety pop-up when starting the game.",
+            "ModID": "no-health-and-safety",
+            "creator": [
+                "Laurie"
+            ],
+            "downloads": [
+                {
+                    "modversion": "0.1.0",
+                    "gameversion": [
+                        "1.13.0"
+                    ],
+                    "download": "https://github.com/Lauriethefish/NoHealthAndSafety/releases/download/0.1.0/no-health-and-safety_v0.1.0.zip",
+                    "forward": false,
+                    "coremod": false,
+                    "notes": "Initial release"
+                }
+            ]
+        },
+        {
+            "name": "Clock Mod",
+            "details": "Adds a digital clock in the menus of Beat Saber.\r\n\r\nFeatures:\r\n    -Option for 12 hour clock.\r\n    -Customizable size.\r\n    -Customizable color.\r\n    -Option to show clock during song in mod settings (will show when paused if disabled).\r\n\r\nNotes:\r\n    -Compatibility issues with Hitscore Visualizer.",
+            "ModID": "clockmod",
+            "creator": [
+                "BoopetyDoopety"
+            ],
+            "downloads": [
+                {
+                    "modversion": "0.1.1",
+                    "gameversion": [
+                        "1.13.0"
+                    ],
+                    "download": "https://github.com/ChillGunner/ClockMod/releases/download/v0.1.1/clockmod_v0.1.1.zip",
+                    "notes": "This update adds a few customization options to decide how you like your clock.",
+                    "forward": false,
+                    "coremod": false
+                },
+                {
+                    "modversion": "0.1.0",
+                    "gameversion": [
+                        "1.13.0"
+                    ],
+                    "download": "https://github.com/ChillGunner/ClockMod/releases/download/v0.1.0/clockmod_v0.1.0.zip",
+                    "forward": false,
+                    "coremod": false,
+                    "notes": "Initial release"
+                }
+            ]
+        },
+        {
+            "name": "Practice Skipper",
+            "details": "Adds the ability to seek and change song speed while in practice mode. Double tap left or right with your left controller's analog stick to skip through the song, and double tap up or down to adjust the song speed. Options are available to change which controller to use, how long to skip, and how much to change speed.",
+            "ModID": "practice_skipper",
+            "creator": [
+                "danrouse"
+            ],
+            "downloads": [
+                {
+                    "modversion": "1.0.0",
+                    "gameversion": [
+                        "1.13.0"
+                    ],
+                    "download": "https://github.com/danrouse/bsq-practice-skipper/releases/download/1.0.0/practice_skipper_v1.0.0.zip",
+                    "forward": false,
+                    "coremod": false,
+                    "notes": "N/A"
+                }
+            ]
+        },
+        {
+            "name": "PracticePlus",
+            "details": "A mod that adds a few features to the practice mode menu\r\n\r\n - Set the NJS and note offset for the song\r\n - Expands the speed slider from 50%-200% to 25%-300% (because why not)\r\n\r\nThis is an updated/refactored version of the mod originally made by L_, and should hopefully be easy to update in the future.\r\n\r\nNOTE: The in-game menu for setting njs/offset is gone for now, until I can figure out why new buttons in the pause menu aren't clickable",
+            "ModID": "PracticePlus",
+            "creator": [
+                "krx"
+            ],
+            "downloads": [
+                {
+                    "modversion": "0.3.0",
+                    "gameversion": [
+                        "1.13.0"
+                    ],
+                    "download": "https://github.com/krx/PracticePlus/releases/download/0.3.0/PracticePlus_v0.3.0.zip",
+                    "forward": false,
+                    "coremod": false,
+                    "notes": ""
+                }
+            ]
+        },
+        {
+            "name": "LOLCAT",
+            "details": "A mod that translates most text into LOLCAT (Kingdom of Cats)",
+            "ModID": "lolcat_bmbf",
+            "creator": [
+                "MillzyG"
+            ],
+            "downloads": [
+                {
+                    "modversion": "0.3.0",
+                    "gameversion": [
+                        "1.13.0"
+                    ],
+                    "download": "https://github.com/MillzyG/LOLCAT_BMBF/releases/download/BSABER_1.13.0/lolcat_bmbf_v0.3.0.zip",
+                    "notes": "CHANGELOG:\r\n\r\n   - Optimised Translations\r\n   - Created Translation Template\r\n   - Translated More Buttons\r\n   - Fixed Edit Avatar Menu\r\n   - Created Translation Map",
+                    "forward": false,
+                    "coremod": false
+                },
+                {
+                    "modversion": "0.2.1",
+                    "gameversion": [
+                        "1.13.0"
+                    ],
+                    "download": "https://github.com/MillzyG/LOLCAT_BMBF/releases/download/0.2.1/lolcat_bmbf_v0.2.1.zip",
+                    "notes": "PATCH CHANGELOG:\r\n    - Fixed SoloFreePlayViewer and PartyFreePlayViewer have the same title",
+                    "forward": false,
+                    "coremod": false
+                },
+                {
+                    "modversion": "0.2.0",
+                    "gameversion": [
+                        "1.13.0"
+                    ],
+                    "download": "https://github.com/MillzyG/LOLCAT_BMBF/releases/download/0.2.0/lolcat_bmbf_v0.2.0.zip",
+                    "notes": "SoloFreePlayViewer and PartyFreePlayViewer have the same title",
+                    "forward": false,
+                    "coremod": false
+                },
+                {
+                    "modversion": "0.1.0",
+                    "gameversion": [
+                        "1.13.0"
+                    ],
+                    "download": "https://github.com/MillzyG/LOLCAT_BMBF/releases/download/0.1.0/lolcat_bmbf_v0.1.0.zip",
+                    "forward": false,
+                    "coremod": false,
+                    "notes": "Initial Release"
+                }
+            ]
+        },
+        {
+            "name": "BeatTogether",
+            "details": "Crossplay Multiplayer for Beat Saber 1.13.0\r\n\r\nA private server for multiplayer that allows crossplay between Steam, Oculus Store and Oculus Quest. Allowing you to play custom songs in private lobbies on both platforms.\r\n\r\nDISCLAIMER: PLEASE MAKE SURE TO READ THROUGH THE INSTALL INSTRUCTIONS FOR CUSTOM SUPPORT TO WORK PROPERLY.\r\n\r\n QUICKPLAY IS DISABLED ON THIS MOD AS IT IS NOT IMPLEMENTED YET. PLEASE USE OUR DISCORD IN COMMUNITY HUB CHANNEL TO CONDUCT GAMES\r\n\r\nInstall Instructions:https://github.com/pythonology/BeatTogether.Quest#installation\r\nCustom Song Support Instructions: https://github.com/pythonology/BeatTogether.Quest#custom-song-support",
+            "ModID": "BeatTogether",
+            "creator": [
+                "Kevman95",
+                "Python"
+            ],
+            "downloads": [
+                {
+                    "modversion": "1.0.1",
+                    "gameversion": [
+                        "1.13.0"
+                    ],
+                    "download": "https://github.com/pythonology/BeatTogether.Quest/releases/download/v1.0.1/BeatTogether_v1.0.1.zip",
+                    "forward": false,
+                    "coremod": false,
+                    "notes": "N/A"
+                }
+            ]
+        },
+        {
+            "name": "BTS Yeeter",
+            "details": "This mod simply removes the annoying little BTS characters that fly around during the their maps.",
+            "ModID": "bts-yeeter",
+            "creator": [
+                "gabriella"
+            ],
+            "downloads": [
+                {
+                    "modversion": "0.1.0",
+                    "gameversion": [
+                        "1.13.0"
+                    ],
+                    "download": "https://github.com/IsGabriellaCurious/BTSYeeter/releases/download/v0.1.0/bts-yeeter_v0.1.0.zip",
+                    "forward": false,
+                    "coremod": false,
+                    "notes": "N/A"
+                }
+            ]
+        },
+        {
+            "name": "No Italics",
+            "details": "Unslants everything in the menu! WARNING, THIS LOOKS VERY WEIRD. THE GAME WAS NOT DESIGNED FOR THIS.",
+            "ModID": "NoItalics",
+            "creator": [
+                "Pink"
+            ],
+            "downloads": [
+                {
+                    "modversion": "1.0.0",
+                    "gameversion": [
+                        "1.13.0"
+                    ],
+                    "download": "https://github.com/BSMGPink/QuestNoItalics/releases/download/1.0.0/NoItalicsQuestDownload.zip",
+                    "forward": false,
+                    "coremod": false
+                }
+            ]
+        },
+        {
+            "name": "Darth Maul",
+            "details": "A long awated rewrite of the original Darth Maul mod by Henwill8, which was originally created by riku1227!\r\nThis also contains many config options and is initially toggleable via the in-game modifiers.",
+            "ModID": "DarthMaul",
+            "creator": [
+                "Pink",
+                "Henwill8",
+                "riku1227"
+            ],
+            "downloads": [
+                {
+                    "modversion": "1.1.0",
+                    "gameversion": [
+                        "1.13.0"
+                    ],
+                    "download": "https://github.com/BSMGPink/QuestDarthMaul/releases/download/1.0.0/DarthMaul.zip",
+                    "forward": false,
+                    "coremod": false
+                }
+            ]
+        },
+        {
+            "name": "No Boom",
+            "details": "A Port of Spookys NoBoom mod. Disables the bomb particle effects, mainly used for recording.",
+            "ModID": "NoBoom",
+            "creator": [
+                "Pink",
+                "Spooky323"
+            ],
+            "downloads": [
+                {
+                    "modversion": "1.0.0",
+                    "gameversion": [
+                        "1.13.0"
+                    ],
+                    "download": "https://github.com/BSMGPink/QuestNoBoom/releases/download/1.0.0/NoBoom.zip",
+                    "forward": false,
+                    "coremod": false
+                }
+            ]
+        },
+        {
+            "name": "Burn Marks Keeper",
+            "details": "Stops your burn marks from ever disappearing when you collide your sabers with the ground! \r\nRequires PinkCore.",
+            "ModID": "BurnMarksKeeper",
+            "creator": [
+                "Pink"
+            ],
+            "downloads": [
+                {
+                    "modversion": "1.0.0",
+                    "gameversion": [
+                        "1.13.0"
+                    ],
+                    "download": "https://github.com/BSMGPink/BurnMarksKeeper/releases/download/1.0.0/BurnMarksKeeper.zip",
+                    "forward": false,
+                    "coremod": false
+                }
+            ]
+        },
+        {
+            "name": "No Miss Text",
+            "details": "A Port of CyanSnows NoMissText mod. Disables the Miss and Bad cut text from appearing, mainly used for recording.\r\n\r\nThis comes in two flavors, one with a custom BadHitSound built in Requires QuestSounds and one without!\r\n\r\nRequires PinkCore.\r\n\r\nNote by ComputerElite: Download here is the one without the BadHitSound. The other one is here: https://github.com/BSMGPink/QuestNoMissText/releases/download/1.0.0/NoMissTextOrBadCutSound.zip",
+            "ModID": "NoMissText",
+            "creator": [
+                "Pink",
+                "CyanSnow"
+            ],
+            "downloads": [
+                {
+                    "modversion": "1.0.0",
+                    "gameversion": [
+                        "1.13.0"
+                    ],
+                    "download": "https://github.com/BSMGPink/QuestNoMissText/releases/download/1.0.0/NoMissText.zip",
+                    "forward": false,
+                    "coremod": false
+                }
+            ]
+        },
+        {
+            "name": "Replay Lite",
+            "details": "This mod let's you create and view replays! This is great for recording and for content creators.\r\n\r\nA replay button will appear after playing a song and you can press it to view the replay.\r\nYou can slow down or speed up replays by turning off the speed lock in the pause menu and then using the right trigger to speed it up and the left to slow it down. This feature isn't very useful currently but it is great when paired with a feature that will be in the full version.\r\n\r\nThis is the lite version because it doesn't have any of the camera options or other features that will be in the full version, it is pretty much just an update to the 1.10/1.11 version of the mod. I created this version because the full version still needs lots of bug fixes and polishing.\r\n\r\nStatus on the full mod: I have a lot of bug fixes to do, need to add a full in game mod settings menu, and I plan on making a guide video to go with it so maybe another month or so.",
+            "ModID": "replay",
+            "creator": [
+                "Henwill8"
+            ],
+            "downloads": [
+                {
+                    "modversion": "0.3.0",
+                    "gameversion": [
+                        "1.13.0"
+                    ],
+                    "download": "https://github.com/henwill8/ReplayDownload/releases/download/v0.3.0/ReplayLite.zip",
+                    "forward": false,
+                    "coremod": false
+                }
+            ]
+        },
+        {
+            "name": "PauseConfirm",
+            "details": "Makes you confirm before going back to the menu, restarting or pressing continue when in the pause menu. This is to avoid you accidentally doing it when you're about to set a really good play, which I'm sure you've all done many times.\r\n\r\nChangelog:\r\n- Added option to decide which controller buttons must be pressed down to pause the game (can be viewed in mod settings)\r\n- Added option to switch controller used for pausing.",
+            "ModID": "pause-confirm",
+            "creator": [
+                "Laurie"
+            ],
+            "downloads": [
+                {
+                    "modversion": "0.2.0",
+                    "gameversion": [
+                        "1.13.0"
+                    ],
+                    "download": "https://github.com/Lauriethefish/PauseConfirm/releases/download/0.2.0/pause-confirm_v0.2.0.zip",
+                    "forward": false,
+                    "coremod": false
+                },
+                {
+                    "modversion": "0.1.0",
+                    "gameversion": [
+                        "1.13.0"
+                    ],
+                    "download": "https://github.com/Lauriethefish/PauseConfirm/releases/download/0.1.0/pause-confirm_v0.1.0.zip",
+                    "forward": false,
+                    "coremod": false
+                }
+            ]
+        },
+        {
+            "name": "SlowResume",
+            "details": "Allows you to change how long the countdown takes to resume when paused. Disables score submission if the amount of time is increased, since this makes pausing an easier method to get back your stamina.\r\n\r\nTo change the amount of time, go to the Settings Icon in the main menu -> Mod Settings -> SlowResume.",
+            "ModID": "slow-resume",
+            "creator": [
+                "Laurie"
+            ],
+            "downloads": [
+                {
+                    "modversion": "0.1.0",
+                    "gameversion": [
+                        "1.13.0"
+                    ],
+                    "download": "https://github.com/Lauriethefish/SlowResume/releases/download/0.1.0/slow-resume_v0.1.0.zip",
+                    "forward": false,
+                    "coremod": false
+                }
+            ]
+        },
+        {
+            "name": "DebrisTweaks",
+            "details": "This mod allows you to modify various note debris settings. Useful for those who wish to reduce vision blocks without disabling debris completely.\\r\\n\\r\\nTo modify the default parameters, navigate to DebrisTweaks in your mod settings panel and click on \\\"Enable Tweaks\\\".\\r\\nCurrent configurable options include lifespan, velocity, scale and gravity.",
+            "ModID": "DebrisTweaks",
+            "creator": [
+                "Raemien"
+            ],
+            "downloads": [
+                {
+                    "modversion": "0.3.0",
+                    "gameversion": [
+                        "1.13.0"
+                    ],
+                    "download": "https://github.com/Raemien/DebrisTweaksQuest/releases/download/0.3.0/DebrisTweaks.zip",
+                    "forward": false,
+                    "coremod": false
+                },
+                {
+                    "modversion": "0.2.0",
+                    "gameversion": [
+                        "1.13.0"
+                    ],
+                    "download": "https://cdn.discordapp.com/attachments/776551464117075978/789054295823613952/DebrisTweaks_v0.2.0.zip",
+                    "forward": false,
+                    "coremod": false
+                }
+            ]
+        },
+        {
+            "name": "RandomEndless",
+            "details": "Features:\r\n-Random song button, when clicked it will select a random song from the current playlist.\r\n-Endless button, when clicked it will play all valid songs in the playlist back to back.\r\n-A bunch of settings for both Random and Endless, configurable from the Mod Settings UI in game.\r\n\r\nOST/DLC songs are not currently supported because I cba.\r\nSome songs won't have valid song paths, meaning endless can't find and load them, if there are songs you want to play in endless but have invalid song paths the only thing you can do is delete and reinstall them from beatsaver/beastsaber. If you have PinkCore it should tell you if a song has an invalid path.\r\nIf a song is OST/DLC or has an invalid path endless will skip it.\r\n\r\nIf you have any bug reports or feature requests DM L_#8786.",
+            "ModID": "RandomEndless",
+            "creator": [
+                "L_"
+            ],
+            "downloads": [
+                {
+                    "modversion": "2.0.0",
+                    "gameversion": [
+                        "1.13.0"
+                    ],
+                    "download": "https://cdn.discordapp.com/attachments/776551464117075978/788705187862544384/randomendless.zip",
+                    "forward": false,
+                    "coremod": false
+                }
+            ]
+        },
+        {
+            "name": "RedBar",
+            "details": "Originally made by Miniwa\r\nChanges the color of your energy bar according to your energy.\r\n\r\nChanges:\r\n- Updated to Beat Saber 1.13.0\r\n- Added settings menu\r\n- Added Always Rainbow setting",
+            "ModID": "Redbar",
+            "creator": [
+                "ComputerElite"
+            ],
+            "downloads": [
+                {
+                    "modversion": "1.2.0",
+                    "gameversion": [
+                        "1.13.0"
+                    ],
+                    "download": "https://github.com/ComputerElite/RedBar/releases/download/1.2.0/RedBar_v1.2.0.zip",
+                    "forward": false,
+                    "coremod": false
+                }
+            ]
+        },
+        {
+            "name": "ScoreSaber",
+            "details": "Allows you to upload scores to an online leaderboard at https://scoresaber.com. Earn PP from ranked maps, and compare scores with others. Support us on Patreon at https://patreon.com/scoresaber",
+            "ModID": "ScoreSaber",
+            "creator": [
+                "Umbranox"
+            ],
+            "downloads": [
+                {
+                    "modversion": "0.2.4",
+                    "gameversion": [
+                        "1.13.0"
+                    ],
+                    "download": "https://new.scoresaber.com/quest/",
+                    "forward": true,
+                    "coremod": false
+                }
+            ]
+        },
+        {
+            "name": "AntiVertigo",
+            "details": "Spawns in a cube or cylinder under the player position with configurable size to help those with vertigo\r\n\r\n - Choose between a cube or cylinder\r\n - Change the size in mod settings, you can pretty much stretch it as far as you want\r\n - Can be disabled in mod settings, so you don't have to uninstall the mod if not needed/wanted",
+            "ModID": "AntiVertigo",
+            "creator": [
+                "RedBrumbler"
+            ],
+            "downloads": [
+                {
+                    "modversion": "1.0.0",
+                    "gameversion": [
+                        "1.13.0"
+                    ],
+                    "download": "https://github.com/RedBrumbler/AntiVertigo/releases/download/1.0.0/AntiVertigo.zip",
+                    "forward": false,
+                    "coremod": false
+                }
+            ]
+        },
+        {
+            "name": "MorePrecisePlayerHeight",
+            "details": "Original mod made by Eris for PC (Ported by Lillie)\r\n\r\nA very small Beat Saber mod that's let you view your own height with higher precision... at least one more decimal.\r\n\r\nConfig:\r\n    - enabled (true | false) - Enables the mod\r\n    - measureInFeet (true | false ) - Changes from meter to Feet. ",
+            "ModID": "preciseplayerheight",
+            "creator": [
+                "Lillie"
+            ],
+            "downloads": [
+                {
+                    "modversion": "0.1.3",
+                    "gameversion": [
+                        "1.13.0"
+                    ],
+                    "download": "https://cdn.discordapp.com/attachments/776551464117075978/776918481831723048/MorePrecisePlayerHeightForQuest.zip",
+                    "forward": false
+                },
+                {
+                    "modversion": "0.1.2",
+                    "gameversion": [
+                        "1.12.2"
+                    ],
+                    "download": "https://cdn.discordapp.com/attachments/765630505000894484/773112282913570827/MorePrecisePlayerHeightForQuest.zip",
+                    "forward": false
+                }
+            ]
+        },
+        {
+            "name": "QuestSounds",
+            "details": "QuestSounds allows the user to change sounds without asset mods, \r\njust drop them into default path or your custom path!\r\n\r\nFeatures:\r\n  Support for OGG, MP3 and WAV file formats!\r\n  Creates sounds folder at /sdcard/Android/data/com.beatgames.beatsaber/files/ \r\n  AFTER YOU HAVE RAN THE MOD ONCE\r\n  Config for disabling and enabling Custom Sounds!\r\n  Custom filepaths in config, so you can decide where you want the sounds!",
+            "ModID": "questsounds",
+            "creator": [
+                "Lillie"
+            ],
+            "downloads": [
+                {
+                    "modversion": "0.1.3",
+                    "gameversion": [
+                        "1.13.0"
+                    ],
+                    "download": "https://cdn.discordapp.com/attachments/776551464117075978/776918618596048916/QuestSounds.zip",
+                    "forward": false
+                },
+                {
+                    "modversion": "0.1.1",
+                    "gameversion": [
+                        "1.12.2"
+                    ],
+                    "download": "https://cdn.discordapp.com/attachments/765630505000894484/773105655040966716/QuestSounds.zip",
+                    "forward": false
+                }
+            ]
+        },
+        {
+            "name": "Goodbye Bug",
+            "details": "Fixes playlist scrolling in the wrong direction when you got more than 8 playlists",
+            "ModID": "goodbyebug",
+            "creator": [
+                "Lillie"
+            ],
+            "downloads": [
+                {
+                    "modversion": "0.1.3",
+                    "gameversion": [
+                        "1.13.0"
+                    ],
+                    "download": "https://github.com/Rugtveit/GoodbyeBug/releases/download/0.1.3/GoodbyeBug.zip",
+                    "forward": false,
+                    "coremod": true
+                },
+                {
+                    "modversion": "0.1.1",
+                    "gameversion": [
+                        "1.12.2"
+                    ],
+                    "download": "https://cdn.discordapp.com/attachments/765630505000894484/772899029985919047/GoodbyeBug.zip",
+                    "forward": false,
+                    "coremod": false
+                }
+            ]
+        },
+        {
+            "name": "RumbleRumbleQuest",
+            "details": "RumbleRumbleQuest allows you to adjust controller haptics \"rumbles\" in-game. RumbleRumbleQuest is a Quest port of the popular RumbleMod.",
+            "ModID": "rumblerumblequest",
+            "creator": [
+                "marcuszhou"
+            ],
+            "downloads": [
+                {
+                    "modversion": "1.0.0",
+                    "gameversion": [
+                        "1.12.2"
+                    ],
+                    "download": "https://github.com/SuperMarcus/RumbleRumbleQuest/releases/download/1.0.0/RumbleRumbleQuest.zip"
+                }
+            ]
+        },
+        {
+            "name": "Quest Particles",
+            "details": "Partially ported ParticleOverdrive to the Quest. Particles (a.k.a. ParticleTuner) allows you to adjust the particles spawned after slicing a note, remove saber clashing effects, and reduce environmental dust. There's also a built-in rainbow mode for particles :)",
+            "ModID": "particletuner",
+            "creator": [
+                "marcuszhou"
+            ],
+            "downloads": [
+                {
+                    "modversion": "1.0.1",
+                    "gameversion": [
+                        "1.13.0"
+                    ],
+                    "download": "https://github.com/SuperMarcus/QuestParticleTuner/releases/download/1.0.1/ParticleTuner_1.0.1.zip",
+                    "forward": false
+                },
+                {
+                    "modversion": "1.0.0",
+                    "gameversion": [
+                        "1.12.2"
+                    ],
+                    "download": "https://github.com/SuperMarcus/QuestParticleTuner/releases/download/1.0.0/ParticleTuner_1.0.0.zip",
+                    "forward": false
+                }
+            ]
+        },
+        {
+            "name": "Better Menu",
+            "details": "A modod that rearranges the main menu into a more organized grid layout.\\r\\nThis is a port of the original mod created by AceofShovels\r\n\r\nRemoved BTS advertisement from the main menu. (Implemented by Laurie)",
+            "ModID": "BetterMenu",
+            "creator": [
+                "StackDoubleFlow",
+                "Laurie"
+            ],
+            "downloads": [
+                {
+                    "modversion": "0.2.1",
+                    "gameversion": [
+                        "1.13.0"
+                    ],
+                    "download": "https://cdn.discordapp.com/attachments/776551464117075978/794607261074980894/BetterMenu.zip",
+                    "forward": false,
+                    "coremod": false
+                },
+                {
+                    "modversion": "0.2.0",
+                    "gameversion": [
+                        "1.13.0"
+                    ],
+                    "download": "https://cdn.discordapp.com/attachments/776551464117075978/776648476418244638/BetterMenu.zip"
+                },
+                {
+                    "modversion": "0.1.1",
+                    "gameversion": [
+                        "1.12.2"
+                    ],
+                    "download": "https://cdn.discordapp.com/attachments/765630505000894484/771166107708424242/BetterMenu.zip"
+                }
+            ]
+        },
+        {
+            "name": "Mapping Extensions",
+            "details": "This adds a host of new things you can do with your maps as a mapper, and allows you to play said maps as a player.",
+            "ModID": "MappingExtensions",
+            "creator": [
+                "Kyle 1413",
+                "MichaelZoller",
+                "StackDoubleFlow"
+            ],
+            "downloads": [
+                {
+                    "modversion": "0.18.0",
+                    "gameversion": [
+                        "1.13.0"
+                    ],
+                    "download": "https://github.com/StackDoubleFlow/QuestMods/releases/download/0.18.0/MappingExtensions_v0.18.0.zip",
+                    "forward": false,
+                    "coremod": false
+                }
+            ]
+        },
+        {
+            "name": "Score Percentage",
+            "details": "Now with Settings UI! wait does pc even have that????\r\n\r\nChangelog:\r\n-Added Settings UI\r\n-Revamped Config code thanks to darknight1050 \r\n-Updated for 1.12.2\r\n-Fixed a bug with the average option",
+            "ModID": "ScorePercentage",
+            "creator": [
+                "FutureMapper"
+            ],
+            "downloads": [
+                {
+                    "modversion": "0.3.1",
+                    "gameversion": [
+                        "1.12.2"
+                    ],
+                    "download": "https://cdn.discordapp.com/attachments/765630505000894484/775909171714981908/scorepercentage.zip",
+                    "forward": false
+                },
+                {
+                    "modversion": "0.3.0",
+                    "gameversion": [
+                        "1.12.2"
+                    ],
+                    "download": "https://cdn.discordapp.com/attachments/765630505000894484/770781443579969556/scorepercentage.zip",
+                    "forward": false
+                }
+            ]
+        },
+        {
+            "name": "QuestTrailOverlap",
+            "details": "Makes the saber trails overlap instead of cut into eachother",
+            "ModID": "TrailOverlap",
+            "creator": [
+                "RedBrumbler"
+            ],
+            "downloads": [
+                {
+                    "modversion": "1.0.1",
+                    "gameversion": [
+                        "1.12.2"
+                    ],
+                    "download": "https://github.com/RedBrumbler/QuestTrailOverlap/releases/latest/download/QuestTrailOverlap.zip"
+                }
+            ]
+        },
+        {
+            "name": "Motion Blur Disabler",
+            "details": "It disables the white area on the trail.",
+            "ModID": "MotionBlurDisabler",
+            "creator": [
+                "ComputerElite"
+            ],
+            "downloads": [
+                {
+                    "modversion": "1.2.0",
+                    "gameversion": [
+                        "1.13.0"
+                    ],
+                    "download": "https://cdn.discordapp.com/attachments/776551464117075978/776806942374625290/MotionBlurDisabler_v1.2.0.zip",
+                    "forward": false
+                },
+                {
+                    "modversion": "1.1.0",
+                    "gameversion": [
+                        "1.12.2"
+                    ],
+                    "download": "https://cdn.discordapp.com/attachments/765630505000894484/776483474311741500/MotionBlurDisabler_v0.1.0.zip",
+                    "forward": false
+                }
+            ]
+        },
+        {
+            "name": "Custom Fail Text",
+            "details": "Allows you to customize the text that appears when you fail a level.",
+            "ModID": "custom-fail-text",
+            "creator": [
+                "Laurie"
+            ],
+            "downloads": [
+                {
+                    "modversion": "0.1.7",
+                    "gameversion": [
+                        "1.13.0"
+                    ],
+                    "download": "https://github.com/Lauriethefish/CustomFailText/releases/download/0.1.7/custom-fail-text_v0.1.7.zip",
+                    "forward": false
+                }
+            ]
+        },
+        {
+            "name": "Discord Presence",
+            "details": "Allows you to see discord rich presence from Beat Saber on discord.\\r\\n\\r\\nMod Installation: https://github.com/Lauriethefish/Quest-Discord-Presence-Client/blob/main/README.md\\r\\n\\r\\nIf it's not working, try these:\\r\\n- Make sure your Quest IP hasn't changed, if so, update it in the config file, see installation.\\r\\n- Make sure you've opened the app.\\r\\n- Make sure Beat Saber is open and your headset is on your head.\\r\\n- You have discord on your PC not in the browser.\\r\\n- Try restarting discord.",
+            "ModID": "discord-presence",
+            "creator": [
+                "Laurie"
+            ],
+            "downloads": [
+                {
+                    "modversion": "0.2.1",
+                    "gameversion": [
+                        "1.13.0"
+                    ],
+                    "download": "https://github.com/Lauriethefish/Quest-Discord-Presence/releases/download/0.2.1/discord-presence_v0.2.1.zip",
+                    "forward": false,
+                    "coremod": false
+                },
+                {
+                    "modversion": "0.2.0",
+                    "gameversion": [
+                        "1.13.0"
+                    ],
+                    "download": "https://github.com/Lauriethefish/Quest-Discord-Presence/releases/download/0.2.0/discord-presence_v0.2.0.zip",
+                    "forward": false,
+                    "coremod": false
+                },
+                {
+                    "modversion": "0.1.3",
+                    "gameversion": [
+                        "1.13.0"
+                    ],
+                    "download": "https://github.com/Lauriethefish/Quest-Discord-Presence/releases/download/0.1.3/discord-presence_v0.1.3.zip",
+                    "forward": false,
+                    "coremod": false
+                },
+                {
+                    "modversion": "0.1.3",
+                    "gameversion": [
+                        "1.13.0"
+                    ],
+                    "download": "https://github.com/Lauriethefish/Quest-Discord-Presence/releases/download/0.1.3/discord-presence_v0.1.3.zip",
+                    "forward": false
+                }
+            ]
+        },
+        {
+            "name": "Qosmetics",
+            "details": "Cosmetics for Quest (Walls, Sabers and Bloqs)\r\n\r\nVersion 1.1.7 adds Menu Pointers for all!\r\n\r\n - Adds Qosmetics' own color managers\r\n - Fixes some object instantiations that caused crashes with other mods\r\n - Adds the active saber as menu pointer! this is disabled by default but can be enabled by changing the config. There are no seperate pointer files, it just uses your active saber!",
+            "ModID": "Qosmetics",
+            "creator": [
+                "RedBrumbler"
+            ],
+            "downloads": [
+                {
+                    "modversion": "1.1.7",
+                    "gameversion": [
+                        "1.13.0"
+                    ],
+                    "download": "https://github.com/RedBrumbler/Qosmetics/releases/download/1.1.7/Qosmetics.zip",
+                    "forward": false,
+                    "coremod": false
+                },
+                {
+                    "modversion": "1.1.6",
+                    "gameversion": [
+                        "1.13.0"
+                    ],
+                    "download": "https://github.com/RedBrumbler/Qosmetics/releases/latest/download/Qosmetics.zip",
+                    "forward": false,
+                    "coremod": false
+                },
+                {
+                    "modversion": "1.1.5",
+                    "gameversion": [
+                        "1.13.0"
+                    ],
+                    "download": "https://github.com/RedBrumbler/Qosmetics/releases/latest/download/Qosmetics.zip",
+                    "forward": false,
+                    "coremod": false
+                }
+            ]
+        },
+        {
+            "name": "AutoDebris",
+            "details": "Automatically enables or disables debris based on the NPS, or playlist that a song is in.",
+            "ModID": "auto-debris",
+            "creator": [
+                "Laurie"
+            ],
+            "downloads": [
+                {
+                    "modversion": "0.1.3",
+                    "gameversion": [
+                        "1.13.0"
+                    ],
+                    "download": "https://cdn.discordapp.com/attachments/776551464117075978/777280121291800606/auto-debris_v0.1.3.zip",
+                    "forward": false
+                }
+            ]
+        },
+        {
+            "name": "PinkCore",
+            "details": "PinkCore is a Core mod which aims to give you as much of a 'PC experience' as possible! This includes adding information to your game such as the Mappers names, Mod Requirements, Custom Colours, Custom Difficulty names, Burn Marks, Chromalite, and more!",
+            "ModID": "PinkCore",
+            "creator": [
+                "Pink"
+            ],
+            "downloads": [
+                {
+                    "modversion": "1.3.1",
+                    "gameversion": [
+                        "1.13.0"
+                    ],
+                    "download": "https://github.com/BSMGPink/PinkUtils/releases/download/1.3.1/PinkCorev1.3.1.zip",
+                    "forward": false,
+                    "coremod": true
+                }
+            ]
+        },
+        {
+            "name": "ModList",
+            "details": "Lets you view a list of loaded mods ingame.",
+            "ModID": "mod-list",
+            "creator": [
+                "Laurie"
+            ],
+            "downloads": [
+                {
+                    "modversion": "0.1.0",
+                    "gameversion": [
+                        "1.13.0"
+                    ],
+                    "download": "https://github.com/Lauriethefish/ModList/releases/download/0.1.0/mod-list_v0.1.0.zip",
+                    "forward": false,
+                    "coremod": false
+                }
+            ]
+        },
+        {
+            "name": "DebrisKeeper",
+            "details": "Prevents any debris within eight meters of the platform from disappearing.\r\nThis is a feature pulled from another project I'm working on called DebrisTweaker, which will Soon TM allow for full configuration of debris lifetime and velocity.",
+            "ModID": "debris-keeper",
+            "creator": [
+                "Raemien"
+            ],
+            "downloads": [
+                {
+                    "modversion": "0.1.1",
+                    "gameversion": [
+                        "1.13.0"
+                    ],
+                    "download": "https://cdn.discordapp.com/attachments/776551464117075978/780981587021791232/DebrisKeeper_v0.1.1.zip",
+                    "forward": false,
+                    "coremod": false
+                }
+            ]
+        },
+        {
+            "name": "MultiplayerLighting",
+            "details": "A mod that adds basic full color lighting to multiplayer, including ChromaLite (rainbow) support!",
+            "ModID": "mplighting",
+            "creator": [
+                "Kognise"
+            ],
+            "downloads": [
+                {
+                    "modversion": "0.1.5",
+                    "gameversion": [
+                        "1.13.0"
+                    ],
+                    "download": "https://cdn.discordapp.com/attachments/776551464117075978/788886975230246932/mplighting_v0.1.5.zip",
+                    "forward": false,
+                    "coremod": false
+                },
+                {
+                    "modversion": "0.1.4",
+                    "gameversion": [
+                        "1.13.0"
+                    ],
+                    "download": "https://cdn.discordapp.com/attachments/776551464117075978/781950389163130900/mplighting_v0.1.4.zip",
+                    "forward": false,
+                    "coremod": false
+                }
+            ]
+        },
+        {
+            "name": "Recorder",
+            "details": "A temporary pre-replay update mod that makes replay files.",
+            "ModID": "replay",
+            "creator": [
+                "Henwill8"
+            ],
+            "downloads": [
+                {
+                    "modversion": "0.1.0",
+                    "gameversion": [
+                        "1.13.0"
+                    ],
+                    "download": "https://github.com/henwill8/ReplayDownload/releases/download/0.1.0/recorder_v0.1.0.zip",
+                    "forward": false,
+                    "coremod": false
+                }
+            ]
+        },
+        {
+            "name": "Inverted Arrows",
+            "details": "This mod will make the arrows point the opposite direction from how they were mapped. can not reccommend if you want actual good maps.\r\n\r\nYou can toggle the mod on and off in the mod menu in beat saber.\r\n\r\nCompatible with qosmetics.",
+            "ModID": "InvertedArrows",
+            "creator": [
+                "RedBrumbler"
+            ],
+            "downloads": [
+                {
+                    "modversion": "1.0.0",
+                    "gameversion": [
+                        "1.13.0"
+                    ],
+                    "download": "https://github.com/RedBrumbler/InvertedArrows/releases/latest/download/InvertedArrows.zip",
+                    "forward": false,
+                    "coremod": false
+                }
+            ]
+        },
+        {
+            "name": "Hitscore Visualizer",
+            "details": "Displays your scores for each note with customizable colors, text, images, and even sound!",
+            "ModID": "QuestHitscoreVisualizer",
+            "creator": [
+                "Sc2ad"
+            ],
+            "downloads": [
+                {
+                    "modversion": "4.2.0",
+                    "gameversion": [
+                        "1.13.0"
+                    ],
+                    "download": "https://github.com/sc2ad/QuestHitScoreVisualizer/releases/download/v4.2.0/QuestHitscoreVisualizer_v4.2.0.zip",
+                    "forward": false,
+                    "coremod": false
+                }
+            ]
+        }
+    ],
+    "GameVersionIncompatibilities": [
+        {
+            "GameVersions": [
+                {
+                    "Major": 1,
+                    "Minor": 13,
+                    "Patch": 2
+                },
+                {
+                    "Major": 1,
+                    "Minor": 13,
+                    "Patch": 0
+                }
+            ]   
+        }
+    ]
+}
