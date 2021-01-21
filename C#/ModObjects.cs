@@ -116,11 +116,90 @@ namespace ModObjects
 
             return finished;
         }
+
+        public ModList RemoveIncompatibleMods(ModList list, String GameVersion, ModList listincomp)
+        {
+            List<string> incompatible = new List<string>();
+            foreach(GameVersionIncompatibility g in listincomp.GameVersionIncompatibilities)
+            {
+                foreach(GameVersion v in g.GameVersions)
+                {
+                    if(v.Version.ToLower() == GameVersion.ToLower())
+                    {
+                        List<GameVersion> tmp = new List<GameVersion>(g.GameVersions);
+                        foreach (GameVersion ver in g.GameVersions)
+                        {
+                            if (ver.Version.ToLower() != GameVersion.ToLower()) incompatible.Add(ver.Version.ToLower());
+                        }
+                        break;
+                    }
+                }
+            }
+
+            List<Mod> returnMod = new List<Mod>();
+
+            foreach(Mod m in list.mods)
+            {
+                Mod addMod = new Mod();
+                addMod.creator = m.creator;
+                addMod.details = m.details;
+                addMod.ModID = m.ModID;
+                addMod.name = m.name;
+                foreach(Download d in m.downloads)
+                {
+                    bool incomp = false;
+                    foreach(string s in d.gameversion)
+                    {
+                        if(incompatible.Contains(s.ToLower())) {
+                            incomp = true;
+                            break;
+                        }
+                    }
+                    if (!incomp) addMod.downloads.Add(d);
+                }
+                if(addMod.downloads.Count > 0) returnMod.Add(addMod);
+            }
+            list.mods = returnMod;
+            return list;
+        }
     }
 
     public class ModList
     {
         public List<Mod> mods { get; set; } = new List<Mod>();
+        public List<GameVersionIncompatibility> GameVersionIncompatibilities { get; set; } = new List<GameVersionIncompatibility>();
+    }
+
+    public class GameVersionIncompatibility
+    {
+        public List<GameVersion> GameVersions { get; set; } = new List<GameVersion>();
+    }
+
+    public class GameVersion
+    {
+        public int Major { get; set; } = 0;
+        public int Minor { get; set; } = 0;
+        public int Patch { get; set; } = 0;
+        public String Version { get
+            {
+                return Major + "." + Minor + "." + Patch;
+            }
+            set
+            {
+                try
+                {
+                    String[] strings = value.Replace("\"", "").Split('.');
+                    List<int> ints = new List<int>();
+                    foreach(string s in strings)
+                    {
+                        ints.Add(Convert.ToInt32(s));
+                    }
+                    Major = ints[0];
+                    Minor = ints[1];
+                    Patch = ints[2];
+                }catch { }
+            }
+        }
     }
 
     public class Mod

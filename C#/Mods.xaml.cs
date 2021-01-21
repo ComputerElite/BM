@@ -87,8 +87,8 @@ namespace BMBF_Manager
                 txtbox.AppendText(MainWindow.BMBF100);
                 Reaching = false;
             }
-            String[] GameVersion = MainWindow.GameVersion.ToString().Replace("\"", "").Split('.');
-            //String[] GameVersion = "1.11.0".Replace("\"", "").Split('.');
+            //String[] GameVersion = MainWindow.GameVersion.ToString().Replace("\"", "").Split('.');
+            String[] GameVersion = "1.13.0".Replace("\"", "").Split('.');
             int major = Convert.ToInt32(GameVersion[0]);
             int minor = Convert.ToInt32(GameVersion[1]);
             int patch = Convert.ToInt32(GameVersion[2]);
@@ -107,6 +107,8 @@ namespace BMBF_Manager
             CE = JsonSerializer.Deserialize<ModList>(c.DownloadString("https://raw.githubusercontent.com/ComputerElite/BM/main/mods.json"));
 
             ModUtils mu = new ModUtils();
+            QB = mu.RemoveIncompatibleMods(QB, String.Join(".", GameVersion), CE);
+            CE = mu.RemoveIncompatibleMods(CE, String.Join(".", GameVersion), CE);
             AllModList = mu.MergeModLists(CE, QB, BMBF, major, minor, patch);
             
             ModList.SelectedIndex = 0;

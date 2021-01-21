@@ -31,7 +31,7 @@ namespace BMBF_Manager
     {
         int MajorV = 1;
         int MinorV = 10;
-        int PatchV = 2;
+        int PatchV = 3;
         Boolean Preview = false;
 
         public static Boolean CustomProtocols = false;
@@ -104,7 +104,7 @@ namespace BMBF_Manager
             }
             Changelog();
             ComeFromUpdate = false;
-            TryGetStats();
+            //TryGetStats();
             KeepAliveTask();
         }
 
@@ -144,8 +144,8 @@ namespace BMBF_Manager
             txtbox.AppendText("\n- Bad Cuts count: " + stats.localPlayers[0].playerAllOverallStatsData.overallBadCutsCount);
             txtbox.AppendText("\n- Missed Cuts count: " + +stats.localPlayers[0].playerAllOverallStatsData.overallMissedCutsCount);
             txtbox.AppendText("\n- Total Score: " + stats.localPlayers[0].playerAllOverallStatsData.overallTotalScore);
-            txtbox.AppendText("\n- Total Time Played: " + (stats.localPlayers[0].playerAllOverallStatsData.overallTimePlayed > 60.0 ? Math.Round(stats.localPlayers[0].playerAllOverallStatsData.overallTimePlayed / 60, 3) + " hours" : Math.Round(stats.localPlayers[0].playerAllOverallStatsData.overallTimePlayed, 2) + " minutes"));
-            txtbox.AppendText("\n- Total Hand distance travelled: " + (stats.localPlayers[0].playerAllOverallStatsData.overallHandDistanceTravelled > 1000.0 ? Math.Round(stats.localPlayers[0].playerAllOverallStatsData.overallHandDistanceTravelled / 1000, 3) + " km" : Math.Round(stats.localPlayers[0].playerAllOverallStatsData.overallHandDistanceTravelled, 2) + " metres"));
+            txtbox.AppendText("\n- Total Time Played: " + (stats.localPlayers[0].playerAllOverallStatsData.overallTimePlayed > 60.0 ? Math.Round(stats.localPlayers[0].playerAllOverallStatsData.overallTimePlayed / 60, 3) + " hours" : Math.Round(stats.localPlayers[0].playerAllOverallStatsData.overallTimePlayed, 2) + " minutes").Replace(",", "."));
+            txtbox.AppendText("\n- Total Hand distance travelled: " + (stats.localPlayers[0].playerAllOverallStatsData.overallHandDistanceTravelled > 1000.0 ? Math.Round(stats.localPlayers[0].playerAllOverallStatsData.overallHandDistanceTravelled / 1000, 3) + " km" : Math.Round(stats.localPlayers[0].playerAllOverallStatsData.overallHandDistanceTravelled, 2) + " metres").Replace(",", "."));
             txtbox.AppendText("\n- Played levels: " + stats.localPlayers[0].playerAllOverallStatsData.overallPlayedLevelsCount);
             txtbox.AppendText("\n- Cleared levels: " + stats.localPlayers[0].playerAllOverallStatsData.overallCleardLevelsCount);
             txtbox.AppendText("\n- Failed levels: " + stats.localPlayers[0].playerAllOverallStatsData.overallFailedLevelsCount);
