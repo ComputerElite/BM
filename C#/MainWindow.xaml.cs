@@ -19,6 +19,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using System.Text.Json;
+using BeatSaber.Stats;
 
 namespace BMBF_Manager
 {
@@ -29,7 +31,7 @@ namespace BMBF_Manager
     {
         int MajorV = 1;
         int MinorV = 10;
-        int PatchV = 1;
+        int PatchV = 2;
         Boolean Preview = false;
 
         public static Boolean CustomProtocols = false;
@@ -102,6 +104,7 @@ namespace BMBF_Manager
             }
             Changelog();
             ComeFromUpdate = false;
+            TryGetStats();
             KeepAliveTask();
         }
 
@@ -115,6 +118,38 @@ namespace BMBF_Manager
                 }
                 await Task.Delay(15000);
             }
+        }
+
+        private void TryGetStats()
+        {
+            txtbox.AppendText("\n\nTrying to pull Player Stats");
+            if(!adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/PlayerData.dat \"" + exe + "\\tmp\\PlayerData.dat\"", false))
+            {
+                txtbox.AppendText("\nQuest isn't connected. Not displaying Player stats");
+                return;
+            }
+            if(!File.Exists(exe + "\\tmp\\PlayerData.dat"))
+            {
+                txtbox.AppendText("\nCouldn't pull PlayerStats from Quest. Not displaying Player stats");
+                return;
+            }
+            PlayerData stats = JsonSerializer.Deserialize<PlayerData>(File.ReadAllText(exe + "\\tmp\\PlayerData.dat"));
+            if(stats.localPlayers.Count < 1)
+            {
+                txtbox.AppendText("\nNo stats saved.");
+                return;
+            }
+            txtbox.AppendText("\n\nOverall Stats:");
+            txtbox.AppendText("\n- Good Cuts count: " + stats.localPlayers[0].playerAllOverallStatsData.overallGoodCutsCount);
+            txtbox.AppendText("\n- Bad Cuts count: " + stats.localPlayers[0].playerAllOverallStatsData.overallBadCutsCount);
+            txtbox.AppendText("\n- Missed Cuts count: " + +stats.localPlayers[0].playerAllOverallStatsData.overallMissedCutsCount);
+            txtbox.AppendText("\n- Total Score: " + stats.localPlayers[0].playerAllOverallStatsData.overallTotalScore);
+            txtbox.AppendText("\n- Total Time Played: " + (stats.localPlayers[0].playerAllOverallStatsData.overallTimePlayed > 60.0 ? Math.Round(stats.localPlayers[0].playerAllOverallStatsData.overallTimePlayed / 60, 3) + " hours" : Math.Round(stats.localPlayers[0].playerAllOverallStatsData.overallTimePlayed, 2) + " minutes"));
+            txtbox.AppendText("\n- Total Hand distance travelled: " + (stats.localPlayers[0].playerAllOverallStatsData.overallHandDistanceTravelled > 1000.0 ? Math.Round(stats.localPlayers[0].playerAllOverallStatsData.overallHandDistanceTravelled / 1000, 3) + " km" : Math.Round(stats.localPlayers[0].playerAllOverallStatsData.overallHandDistanceTravelled, 2) + " metres"));
+            txtbox.AppendText("\n- Played levels: " + stats.localPlayers[0].playerAllOverallStatsData.overallPlayedLevelsCount);
+            txtbox.AppendText("\n- Cleared levels: " + stats.localPlayers[0].playerAllOverallStatsData.overallCleardLevelsCount);
+            txtbox.AppendText("\n- Failed levels: " + stats.localPlayers[0].playerAllOverallStatsData.overallFailedLevelsCount);
+            txtbox.AppendText("\n- Full Combo count:" + stats.localPlayers[0].playerAllOverallStatsData.overallFullComboCount);
         }
 
         public void Changelog()
@@ -380,7 +415,7 @@ namespace BMBF_Manager
             return true;
         }
 
-        public Boolean adb(String Argument)
+        public Boolean adb(String Argument, bool showErrors = true)
         {
             String User = System.Environment.GetEnvironmentVariable("USERPROFILE");
             
@@ -410,8 +445,12 @@ namespace BMBF_Manager
                             exeProcess.WaitForExit();
                             if (IPS.Contains("no devices/emulators found"))
                             {
-                                txtbox.AppendText(ADB110);
-                                txtbox.ScrollToEnd();
+                                if(showErrors)
+                                {
+                                    txtbox.AppendText(ADB110);
+                                    txtbox.ScrollToEnd();
+                                }
+                                
                                 return false;
                             }
                         } else
@@ -427,8 +466,11 @@ namespace BMBF_Manager
                     continue;
                 }
             }
-            txtbox.AppendText(ADB100);
-            txtbox.ScrollToEnd();
+            if (showErrors)
+            {
+                txtbox.AppendText(ADB100);
+                txtbox.ScrollToEnd();
+            }
             return false;
         }
 

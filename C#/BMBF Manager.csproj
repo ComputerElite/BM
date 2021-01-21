@@ -102,6 +102,7 @@
     <Compile Include="BBBU.xaml.cs">
       <DependentUpon>BBBU.xaml</DependentUpon>
     </Compile>
+    <Compile Include="BeatSaber.cs" />
     <Compile Include="BeatSaverAPI.cs" />
     <Compile Include="BMBFConfig.cs" />
     <Compile Include="BPLists.xaml.cs">
