@@ -256,31 +256,39 @@ namespace BMBF_Manager
 
         private void DelSong(object sender, RoutedEventArgs e)
         {
-            if (PlaylistSongList.SelectedIndex < 0 || PlaylistSongList.SelectedIndex >= BMBFConfig.Config.Playlists[Playlists.SelectedIndex].SongList.Count)
+            List<int> indexe = GetSelectedNormalItemIndexAdjusted(PlaylistSongList);
+            int NotProcessed = 0;
+            foreach (int i in indexe)
             {
-                txtbox.AppendText("\n\nYou must have a Song selected");
-                txtbox.ScrollToEnd();
-                return;
-            }
-            
-            if(IsOST(BMBFConfig.Config.Playlists[Playlists.SelectedIndex].SongList[PlaylistSongList.SelectedIndex]))
-            {
-                txtbox.AppendText("\n\nI'll not allow you to delete any OST Song.");
-                txtbox.ScrollToEnd();
-                return;
-            }
-
-            MessageBoxResult r = MessageBox.Show("Are you sure you want to delete " + BMBFConfig.Config.Playlists[Playlists.SelectedIndex].SongList[PlaylistSongList.SelectedIndex].SongName + "? This can NOT be undone after saving!", "BMBF Manager - Playlist Editor", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-            switch(r)
-            {
-                case MessageBoxResult.No:
-                    txtbox.AppendText("\n\nDeleting of " + BMBFConfig.Config.Playlists[Playlists.SelectedIndex].SongList[PlaylistSongList.SelectedIndex].SongName + " aborted.");
+                int ii = i + NotProcessed;
+                if (ii < 0 || ii >= BMBFConfig.Config.Playlists[Playlists.SelectedIndex].SongList.Count)
+                {
+                    txtbox.AppendText("\n\nYou must have a Song selected");
                     txtbox.ScrollToEnd();
-                    return;
-            }
-            BMBFConfig.Config.Playlists[Playlists.SelectedIndex].SongList.RemoveAt(PlaylistSongList.SelectedIndex);
+                    NotProcessed++;
+                    continue;
+                }
 
-            reloadPLs();
+                if (IsOST(BMBFConfig.Config.Playlists[Playlists.SelectedIndex].SongList[ii]))
+                {
+                    txtbox.AppendText("\n\nI'll not allow you to delete any OST Song.");
+                    txtbox.ScrollToEnd();
+                    NotProcessed++;
+                    continue;
+                }
+
+                MessageBoxResult r = MessageBox.Show("Are you sure you want to delete " + BMBFConfig.Config.Playlists[Playlists.SelectedIndex].SongList[ii].SongName + "? This can NOT be undone after saving!", "BMBF Manager - Playlist Editor", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                switch (r)
+                {
+                    case MessageBoxResult.No:
+                        txtbox.AppendText("\n\nDeleting of " + BMBFConfig.Config.Playlists[Playlists.SelectedIndex].SongList[ii].SongName + " aborted.");
+                        txtbox.ScrollToEnd();
+                        NotProcessed++;
+                        continue;
+                }
+                BMBFConfig.Config.Playlists[Playlists.SelectedIndex].SongList.RemoveAt(ii);
+                reloadPLs();
+            }
         }
 
         private void DelPl(object sender, RoutedEventArgs e)
@@ -412,30 +420,37 @@ namespace BMBF_Manager
 
         private void MoveSongRight(object sender, RoutedEventArgs e)
         {
-            if (PlaylistSongList.SelectedIndex < 0 || PlaylistSongList.SelectedIndex >= BMBFConfig.Config.Playlists[Playlists.SelectedIndex].SongList.Count)
+            List<int> indexe = GetSelectedNormalItemIndexAdjusted(PlaylistSongList);
+            int NotProcessed = 0;
+            foreach (int i in indexe)
             {
-                txtbox.AppendText("\n\nYou must have a Song selected");
-                txtbox.ScrollToEnd();
-                return;
-            }
+                int ii = i + NotProcessed;
+                if (ii < 0 || ii >= BMBFConfig.Config.Playlists[Playlists.SelectedIndex].SongList.Count)
+                {
+                    txtbox.AppendText("\n\nYou must have a Song selected");
+                    txtbox.ScrollToEnd();
+                    NotProcessed++;
+                    continue;
+                }
 
-            if (IsOST(BMBFConfig.Config.Playlists[Playlists.SelectedIndex].SongList[PlaylistSongList.SelectedIndex]))
-            {
-                txtbox.AppendText("\n\nI'll not allow you to move any OST Song (" + BMBFConfig.Config.Playlists[Playlists.SelectedIndex].SongList[PlaylistSongList.SelectedIndex].SongName + ") to prevent issues.");
-                txtbox.ScrollToEnd();
-                return;
-            }
+                if (IsOST(BMBFConfig.Config.Playlists[Playlists.SelectedIndex].SongList[ii]))
+                {
+                    txtbox.AppendText("\n\nI'll not allow you to move any OST Song (" + BMBFConfig.Config.Playlists[Playlists.SelectedIndex].SongList[ii].SongName + ") to prevent issues.");
+                    txtbox.ScrollToEnd();
+                    NotProcessed++;
+                    continue;
+                }
 
-            if (UnsortedSongsPlaylist.SelectedIndex < 0 || UnsortedSongsPlaylist.SelectedIndex >= UnsortedPlaylist.Count)
-            {
-                UnsortedPlaylist.Add(BMBFConfig.Config.Playlists[Playlists.SelectedIndex].SongList[PlaylistSongList.SelectedIndex]);
+                if (UnsortedSongsPlaylist.SelectedIndex < 0 || UnsortedSongsPlaylist.SelectedIndex >= UnsortedPlaylist.Count)
+                {
+                    UnsortedPlaylist.Add(BMBFConfig.Config.Playlists[Playlists.SelectedIndex].SongList[ii]);
+                }
+                else
+                {
+                    UnsortedPlaylist.Insert(UnsortedSongsPlaylist.SelectedIndex + 1, BMBFConfig.Config.Playlists[Playlists.SelectedIndex].SongList[ii]);
+                }
+                BMBFConfig.Config.Playlists[Playlists.SelectedIndex].SongList.RemoveAt(ii);
             }
-            else
-            {
-                UnsortedPlaylist.Insert(UnsortedSongsPlaylist.SelectedIndex + 1, BMBFConfig.Config.Playlists[Playlists.SelectedIndex].SongList[PlaylistSongList.SelectedIndex]);
-            }
-            BMBFConfig.Config.Playlists[Playlists.SelectedIndex].SongList.RemoveAt(PlaylistSongList.SelectedIndex);
-
             reloadPLs();
         }
 
@@ -473,22 +488,28 @@ namespace BMBF_Manager
 
         private void MoveSongLeft(object sender, RoutedEventArgs e)
         {
-            if (UnsortedSongsPlaylist.SelectedIndex < 0 || UnsortedSongsPlaylist.SelectedIndex >= UnsortedPlaylist.Count)
+            List<int> indexe = GetSelectedNormalItemIndexAdjusted(UnsortedSongsPlaylist);
+            int NotProcessed = 0;
+            foreach (int i in indexe)
             {
-                txtbox.AppendText("\n\nYou must have a Song selected");
-                txtbox.ScrollToEnd();
-                return;
+                int ii = i + NotProcessed;
+                if (ii < 0 || ii >= UnsortedPlaylist.Count)
+                {
+                    txtbox.AppendText("\n\nYou must have a Song selected");
+                    txtbox.ScrollToEnd();
+                    NotProcessed++;
+                    continue;
+                }
+                if (ii < 0 || ii >= BMBFConfig.Config.Playlists[Playlists.SelectedIndex].SongList.Count)
+                {
+                    BMBFConfig.Config.Playlists[Playlists.SelectedIndex].SongList.Add(UnsortedPlaylist[ii]);
+                }
+                else
+                {
+                    BMBFConfig.Config.Playlists[Playlists.SelectedIndex].SongList.Insert(PlaylistSongList.SelectedIndex + 1, UnsortedPlaylist[ii]);
+                }
+                UnsortedPlaylist.RemoveAt(ii);
             }
-            if (PlaylistSongList.SelectedIndex < 0 || PlaylistSongList.SelectedIndex >= BMBFConfig.Config.Playlists[Playlists.SelectedIndex].SongList.Count)
-            {
-                BMBFConfig.Config.Playlists[Playlists.SelectedIndex].SongList.Add(UnsortedPlaylist[UnsortedSongsPlaylist.SelectedIndex]);
-            }
-            else
-            {
-                BMBFConfig.Config.Playlists[Playlists.SelectedIndex].SongList.Insert(PlaylistSongList.SelectedIndex + 1, UnsortedPlaylist[UnsortedSongsPlaylist.SelectedIndex]);
-            }
-            UnsortedPlaylist.RemoveAt(UnsortedSongsPlaylist.SelectedIndex);
-
             reloadPLs();
         }
 
@@ -518,49 +539,61 @@ namespace BMBF_Manager
 
         private void BeastSShow(object sender, RoutedEventArgs e)
         {
-            if (PlaylistSongList.SelectedIndex < 0 || PlaylistSongList.SelectedIndex >= BMBFConfig.Config.Playlists[Playlists.SelectedIndex].SongList.Count)
+            List<int> indexe = GetSelectedNormalItemIndex(PlaylistSongList);
+            foreach (int i in indexe)
             {
-                txtbox.AppendText("\n\nYou must have a valid Song selected");
-                txtbox.ScrollToEnd();
-                return;
+                if (i < 0 || i >= BMBFConfig.Config.Playlists[Playlists.SelectedIndex].SongList.Count)
+                {
+                    txtbox.AppendText("\n\nYou must have a valid Song selected");
+                    txtbox.ScrollToEnd();
+                    continue;
+                }
+                BeatSaverAPISong s = interactor.GetBeatSaverAPISongViaHash(BMBFConfig.Config.Playlists[Playlists.SelectedIndex].SongList[i].SongID.Replace("custom_level_", "").Replace("customlevel_", ""));
+                if (!s.GoodRequest)
+                {
+                    txtbox.AppendText("\n\nI couldn't look up " + BMBFConfig.Config.Playlists[Playlists.SelectedIndex].SongList[i].SongName + " on BeatSaver");
+                    txtbox.ScrollToEnd();
+                    continue;
+                }
+                Process.Start("https://bsaber.com/songs/" + s.key);
             }
-            BeatSaverAPISong s = interactor.GetBeatSaverAPISongViaHash(BMBFConfig.Config.Playlists[Playlists.SelectedIndex].SongList[PlaylistSongList.SelectedIndex].SongID.Replace("custom_level_", "").Replace("customlevel_", ""));
-            if(!s.GoodRequest)
-            {
-                txtbox.AppendText("\n\nI couldn't look up " + BMBFConfig.Config.Playlists[Playlists.SelectedIndex].SongList[PlaylistSongList.SelectedIndex].SongName + " on BeatSaver");
-                txtbox.ScrollToEnd();
-                return;
-            }
-            Process.Start("https://bsaber.com/songs/" + s.key);
         }
 
         private void BeatSShow(object sender, RoutedEventArgs e)
         {
-            if (PlaylistSongList.SelectedIndex < 0 || PlaylistSongList.SelectedIndex >= BMBFConfig.Config.Playlists[Playlists.SelectedIndex].SongList.Count)
+            List<int> indexe = GetSelectedNormalItemIndex(PlaylistSongList);
+            foreach (int i in indexe)
             {
-                txtbox.AppendText("\n\nYou must have a valid Song selected");
-                txtbox.ScrollToEnd();
-                return;
+                if (i < 0 || i >= BMBFConfig.Config.Playlists[Playlists.SelectedIndex].SongList.Count)
+                {
+                    txtbox.AppendText("\n\nYou must have a valid Song selected");
+                    txtbox.ScrollToEnd();
+                    return;
+                }
+                BeatSaverAPISong s = interactor.GetBeatSaverAPISongViaHash(BMBFConfig.Config.Playlists[Playlists.SelectedIndex].SongList[i].SongID.Replace("custom_level_", "").Replace("customlevel_", ""));
+                if (!s.GoodRequest)
+                {
+                    txtbox.AppendText("\n\nI couldn't look up " + BMBFConfig.Config.Playlists[Playlists.SelectedIndex].SongList[i].SongName + " on BeatSaver");
+                    txtbox.ScrollToEnd();
+                    return;
+                }
+                Process.Start("https://beatsaver.com/beatmap/" + s.key);
             }
-            BeatSaverAPISong s = interactor.GetBeatSaverAPISongViaHash(BMBFConfig.Config.Playlists[Playlists.SelectedIndex].SongList[PlaylistSongList.SelectedIndex].SongID.Replace("custom_level_", "").Replace("customlevel_", ""));
-            if (!s.GoodRequest)
-            {
-                txtbox.AppendText("\n\nI couldn't look up " + BMBFConfig.Config.Playlists[Playlists.SelectedIndex].SongList[PlaylistSongList.SelectedIndex].SongName + " on BeatSaver");
-                txtbox.ScrollToEnd();
-                return;
-            }
-            Process.Start("https://beatsaver.com/beatmap/" + s.key);
         }
 
         private void SSSearch(object sender, RoutedEventArgs e)
         {
-            if (PlaylistSongList.SelectedIndex < 0 || PlaylistSongList.SelectedIndex >= BMBFConfig.Config.Playlists[Playlists.SelectedIndex].SongList.Count)
+            List<int> indexe = GetSelectedNormalItemIndex(PlaylistSongList);
+            foreach (int i in indexe)
             {
-                txtbox.AppendText("\n\nYou must have a valid Song selected");
-                txtbox.ScrollToEnd();
-                return;
+                if (i < 0 || i >= BMBFConfig.Config.Playlists[Playlists.SelectedIndex].SongList.Count)
+                {
+                    txtbox.AppendText("\n\nYou must have a valid Song selected");
+                    txtbox.ScrollToEnd();
+                    return;
+                }
+                Process.Start("https://scoresaber.com/?search=" + BMBFConfig.Config.Playlists[Playlists.SelectedIndex].SongList[i].SongName);
             }
-            Process.Start("https://scoresaber.com/?search=" + BMBFConfig.Config.Playlists[Playlists.SelectedIndex].SongList[PlaylistSongList.SelectedIndex].SongName);
         }
 
         private void SPName(object sender, RoutedEventArgs e)
@@ -648,22 +681,55 @@ namespace BMBF_Manager
             txtbox.ScrollToEnd();
         }
 
+        private List<int> GetSelectedNormalItemIndexAdjusted(ListView l)
+        {
+            List<int> index = new List<int>();
+            foreach (var item in l.SelectedItems)
+            {
+                index.Add(l.Items.IndexOf(item));
+            }
+            index.Sort();
+            int i = 0;
+            List<int> tmp = new List<int>(index);
+            foreach(int c in tmp)
+            {
+                index[i] = index[i] - i;
+                i++;
+            }
+            return index;
+        }
+
+        private List<int> GetSelectedNormalItemIndex(ListView l)
+        {
+            List<int> index = new List<int>();
+            foreach (var item in l.SelectedItems)
+            {
+                index.Add(l.Items.IndexOf(item));
+            }
+            return index;
+        }
+
         private void SPreview(object sender, RoutedEventArgs e)
         {
-            if (PlaylistSongList.SelectedIndex < 0 || PlaylistSongList.SelectedIndex >= BMBFConfig.Config.Playlists[Playlists.SelectedIndex].SongList.Count)
+            List<int> indexe = GetSelectedNormalItemIndex(PlaylistSongList);
+            foreach(int i in indexe)
             {
-                txtbox.AppendText("\n\nYou must have a valid Song selected");
-                txtbox.ScrollToEnd();
-                return;
+                if (i < 0 || i >= BMBFConfig.Config.Playlists[Playlists.SelectedIndex].SongList.Count)
+                {
+                    txtbox.AppendText("\n\nYou must have a valid Song selected");
+                    txtbox.ScrollToEnd();
+                    return;
+                }
+                BeatSaverAPISong s = interactor.GetBeatSaverAPISongViaHash(BMBFConfig.Config.Playlists[Playlists.SelectedIndex].SongList[i].SongID.Replace("custom_level_", "").Replace("customlevel_", ""));
+                if (!s.GoodRequest)
+                {
+                    txtbox.AppendText("\n\nI couldn't look up " + BMBFConfig.Config.Playlists[Playlists.SelectedIndex].SongList[i].SongName + " on BeatSaver");
+                    txtbox.ScrollToEnd();
+                    return;
+                }
+                Process.Start("https://skystudioapps.com/bs-viewer/?id=" + s.key);
             }
-            BeatSaverAPISong s = interactor.GetBeatSaverAPISongViaHash(BMBFConfig.Config.Playlists[Playlists.SelectedIndex].SongList[PlaylistSongList.SelectedIndex].SongID.Replace("custom_level_", "").Replace("customlevel_", ""));
-            if (!s.GoodRequest)
-            {
-                txtbox.AppendText("\n\nI couldn't look up " + BMBFConfig.Config.Playlists[Playlists.SelectedIndex].SongList[PlaylistSongList.SelectedIndex].SongName + " on BeatSaver");
-                txtbox.ScrollToEnd();
-                return;
-            }
-            Process.Start("https://skystudioapps.com/bs-viewer/?id=" + s.key);
+            
         }
 
         private async void IBPList(object sender, RoutedEventArgs e)

@@ -55,7 +55,7 @@ namespace BMBF_Manager
                 uniformBrush.Stretch = Stretch.UniformToFill;
                 this.Background = uniformBrush;
             }
-            if(!MainWindow.QosmeticsWarningShown)
+            if (!MainWindow.QosmeticsWarningShown)
             {
                 MessageBox.Show("Note: All Qosmetics got added automatically to this program. Not every Qosmetics is present here and you may see the wrong name. Check the Qosmetics Discord Server to get all available Qosmetics (https://discord.gg/qosmetics).\n\nFor Qosmetics to work the Qosmetics mod is needed. I'll check if it's installed every time all downloads are finished and if it isn't installed install it for you.", "BMBF Manager - Qosmetics", MessageBoxButton.OK, MessageBoxImage.Information);
                 MainWindow.QosmeticsWarningShown = true;
@@ -131,9 +131,9 @@ namespace BMBF_Manager
             QSaberList.Items.Clear();
             QWallList.Items.Clear();
             QBloqList.Items.Clear();
-            foreach(QosmeticsObject o in qj.AllQSabers)
+            foreach (QosmeticsObject o in qj.AllQSabers)
             {
-                QSaberList.Items.Add(new QosmeticsListObject {Name = o.name, Creator = o.author });
+                QSaberList.Items.Add(new QosmeticsListObject { Name = o.name, Creator = o.author });
             }
             foreach (QosmeticsObject o in qj.qWalls)
             {
@@ -298,7 +298,7 @@ namespace BMBF_Manager
 
         private void GetQSaberPicture(object sender, SelectionChangedEventArgs e)
         {
-            if(QSaberList.SelectedIndex < 0 || QSaberList.SelectedIndex > (qj.AllQSabers.Count - 1))
+            if (QSaberList.SelectedIndex < 0 || QSaberList.SelectedIndex > (qj.AllQSabers.Count - 1))
             {
                 return;
             }
@@ -450,10 +450,11 @@ namespace BMBF_Manager
 
         private void checkqueue()
         {
-            if(downloadqueue.Count != 0)
+            if (downloadqueue.Count != 0)
             {
                 InstallQosmetic();
-            } else
+            }
+            else
             {
                 DownloadLable.Text = "All finished";
                 txtbox.AppendText("\n\nAll finished");

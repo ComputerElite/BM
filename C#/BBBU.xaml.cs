@@ -68,10 +68,12 @@ namespace BMBF_Manager
             RReplays.IsChecked = true;
             RSounds.IsChecked = true;
             RConfigs.IsChecked = true;
+            RQosmetics.IsChecked = false;
+            RQosmetics.Visibility = Visibility.Hidden;
             RAPK.IsChecked = false;
             RAPK.Visibility = Visibility.Hidden;
 
-            ChangeImage("BBBU2_B.png");
+            ChangeImage("BBBU3.png");
         }
 
         public void TransferFromBBBU()
@@ -237,7 +239,13 @@ namespace BMBF_Manager
             //Mod cfgs
             txtbox.AppendText("\n\nBacking up Mod Configs");
             adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/mod_cfgs \"" + BackupF + "\"");
+            adb("pull /sdcard/ModData/com.beatgames.beatsaber/Configs \"" + BackupF + "\"");
             txtbox.AppendText("\nBacked up Mod Configs\n");
+
+            //Qosmetics
+            txtbox.AppendText("\n\nBacking up Qosmetics");
+            adb("pull /sdcard/ModData/com.beatgames.beatsaber/Mods/Qosmetics \"" + BackupF + "\"");
+            txtbox.AppendText("\nBacked up Qosmetics\n");
 
             if (Advanced)
             {
@@ -259,6 +267,7 @@ namespace BMBF_Manager
             {
                 BackupConfig["BackupType"] = 0;
             }
+            BackupConfig["Qosmetics"] = true;
             File.WriteAllText(BackupF + "\\Backup.json", BackupConfig.ToString());
 
             txtbox.AppendText("\n\n\nBMBF and Beat Saber Backup has been made.");
@@ -321,6 +330,14 @@ namespace BMBF_Manager
             if ((bool)RAPK.IsChecked)
             {
                 RestoreAPK();
+            }
+
+            //Qosmetics
+            if ((bool)RQosmetics.IsChecked)
+            {
+                txtbox.AppendText("\n\nRestoring Qosmetics");
+                adb("push \"" + BackupF + "\\Qosmetics\" /sdcard/ModData/com.beatgames.beatsaber/Mods/");
+                txtbox.AppendText("\nRestored Qosmetics\n");
             }
 
             //Scores
@@ -394,6 +411,7 @@ namespace BMBF_Manager
             {
                 txtbox.AppendText("\n\nPushing Configs");
                 adb("push \"" + BackupF + "\\mod_cfgs\" /sdcard/Android/data/com.beatgames.beatsaber/files");
+                adb("push \"" + BackupF + "\\Configs\" /sdcard/ModData/com.beatgames.beatsaber/");
                 txtbox.AppendText("\nPushed Configs");
                 txtbox.ScrollToEnd();
             }
@@ -430,6 +448,11 @@ namespace BMBF_Manager
             {
                 txtbox.AppendText("\nBacked up Game Data");
             }
+            txtbox.AppendText("\n\nBacking up ModData");
+            if (adb("pull /sdcard/ModData/com.beatgames.beatsaber \"" + BackupF + "\""))
+            {
+                txtbox.AppendText("\nBacked up ModData");
+            }
         }
 
         public void RestoreAPK()
@@ -457,6 +480,7 @@ namespace BMBF_Manager
             txtbox.AppendText("\nInstalled BMBF");
             txtbox.AppendText("\n\nRestoring Game Data");
             if (!adb("push \"" + BackupF + "\\files\" /sdcard/Android/data/com.beatgames.beatsaber/")) return;
+            if (!adb("push \"" + BackupF + "\\com.beatgames.beatsaber\" /sdcard/ModData/")) return;
             txtbox.AppendText("\n\nPushing Scores");
             adb("push \"" + Scores + "\\LocalDailyLeaderboards.dat\" /sdcard/Android/data/com.beatgames.beatsaber/files/LocalDailyLeaderboards.dat");
             adb("push \"" + Scores + "\\LocalLeaderboards.dat\" /sdcard/Android/data/com.beatgames.beatsaber/files/LocalLeaderboards.dat");
@@ -1209,14 +1233,21 @@ namespace BMBF_Manager
             {
                 RAPK.Visibility = Visibility.Hidden;
                 RAPK.IsChecked = false;
-                //Change Background Image
-                ChangeImage("BBBU2_B.png");
             } else
             {
                 RAPK.Visibility = Visibility.Visible;
                 RAPK.IsChecked = true;
-                //Change Background Image
-                ChangeImage("BBBU2_A.png");
+            }
+
+            if (BackupConfig["Qosmetics"] == true)
+            {
+                RQosmetics.IsChecked = true;
+                RQosmetics.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                RQosmetics.IsChecked = false;
+                RQosmetics.Visibility = Visibility.Hidden;
             }
         }
 

@@ -34,7 +34,7 @@
         <Button FontFamily="lucida console" MouseEnter="noDrag" MouseLeave="doDrag" Opacity="0.8" Click="getPlaylists" Content="Load Playlists" HorizontalAlignment="Left" Margin="203,58,0,0" VerticalAlignment="Top" Width="200" Background="#FF005654" BorderBrush="#FFB94747" Foreground="#FFF3F3F3" Height="33"/>
         <ComboBox SelectionChanged="ChangeCurrentPlaylist"  Opacity="0.8" MouseEnter="noDrag" MouseLeave="doDrag" x:Name="Playlists" HorizontalAlignment="Left" Margin="203,167,0,0" VerticalAlignment="Top" Width="200" BorderBrush="#FFB94747" Background="#FF005654" Foreground="Black"/>
 
-        <ListView SelectionChanged="ChangeCurrentSong" MouseEnter="noDrag" MouseLeave="doDrag" FontFamily="lucida console" x:Name="PlaylistSongList" HorizontalAlignment="Left" Height="400" Margin="410,102,0,0" Opacity="0.8" VerticalAlignment="Top" Width="306" Background="#aaaaaa" Foreground="#171717" BorderBrush="#FFB94747" Grid.RowSpan="2" >
+        <ListView SelectionMode="Extended" SelectionChanged="ChangeCurrentSong" MouseEnter="noDrag" MouseLeave="doDrag" FontFamily="lucida console" x:Name="PlaylistSongList" HorizontalAlignment="Left" Height="400" Margin="410,102,0,0" Opacity="0.8" VerticalAlignment="Top" Width="306" Background="#aaaaaa" Foreground="#171717" BorderBrush="#FFB94747" Grid.RowSpan="2" >
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Song Name" Width="100" DisplayMemberBinding="{Binding SongName}"/>
@@ -50,7 +50,7 @@
         <TextBox FontFamily="lucida console" x:Name="Author" Background="#00FFFF00" BorderBrush="#FFB94747" IsReadOnly="True" MouseEnter="noDrag" MouseLeave="doDrag" Opacity="0.8" HorizontalAlignment="Left" Height="24" VerticalAlignment="Top" Width="240" RenderTransformOrigin="0.5,0.5" FontSize="14" Foreground="Black" Margin="830,109.6,0,0" Grid.Row="1"/>
         <TextBox FontFamily="lucida console" x:Name="Mapper" Background="#00FFFF00" BorderBrush="#FFB94747" IsReadOnly="True" MouseEnter="noDrag" MouseLeave="doDrag" Opacity="0.8" HorizontalAlignment="Left" Height="24" VerticalAlignment="Top" Width="513" RenderTransformOrigin="0.5,0.5" FontSize="14" Foreground="Black" Margin="557,139.6,0,0" Grid.Row="1"/>
         <TextBox FontFamily="lucida console" x:Name="ID" Background="#00FFFF00" BorderBrush="#FFB94747" IsReadOnly="True" MouseEnter="noDrag" MouseLeave="doDrag" Opacity="0.8" HorizontalAlignment="Left" Height="24" VerticalAlignment="Top" Width="513" RenderTransformOrigin="0.5,0.5" FontSize="14" Foreground="Black" Margin="557,169.6,0,0" Grid.Row="1"/>
-        <ListView SelectionChanged="ChangeCurrentSong" MouseEnter="noDrag" MouseLeave="doDrag" FontFamily="lucida console" x:Name="UnsortedSongsPlaylist" HorizontalAlignment="Left" Height="400" Margin="843,102,0,0" Opacity="0.8" VerticalAlignment="Top" Width="306" Background="#aaaaaa" Foreground="#171717" BorderBrush="#FFB94747" Grid.RowSpan="2">
+        <ListView SelectionMode="Extended" SelectionChanged="ChangeCurrentSong" MouseEnter="noDrag" MouseLeave="doDrag" FontFamily="lucida console" x:Name="UnsortedSongsPlaylist" HorizontalAlignment="Left" Height="400" Margin="843,102,0,0" Opacity="0.8" VerticalAlignment="Top" Width="306" Background="#aaaaaa" Foreground="#171717" BorderBrush="#FFB94747" Grid.RowSpan="2">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Song Name" Width="100" DisplayMemberBinding="{Binding SongName}"/>

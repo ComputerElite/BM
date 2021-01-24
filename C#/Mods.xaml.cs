@@ -87,8 +87,8 @@ namespace BMBF_Manager
                 txtbox.AppendText(MainWindow.BMBF100);
                 Reaching = false;
             }
-            //String[] GameVersion = MainWindow.GameVersion.ToString().Replace("\"", "").Split('.');
-            String[] GameVersion = "1.13.0".Replace("\"", "").Split('.');
+            String[] GameVersion = MainWindow.GameVersion.ToString().Replace("\"", "").Split('.');
+            //String[] GameVersion = "1.13.0".Replace("\"", "").Split('.');
             int major = Convert.ToInt32(GameVersion[0]);
             int minor = Convert.ToInt32(GameVersion[1]);
             int patch = Convert.ToInt32(GameVersion[2]);
