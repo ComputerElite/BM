@@ -21,6 +21,7 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 using System.Text.Json;
 using BeatSaber.Stats;
+using BMBF.Config;
 
 namespace BMBF_Manager
 {
@@ -30,8 +31,8 @@ namespace BMBF_Manager
     public partial class MainWindow : Window
     {
         int MajorV = 1;
-        int MinorV = 10;
-        int PatchV = 4;
+        int MinorV = 11;
+        int PatchV = 0;
         Boolean Preview = false;
 
         public static Boolean CustomProtocols = false;
@@ -58,6 +59,7 @@ namespace BMBF_Manager
         public static JSONNode UpdateJSON = JSON.Parse("{}");
         JSONNode BMBFStable = JSON.Parse("{}");
         public static ArrayList ADBPaths = new ArrayList();
+        bool Quest2 = false;
 
         public static String BMBF100 = "\n\n\nAn error occured (Code: BMBF100). Check following:\n\n- Your Quest is on and BMBF opened\n\n- You put in the Quests IP right.\n\n- Your Quest hasn't gone into sleep";
         public static String BMBF110 = "\n\nA error Occured (Code: BMBF100). Please try to sync manually.";
@@ -68,7 +70,7 @@ namespace BMBF_Manager
         public static String UD200 = "\n\n\nAn error Occured (Code: UD200). Couldn't download Update.";
         public static String QSU100 = "\n\n\nAn error Occured (Code: QSU100). No Songs were zipped.";
         public static String QSU110 = "\n\n\nAn error Occured (Code: QSU110). No Songs were zipped.";
-        public static String BM100 = "\n\n\nAn error Occured (Code: BM100). Couldn't reach the Quest Boards Website to get some available Mods. Nothing crucial.";
+        public static String BM100 = "\n\n\nAn error Occured (Code: BM100). Couldn't reach the QuestBoard Website to get some available Mods. Nothing crucial.";
         public static String BM200 = "\n\n\nAn error Occured (Code: BM200). Couldn't download Mod";
 
 
@@ -104,6 +106,7 @@ namespace BMBF_Manager
             }
             Changelog();
             ComeFromUpdate = false;
+            CheckBMBFUpdate();
             //TryGetStats();
             KeepAliveTask();
         }
@@ -118,6 +121,40 @@ namespace BMBF_Manager
                 }
                 await Task.Delay(15000);
             }
+        }
+
+        private async void CheckBMBFUpdate()
+        {
+            List<BMBFStableVersions> stable = new List<BMBFStableVersions>();
+            BMBFlocal local = new BMBFlocal();
+            try
+            {
+                TimeoutWebClientShort c = new TimeoutWebClientShort();
+                String l = await c.DownloadStringTaskAsync(new Uri("http://" + MainWindow.IP + ":50000/host/version/local"));
+                String n = await c.DownloadStringTaskAsync(new Uri("https://bmbf.dev/stable/json"));
+                local = JsonSerializer.Deserialize<BMBFlocal>(l);
+                stable = JsonSerializer.Deserialize<List<BMBFStableVersions>>(n);
+                String[] lo = local.version.Split('.');
+                List<int> vl = new List<int>();
+                vl.Add(0);
+                vl.Add(0);
+                vl.Add(0);
+                for (int i = 0; i < lo.Count(); i++) vl[i] = Convert.ToInt32(lo[i]);
+
+                String v = stable[0].tag.Replace("v", "");
+                String[] ne = v.Split('.');
+                List<int> vn = new List<int>();
+                vn.Add(0);
+                vn.Add(0);
+                vn.Add(0);
+                for (int i = 0; i < ne.Count(); i++) vn[i] = Convert.ToInt32(ne[i]);
+
+                if ((vn[0] >= vl[0] && vn[1] >= vl[1] && vn[2] > vl[2]) || (vn[0] >= vl[0] && vn[1] > vl[1]) || (vn[0] > vl[0]))
+                {
+                    txtbox.AppendText("\n\nNew BMBF version available to download!\nYour current BMBF version is " + local.version + "\nThe new version is " + v + "\n");
+                }
+                txtbox.AppendText("\n\nYou are on the newest BMBF version");
+            } catch { }
         }
 
         private void TryGetStats()
@@ -515,7 +552,7 @@ namespace BMBF_Manager
             return "Error";
         }
 
-        public void Update()
+        public async void Update()
         {
             try
             {
@@ -524,7 +561,7 @@ namespace BMBF_Manager
                 {
                     try
                     {
-                        UpdateJSON = JSON.Parse(client.DownloadString("https://raw.githubusercontent.com/ComputerElite/BM/main/update.json"));
+                        UpdateJSON = JSON.Parse(await client.DownloadStringTaskAsync(new Uri("https://raw.githubusercontent.com/ComputerElite/BM/main/update.json")));
                     }
                     catch
                     {
@@ -654,6 +691,9 @@ namespace BMBF_Manager
                 Running = false;
                 return;
             }
+
+            MessageBoxResult r0 = MessageBox.Show("Are you on a Oculus Quest 2?", "BMBF Manager", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if (r0 == MessageBoxResult.Yes) Quest2 = true;
 
             if (Directory.Exists(exe + "\\ModChecks\\mods"))
             {
@@ -845,6 +885,20 @@ namespace BMBF_Manager
             System.Threading.Thread.Sleep(5000);
             adb("shell am start -n com.weloveoculus.BMBF/com.weloveoculus.BMBF.MainActivity"); //Start BMBF
             System.Threading.Thread.Sleep(5000);
+            if(Quest2)
+            {
+                MessageBox.Show("You told me you were on Quest 2. I installed BMBF for you but DIDN'T Mod Beat Saber. You'll have to continue from here manually. I'm currently not able to automate it on Quest 2.\nOnce you modded Beat Saber press OK.", "BMBF Manager", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                MessageBoxResult r3 = MessageBox.Show("I'm now attempting to restore Beat Saber save data. \nDid you mod Beat Saber, started it once an want me to restore it?", "BMBF Manager", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                switch (r3)
+                {
+                    case MessageBoxResult.Yes:
+                        RestoreStuff();
+                        break;
+                }
+                txtbox.AppendText("\n\nOk, I've finished my part. Have fun now!");
+                Running = false;
+                return;
+            }
             TimeoutWebClient client = new TimeoutWebClient();
             client.UploadDataAsync(new Uri("http://" + MainWindow.IP + ":50000/host/mod/install/step1"), "POST", new byte[0]);
             client.UploadDataCompleted += new UploadDataCompletedEventHandler(finishedstep1);
@@ -877,6 +931,15 @@ namespace BMBF_Manager
             adb("shell pm grant com.beatgames.beatsaber android.permission.READ_EXTERNAL_STORAGE"); //Grant permission read
             adb("shell pm grant com.beatgames.beatsaber android.permission.WRITE_EXTERNAL_STORAGE"); //Grant permission write
 
+            RestoreStuff();
+
+            txtbox.AppendText("\n\n\nFinished Installing BMBF and modding Beat Saber. Please click \"Reload Songs Folder\" in BMBF to reload your Songs if you Updated BMBF.");
+            txtbox.ScrollToEnd();
+            Running = false;
+        }
+
+        public void RestoreStuff()
+        {
             if (!adb("push \"" + exe + "\\Backup\\files\" /sdcard/Android/data/com.beatgames.beatsaber"))
             {
                 Running = false;
@@ -919,10 +982,6 @@ namespace BMBF_Manager
             {
                 txtbox.AppendText(BMBF100);
             }
-
-            txtbox.AppendText("\n\n\nFinished Installing BMBF and modding Beat Saber. Please click \"Reload Songs Folder\" in BMBF to reload your Songs if you Updated BMBF.");
-            txtbox.ScrollToEnd();
-            Running = false;
         }
 
         public void postChanges(String Config)

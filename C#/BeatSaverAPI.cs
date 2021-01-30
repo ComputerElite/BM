@@ -28,6 +28,7 @@ namespace BeatSaverAPI
         public bool RequestGood { get; set; } = false;
         [JsonPropertyName("_difficultyBeatmapSets")]
         public List<BeatSaberSongBeatMapCharacteristic> BeatMapCharacteristics { get; set; } = new List<BeatSaberSongBeatMapCharacteristic>();
+        public JsonElement _customData { get; set; } = JsonSerializer.Deserialize<JsonElement>("{}");
 
         public string _allDirectionsEnvironmentName { get; set; } = "N/A";
         public string _environmentName { get; set; } = "N/A";
@@ -301,6 +302,7 @@ namespace BeatSaverAPI
         public string DifficultyName { get; set; } = "N/A";
         [JsonPropertyName("_difficultyRank")]
         public int DifficultyID { get; set; } = 0;
+        public JsonElement _customData { get; set; } = JsonSerializer.Deserialize<JsonElement>("{}");
 
         public string _beatmapFilename { get; set; } = "N/A";
 

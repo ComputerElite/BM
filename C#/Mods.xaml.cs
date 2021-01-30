@@ -347,8 +347,8 @@ namespace BMBF_Manager
                         txtbox.AppendText("\n\nMod is already installed aborted.");
                         txtbox.ScrollToEnd();
                         Running = false;
-                        checkqueue();
                         downloadqueue.RemoveAt(0);
+                        checkqueue();
                         return;
                 }
             }

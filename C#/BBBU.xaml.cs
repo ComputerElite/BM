@@ -221,6 +221,7 @@ namespace BMBF_Manager
 
             txtbox.AppendText("\n\nBacking up replays");
             adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/replays \"" + BackupF + "\"");
+            adb("pull /sdcard/ModData/com.beatgames.beatsaber/Mods/Replay/replays \"" + BackupF + "\"");
             txtbox.AppendText("\nBacked up replays\n");
             txtbox.ScrollToEnd();
 
@@ -357,7 +358,7 @@ namespace BMBF_Manager
             if ((bool)RReplays.IsChecked)
             {
                 txtbox.AppendText("\n\nPushing Replays");
-                adb("push \"" + BackupF + "//replays\" /sdcard/Android/data/com.beatgames.beatsaber/files/");
+                adb("push \"" + BackupF + "\\replays\" /sdcard/ModData/com.beatgames.beatsaber/Mods/Replay/");
                 txtbox.AppendText("\nFinished Pushing Replays");
                 txtbox.ScrollToEnd();
             }
@@ -366,7 +367,7 @@ namespace BMBF_Manager
             if ((bool)RSounds.IsChecked)
             {
                 txtbox.AppendText("\n\nPushing Sounds");
-                adb("push \"" + BackupF + "//sounds\" /sdcard/Android/data/com.beatgames.beatsaber/files/");
+                adb("push \"" + BackupF + "\\sounds\" /sdcard/Android/data/com.beatgames.beatsaber/files/");
                 txtbox.AppendText("\nFinished Pushing Sounds");
                 txtbox.ScrollToEnd();
             }

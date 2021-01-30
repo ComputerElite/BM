@@ -752,24 +752,29 @@ namespace BMBF_Manager
                     MessageBox.Show("Please select a valid file", "BMBF Manager - Playlist Editor", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
-            } else
+            }
+            else
             {
                 txtbox.AppendText("\n\nBPList importing aborted.");
                 txtbox.ScrollToEnd();
                 return;
             }
-
-            
-            BPList BPList;
+            BPList BPList = new BPList();
             try
             {
-                BPList = JsonSerializer.Deserialize<BPList>(File.ReadAllText(BPListFile), new JsonSerializerOptions {PropertyNameCaseInsensitive = false });
-            } catch
+                BPList = JsonSerializer.Deserialize<BPList>(File.ReadAllText(BPListFile), new JsonSerializerOptions { PropertyNameCaseInsensitive = false });
+            }
+            catch
             {
                 txtbox.AppendText("\n\nThe BPList you choose is not valid");
                 txtbox.ScrollToEnd();
                 return;
             }
+            ImportBPList(BPList);
+        }
+
+        public async void ImportBPList(BPList BPList)
+        {
             if(BPList == null)
             {
                 txtbox.AppendText("\n\nThe BPList you choose is not valid");
@@ -858,7 +863,6 @@ namespace BMBF_Manager
                         return;
                 }
             }
-            txtbox.AppendText("\n\npl: " + BPList.songs.Count + ", tmp: " + tmp.Count);
             txtbox.ScrollToEnd();
             if (tmp.Count > 0)
             {

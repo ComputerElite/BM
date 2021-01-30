@@ -9,6 +9,8 @@ namespace ModObjects
     {
         public List<Mod> MergeModLists(ModList primary, ModList secondary, JSONNode BMBF, int major, int minor, int patch)
         {
+            TimeoutWebClientShort c = new TimeoutWebClientShort();
+            JSONNode CoreMods = JSON.Parse(c.DownloadString("https://raw.githubusercontent.com/BMBF/resources/master/com.beatgames.beatsaber/core-mods.json"));
             List<Mod> finished = new List<Mod>();
 
             foreach(Mod m in secondary.mods)
@@ -88,6 +90,15 @@ namespace ModObjects
                             
                             tmp[i - removed].MatchingDownload = download;
                             tmp[i - removed].MatchingGameVersion = gv;
+                            foreach (JSONNode n in CoreMods[major + "." + minor + "." + patch]["mods"])
+                            {
+                                if (m.ModID.ToLower() == n["id"].ToString().Replace("\"", "").ToLower() && d.modversion == n["version"].ToString().Replace("\"", "").ToLower())
+                                {
+                                    tmp[i - removed].downloads[tmp[i - removed].MatchingDownload].coremod = true;
+                                    break;
+                                }
+                            }
+                            
                             if (!d.download.EndsWith(".zip")) tmp[i - removed].downloads[tmp[i - removed].MatchingDownload].forward = true;
                             break;
                         }

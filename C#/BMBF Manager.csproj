@@ -225,9 +225,6 @@
     <Resource Include="BPLists2.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="QSU2.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Support5.png" />
   </ItemGroup>
   <ItemGroup>
@@ -247,6 +244,12 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="BBBU3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Image1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="QSU3.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

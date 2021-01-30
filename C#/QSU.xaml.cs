@@ -20,6 +20,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using System.Text.Json;
+using BeatSaverAPI;
 
 namespace BMBF_Manager
 {
@@ -83,7 +85,7 @@ namespace BMBF_Manager
             else
             {
                 ImageBrush uniformBrush = new ImageBrush();
-                uniformBrush.ImageSource = new BitmapImage(new Uri("pack://application:,,,/QSU2.png", UriKind.Absolute));
+                uniformBrush.ImageSource = new BitmapImage(new Uri("pack://application:,,,/QSU3.png", UriKind.Absolute));
                 uniformBrush.Stretch = Stretch.UniformToFill;
                 this.Background = uniformBrush;
             }
@@ -965,8 +967,8 @@ namespace BMBF_Manager
                 }
                 try
                 {
-                    var json = SimpleJSON.JSON.Parse(File.ReadAllText(dat));
-                    Name = json["_songName"].ToString();
+                    BeatSaberSong json = JsonSerializer.Deserialize<BeatSaberSong>(File.ReadAllText(dat));
+                    Name = json.SongName;
 
                     Name = Name.Replace("/", "");
                     Name = Name.Replace(":", "");
@@ -976,19 +978,9 @@ namespace BMBF_Manager
                     Name = Name.Replace("<", "");
                     Name = Name.Replace(">", "");
                     Name = Name.Replace("|", "");
-
-                    for (int f = 0; f < Name.Length; f++)
-                    {
-                        if (Name.Substring(f, 1).Equals("\\"))
-                        {
-                            Name = Name.Substring(0, f - 1) + Name.Substring(f + 1, Name.Length - f - 1);
-                        }
-                    }
+                    Name = Name.Replace(@"\", "");
                     int Time = 0;
-                    while (Name.Substring(Name.Length - 1, 1).Equals(" "))
-                    {
-                        Name = Name.Substring(0, Name.Length - 1);
-                    }
+                    Name.Trim();
 
                     while (list.Contains(Name.ToLower()))
                     {
@@ -1157,6 +1149,39 @@ namespace BMBF_Manager
             }
         }
 
+        private void CheckFolders(object sender, RoutedEventArgs e)
+        {
+            MessageBoxResult r = MessageBox.Show("This option may nuke your Playlists. It will Backup all your Songs, rename them to the right folder name, check them if they are working and then put them back on your Quest. All in all it may take a few minutes without a responding window.\nDo you want to proceed?", "BMBF Manager - Quest Song Utilities", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if(r == MessageBoxResult.No) 
+            {
+                txtbox.AppendText("\n\nAborted");
+                return;
+            }
+            Directory.CreateDirectory(exe + "\\tmp\\CustomSongs");
+            if (!adb("pull /sdcard/BMBFData/CustomSongs/ \"" + exe + "\\tmp\"")) return;
+            adb("shell rm -r /sdcard/BMBFData/CustomSongs/");
+            Songs SongsWindow = new Songs();
+            SongsWindow.Show();
+            Directory.CreateDirectory(exe + "\\tmp\\MoveSongs");
+            foreach (String song in Directory.GetDirectories(exe + "\\tmp\\CustomSongs"))
+            {
+                Console.WriteLine(song);
+                String name = SongsWindow.CheckSong(song);
+                Console.WriteLine(name);
+                if (name == "Error") continue;
+                if (Directory.Exists(exe + "\\tmp\\finished\\" + name)) Directory.Delete(exe + "\\tmp\\finished\\" + name, true);
+                ZipFile.ExtractToDirectory(exe + "\\tmp\\finished\\" + name + ".zip", exe + "\\tmp\\finished\\" + name);
+                String hash = Songs.GetCustomLevelHash(exe + "\\tmp\\finished\\" + name.Trim());
+                if (Directory.Exists(exe + "\\tmp\\MoveSongs\\custom_level_" + hash)) Directory.Delete(exe + "\\tmp\\MoveSongs\\custom_level_" + hash, true); 
+                Directory.Move(exe + "\\tmp\\finished\\" + name.Trim(), exe + "\\tmp\\MoveSongs\\custom_level_" + hash);
+                adb("push \"" + exe + "\\tmp\\MoveSongs\\custom_level_" + hash + "\" /sdcard/BMBFData/CustomSongs");
+                txtbox.AppendText("\n\nSong " + hash + " has finished processing");
+                txtbox.ScrollToEnd();
+            }
+            SongsWindow.Close();
+            txtbox.AppendText("\n\nFinished. Please reload your songs folder in BMBF");
+        }
+
 
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
@@ -1248,9 +1273,7 @@ namespace BMBF_Manager
             ArrayList SubName = new ArrayList();
             ArrayList MAuthor = new ArrayList();
             ArrayList requierments = new ArrayList();
-            ArrayList requiered = new ArrayList();
             ArrayList characteristics = new ArrayList();
-            ArrayList characteristic = new ArrayList();
             int exported = 0;
             String Name = "";
             String Source = Path;
@@ -1290,8 +1313,6 @@ namespace BMBF_Manager
 
             foreach (String CD in directories)
             {
-                requierments.Clear();
-                characteristics.Clear();
                 //Check if Folder is Valid Song
                 txtbox.AppendText("\n");
                 txtbox.ScrollToEnd();
@@ -1315,182 +1336,107 @@ namespace BMBF_Manager
                 }
 
 
-                try
+
+                BeatSaberSong json = JsonSerializer.Deserialize<BeatSaberSong>(File.ReadAllText(dat));
+                json.SongName = json.SongName.Trim();
+
+                list.Add(json.SongName);
+                txtbox.AppendText("\nSong Name: " + json.SongName);
+
+                if (Zips)
                 {
-                    var json = SimpleJSON.JSON.Parse(File.ReadAllText(dat));
-                    Name = json["_songName"].ToString();
+                    zip = dest + "\\" + System.IO.Path.GetDirectoryName(CD) + ".zip";
+                    txtbox.AppendText("\nZip: " + zip);
+                    Folder.Add(zip);
+                } else
+                {
+                    txtbox.AppendText("\nFolder: " + CD);
+                    Folder.Add(CD);
+                }
+                exported++;
+                Name = "";
 
-                    Name = Name.Substring(1, Name.Length - 2);
-                    while (Name.Substring(Name.Length - 1, 1).Equals(" "))
+
+
+                /////////Requirements
+                String characteristic = "";
+                String requiered = "";
+                foreach (BeatSaberSongBeatMapCharacteristic chara in json.BeatMapCharacteristics)
+                {
+                    characteristic += chara.BeatMapCharacteristicName + ", ";
+                    foreach (BeatSaberSongDifficulty diff in chara.Difficulties)
                     {
-                        Name = Name.Substring(0, Name.Length - 1);
-                    }
-
-                    list.Add(Name);
-                    txtbox.AppendText("\nSong Name: " + Name);
-
-                    if (Zips)
-                    {
-                        zip = dest + "\\" + System.IO.Path.GetDirectoryName(CD) + ".zip";
-                        txtbox.AppendText("\nZip: " + zip);
-                        Folder.Add(zip);
-                    } else
-                    {
-                        txtbox.AppendText("\nFolder: " + CD);
-                        Folder.Add(CD);
-                    }
-                    exported++;
-                    Name = "";
-
-
-
-                    /////////Requirements
-
-                    foreach (JSONNode chara in json["_difficultyBeatmapSets"])
-                    {
-                        characteristics.Add(chara["_beatmapCharacteristicName"].ToString().Replace("\"", ""));
-                        foreach (JSONNode diff in chara["_difficultyBeatmaps"])
+                        JsonElement tmp = new JsonElement();
+                        try
                         {
-                            Name = diff["_customData"]["_requirements"].ToString();
-                            if (Name.Contains("GameSaber"))
-                            {
-                                if (!requierments.Contains("GameSaber, "))
-                                {
-                                    requierments.Add("GameSaber, ");
-                                }
-                            }
-
-
-                            if (Name.Contains("Mapping Extensions"))
-                            {
-                                if (!requierments.Contains("Mapping Extensions, "))
-                                {
-                                    requierments.Add("Mapping Extensions, ");
-                                }
-
-                            }
-
-                            if (Name.Contains("Noodle Extensions"))
-                            {
-                                if (!requierments.Contains("Noodle Extensions, "))
-                                {
-                                    requierments.Add("Noodle Extensions, ");
-                                }
-
-                            }
-
-                            if (Name.Contains("Chroma"))
-                            {
-                                if (!requierments.Contains("Chroma, "))
-                                {
-                                    requierments.Add("Chroma, ");
-                                }
-
-                            }
+                            if (!diff._customData.TryGetProperty("_requirements", out tmp)) continue;
                         }
+                        catch
+                        {
+                            continue;
+                        }
+                        Name = "";
+                        foreach (JsonElement s in tmp.EnumerateArray()) Name += s.GetString();
+
+                        if (Name.Contains("GameSaber") && !requiered.Contains("GameSaber, ")) requiered += "GameSaber, ";
+
+                        if (Name.Contains("Mapping Extensions") && !requiered.Contains("Mapping Extensions, ")) requiered += "Mapping Extensions, ";
+
+                        if (Name.Contains("Noodle Extensions") && !requiered.Contains("Noodle Extensions, ")) requiered += "Noodle Extensions, ";
+
+                        if (Name.Contains("Chroma") && !requiered.Contains("Chroma, ")) requiered += "Chroma, ";
                     }
-
-                    /////////Song Sub Name
-
-                    S = json["_songSubName"];
-                    if (S.Equals(""))
-                    {
-                        S = "N/A";
-                    }
-
-
-                    SubName.Add(S);
-                    txtbox.AppendText("\nSong author: " + A);
-                    S = "";
-
-
-                    /////////Song Author
-
-                    A = json["_songAuthorName"];
-
-                    if (A.Equals(""))
-                    {
-                        A = "N/A";
-                    }
-
-                    Author.Add(A);
-                    txtbox.AppendText("\nSong author: " + A);
-                    A = "";
-
-                    /////////Map Author
-
-                    M = json["_levelAuthorName"];
-
-                    if (M.Equals(""))
-                    {
-                        M = "N/A";
-                    }
-
-                    MAuthor.Add(M);
-                    txtbox.AppendText("\nMap author: " + M);
-                    M = "";
-
-
-                    /////////BPM
-
-                    B = json["_beatsPerMinute"];
-
-                    if (!B.Equals(""))
-                    {
-                        B = B.Replace(",", "");
-                        B = B.Replace(" ", "");
-                        B = B.Replace(":", "");
-                    }
-                    else
-                    {
-                        B = "N/A";
-                    }
-
-                    BPM.Add(B);
-                    txtbox.AppendText("\nBPM: " + B);
-                    B = "";
-
-
-                    String Content = "";
-
-                    foreach (String mod in requierments)
-                    {
-                        Content = Content + mod;
-                    }
-                    if (Content.Equals(""))
-                    {
-                        Content = "N/A";
-                    }
-                    if (Content.EndsWith(", "))
-                    {
-                        Content = Content.Substring(0, Content.Count() - 2);
-                    }
-
-                    requiered.Add(Content);
-                    txtbox.AppendText("\nRequierments: " + Content);
-
-                    Content = "";
-
-                    foreach (String chara in characteristics)
-                    {
-                        Content = Content + chara + ",";
-                    }
-                    if (Content.Equals(""))
-                    {
-                        Content = "N/A";
-                    }
-                    if (Content.EndsWith(","))
-                    {
-                        Content = Content.Substring(0, Content.Count() - 1);
-                    }
-                    characteristic.Add(Content);
-                    txtbox.AppendText("\nBeatMap Characteristics: " + Content);
-                    requiered.Add(Content);
-                    txtbox.ScrollToEnd();
                 }
-                catch
+
+                if (requiered == "")
                 {
+                    requiered = "N/A";
                 }
+                else
+                {
+                    requiered = requiered.Substring(0, requiered.Count() - 2);
+                }
+
+                if (characteristic == "")
+                {
+                    characteristic = "N/A";
+                }
+                else
+                {
+                    characteristic = characteristic.Substring(0, characteristic.Count() - 2);
+                }
+
+                requierments.Add(requiered);
+                txtbox.AppendText("\nRequierments: " + requiered);
+                characteristics.Add(characteristic);
+                txtbox.AppendText("\nBeatMap Characteristics: " + characteristic);
+
+                /////////Song Sub Name
+                ///
+                SubName.Add(json.SubName == "" ? "N/A" : json.SubName);
+                txtbox.AppendText("\nSong Sub Name: " + (json.SubName == "" ? "N/A" : json.SubName));
+                S = "";
+
+                /////////Song Author
+
+                Author.Add(json.SongArtist == "" ? "N/A" : json.SongArtist);
+                txtbox.AppendText("\nSong author: " + (json.SongArtist == "" ? "N/A" : json.SongArtist));
+                A = "";
+
+                /////////Map Author
+
+                MAuthor.Add(json.Mapper == "" ? "N/A" : json.Mapper);
+                txtbox.AppendText("\nMap author: " + (json.Mapper == "" ? "N/A" : json.Mapper));
+                M = "";
+
+
+                /////////BPM
+
+                BPM.Add(json.BPM == 0.0m ? "N/A" : json.BPM.ToString());
+                txtbox.AppendText("\nBPM: " + (json.BPM == 0.0m ? "N/A" : json.BPM.ToString()));
+                B = "";
+
+                txtbox.ScrollToEnd();
             }
             ArrayList txt = new ArrayList();
             //ArrayList list = new ArrayList();
@@ -1511,8 +1457,9 @@ namespace BMBF_Manager
                 txt.Add("BPM: " + BPM[C]);
                 txt.Add("Song Author: " + Author[C]);
                 txt.Add("Map Author: " + MAuthor[C]);
-                txt.Add("Requiered mods: " + requiered[C]);
-                txt.Add("BeatMap Characteristics: " + characteristic[C]);
+                txt.Add("Requiered mods: " + requierments[C]);
+                txt.Add("BeatMap Characteristics: " + characteristics[C]);
+                
                 if (Zips)
                 {
                     txt.Add("Zip: " + Folder[C]);
@@ -1540,7 +1487,7 @@ namespace BMBF_Manager
                 txtbox.AppendText("\nBMPs: " + BPM.Count);
                 txtbox.AppendText("\nSong Authors: " + Author.Count);
                 txtbox.AppendText("\nMap Authors: " + MAuthor.Count);
-                txtbox.AppendText("\nRequiered Mods: " + requiered.Count);
+                txtbox.AppendText("\nRequiered Mods: " + requierments.Count);
                 if (Zips)
                 {
                     txtbox.AppendText("\nZips: " + Folder.Count);

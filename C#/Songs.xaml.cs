@@ -43,6 +43,7 @@ namespace BMBF_Manager
         ArrayList SongKeys = new ArrayList();
         List<Tuple<String, bool>> downloadqueue = new List<Tuple<String, bool>>();
         BeatSaverAPIInteractor interactor = new BeatSaverAPIInteractor();
+        int installed = 0;
 
         bool OneClick = false;
         bool PEO = false;
@@ -279,10 +280,12 @@ namespace BMBF_Manager
             if(downloadqueue.Count() == 0)
             {
                 txtbox.AppendText("\n\nYou can't cancle a non active download.");
+                txtbox.ScrollToEnd();
             } else
             {
                 canceled = true;
                 txtbox.AppendText("\n\nremoved all queued downloads");
+                txtbox.ScrollToEnd();
             }
         }
 
@@ -394,9 +397,19 @@ namespace BMBF_Manager
 
             if (Directory.Exists(exe + "\\tmp\\unzipped")) Directory.Delete(exe + "\\tmp\\unzipped", true);
 
+            String name = CheckSongZip(Input);
+            if (name == "Error")
+            {
+                downloadqueue.RemoveAt(0);
+                Running = false;
+                Progress.Value = 0;
+                checkqueue();
+                return;
+            }
+
             txtbox.AppendText("\n\nunzipping Song");
             txtbox.AppendText("\n\nunzipped Song");
-            ZipFile.ExtractToDirectory(Input, exe + "\\tmp\\unzipped");
+            ZipFile.ExtractToDirectory(exe + "\\tmp\\finished\\" + name + ".zip", exe + "\\tmp\\unzipped");
 
             String[] f = Directory.GetDirectories(exe + "\\tmp\\unzipped");
             if (f.Count() != 0)
@@ -520,7 +533,7 @@ namespace BMBF_Manager
         public static string GetCustomLevelHash(String Path)
         {
             byte[] combinedBytes = new byte[0];
-            combinedBytes = combinedBytes.Concat(File.ReadAllBytes(Path + "\\info.dat")).ToArray();
+            combinedBytes = combinedBytes.Concat(File.ReadAllBytes(Directory.GetFiles(Path).FirstOrDefault(x => x.ToLower().EndsWith("info.dat")))).ToArray();
             String CustomLevelPath = Path;
             var json = JSON.Parse(File.ReadAllText(Path + "\\info.dat"));
 
@@ -540,6 +553,12 @@ namespace BMBF_Manager
         {
             if (downloadqueue.Count != 0 && !canceled)
             {
+                if(PEO && installed % 20 == 0 && installed != 0)
+                {
+                    Sync();
+                }
+                txtbox.AppendText("\n\n" + downloadqueue.Count + " Songs remaining to install");
+                txtbox.ScrollToEnd();
                 InstallSong();
             }
             else
@@ -571,6 +590,7 @@ namespace BMBF_Manager
         public void InstallSongPE(String Key)
         {
             txtbox.AppendText("\n\nAdded Songs key " + Key + " to download for a BPList");
+            txtbox.ScrollToEnd();
             downloadqueue.Add(new Tuple<string, bool>(Key, false));
             PEO = true;
             checkqueue();
@@ -670,8 +690,18 @@ namespace BMBF_Manager
         {
             adb("shell am start -n com.weloveoculus.BMBF/com.weloveoculus.BMBF.MainActivity");
             txtbox.AppendText("\nDownloaded BeatMap " + Key + "\n");
+            txtbox.AppendText("\nChecking BeatMap " + Key);
             txtbox.ScrollToEnd();
-            upload(exe + "\\tmp\\" + Key + C + ".zip");
+            String name = CheckSongZip(exe + "\\tmp\\" + Key + C + ".zip");
+            if (name == "Error")
+            {
+                downloadqueue.RemoveAt(0);
+                Running = false;
+                Progress.Value = 0;
+                checkqueue();
+                return;
+            }
+            upload(exe + "\\tmp\\finished\\" + name.Trim() + ".zip");
         }
 
         public void upload(String path, bool uploadfile = false)
@@ -716,7 +746,7 @@ namespace BMBF_Manager
             {
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
                 {
-                    Sync();
+                    if (!PEO) Sync();
                 }));
                 txtbox.AppendText("\n\nSong " + downloadqueue[0].Item1 + " was synced to your Quest.");
                 txtbox.ScrollToEnd();
@@ -748,6 +778,215 @@ namespace BMBF_Manager
             int index = SongList.SelectedIndex;
 
             SongKey.Text = SongKeys[index].ToString().Replace("\"", "");
+        }
+
+        public String CheckSongZip(String zip)
+        {
+            ZipFile.ExtractToDirectory(zip, exe + "\\tmp\\correct");
+            return CheckSong(exe + "\\tmp\\correct");
+        }
+
+
+        public String CheckSong(String folder)
+        {
+            if (!Directory.Exists(exe + "\\tmp\\finished")) Directory.CreateDirectory(exe + "\\tmp\\finished");
+            ArrayList found = new ArrayList();
+            String entry = folder;
+            String dat = entry + "\\Info.dat";
+
+            //get Info.dat
+            MoveOutOfFolder(entry, found);
+            if (!File.Exists(entry + "\\Info.dat") || !File.Exists(entry + "\\info.dat"))
+            {
+                if (Directory.GetDirectories(entry).Count() > 0)
+                {
+                    if (!File.Exists(entry + "\\Info.dat") || !File.Exists(entry + "\\info.dat"))
+                    {
+                        found.Add("Fatal: Info.dat missing");
+                        sendfoundings(found, false);
+                        return "Error";
+                    }
+                }
+                else
+                {
+                    found.Add("Fatal: Info.dat missing");
+                    sendfoundings(found, false);
+                    return "Error";
+                }
+            }
+
+            JSONNode info = JSON.Parse(File.ReadAllText(dat));
+            File.Delete(dat);
+
+
+            if (!File.Exists(entry + "\\" + info["_songFilename"]))
+            {
+                Boolean corrected = false;
+                foreach (String file in Directory.GetFiles(entry))
+                {
+                    if (file.EndsWith(".ogg") || file.EndsWith(".egg") || file.EndsWith(".wav") || file.EndsWith(".bmp") || file.EndsWith(".exr") || file.EndsWith(".gif") || file.EndsWith(".hdr") || file.EndsWith(".iff") || file.EndsWith(".pict") || file.EndsWith(".psd") || file.EndsWith(".tga") || file.EndsWith(".tiff"))
+                    {
+                        info["_songFilename"] = System.IO.Path.GetFileName(file);
+                        found.Add("Corrected: Wrong song in Info.dat");
+                        corrected = true;
+                        break;
+                    }
+                    if (info["_songFilename"].ToString().Replace("\"", "").StartsWith(System.IO.Path.GetFileNameWithoutExtension(file)))
+                    {
+                        info["_songFilename"] = System.IO.Path.GetFileName(file);
+                        found.Add("Corrected: Wrong song extension in Info.dat");
+                        corrected = true;
+                        break;
+                    }
+                }
+                if (!corrected)
+                {
+                    found.Add("Fatal: no valid song found");
+                    sendfoundings(found, false);
+                    return "Error";
+                }
+            }
+
+            if (!File.Exists(entry + "\\" + info["_coverImageFilename"]))
+            {
+                Boolean corrected = false;
+                foreach (String file in Directory.GetFiles(entry))
+                {
+                    if (file.EndsWith(".png") || file.EndsWith(".jpg") || file.EndsWith("."))
+                    {
+                        info["_coverImageFilename"] = System.IO.Path.GetFileName(file);
+                        found.Add("Corrected: Wrong cover name in Info.dat");
+                        corrected = true;
+                        break;
+                    }
+                    if (info["_coverImageFilename"].ToString().Replace("\"", "").StartsWith(System.IO.Path.GetFileNameWithoutExtension(file)))
+                    {
+                        info["_coverImageFilename"] = System.IO.Path.GetFileName(file);
+                        found.Add("Corrected: Wrong cover extension in Info.dat");
+                        corrected = true;
+                        break;
+                    }
+                }
+                if (!corrected)
+                {
+                    found.Add("Fatal: no valid cover found");
+                    sendfoundings(found, false);
+                    return "Error";
+                }
+            }
+
+            Boolean baddiff = false;
+            foreach (JSONNode BeatmapSet in info["_difficultyBeatmapSets"])
+            {
+                foreach (JSONNode difficulty in BeatmapSet["_difficultyBeatmaps"])
+                {
+                    if (!File.Exists(entry + "\\" + difficulty["_beatmapFilename"]))
+                    {
+                        found.Add("Fatal: Difficulty file for difficulty " + difficulty["_difficulty"] + " in BeatMapSet " + BeatmapSet["_beatmapCharacteristicName"] + " not found");
+                        baddiff = true;
+                    }
+                }
+            }
+
+            if (baddiff)
+            {
+                sendfoundings(found, false);
+                return "Error";
+            }
+
+            int index = 0;
+            List<String> ka = new List<String>();
+            foreach (KeyValuePair<string, JSONNode> c in (JSONObject)info)
+            {
+                if (c.Value.IsArray)
+                {
+                    index++;
+                    continue;
+                }
+                if (c.Value.ToString().Replace("\"", "") == "unknown")
+                {
+
+                    ka.Add(c.Key);
+                    found.Add("corrected: changed unknown of key " + c.Key + " to k. A. in Info.dat");
+                }
+                index++;
+            }
+
+            foreach (String c in ka)
+            {
+                info[c] = "k. A.";
+            }
+
+            File.WriteAllText(entry + "\\Info.dat", info.ToString());
+
+            String Name = info["_songName"];
+            Name = Name.Replace("/", "");
+            Name = Name.Replace(":", "");
+            Name = Name.Replace("*", "");
+            Name = Name.Replace("?", "");
+            Name = Name.Replace("\"", "");
+            Name = Name.Replace("<", "");
+            Name = Name.Replace(">", "");
+            Name = Name.Replace("|", "");
+            Name = Name.Replace(@"\", "");
+
+            if (File.Exists(exe + "\\tmp\\finished\\" + Name + ".zip")) File.Delete(exe + "\\tmp\\finished\\" + Name + ".zip");
+            ZipFile.CreateFromDirectory(folder, exe + "\\tmp\\finished\\" + Name + ".zip");
+            if (found.Count == 0)
+            {
+                found.Add("All should be good. please check manually if you have any issues");
+                sendfoundings(found, true, true);
+                return Name;
+            }
+            sendfoundings(found, true);
+            return Name;
+        }
+
+        public void MoveOutOfFolder(String FolderToMoveAll, ArrayList found)
+        {
+            foreach (String folder in Directory.GetDirectories(FolderToMoveAll))
+            {
+                if (found.Count == 0)
+                {
+                    found.Add("Corrected: Folder(s) in zip file");
+                }
+
+                MoveOutOfFolder(folder, found);
+                foreach (String file in Directory.GetFiles(folder))
+                {
+                    File.Move(file, FolderToMoveAll + "\\" + System.IO.Path.GetFileName(file));
+                }
+                Directory.Delete(folder);
+            }
+        }
+
+
+        public void sendfoundings(ArrayList found, bool sendZip, bool check = false)
+        {
+            if(Directory.Exists(exe + "\\tmp\\correct")) Directory.Delete(exe + "\\tmp\\correct", true);
+            if(File.Exists(exe + "\\tmp\\correct.zip"))File.Delete(exe + "\\tmp\\correct.zip");
+            String tosend = "";
+            foreach (String c in found)
+            {
+                tosend += "\n- " + c;
+            }
+            if (!sendZip)
+            {
+                txtbox.AppendText("\n\nChecked Song: Founding:\n" + tosend + "\nNo correction possible");
+            }
+            else
+            {
+                if (check)
+                {
+                    txtbox.AppendText("\n\nChecked Song: All good");
+                }
+                else
+                {
+                    txtbox.AppendText("\n\nChecked Song: Foundings:" + tosend + "");
+                }
+
+            }
+            Console.ReadLine();
         }
     }
 

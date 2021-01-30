@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -477,7 +478,7 @@ namespace BMBF_Manager
             Running = true;
 
             C = 0;
-            while (File.Exists(exe + "\\tmp\\" + downloadqueue[0].name + C + ".zip"))
+            while (File.Exists(exe + "\\tmp\\" + System.IO.Path.GetFileNameWithoutExtension(downloadqueue[0].downloadURL) + C + System.IO.Path.GetExtension(downloadqueue[0].downloadURL)))
             {
                 C++;
             }
@@ -497,7 +498,7 @@ namespace BMBF_Manager
                     DownloadLable.Text = "Downloading " + downloadqueue[0].name;
                     c.DownloadFileCompleted += new AsyncCompletedEventHandler(finished_download);
                     c.DownloadProgressChanged += new DownloadProgressChangedEventHandler(client_DownloadProgressChanged);
-                    c.DownloadFileAsync(uri, exe + "\\tmp\\" + downloadqueue[0].name + C + ".zip");
+                    c.DownloadFileAsync(uri, exe + "\\tmp\\" + System.IO.Path.GetFileNameWithoutExtension(downloadqueue[0].downloadURL) + C + System.IO.Path.GetExtension(downloadqueue[0].downloadURL));
                 }));
             }
             catch
@@ -525,7 +526,33 @@ namespace BMBF_Manager
                 txtbox.AppendText("\nDownloaded " + downloadqueue[0].name + "\n");
                 txtbox.ScrollToEnd();
             }));
-            upload(exe + "\\tmp\\" + downloadqueue[0].name + C + ".zip");
+            String file = exe + "\\tmp\\" + System.IO.Path.GetFileNameWithoutExtension(downloadqueue[0].downloadURL) + C + System.IO.Path.GetExtension(downloadqueue[0].downloadURL);
+            if(!File.Exists(file))
+            {
+                txtbox.AppendText("\n\n" + downloadqueue[0].name + " couldn't get downloaded");
+                txtbox.ScrollToEnd();
+                Running = false;
+                DownloadLable.Text = "All finished";
+                Progress.Value = 0;
+                downloadqueue.RemoveAt(0);
+                checkqueue();
+                return;
+            }
+            if (file.ToLower().EndsWith(".zip"))
+            {
+                txtbox.AppendText("\n\nExtracting Qosmetic from zip file");
+                file = Unzip(file);
+                JSONNode n = JSON.Parse(File.ReadAllText(file + "\\bmbfmod.json"));
+                txtbox.AppendText("\nFound " + n["components"][0]["sourceFileName"]);
+                file += "\\" + n["components"][0]["sourceFileName"];
+            }
+            upload(file);
+        }
+
+        public static string Unzip(String file)
+        {
+            ZipFile.ExtractToDirectory(file, System.IO.Path.GetDirectoryName(file) + "\\" + System.IO.Path.GetFileNameWithoutExtension(file));
+            return System.IO.Path.GetDirectoryName(file) + "\\" + System.IO.Path.GetFileNameWithoutExtension(file);
         }
 
         public void upload(String path)
