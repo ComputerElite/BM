@@ -1,6 +1,26 @@
 {
     "mods": [
         {
+            "name": "Intro Skip",
+            "details": "Lets you skip sections of songs that have no notes in them.\r\n\r\nMy Patreon (If you join then you get some perks): https://www.patreon.com/henwill8?fan_landing=true",
+            "ModID": "IntroSkip",
+            "creator": [
+                "Henwill8"
+            ],
+            "downloads": [
+                {
+                    "modversion": "0.2.0",
+                    "gameversion": [
+                        "1.13.2"
+                    ],
+                    "download": "https://github.com/henwill8/IntroSkip/releases/download/0.2.0/introskip_v0.2.0.zip",
+                    "forward": false,
+                    "coremod": false,
+                    "notes": "Changelog:\r\n- Added a mod settings page\r\n- Made it more stable"
+                }
+            ]
+        },
+        {
             "name": "Song Difficulty Chart",
             "details": "A graph of the difficulty throughout the song will show in game and this can help you know when a rest or hard part of a song is coming up\r\n\r\nMy Patreon (If you join then you get some perks): https://www.patreon.com/henwill8?fan_landing=true",
             "ModID": "SongDifficultyChart",
@@ -123,7 +143,7 @@
         },
         {
             "name": "Qounters-",
-            "details": "Spice up your Beat Saber HUD with a variety of configurable Counters Qounters, which can display a wide variety of stats in an even wider variety of ways.\r\nThis mod is an Oculus Quest port of [Caeden117's Counters+](https://github.com/Caeden117/CountersPlus) for PC.\r\n\r\nConfigure your Qounters from the Mod Settings menu (Main menu → Settings (gear icon) → Mod Settings → Qounters-). After making changes, you can click the big blue Test button to preview your configuration.\r\n\r\nSettings can be loaded from a PC Counters+ configuration file! Rename your CountersPlus.json to qounters-minus.json and upload it through BMBF after installing Qounters-.",
+            "details": "Spice up your Beat Saber HUD with a variety of configurable Counters Qounters, which can display a wide variety of stats in an even wider variety of ways.\r\nThis mod is an Oculus Quest port of [Caeden117's Counters+](https://github.com/Caeden117/CountersPlus) for PC.\r\n\r\nConfigure your Qounters from the Mod Settings menu (Main menu â†’ Settings (gear icon) â†’ Mod Settings â†’ Qounters-). After making changes, you can click the big blue Test button to preview your configuration.\r\n\r\nSettings can be loaded from a PC Counters+ configuration file! Rename your CountersPlus.json to qounters-minus.json and upload it through BMBF after installing Qounters-.",
             "ModID": "qounters-minus",
             "creator": [
                 "Danrouse"
@@ -499,7 +519,7 @@
         },
         {
             "name": "SlowResume",
-            "details": "Allows you to change how long the countdown takes to resume when paused. Disables score submission if the amount of time is increased, since this makes pausing an easier method to get back your stamina.\r\n\r\nTo change the amount of time, go to the Settings Icon in the main menu -> Mod Settings -> SlowResume.\r\n\r\nThis mod was commissioned by @KaiØKęnX20!",
+            "details": "Allows you to change how long the countdown takes to resume when paused. Disables score submission if the amount of time is increased, since this makes pausing an easier method to get back your stamina.\r\n\r\nTo change the amount of time, go to the Settings Icon in the main menu -> Mod Settings -> SlowResume.\r\n\r\nThis mod was commissioned by @KaiÃ˜KÄ™nX20!",
             "ModID": "slow-resume",
             "creator": [
                 "Laurie"
@@ -826,7 +846,7 @@
             ],
             "downloads": [
                 {
-                    "modversion": "1.19.1",
+                    "modversion": "0.19.1",
                     "gameversion": [
                         "1.13.2"
                     ],
