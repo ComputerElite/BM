@@ -1,6 +1,26 @@
 {
     "mods": [
         {
+            "name": "Particles",
+            "details": "Quest Particles mod is basically a ParticleOverdrive port for Quest. It allows you to boost/reduce note slash particles, saber clash particles, remove environmental dust, and make particle rainbow.\r\n\r\nThis mod does nothing out of the box. You will need to use the in-game mod config UI (Settings -> Mod Settings -> ParticleTuner) to change the particle behaviors.",
+            "ModID": "particletuner",
+            "creator": [
+                "marcuszhou"
+            ],
+            "downloads": [
+                {
+                    "modversion": "1.1.2",
+                    "gameversion": [
+                        "1.13.2"
+                    ],
+                    "download": "https://github.com/SuperMarcus/QuestParticleTuner/releases/download/1.1.2/ParticleTuner_1.1.2.zip",
+                    "forward": false,
+                    "coremod": false,
+                    "notes": "Known Issues:\r\n* Particles having white tints (colorOverLifetime?)"
+                }
+            ]
+        },
+        {
             "name": "Intro Skip",
             "details": "Lets you skip sections of songs that have no notes in them.\r\n\r\nMy Patreon (If you join then you get some perks): https://www.patreon.com/henwill8?fan_landing=true",
             "ModID": "IntroSkip",
@@ -143,12 +163,22 @@
         },
         {
             "name": "Qounters-",
-            "details": "Spice up your Beat Saber HUD with a variety of configurable Counters Qounters, which can display a wide variety of stats in an even wider variety of ways.\r\nThis mod is an Oculus Quest port of [Caeden117's Counters+](https://github.com/Caeden117/CountersPlus) for PC.\r\n\r\nConfigure your Qounters from the Mod Settings menu (Main menu Ã¢â€ â€™ Settings (gear icon) Ã¢â€ â€™ Mod Settings Ã¢â€ â€™ Qounters-). After making changes, you can click the big blue Test button to preview your configuration.\r\n\r\nSettings can be loaded from a PC Counters+ configuration file! Rename your CountersPlus.json to qounters-minus.json and upload it through BMBF after installing Qounters-.",
+            "details": "Spice up your Beat Saber HUD with a variety of configurable Counters Qounters, which can display a wide variety of stats including:\r\n    - Cut accuracy\r\n    - Notes remaining\r\n    - Misses\r\n    - and many more!\r\nThis mod is an Oculus Quest port of Counters+ for PC.\r\n\r\nConfigure your Qounters from the Mod Settings menu (Main menu → Settings (gear icon) → Mod Settings → Qounters-). After making changes, you can click the big blue Test button to preview your configuration.\r\n\r\nSettings can be loaded from a PC Counters+ configuration file! Rename your CountersPlus.json to qounters-minus.json and upload it through BMBF after installing Qounters-.",
             "ModID": "qounters-minus",
             "creator": [
                 "Danrouse"
             ],
             "downloads": [
+                {
+                    "modversion": "1.0.0",
+                    "gameversion": [
+                        "1.13.2"
+                    ],
+                    "download": "https://github.com/danrouse/bsq-qounters-minus/releases/download/1.0.0/qounters-minus_v1.0.0.zip",
+                    "notes": "Not compatible (currently) with Laurie's NoHealthAndSafety",
+                    "forward": false,
+                    "coremod": false
+                },
                 {
                     "modversion": "1.0.0",
                     "gameversion": [
@@ -529,7 +559,7 @@
         },
         {
             "name": "SlowResume",
-            "details": "Allows you to change how long the countdown takes to resume when paused. Disables score submission if the amount of time is increased, since this makes pausing an easier method to get back your stamina.\r\n\r\nTo change the amount of time, go to the Settings Icon in the main menu -> Mod Settings -> SlowResume.\r\n\r\nThis mod was commissioned by @KaiÃƒËœKÃ„â„¢nX20!",
+            "details": "Allows you to change how long the countdown takes to resume when paused. Disables score submission if the amount of time is increased, since this makes pausing an easier method to get back your stamina.\r\n\r\nTo change the amount of time, go to the Settings Icon in the main menu -> Mod Settings -> SlowResume.\r\n\r\nThis mod was commissioned by @KaiÃƒÆ’Ã‹Å“KÃƒâ€žÃ¢â€žÂ¢nX20!",
             "ModID": "slow-resume",
             "creator": [
                 "Laurie"
@@ -558,12 +588,22 @@
         },
         {
             "name": "DebrisTweaks",
-            "details": "This mod allows you to modify various note debris settings. Useful for those who wish to reduce vision blocks without disabling debris completely.\\r\\n\\r\\nTo modify the default parameters, navigate to DebrisTweaks in your mod settings panel and click on \\\"Enable Tweaks\\\".\\r\\nCurrent configurable options include lifespan, velocity, scale and gravity.",
+            "details": "This mod allows you to modify various note debris settings. Useful for those who wish to reduce vision blocks without disabling debris completely.",
             "ModID": "DebrisTweaks",
             "creator": [
-                "Raemien"
+                "Raemoen"
             ],
             "downloads": [
+                {
+                    "modversion": "1.0.0",
+                    "gameversion": [
+                        "1.13.2"
+                    ],
+                    "download": "https://github.com/Raemien/DebrisTweaksQuest/releases/latest/download/DebrisTweaks.zip",
+                    "notes": "The v.1.0.0 release is here!\r\nThis version brings all features of the PC version to Quest, including a revamped UI!",
+                    "forward": false,
+                    "coremod": false
+                },
                 {
                     "modversion": "0.3.0",
                     "gameversion": [
