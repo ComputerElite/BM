@@ -66,14 +66,10 @@ namespace BMBF_Manager
             RScores.IsChecked = true;
             RMods.IsChecked = true;
             RReplays.IsChecked = true;
-            RSounds.IsChecked = true;
-            RConfigs.IsChecked = true;
-            RQosmetics.IsChecked = false;
-            RQosmetics.Visibility = Visibility.Hidden;
             RAPK.IsChecked = false;
             RAPK.Visibility = Visibility.Hidden;
 
-            ChangeImage("BBBU3.png");
+            ChangeImage("BBBU4.png");
         }
 
         public void TransferFromBBBU()
@@ -217,36 +213,16 @@ namespace BMBF_Manager
             adb("pull /sdcard/BMBFData/Playlists/ \"" + Playlists + "\"");
             txtbox.ScrollToEnd();
 
-            //Replays
+            //ModData
 
-            txtbox.AppendText("\n\nBacking up replays");
-            adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/replays \"" + BackupF + "\"");
-            adb("pull /sdcard/ModData/com.beatgames.beatsaber/Mods/Replay/replays \"" + BackupF + "\"");
+            txtbox.AppendText("\n\nBacking up ModData");
+            adb("pull /sdcard/ModData/com.beatgames.beatsaber \"" + BackupF + "\"");
             txtbox.AppendText("\nBacked up replays\n");
-            txtbox.ScrollToEnd();
-
-            //Sounds
-
-            txtbox.AppendText("\n\nBacking up sounds");
-            adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/sounds \"" + BackupF + "\"");
-            txtbox.AppendText("\nBacked up sounds\n");
             txtbox.ScrollToEnd();
 
             //Mods
 
             ModsB();
-
-
-            //Mod cfgs
-            txtbox.AppendText("\n\nBacking up Mod Configs");
-            adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/mod_cfgs \"" + BackupF + "\"");
-            adb("pull /sdcard/ModData/com.beatgames.beatsaber/Configs \"" + BackupF + "\"");
-            txtbox.AppendText("\nBacked up Mod Configs\n");
-
-            //Qosmetics
-            txtbox.AppendText("\n\nBacking up Qosmetics");
-            adb("pull /sdcard/ModData/com.beatgames.beatsaber/Mods/Qosmetics \"" + BackupF + "\"");
-            txtbox.AppendText("\nBacked up Qosmetics\n");
 
             if (Advanced)
             {
@@ -333,14 +309,6 @@ namespace BMBF_Manager
                 RestoreAPK();
             }
 
-            //Qosmetics
-            if ((bool)RQosmetics.IsChecked)
-            {
-                txtbox.AppendText("\n\nRestoring Qosmetics");
-                adb("push \"" + BackupF + "\\Qosmetics\" /sdcard/ModData/com.beatgames.beatsaber/Mods/");
-                txtbox.AppendText("\nRestored Qosmetics\n");
-            }
-
             //Scores
             if ((bool)RScores.IsChecked == true && (bool)RAPK.IsChecked == false)
             {
@@ -354,21 +322,15 @@ namespace BMBF_Manager
                 txtbox.ScrollToEnd();
             }
 
-            //Replays
+            //ModData
             if ((bool)RReplays.IsChecked)
             {
                 txtbox.AppendText("\n\nPushing Replays");
-                adb("push \"" + BackupF + "\\replays\" /sdcard/ModData/com.beatgames.beatsaber/Mods/Replay/");
+                if (Directory.Exists(BackupF + "\\replays")) adb("push \"" + BackupF + "\\replays\" /sdcard/ModData/com.beatgames.beatsaber/Mods/Replay/");
+                if (Directory.Exists(BackupF + "\\Configs")) adb("push \"" + BackupF + "\\Configs\" /sdcard/ModData/com.beatgames.beatsaber/");
+                if (Directory.Exists(BackupF + "\\Qosmetics")) adb("push \"" + BackupF + "\\Qosmetics\" /sdcard/ModData/com.beatgames.beatsaber/Mods/");
+                if (Directory.Exists(BackupF + "\\com.beatgames.beatsaber")) adb("push \"" + BackupF + "\\com.beatgames.beatsaber\" /sdcard/ModData/");
                 txtbox.AppendText("\nFinished Pushing Replays");
-                txtbox.ScrollToEnd();
-            }
-
-            //Sounds
-            if ((bool)RSounds.IsChecked)
-            {
-                txtbox.AppendText("\n\nPushing Sounds");
-                adb("push \"" + BackupF + "\\sounds\" /sdcard/Android/data/com.beatgames.beatsaber/files/");
-                txtbox.AppendText("\nFinished Pushing Sounds");
                 txtbox.ScrollToEnd();
             }
 
@@ -404,16 +366,6 @@ namespace BMBF_Manager
                 txtbox.AppendText("\n\nUploading Mods");
                 Upload(Mods);
                 txtbox.AppendText("\nUploaded Mods");
-                txtbox.ScrollToEnd();
-            }
-
-            //Mod Configs
-            if ((bool)RConfigs.IsChecked)
-            {
-                txtbox.AppendText("\n\nPushing Configs");
-                adb("push \"" + BackupF + "\\mod_cfgs\" /sdcard/Android/data/com.beatgames.beatsaber/files");
-                adb("push \"" + BackupF + "\\Configs\" /sdcard/ModData/com.beatgames.beatsaber/");
-                txtbox.AppendText("\nPushed Configs");
                 txtbox.ScrollToEnd();
             }
 
@@ -1238,17 +1190,6 @@ namespace BMBF_Manager
             {
                 RAPK.Visibility = Visibility.Visible;
                 RAPK.IsChecked = true;
-            }
-
-            if (BackupConfig["Qosmetics"] == true)
-            {
-                RQosmetics.IsChecked = true;
-                RQosmetics.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                RQosmetics.IsChecked = false;
-                RQosmetics.Visibility = Visibility.Hidden;
             }
         }
 

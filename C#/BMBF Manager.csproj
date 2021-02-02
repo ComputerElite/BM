@@ -243,13 +243,13 @@
     <Resource Include="PlaylistEditor.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="BBBU3.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Image1.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="QSU3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="BBBU4.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
