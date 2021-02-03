@@ -32,7 +32,7 @@ namespace BMBF_Manager
     {
         int MajorV = 1;
         int MinorV = 11;
-        int PatchV = 1;
+        int PatchV = 2;
         Boolean Preview = false;
 
         public static Boolean CustomProtocols = false;

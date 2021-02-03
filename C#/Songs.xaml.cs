@@ -692,16 +692,16 @@ namespace BMBF_Manager
             txtbox.AppendText("\nDownloaded BeatMap " + Key + "\n");
             txtbox.AppendText("\nChecking BeatMap " + Key);
             txtbox.ScrollToEnd();
-            String name = CheckSongZip(exe + "\\tmp\\" + Key + C + ".zip");
-            if (name == "Error")
-            {
-                downloadqueue.RemoveAt(0);
-                Running = false;
-                Progress.Value = 0;
-                checkqueue();
-                return;
-            }
-            upload(exe + "\\tmp\\finished\\" + name.Trim() + ".zip");
+                String name = CheckSongZip(exe + "\\tmp\\" + Key + C + ".zip");
+                if (name == "Error")
+                {
+                    downloadqueue.RemoveAt(0);
+                    Running = false;
+                    Progress.Value = 0;
+                    checkqueue();
+                    return;
+                }
+                upload(exe + "\\tmp\\finished\\" + name.Trim() + ".zip");
         }
 
         public void upload(String path, bool uploadfile = false)
@@ -816,7 +816,6 @@ namespace BMBF_Manager
             }
 
             JSONNode info = JSON.Parse(File.ReadAllText(dat));
-            File.Delete(dat);
 
 
             if (!File.Exists(entry + "\\" + info["_songFilename"]))
@@ -917,8 +916,6 @@ namespace BMBF_Manager
                 info[c] = "k. A.";
             }
 
-            File.WriteAllText(entry + "\\Info.dat", info.ToString());
-
             String Name = info["_songName"];
             Name = Name.Replace("/", "");
             Name = Name.Replace(":", "");
@@ -938,6 +935,8 @@ namespace BMBF_Manager
                 sendfoundings(found, true, true);
                 return Name;
             }
+            File.Delete(dat);
+            File.WriteAllText(entry + "\\Info.dat", info.ToString());
             sendfoundings(found, true);
             return Name;
         }

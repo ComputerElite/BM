@@ -954,7 +954,7 @@ namespace BMBF_Manager
                     {
                         foreach(BPListSong search in tmp)
                         {
-                            if(search.hash.ToLower() == s.SongID.ToLower().Replace("custom_level_", ""))
+                            if(search.hash.ToLower().Contains(s.SongID.ToLower()))
                             {
                                 txtbox.AppendText("\n\nMoved Songs " + s.SongName + " to BPList");
                                 newpl.SongList.Add(s);
