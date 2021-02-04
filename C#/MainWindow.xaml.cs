@@ -22,6 +22,7 @@ using System.Windows.Threading;
 using System.Text.Json;
 using BeatSaber.Stats;
 using BMBF.Config;
+using System.Text.RegularExpressions;
 
 namespace BMBF_Manager
 {
@@ -422,34 +423,16 @@ namespace BMBF_Manager
             {
                 return false;
             }
-            IP = IP.Replace(":5000000", "");
-            IP = IP.Replace(":500000", "");
-            IP = IP.Replace(":50000", "");
-            IP = IP.Replace(":5000", "");
-            IP = IP.Replace(":500", "");
-            IP = IP.Replace(":50", "");
-            IP = IP.Replace(":5", "");
-            IP = IP.Replace(":", "");
-            IP = IP.Replace("/", "");
-            IP = IP.Replace("https", "");
-            IP = IP.Replace("http", "");
-            IP = IP.Replace("Http", "");
-            IP = IP.Replace("Https", "");
-
-            int count = MainWindow.IP.Split('.').Count();
-            if (count != 4)
+            Match found = Regex.Match(IP, "((1?[0-9]?[0-9]|2(5[0-5]|[0-4][0-9]))\\.){3}(1?[0-9]?[0-9]|2(5[0-5]|[0-4][0-9]))");
+            if(found.Success)
             {
-                Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
-                {
-                    Quest.Text = IP;
-                }));
+                IP = found.Value;
+                Quest.Text = IP;
+                return true;
+            } else
+            {
                 return false;
             }
-            Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
-            {
-                Quest.Text = IP;
-            }));
-            return true;
         }
 
         public Boolean adb(String Argument, bool showErrors = true)

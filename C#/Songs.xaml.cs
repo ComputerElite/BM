@@ -26,6 +26,7 @@ using Application = System.Windows.Application;
 using MessageBox = System.Windows.MessageBox;
 using MouseEventArgs = System.Windows.Input.MouseEventArgs;
 using BeatSaverAPI;
+using System.Text.RegularExpressions;
 
 namespace BMBF_Manager
 {
@@ -239,34 +240,17 @@ namespace BMBF_Manager
             {
                 return false;
             }
-            MainWindow.IP = MainWindow.IP.Replace(":5000000", "");
-            MainWindow.IP = MainWindow.IP.Replace(":500000", "");
-            MainWindow.IP = MainWindow.IP.Replace(":50000", "");
-            MainWindow.IP = MainWindow.IP.Replace(":5000", "");
-            MainWindow.IP = MainWindow.IP.Replace(":500", "");
-            MainWindow.IP = MainWindow.IP.Replace(":50", "");
-            MainWindow.IP = MainWindow.IP.Replace(":5", "");
-            MainWindow.IP = MainWindow.IP.Replace(":", "");
-            MainWindow.IP = MainWindow.IP.Replace("/", "");
-            MainWindow.IP = MainWindow.IP.Replace("https", "");
-            MainWindow.IP = MainWindow.IP.Replace("http", "");
-            MainWindow.IP = MainWindow.IP.Replace("Http", "");
-            MainWindow.IP = MainWindow.IP.Replace("Https", "");
-
-            int count = MainWindow.IP.Split('.').Count();
-            if (count != 4)
+            Match found = Regex.Match(MainWindow.IP, "((1?[0-9]?[0-9]|2(5[0-5]|[0-4][0-9]))\\.){3}(1?[0-9]?[0-9]|2(5[0-5]|[0-4][0-9]))");
+            if (found.Success)
             {
-                Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
-                {
-                    Quest.Text = MainWindow.IP;
-                }));
+                MainWindow.IP = found.Value;
+                Quest.Text = MainWindow.IP;
+                return true;
+            }
+            else
+            {
                 return false;
             }
-            Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
-            {
-                Quest.Text = MainWindow.IP;
-            }));
-            return true;
         }
 
         public void getQuestIP()
@@ -692,16 +676,16 @@ namespace BMBF_Manager
             txtbox.AppendText("\nDownloaded BeatMap " + Key + "\n");
             txtbox.AppendText("\nChecking BeatMap " + Key);
             txtbox.ScrollToEnd();
-                String name = CheckSongZip(exe + "\\tmp\\" + Key + C + ".zip");
-                if (name == "Error")
-                {
-                    downloadqueue.RemoveAt(0);
-                    Running = false;
-                    Progress.Value = 0;
-                    checkqueue();
-                    return;
-                }
-                upload(exe + "\\tmp\\finished\\" + name.Trim() + ".zip");
+            String name = CheckSongZip(exe + "\\tmp\\" + Key + C + ".zip");
+            if (name == "Error")
+            {
+                downloadqueue.RemoveAt(0);
+                Running = false;
+                Progress.Value = 0;
+                checkqueue();
+                return;
+            }
+            upload(exe + "\\tmp\\finished\\" + name.Trim() + ".zip");
         }
 
         public void upload(String path, bool uploadfile = false)

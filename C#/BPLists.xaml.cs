@@ -21,6 +21,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using BMBF.Config;
+using System.Text.RegularExpressions;
 
 namespace BMBF_Manager
 {
@@ -154,34 +155,17 @@ namespace BMBF_Manager
             {
                 return false;
             }
-            MainWindow.IP = MainWindow.IP.Replace(":5000000", "");
-            MainWindow.IP = MainWindow.IP.Replace(":500000", "");
-            MainWindow.IP = MainWindow.IP.Replace(":50000", "");
-            MainWindow.IP = MainWindow.IP.Replace(":5000", "");
-            MainWindow.IP = MainWindow.IP.Replace(":500", "");
-            MainWindow.IP = MainWindow.IP.Replace(":50", "");
-            MainWindow.IP = MainWindow.IP.Replace(":5", "");
-            MainWindow.IP = MainWindow.IP.Replace(":", "");
-            MainWindow.IP = MainWindow.IP.Replace("/", "");
-            MainWindow.IP = MainWindow.IP.Replace("https", "");
-            MainWindow.IP = MainWindow.IP.Replace("http", "");
-            MainWindow.IP = MainWindow.IP.Replace("Http", "");
-            MainWindow.IP = MainWindow.IP.Replace("Https", "");
-
-            int count = MainWindow.IP.Split('.').Count();
-            if (count != 4)
+            Match found = Regex.Match(MainWindow.IP, "((1?[0-9]?[0-9]|2(5[0-5]|[0-4][0-9]))\\.){3}(1?[0-9]?[0-9]|2(5[0-5]|[0-4][0-9]))");
+            if (found.Success)
             {
-                Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
-                {
-                    Quest.Text = MainWindow.IP;
-                }));
+                MainWindow.IP = found.Value;
+                Quest.Text = MainWindow.IP;
+                return true;
+            }
+            else
+            {
                 return false;
             }
-            Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
-            {
-                Quest.Text = MainWindow.IP;
-            }));
-            return true;
         }
 
         public void getQuestIP()
