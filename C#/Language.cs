@@ -4,6 +4,8 @@ namespace BMBFManager.Language
 {
     public class Language
     {
+        public String language { get; set; } = "english";
+        public String translator { get; set; } = "N/A";
         public MainMenu mainMenu { get; set; } = new MainMenu();
         public BBBU bBBU { get; set; } = new BBBU();
         public BPLists bPLists { get; set; } = new BPLists();
@@ -706,6 +708,6 @@ namespace BMBFManager.Language
         public String language { get; set; } = "Language";
 
         public String selectLanguage { get; set; } = "Please select a language";
-        public String changedLanguage { get; set; } = "Changed language to {0}";
+        public String changedLanguage { get; set; } = "Changed language to {0} translated by {1}";
     }
 }

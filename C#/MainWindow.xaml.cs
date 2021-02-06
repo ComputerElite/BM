@@ -35,7 +35,7 @@ namespace BMBF_Manager
     {
         int MajorV = 1;
         int MinorV = 12;
-        int PatchV = 0;
+        int PatchV = 1;
         Boolean Preview = false;
 
         public static Boolean CustomProtocols = false;
@@ -152,6 +152,7 @@ namespace BMBF_Manager
             {
                 language = "en";
                 globalLanguage = new Language(); // Sets up english
+                globalLanguage.translator = "ComputerElite";
             }
             else
             {
@@ -173,7 +174,7 @@ namespace BMBF_Manager
             playlistEditorButton.Content = globalLanguage.mainMenu.UI.playlistEditorButton;
             settingsButton.Content = globalLanguage.mainMenu.UI.settingsButton;
 
-            //File.WriteAllText("D:\\en_BM.json", JsonSerializer.Serialize(globalLanguage));
+            //File.WriteAllText("D:\\en.json", JsonSerializer.Serialize(globalLanguage));
         }
 
         private async Task KeepAliveTask()

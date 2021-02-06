@@ -89,6 +89,7 @@ namespace BMBF_Manager
             {
                 MainWindow.globalLanguage = new BMBFManager.Language.Language();
                 MainWindow.language = "en";
+                MainWindow.globalLanguage.translator = "ComputerElite";
             }
             else
             {
@@ -96,7 +97,7 @@ namespace BMBF_Manager
                 MainWindow.language = exe + "\\languages\\" + Language.SelectedItem + ".json";
             }
             ApplyLanguage();
-            txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.settings.code.changedLanguage, Language.SelectedIndex == 1 ? "en" : Language.SelectedItem.ToString()));
+            txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.settings.code.changedLanguage, MainWindow.globalLanguage.language, MainWindow.globalLanguage.translator));
             txtbox.AppendText("\n" + MainWindow.globalLanguage.settings.code.restartProgram);
             LoadLanguages();
         }
@@ -238,7 +239,7 @@ namespace BMBF_Manager
 
         private void ClearText(object sender, RoutedEventArgs e)
         {
-            if (Quest.Text == MainWindow.globalLanguage.global.ipInvalid)
+            if (Quest.Text == MainWindow.globalLanguage.global.defaultQuestIPText)
             {
                 Quest.Text = "";
             }
@@ -249,7 +250,7 @@ namespace BMBF_Manager
         {
             if (Quest.Text == "")
             {
-                Quest.Text = MainWindow.globalLanguage.global.ipInvalid;
+                Quest.Text = MainWindow.globalLanguage.global.defaultQuestIPText;
             }
         }
 
