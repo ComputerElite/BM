@@ -22,6 +22,7 @@ using System.Windows.Threading;
 using ModObjects;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using ComputerUtils.RegxTemplates;
 
 namespace BMBF_Manager
 {
@@ -42,8 +43,9 @@ namespace BMBF_Manager
         public Mods()
         {
             InitializeComponent();
+            ApplyLanguage();
             Quest.Text = MainWindow.IP;
-            DownloadLable.Text = "All finished";
+            DownloadLable.Text = MainWindow.globalLanguage.global.allFinished;
             getMods();
             if (MainWindow.CustomImage)
             {
@@ -61,6 +63,18 @@ namespace BMBF_Manager
             }
         }
 
+        public void ApplyLanguage()
+        {
+            ((GridView)ModList.View).Columns[0].Header = MainWindow.globalLanguage.mods.UI.ModNameList; //Name
+            ((GridView)ModList.View).Columns[1].Header = MainWindow.globalLanguage.mods.UI.ModCreatorList; //Creator(s)
+            ((GridView)ModList.View).Columns[2].Header = MainWindow.globalLanguage.mods.UI.ModInstalledList; //installed
+            ((GridView)ModList.View).Columns[3].Header = MainWindow.globalLanguage.mods.UI.ModLatestList; //latest
+            ((GridView)ModList.View).Columns[4].Header = MainWindow.globalLanguage.mods.UI.ModGameVersionList; //Game Version
+            moreInfoButton.Content = MainWindow.globalLanguage.mods.UI.moreInfoButton;
+            updateAllModsButton.Content = MainWindow.globalLanguage.mods.UI.updateAllModsButton;
+            installModButton.Content = MainWindow.globalLanguage.mods.UI.installModButton;
+        }
+
         public void getMods()
         {
             getQuestIP();
@@ -75,7 +89,7 @@ namespace BMBF_Manager
             }
             catch
             {
-                txtbox.AppendText(MainWindow.BM100);
+                txtbox.AppendText(MainWindow.globalLanguage.global.BM100);
             }
 
             try
@@ -85,7 +99,7 @@ namespace BMBF_Manager
             }
             catch
             {
-                txtbox.AppendText(MainWindow.BMBF100);
+                txtbox.AppendText(MainWindow.globalLanguage.global.BMBF100);
                 Reaching = false;
             }
             String[] GameVersion = MainWindow.GameVersion.ToString().Replace("\"", "").Split('.');
@@ -116,7 +130,7 @@ namespace BMBF_Manager
             updatemodlist(false);
             if(!Reaching)
             {
-                MessageBox.Show("I couldn't reach BMBF. All the mods displayed are for the last Version of BMBF you used while I noticed (" + MainWindow.GameVersion + "). Please check if you can reach BMBF so I can install mods.", "BMBF Manager - Mod Installing", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show(MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.mods.code.couldntReachBMBFForVersion, MainWindow.GameVersion), "BMBF Manager - Mod Installing", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 
@@ -136,7 +150,7 @@ namespace BMBF_Manager
             }
             if(!found)
             {
-                txtbox.AppendText("\n\nI couldn't find " + ModName + " for your Game Version");
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.mods.code.couldntFindMods, ModName));
             }
         }
 
@@ -151,7 +165,7 @@ namespace BMBF_Manager
                 }
                 catch
                 {
-                    txtbox.AppendText(MainWindow.BMBF100);
+                    txtbox.AppendText(MainWindow.globalLanguage.global.BMBF100);
                     txtbox.ScrollToEnd();
                 }
             }
@@ -220,7 +234,7 @@ namespace BMBF_Manager
 
         private void ClearText(object sender, RoutedEventArgs e)
         {
-            if (Quest.Text == "Quest IP")
+            if (Quest.Text == MainWindow.globalLanguage.global.defaultQuestIPText)
             {
                 Quest.Text = "";
             }
@@ -231,21 +245,17 @@ namespace BMBF_Manager
         {
             if (Quest.Text == "")
             {
-                Quest.Text = "Quest IP";
+                Quest.Text = MainWindow.globalLanguage.global.defaultQuestIPText;
             }
         }
 
         public Boolean CheckIP()
         {
             getQuestIP();
-            if (MainWindow.IP == "Quest IP")
+            String found;
+            if ((found = RegexTemplates.GetIP(MainWindow.IP)) != "")
             {
-                return false;
-            }
-            Match found = Regex.Match(MainWindow.IP, "((1?[0-9]?[0-9]|2(5[0-5]|[0-4][0-9]))\\.){3}(1?[0-9]?[0-9]|2(5[0-5]|[0-4][0-9]))");
-            if (found.Success)
-            {
-                MainWindow.IP = found.Value;
+                MainWindow.IP = found;
                 Quest.Text = MainWindow.IP;
                 return true;
             }
@@ -263,7 +273,7 @@ namespace BMBF_Manager
         public void MoreInfo(object sender, RoutedEventArgs e)
         {
             //Name, Version, DownloadLink, Creator, gameVersion, Desciption, Forward, new Tuple (CoreMod, ModID, currentversion, islatest)
-            MessageBox.Show("Mod Name: " + AllModList[ModList.SelectedIndex].name + "\n\nDescription:\n" + AllModList[ModList.SelectedIndex].details + "\n\nNotes for the latest mod release:\n" + AllModList[ModList.SelectedIndex].downloads[AllModList[ModList.SelectedIndex].MatchingDownload].notes, "BMBF Manager - Mod Info", MessageBoxButton.OK);
+            MessageBox.Show(MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.mods.code.modInfo, AllModList[ModList.SelectedIndex].name, AllModList[ModList.SelectedIndex].details, AllModList[ModList.SelectedIndex].downloads[AllModList[ModList.SelectedIndex].MatchingDownload].notes), "BMBF Manager - Mod Info", MessageBoxButton.OK);
         }
 
         public void checkqueue()
@@ -273,7 +283,7 @@ namespace BMBF_Manager
                 InstallMod();
             } else
             {
-                txtbox.AppendText("\n\nAll finished.");
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.global.allFinished);
                 txtbox.ScrollToEnd();
             }
         }
@@ -282,7 +292,7 @@ namespace BMBF_Manager
         {
             if (!CheckIP())
             {
-                txtbox.AppendText("\n\nChoose a valid IP.");
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.global.ipInvalid);
                 txtbox.ScrollToEnd();
                 return;
             }
@@ -304,7 +314,7 @@ namespace BMBF_Manager
 
             if (AllModList[Index].downloads[AllModList[Index].MatchingDownload].forward)
             {
-                MessageBoxResult result1 = MessageBox.Show("You have to download and install the mod " + AllModList[Index].name + " manually. If you click yes I'll redirect you to the download page and open BMBF for you.\nDo you wish to continue?", "BMBF Manager - Mod Installing", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                MessageBoxResult result1 = MessageBox.Show(MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.mods.code.manualInstall, AllModList[Index].name), "BMBF Manager - Mod Installing", MessageBoxButton.YesNo, MessageBoxImage.Warning);
                 switch (result1)
                 {
                     case MessageBoxResult.No:
@@ -322,13 +332,13 @@ namespace BMBF_Manager
 
             if (AllModList[Index].downloads[AllModList[Index].MatchingDownload].coremod)
             {
-                MessageBox.Show("The Mod you are about to install is a Core Mod. That means the Mod should get installed when you exit BMBF and open it again. Please make sure you DON'T have the mod installed. I'll open BMBF for you once you click OK.", "BMBF Manager - Mod Installing", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show(MainWindow.globalLanguage.mods.code.coreMod, "BMBF Manager - Mod Installing", MessageBoxButton.OK, MessageBoxImage.Warning);
                 Process.Start("http://" + MainWindow.IP + ":50000/main/mods");
-                MessageBoxResult result1 = MessageBox.Show("Do you have the mod " + AllModList[Index].name + " installed?", "BMBF Manager - Mod Installing", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                MessageBoxResult result1 = MessageBox.Show(MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.mods.code.isCoreModInstalled, AllModList[Index].name), "BMBF Manager - Mod Installing", MessageBoxButton.YesNo, MessageBoxImage.Warning);
                 switch (result1)
                 {
                     case MessageBoxResult.Yes:
-                        txtbox.AppendText("\n\nMod is already installed aborted.");
+                        txtbox.AppendText("\n\n" + MainWindow.globalLanguage.mods.code.alreadyInstalledAbort);
                         txtbox.ScrollToEnd();
                         Running = false;
                         downloadqueue.RemoveAt(0);
@@ -339,11 +349,11 @@ namespace BMBF_Manager
 
             if (AllModList[Index].downloads[AllModList[Index].MatchingDownload].gameversion[AllModList[Index].MatchingGameVersion] != MainWindow.GameVersion)
             {
-                MessageBoxResult result1 = MessageBox.Show("The latest Version of the Mod " + AllModList[Index].name + " (That is indexed) has been made for Beat Saber Version " + AllModList[Index].downloads[AllModList[Index].MatchingDownload].gameversion[AllModList[Index].MatchingGameVersion] + ". It'll most likelybe compatible with your Game but you have to enable it manually. I'll open the BMBF mod tab after installing the mod. For it to activate you scroll to the mod you installed and flip the switch to on. If you get a compatibility warning click \"Enable Mod\" and then click \"Sync to Beat Saber\" in the top right.\nDo you wish to continue?", "BMBF Manager - Mod Installing", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                MessageBoxResult result1 = MessageBox.Show(MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.mods.code.oldVerInstall, AllModList[Index].name, AllModList[Index].downloads[AllModList[Index].MatchingDownload].gameversion[AllModList[Index].MatchingGameVersion]), "BMBF Manager - Mod Installing", MessageBoxButton.YesNo, MessageBoxImage.Warning);
                 switch (result1)
                 {
                     case MessageBoxResult.No:
-                        txtbox.AppendText("\n\nMod Installing Aborted.");
+                        txtbox.AppendText("\n\n" + MainWindow.globalLanguage.mods.code.installAborted);
                         txtbox.ScrollToEnd();
                         Running = false;
                         downloadqueue.RemoveAt(0);
@@ -356,7 +366,7 @@ namespace BMBF_Manager
             WebClient c = new WebClient();
             Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
             {
-                txtbox.AppendText("\n\nDownloading Mod " + AllModList[Index].name + "\n");
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.mods.code.downloadingMod, AllModList[Index].name));
                 txtbox.ScrollToEnd();
             }));
             Uri uri = new Uri(Download);
@@ -365,7 +375,7 @@ namespace BMBF_Manager
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
                 {
-                    DownloadLable.Text = "Downloading " + AllModList[Index].name;
+                    DownloadLable.Text = MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.mods.code.downloadingMod, AllModList[Index].name);
                     c.DownloadFileCompleted += new AsyncCompletedEventHandler(finished_download);
                     c.DownloadProgressChanged += new DownloadProgressChangedEventHandler(client_DownloadProgressChanged);
                     c.DownloadFileAsync(uri, exe + "\\tmp\\" + AllModList[Index].name + C + ".zip");
@@ -373,7 +383,7 @@ namespace BMBF_Manager
             }
             catch
             {
-                txtbox.AppendText(MainWindow.BM200);
+                txtbox.AppendText(MainWindow.globalLanguage.global.BM200);
                 txtbox.ScrollToEnd();
                 Running = false;
                 return;
@@ -392,17 +402,17 @@ namespace BMBF_Manager
         {   
             if(ModList.SelectedIndex < 0 || ModList.SelectedIndex > (ModList.Items.Count - 1))
             {
-                txtbox.AppendText("\n\nPlease select a mod");
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.mods.code.selectMod);
                 return;
             }
             if (downloadqueue.Contains(ModList.SelectedIndex))
             {
-                txtbox.AppendText("\n" + AllModList[ModList.SelectedIndex].name + " is already in the download queue");
+                txtbox.AppendText("\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.mods.code.alreadyInQueue, AllModList[ModList.SelectedIndex].name));
                 txtbox.ScrollToEnd();
                 return;
             }
             downloadqueue.Add(ModList.SelectedIndex);
-            txtbox.AppendText("\n\n" + AllModList[ModList.SelectedIndex].name + " was added to the queue");
+            txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.mods.code.addedToQueue, AllModList[ModList.SelectedIndex].name));
             txtbox.ScrollToEnd();
             checkqueue();
         }
@@ -416,7 +426,7 @@ namespace BMBF_Manager
             }
             catch
             {
-                txtbox.AppendText(MainWindow.BMBF100);
+                txtbox.AppendText(MainWindow.globalLanguage.global.BMBF100);
                 txtbox.ScrollToEnd();
                 return;
             }
@@ -452,7 +462,7 @@ namespace BMBF_Manager
                         if((MajorD >= Major && MinorD >= Minor && PatchD > Patch) || (MajorD >= Major && MinorD > Minor) || (MajorD > Major))
                         {
                             downloadqueue.Add(i);
-                            txtbox.AppendText("\nAdded " + m.name + " version " + m.downloads[m.MatchingDownload].modversion + " to queue");
+                            txtbox.AppendText("\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.mods.code.updateAddedToQueue, m.name, m.downloads[m.MatchingDownload].modversion));
                         }
                         break;
                     }
@@ -492,7 +502,7 @@ namespace BMBF_Manager
                             exeProcess.WaitForExit();
                             if (IPS.Contains("no devices/emulators found"))
                             {
-                                txtbox.AppendText(MainWindow.ADB110);
+                                txtbox.AppendText(MainWindow.globalLanguage.global.ADB110);
                                 txtbox.ScrollToEnd();
                                 return false;
                             }
@@ -510,7 +520,7 @@ namespace BMBF_Manager
                     continue;
                 }
             }
-            txtbox.AppendText(MainWindow.ADB100);
+            txtbox.AppendText(MainWindow.globalLanguage.global.ADB100);
             txtbox.ScrollToEnd();
             return false;
         }
@@ -520,7 +530,7 @@ namespace BMBF_Manager
             adb("shell am start -n com.weloveoculus.BMBF/com.weloveoculus.BMBF.MainActivity");
             Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
             {
-                txtbox.AppendText("\nDownloaded Mod " + AllModList[Index].name + "\n");
+                txtbox.AppendText("\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.mods.code.downloadedMod, AllModList[Index].name));
                 txtbox.ScrollToEnd();
             }));
             upload(exe + "\\tmp\\" + AllModList[Index].name + C + ".zip");
@@ -532,14 +542,14 @@ namespace BMBF_Manager
 
             TimeoutWebClient client = new TimeoutWebClient();
 
-            txtbox.AppendText("\n\nUploading " + AllModList[Index].name + " to BMBF");
+            txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.mods.code.uploadingToBMBF, AllModList[Index].name));
             txtbox.ScrollToEnd();
             Uri uri = new Uri("http://" + MainWindow.IP + ":50000/host/beatsaber/upload?overwrite");
             try
             {
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
                 {
-                    DownloadLable.Text = "Uploading " + AllModList[Index].name + " to BMBF";
+                    DownloadLable.Text = MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.mods.code.uploadingToBMBF, AllModList[Index].name);
                     client.UploadProgressChanged += new UploadProgressChangedEventHandler(client_uploadchanged);
                     client.UploadFileCompleted += new UploadFileCompletedEventHandler(finished_upload);
                     client.UploadFileAsync(uri, path);
@@ -547,7 +557,7 @@ namespace BMBF_Manager
             }
             catch
             {
-                txtbox.AppendText(MainWindow.BMBF100);
+                txtbox.AppendText(MainWindow.globalLanguage.global.BMBF100);
                 txtbox.ScrollToEnd();
             }
         }
@@ -570,23 +580,23 @@ namespace BMBF_Manager
                     {
                         Sync();
                     }));
-                    txtbox.AppendText("\n\nMod " + AllModList[Index].name + " was synced to your Quest.");
+                    txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.mods.code.syncedToQuest, AllModList[Index].name));
                     txtbox.ScrollToEnd();
                 }
                 catch
                 {
-                    txtbox.AppendText("\n\nCouldn't sync with BeatSaber. Needs to be done manually.");
+                    txtbox.AppendText("\n\n" + MainWindow.globalLanguage.mods.code.unableToSync);
                     txtbox.ScrollToEnd();
                 }
             }
             else
             {
                 Process.Start("http://" + MainWindow.IP + ":50000/main/mods");
-                txtbox.AppendText("\n\nSince you choose to install this mod... you need to enable it manually. I uploaded it.");
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.mods.code.enableManually);
                 txtbox.ScrollToEnd();
             }
             Running = false;
-            DownloadLable.Text = "All finished";
+            DownloadLable.Text = MainWindow.globalLanguage.global.allFinished;
             Progress.Value = 0;
             downloadqueue.RemoveAt(0);
             updatemodlist();
@@ -618,7 +628,7 @@ namespace BMBF_Manager
             }
             catch
             {
-                txtbox.AppendText(MainWindow.BMBF110);
+                txtbox.AppendText(MainWindow.globalLanguage.global.BMBF110);
                 Running = false;
             }
         }

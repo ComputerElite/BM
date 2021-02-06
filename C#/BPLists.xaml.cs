@@ -22,6 +22,7 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 using BMBF.Config;
 using System.Text.RegularExpressions;
+using ComputerUtils.RegxTemplates;
 
 namespace BMBF_Manager
 {
@@ -41,6 +42,7 @@ namespace BMBF_Manager
         public BPLists()
         {
             InitializeComponent();
+            ApplyLanguage();
             Quest.Text = MainWindow.IP;
             if (MainWindow.CustomImage)
             {
@@ -57,6 +59,14 @@ namespace BMBF_Manager
                 this.Background = uniformBrush;
             }
 
+        }
+
+        public void ApplyLanguage()
+        {
+            installRanked.Content = MainWindow.globalLanguage.bPLists.UI.installRankedButton;
+            installBookmarked.Content = MainWindow.globalLanguage.bPLists.UI.installBookmarkedButton;
+            MaxSongs.Text = MainWindow.globalLanguage.bPLists.UI.maxSongsText;
+            UserName.Text = MainWindow.globalLanguage.bPLists.UI.usernameText;
         }
 
         private void Drag(object sender, RoutedEventArgs e)
@@ -99,7 +109,7 @@ namespace BMBF_Manager
 
         private void ClearText(object sender, RoutedEventArgs e)
         {
-            if (Quest.Text == "Quest IP")
+            if (Quest.Text == MainWindow.globalLanguage.global.defaultQuestIPText)
             {
                 Quest.Text = "";
             }
@@ -108,7 +118,7 @@ namespace BMBF_Manager
 
         private void ClearTextMaxSongs(object sender, RoutedEventArgs e)
         {
-            if (MaxSongs.Text == "Max Songs")
+            if (MaxSongs.Text == MainWindow.globalLanguage.bPLists.UI.maxSongsText)
             {
                 MaxSongs.Text = "";
             }
@@ -117,7 +127,7 @@ namespace BMBF_Manager
 
         private void ClearTextUserName(object sender, RoutedEventArgs e)
         {
-            if (UserName.Text == "Username")
+            if (UserName.Text == MainWindow.globalLanguage.bPLists.UI.usernameText)
             {
                 UserName.Text = "";
             }
@@ -128,7 +138,7 @@ namespace BMBF_Manager
         {
             if (Quest.Text == "")
             {
-                Quest.Text = "Quest IP";
+                Quest.Text = MainWindow.globalLanguage.global.defaultQuestIPText;
             }
         }
 
@@ -136,7 +146,7 @@ namespace BMBF_Manager
         {
             if (MaxSongs.Text == "")
             {
-                MaxSongs.Text = "Max Songs";
+                MaxSongs.Text = MainWindow.globalLanguage.bPLists.UI.maxSongsText;
             }
         }
 
@@ -144,21 +154,17 @@ namespace BMBF_Manager
         {
             if (UserName.Text == "")
             {
-                UserName.Text = "Username";
+                UserName.Text = MainWindow.globalLanguage.bPLists.UI.usernameText;
             }
         }
 
         public Boolean CheckIP()
         {
             getQuestIP();
-            if (MainWindow.IP == "Quest IP")
+            String found;
+            if ((found = RegexTemplates.GetIP(MainWindow.IP)) != "")
             {
-                return false;
-            }
-            Match found = Regex.Match(MainWindow.IP, "((1?[0-9]?[0-9]|2(5[0-5]|[0-4][0-9]))\\.){3}(1?[0-9]?[0-9]|2(5[0-5]|[0-4][0-9]))");
-            if (found.Success)
-            {
-                MainWindow.IP = found.Value;
+                MainWindow.IP = found;
                 Quest.Text = MainWindow.IP;
                 return true;
             }
@@ -177,32 +183,32 @@ namespace BMBF_Manager
         private void finished_download(object sender, AsyncCompletedEventArgs e)
         {
             ZipFile.ExtractToDirectory(exe + "\\tmp\\ScoreSaber.zip", exe + "\\tmp");
-            txtbox.AppendText("\n\nFinished Downloading Data");
+            txtbox.AppendText("\n\n" + MainWindow.globalLanguage.bPLists.code.finishedDownload);
         }
 
         public void InstallBookmarked(object sender, RoutedEventArgs e)
         {
             if (!CheckIP())
             {
-                txtbox.AppendText("\n\nChoose a valid IP.");
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.global.ipInvalid);
                 return;
             }
             if (Running)
             {
-                txtbox.AppendText("\n\nA BPList download is already running. Please Wait");
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.bPLists.code.bplistDownloadRunning);
                 return;
             }
             Running = true;
 
             int Max = 0;
-            txtbox.AppendText("\n\nMaking BPList of Bookmarked songs of User " + UserName.Text);
+            txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.bPLists.code.makingBookmarks, UserName.Text));
             try
             {
                 Max = Convert.ToInt32(MaxSongs.Text);
             }
             catch
             {
-                txtbox.AppendText("\nPlease Type in a valid number");
+                txtbox.AppendText("\n" + MainWindow.globalLanguage.global.numberNotValid);
                 Running = false;
                 return;
             }
@@ -210,7 +216,7 @@ namespace BMBF_Manager
             var json = JSON.Parse(c.DownloadString("https://bsaber.com/wp-json/bsaber-api/songs/?bookmarked_by=" + UserName.Text + "&count=" + Max));
             if(json["songs"].Count == 0)
             {
-                txtbox.AppendText("\n\nThe User " + UserName.Text + " doesn't have any Songs Bookmarked.");
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.bPLists.code.noSongsBookmarked, UserName.Text));
                 Running = false;
                 return;
             }
@@ -231,12 +237,12 @@ namespace BMBF_Manager
         {
             if (!CheckIP())
             {
-                txtbox.AppendText("\n\nChoose a valid IP.");
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.global.ipInvalid);
                 return;
             }
             if (Running)
             {
-                txtbox.AppendText("\n\nA BPList download is already running. Please wait.");
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.bPLists.code.bplistDownloadRunning);
                 return;
             }
             Running = true;
@@ -247,7 +253,7 @@ namespace BMBF_Manager
                 Max = Convert.ToInt32(MaxSongs.Text);
             } catch
             {
-                txtbox.AppendText("\nPlease Type in a valid number");
+                txtbox.AppendText("\n" + MainWindow.globalLanguage.global.numberNotValid);
                 Running = false;
                 return;
             }
@@ -255,7 +261,7 @@ namespace BMBF_Manager
             var json = JSON.Parse(c.DownloadString("http://scoresaber.com/api.php?function=get-leaderboards&page=1&cat=1&limit=" + Max + "&unique=1&ranked=1"));
             Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
             {
-                txtbox.AppendText("\n\nCreating BPList with ranked Songs.");
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.bPLists.code.makingRanked);
             }));
 
             BPList l = new BPList();
@@ -284,7 +290,7 @@ namespace BMBF_Manager
 
             TimeoutWebClient client = new TimeoutWebClient();
 
-            txtbox.AppendText("\n\nUploading BPList to BMBF");
+            txtbox.AppendText("\n\n" + MainWindow.globalLanguage.bPLists.code.uploadingBPList);
             Uri uri = new Uri("http://" + MainWindow.IP + ":50000/host/beatsaber/upload?overwrite");
             try
             {
@@ -296,7 +302,7 @@ namespace BMBF_Manager
             }
             catch
             {
-                txtbox.AppendText(MainWindow.BMBF100);
+                txtbox.AppendText(MainWindow.globalLanguage.global.BMBF100);
                 Running = false;
             }
         }
@@ -305,10 +311,10 @@ namespace BMBF_Manager
         {
             Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
             {
-                txtbox.AppendText("\n\nSyncing to Beat Saber");
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.global.syncingToBS);
             }));
             Sync();
-            txtbox.AppendText("\n\nSynced to Beat Saber");
+            txtbox.AppendText("\n\n" + MainWindow.globalLanguage.global.syncedToBS);
             Running = false;
         }
 
@@ -325,7 +331,7 @@ namespace BMBF_Manager
             }
             catch
             {
-                txtbox.AppendText(MainWindow.BMBF110);
+                txtbox.AppendText(MainWindow.globalLanguage.global.BMBF110);
                 Process.Start("http://" + MainWindow.IP + ":50000/main/playlists");
                 Running = false;
             }

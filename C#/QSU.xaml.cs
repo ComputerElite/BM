@@ -23,6 +23,8 @@ using System.Windows.Threading;
 using System.Text.Json;
 using BeatSaverAPI;
 using System.Text.RegularExpressions;
+using System.Threading;
+using ComputerUtils.RegxTemplates;
 
 namespace BMBF_Manager
 {
@@ -46,13 +48,13 @@ namespace BMBF_Manager
         public QSU()
         {
             InitializeComponent();
-            txtbox.Text = "Output:\n";
+            txtbox.Text = "";
+            ApplyLanguage();
             if (debug)
             {
                 txtbox.AppendText(exe);
             }
-            txtboxd.Text = "Please choose your destination folder.";
-            txtboxs.Text = "Please choose your Song folder.";
+            
             if (!Directory.Exists(exe + "\\CustomSongs"))
             {
                 Directory.CreateDirectory(exe + "\\CustomSongs");
@@ -73,7 +75,7 @@ namespace BMBF_Manager
             Backups.SelectedIndex = 0;
             getBackups(exe + "\\Playlists");
 
-            Playlists.Items.Add("Load Playlists!");
+            Playlists.Items.Add(MainWindow.globalLanguage.qSU.UI.loadPlaylists);
             Playlists.SelectedIndex = 0;
 
             if (MainWindow.CustomImage)
@@ -92,18 +94,39 @@ namespace BMBF_Manager
             }
         }
 
+        public void ApplyLanguage()
+        {
+            sr.Content = MainWindow.globalLanguage.qSU.UI.sourceFolderButton;
+            destinationFolderButton.Content = MainWindow.globalLanguage.qSU.UI.destinationFolderButton;
+            txtboxd.Text = MainWindow.globalLanguage.qSU.UI.sourceTextPlaceholder;
+            txtboxs.Text = MainWindow.globalLanguage.qSU.UI.destinationPlaceholder;
+            startButton.Content = MainWindow.globalLanguage.qSU.UI.startButton;
+            backupPlaylistsButton.Content = MainWindow.globalLanguage.qSU.UI.backupPlaylistsButton;
+            restorePlaylistsButton.Content = MainWindow.globalLanguage.qSU.UI.restorePlaylistsButton;
+            loadPlaylistsButton.Content = MainWindow.globalLanguage.qSU.UI.loadPlaylistsButton;
+            deletePlaylistButton.Content = MainWindow.globalLanguage.qSU.UI.deletePlaylistButton;
+            createBPListButton.Content = MainWindow.globalLanguage.qSU.UI.createBPListButton;
+            checkSongsButton.Content = MainWindow.globalLanguage.qSU.UI.checkSongsButton;
+            BName.Text = MainWindow.globalLanguage.qSU.UI.backupNamePlaceholder;
+            index.Content = MainWindow.globalLanguage.qSU.UI.makeListBox;
+            zips.Content = MainWindow.globalLanguage.qSU.UI.onlyCheckZipsBox;
+            box.Content = MainWindow.globalLanguage.qSU.UI.overwriteExistingBox;
+            auto.Content = MainWindow.globalLanguage.qSU.UI.autoModeBox;
+
+        }
+
         public void TransferFromQSU()
         {
             if (MainWindow.QSUTransfered) return;
             MainWindow.QSUTransfered = true;
-            MessageBoxResult r = MessageBox.Show("Hi. I'm asking you if I should import data from Quest Song Utilities. Only click yes if you've used the seperate program before. You can always import again if you wish to from the settings.", "BMBF Manager - Quest Song Utilities", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            MessageBoxResult r = MessageBox.Show(MainWindow.globalLanguage.qSU.code.qSUImportQuestion, "BMBF Manager - Quest Song Utilities", MessageBoxButton.YesNo, MessageBoxImage.Question);
             switch (r)
             {
                 case MessageBoxResult.No:
-                    txtbox.AppendText("\n\nNothing Imported");
+                    txtbox.AppendText("\n\n" + MainWindow.globalLanguage.qSU.code.nothingImported);
                     return;
             }
-            MessageBox.Show("I'll open a window for you. Please choose the folder in which your Quest Song Utilities Installation is located. I'll then transfer all the data", "BMBF Manager - Quest Song Utilities", MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show(MainWindow.globalLanguage.qSU.code.qSUImportWindow, "BMBF Manager - Quest Song Utilities", MessageBoxButton.OK, MessageBoxImage.Information);
 
             CommonOpenFileDialog ofd = new CommonOpenFileDialog();
             ofd.IsFolderPicker = true;
@@ -118,7 +141,7 @@ namespace BMBF_Manager
                         {
                             if (Directory.Exists(exe + "\\CustomSongs\\" + System.IO.Path.GetDirectoryName(folder)))
                             {
-                                txtbox.AppendText("\nskipping folder " + "\\CustomSongs\\" + System.IO.Path.GetDirectoryName(folder) + " it already exists");
+                                txtbox.AppendText(MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qSU.code.skippingFolder, "\\CustomSongs\\" + System.IO.Path.GetDirectoryName(folder)));
                                 continue;
                             }
                             String backupName = new DirectoryInfo(folder).Name;
@@ -129,7 +152,7 @@ namespace BMBF_Manager
                         {
                             if (File.Exists(exe + "\\CustomSongs\\" + System.IO.Path.GetFileName(file)))
                             {
-                                txtbox.AppendText("\nskipping file " + "\\CustomSongs\\" + System.IO.Path.GetFileName(file) + " it already exists");
+                                txtbox.AppendText("\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qSU.code.skippingFile, "\\CustomSongs\\" + System.IO.Path.GetFileName(file)));
                                 continue;
                             }
                             File.Move(ofd.FileName + "\\CustomSongs\\" + System.IO.Path.GetFileName(file), exe + "\\CustomSongs\\" + System.IO.Path.GetFileName(file));
@@ -141,7 +164,7 @@ namespace BMBF_Manager
                         {
                             if (Directory.Exists(exe + "\\Playlists\\" + System.IO.Path.GetDirectoryName(folder)))
                             {
-                                txtbox.AppendText("\nskipping folder " + "\\Playlists\\" + System.IO.Path.GetDirectoryName(folder) + " it already exists");
+                                txtbox.AppendText("\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qSU.code.skippingFolder, "\\Playlists\\" + System.IO.Path.GetDirectoryName(folder)));
                                 continue;
                             }
                             String backupName = new DirectoryInfo(folder).Name;
@@ -152,7 +175,7 @@ namespace BMBF_Manager
                         {
                             if (File.Exists(exe + "\\Playlists\\" + System.IO.Path.GetFileName(file)))
                             {
-                                txtbox.AppendText("\nskipping file " + "\\Playlists\\" + System.IO.Path.GetFileName(file) + " it already exists");
+                                txtbox.AppendText("\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qSU.code.skippingFile, "\\Playlists\\" + System.IO.Path.GetFileName(file)));
                                 continue;
                             }
                             File.Move(ofd.FileName + "\\Playlists\\" + System.IO.Path.GetFileName(file), exe + "\\Playlists\\" + System.IO.Path.GetFileName(file));
@@ -164,7 +187,7 @@ namespace BMBF_Manager
                         {
                             if(Directory.Exists(exe + "\\BPLists\\" + System.IO.Path.GetDirectoryName(folder)))
                             {
-                                txtbox.AppendText("\nskipping folder " + "\\BPLists\\" + System.IO.Path.GetDirectoryName(folder) + " it already exists");
+                                txtbox.AppendText("\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qSU.code.skippingFolder, "\\BPLists\\" + System.IO.Path.GetDirectoryName(folder)));
                                 continue;
                             }
                             String backupName = new DirectoryInfo(folder).Name;
@@ -175,7 +198,7 @@ namespace BMBF_Manager
                         {
                             if (File.Exists(exe + "\\BPLists\\" + System.IO.Path.GetFileName(file)))
                             {
-                                txtbox.AppendText("\nskipping file " + "\\BPLists\\" + System.IO.Path.GetFileName(file) + " it already exists");
+                                txtbox.AppendText("\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qSU.code.skippingFolder, "\\BPLists\\" + System.IO.Path.GetFileName(file)));
                                 continue;
                             }
                             File.Move(ofd.FileName + "\\BPLists\\" + System.IO.Path.GetFileName(file), exe + "\\BPLists\\" + System.IO.Path.GetFileName(file));
@@ -184,12 +207,13 @@ namespace BMBF_Manager
                 }
                 else
                 {
-                    MessageBox.Show("Please select a valid Directory", "BMBF Manager - Quest Song Utilities", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show(MainWindow.globalLanguage.qSU.code.selectValidDir, "BMBF Manager - Quest Song Utilities", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
                 }
 
             }
 
-            txtbox.AppendText("\n\nAll Data moved");
+            txtbox.AppendText("\n\n" + MainWindow.globalLanguage.qSU.code.allDataMoved);
         }
 
         public void Sync()
@@ -240,7 +264,7 @@ namespace BMBF_Manager
                             exeProcess.WaitForExit();
                             if (IPS.Contains("no devices/emulators found"))
                             {
-                                txtbox.AppendText(MainWindow.ADB110);
+                                txtbox.AppendText(MainWindow.globalLanguage.global.ADB110);
                                 txtbox.ScrollToEnd();
                                 return false;
                             }
@@ -258,7 +282,7 @@ namespace BMBF_Manager
                     continue;
                 }
             }
-            txtbox.AppendText(MainWindow.ADB100);
+            txtbox.AppendText(MainWindow.globalLanguage.global.ADB100);
             txtbox.ScrollToEnd();
             return false;
         }
@@ -286,7 +310,7 @@ namespace BMBF_Manager
                         exeProcess.WaitForExit();
                         if (IPS.Contains("no devices/emulators found"))
                         {
-                            txtbox.AppendText(MainWindow.ADB110);
+                            txtbox.AppendText(MainWindow.globalLanguage.global.ADB110);
                             txtbox.ScrollToEnd();
                             return "Error";
                         }
@@ -299,7 +323,7 @@ namespace BMBF_Manager
                     continue;
                 }
             }
-            txtbox.AppendText(MainWindow.ADB100);
+            txtbox.AppendText(MainWindow.globalLanguage.global.ADB100);
             txtbox.ScrollToEnd();
             return "Error";
         }
@@ -309,12 +333,12 @@ namespace BMBF_Manager
             StartBMBF();
             if (!CheckIP())
             {
-                txtbox.AppendText("\n\nChoose a valid IP!");
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.global.ipInvalid);
                 return;
             }
 
             Playlists.Items.Clear();
-            Playlists.Items.Add("Playlists");
+            Playlists.Items.Add(MainWindow.globalLanguage.qSU.UI.playlistsName);
 
             WebClient client = new WebClient();
 
@@ -353,7 +377,7 @@ namespace BMBF_Manager
             }
 
             Playlists.SelectedIndex = 0;
-            txtbox.AppendText("\n\nLoaded Playlists.");
+            txtbox.AppendText("\n\n" + MainWindow.globalLanguage.qSU.code.loadedPlaylists);
         }
 
         public void BPList(object sender, RoutedEventArgs e)
@@ -364,15 +388,14 @@ namespace BMBF_Manager
             }
             if (!CheckIP())
             {
-                txtbox.AppendText("\n\nChoose a valid IP!");
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.global.ipInvalid);
                 txtbox.ScrollToEnd();
                 return;
             }
             Running = true;
-            CheckIP();
             if (Playlists.SelectedIndex == 0)
             {
-                txtbox.AppendText("\n\nChoose a Playlist!");
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.qSU.code.choosePlaylist);
                 txtbox.ScrollToEnd();
                 Running = false;
                 return;
@@ -382,7 +405,7 @@ namespace BMBF_Manager
             var json = JSON.Parse(c.DownloadString("http://" + MainWindow.IP + ":50000/host/beatsaber/config"));
             Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
             {
-                txtbox.AppendText("\n\nmaking BPList " + json["Config"]["Playlists"][Playlists.SelectedIndex + Lists - 1]["PlaylistName"]);
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qSU.code.makingBPList, json["Config"]["Playlists"][Playlists.SelectedIndex + Lists - 1]["PlaylistName"]));
                 txtbox.ScrollToEnd();
             }));
             var result = JSON.Parse("{}");
@@ -390,7 +413,7 @@ namespace BMBF_Manager
             result["playlistAuthor"] = "Quest Song Utilities";
             Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
             {
-                txtbox.AppendText("\nDownloading Playlist Cover");
+                txtbox.AppendText("\n" + MainWindow.globalLanguage.qSU.code.downloadedPlaylistCover);
                 txtbox.ScrollToEnd();
             }));
             using (WebClient client = new WebClient())
@@ -401,7 +424,7 @@ namespace BMBF_Manager
                 }
                 catch
                 {
-                    txtbox.AppendText(MainWindow.BMBF100);
+                    txtbox.AppendText(MainWindow.globalLanguage.global.BMBF100);
                     txtbox.ScrollToEnd();
                     Running = false;
                     return;
@@ -409,7 +432,7 @@ namespace BMBF_Manager
             }
             Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
             {
-                txtbox.AppendText("\nDownloaded Playlist Cover");
+                txtbox.AppendText("\n" + MainWindow.globalLanguage.qSU.code.downloadedPlaylistCover);
                 txtbox.ScrollToEnd();
             }));
             result["image"] = "data:image/png;base64," + Convert.ToBase64String(File.ReadAllBytes(exe + "\\tmp\\Playlist.png"));
@@ -428,7 +451,7 @@ namespace BMBF_Manager
             File.WriteAllText(exe + "\\BPLists\\" + json["Config"]["Playlists"][Playlists.SelectedIndex + Lists - 1]["PlaylistName"] + ".bplist", result.ToString());
             Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
             {
-                txtbox.AppendText("\n\nBPList " + json["Config"]["Playlists"][Playlists.SelectedIndex + Lists - 1]["PlaylistName"] + " has been made at " + "BPLists\\" + json["Config"]["Playlists"][Playlists.SelectedIndex + Lists - 1]["PlaylistName"] + ".bplist");
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qSU.code.bPListMade, json["Config"]["Playlists"][Playlists.SelectedIndex + Lists - 1]["PlaylistName"], "BPLists\\" + json["Config"]["Playlists"][Playlists.SelectedIndex + Lists - 1]["PlaylistName"] + ".bplist"));
                 txtbox.ScrollToEnd();
             }));
             Running = false;
@@ -442,24 +465,23 @@ namespace BMBF_Manager
             }
             if (!CheckIP())
             {
-                txtbox.AppendText("\n\nChoose a valid IP!");
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.global.ipInvalid);
                 txtbox.ScrollToEnd();
                 return;
             }
             Running = true;
-            CheckIP();
             if (Playlists.SelectedIndex == 0)
             {
-                txtbox.AppendText("\n\nChoose a Playlist!");
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.qSU.code.choosePlaylist);
                 txtbox.ScrollToEnd();
                 Running = false;
                 return;
             }
-            MessageBoxResult result = MessageBox.Show("Are you Sure to delete the Playlists named \"" + Playlists.SelectedValue + "\"?\n\n THIS IS NOT UNDOABLE!!!", "BMBF Manager - Quest Song Utilities", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+            MessageBoxResult result = MessageBox.Show(MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qSU.code.confirmPlaylistDelete, Playlists.SelectedValue.ToString()), "BMBF Manager - Quest Song Utilities", MessageBoxButton.YesNo, MessageBoxImage.Warning);
             switch (result)
             {
                 case MessageBoxResult.No:
-                    txtbox.AppendText("\n\nDeleting aborted");
+                    txtbox.AppendText("\n\n" + MainWindow.globalLanguage.qSU.code.deletingAborted);
                     Running = false;
                     txtbox.ScrollToEnd();
                     return;
@@ -475,7 +497,7 @@ namespace BMBF_Manager
                 }
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
                 {
-                    txtbox.AppendText("\n\nDeleted " + song["SongID"]);
+                    txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qSU.code.deletedSong, song["SongID"]));
                     txtbox.ScrollToEnd();
                 }));
             }
@@ -489,12 +511,12 @@ namespace BMBF_Manager
                 {
                     postChanges(exe + "\\tmp\\config.json");
                 }));
-                txtbox.AppendText("\n\nDeleted Playlist with all Data");
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.qSU.code.deletedPlaylist);
                 txtbox.ScrollToEnd();
             }
             catch
             {
-                txtbox.AppendText(MainWindow.BMBF100);
+                txtbox.AppendText(MainWindow.globalLanguage.global.BMBF100);
                 txtbox.ScrollToEnd();
             }
             Running = false;
@@ -534,14 +556,10 @@ namespace BMBF_Manager
         public Boolean CheckIP()
         {
             getQuestIP();
-            if (MainWindow.IP == "Quest IP")
+            String found;
+            if ((found = RegexTemplates.GetIP(MainWindow.IP)) != "")
             {
-                return false;
-            }
-            Match found = Regex.Match(MainWindow.IP, "((1?[0-9]?[0-9]|2(5[0-5]|[0-4][0-9]))\\.){3}(1?[0-9]?[0-9]|2(5[0-5]|[0-4][0-9]))");
-            if (found.Success)
-            {
-                MainWindow.IP = found.Value;
+                MainWindow.IP = found;
                 Quest.Text = MainWindow.IP;
                 return true;
             }
@@ -556,7 +574,7 @@ namespace BMBF_Manager
             ArrayList Jsons = new ArrayList();
             string[] Files = Directory.GetFiles(Path);
             Backups.Items.Clear();
-            Backups.Items.Add("Backups");
+            Backups.Items.Add(MainWindow.globalLanguage.qSU.UI.BackupName);
 
             foreach (String cfile in Files)
             {
@@ -577,7 +595,7 @@ namespace BMBF_Manager
         {
             if (Quest.Text == "")
             {
-                Quest.Text = "Quest IP";
+                Quest.Text = MainWindow.globalLanguage.global.defaultQuestIPText;
             }
         }
 
@@ -585,7 +603,7 @@ namespace BMBF_Manager
         {
             if (BName.Text == "")
             {
-                BName.Text = "Backup Name";
+                BName.Text = MainWindow.globalLanguage.qSU.UI.backupNamePlaceholder;
             }
         }
 
@@ -600,7 +618,7 @@ namespace BMBF_Manager
             Boolean good = CheckIP();
             if (!good)
             {
-                txtbox.AppendText("\n\nChoose a valid IP!");
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.global.ipInvalid);
                 txtbox.ScrollToEnd();
                 Running = false;
                 return;
@@ -626,24 +644,18 @@ namespace BMBF_Manager
                 BName.Text = BName.Text.Replace("<", "");
                 BName.Text = BName.Text.Replace(">", "");
                 BName.Text = BName.Text.Replace("|", "");
-
-                for (int f = 0; f < BName.Text.Length; f++)
-                {
-                    if (BName.Text.Substring(f, 1).Equals("\\"))
-                    {
-                        BName.Text = BName.Text.Substring(0, f - 1) + BName.Text.Substring(f + 1, BName.Text.Length - f - 1);
-                    }
-                }
+                BName.Text = BName.Text.Replace(@"\", "");
+                BName.Text = BName.Text.Trim();
 
                 if (File.Exists(exe + "\\Playlists\\" + BName.Text + ".json"))
                 {
-                    txtbox.AppendText("\n\nThis Playlist Backup already exists!");
+                    txtbox.AppendText("\n\n" + MainWindow.globalLanguage.qSU.code.backupAlreadyExists);
                     txtbox.ScrollToEnd();
                     Running = false;
                     return;
                 }
 
-                txtbox.AppendText("\n\nBacking up Playlist to " + exe + "\\Playlists\\" + BName.Text + ".json");
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qSU.code.backingUpPlaylists, "\\Playlists\\" + BName.Text + ".json"));
                 txtbox.ScrollToEnd();
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
 
@@ -654,13 +666,13 @@ namespace BMBF_Manager
                 json["IsCommitted"] = false;
                 File.WriteAllText(exe + "\\Playlists\\" + BName.Text + ".json", json["Config"].ToString());
 
-                txtbox.AppendText("\n\nBacked up Playlists to " + exe + "\\Playlists\\" + BName.Text + ".json");
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qSU.code.backedUpPlaylists, "\\Playlists\\" + BName.Text + ".json"));
                 txtbox.ScrollToEnd();
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
             }
             catch
             {
-                txtbox.AppendText(MainWindow.PL100);
+                txtbox.AppendText(MainWindow.globalLanguage.global.PL100);
                 txtbox.ScrollToEnd();
 
             }
@@ -680,7 +692,7 @@ namespace BMBF_Manager
             {
                 if (directories[i].EndsWith(".png"))
                 {
-                    txtbox.AppendText("\n\nPushing " + directories[i] + " to Quest");
+                    txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.mainMenu.code.pushingPng, directories[i]));
                     adb("push \"" + directories[i] + "\" /sdcard/BMBFData/Playlists/");
                     txtbox.ScrollToEnd();
                     Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
@@ -708,7 +720,7 @@ namespace BMBF_Manager
             }
             if (!CheckIP())
             {
-                txtbox.AppendText("\n\nChoose a valid IP!");
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.global.ipInvalid);
                 txtbox.ScrollToEnd();
                 Running = false;
                 return;
@@ -728,7 +740,7 @@ namespace BMBF_Manager
                     dest = path;
                 }
 
-                txtbox.AppendText("\n\nRestoring Playlist from " + exe + "\\Playlists\\" + Backups.SelectedValue + ".json");
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qSU.code.restoringPlaylists, "\\Playlists\\" + Backups.SelectedValue + ".json"));
                 txtbox.ScrollToEnd();
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
 
@@ -753,13 +765,13 @@ namespace BMBF_Manager
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate {
                     postChanges(exe + "\\tmp\\config.json");
                 }));
-                txtbox.AppendText("\n\nRestored old Playlists.");
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.qSU.code.restoredPlaylists);
                 txtbox.ScrollToEnd();
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
             }
             catch
             {
-                txtbox.AppendText(MainWindow.BMBF100);
+                txtbox.AppendText(MainWindow.globalLanguage.global.BMBF100);
                 txtbox.ScrollToEnd();
             }
             Running = false;
@@ -767,7 +779,7 @@ namespace BMBF_Manager
 
         private void ClearText(object sender, RoutedEventArgs e)
         {
-            if (Quest.Text == "Quest IP")
+            if (Quest.Text == MainWindow.globalLanguage.global.ipInvalid)
             {
                 Quest.Text = "";
             }
@@ -776,7 +788,7 @@ namespace BMBF_Manager
 
         private void ClearTextN(object sender, RoutedEventArgs e)
         {
-            if (BName.Text == "Backup Name")
+            if (BName.Text == MainWindow.globalLanguage.qSU.UI.backupNamePlaceholder)
             {
                 BName.Text = "";
             }
@@ -788,7 +800,7 @@ namespace BMBF_Manager
             if ((bool)auto.IsChecked)
             {
                 automode = true;
-                txtboxs.Text = "Oculus Quest";
+                txtboxs.Text = MainWindow.globalLanguage.qSU.code.oculusQuestName;
                 txtboxs.Opacity = 0.6;
                 sr.Opacity = 0.6;
 
@@ -804,7 +816,7 @@ namespace BMBF_Manager
             else
             {
                 automode = false;
-                txtboxs.Text = "Please choose your Song Folder";
+                txtboxs.Text = MainWindow.globalLanguage.qSU.code.chooseSongFolder;
                 txtboxs.Opacity = 0.9;
                 sr.Opacity = 0.9;
             }
@@ -860,12 +872,11 @@ namespace BMBF_Manager
                 if (path.Contains("Debug"))
                 {
                     debug = true;
-                    txtbox.Text = "Output (Debugging enabled):";
+                    txtbox.Text = MainWindow.globalLanguage.qSU.code.debuggingEnabled;
                 }
                 else
                 {
                     debug = false;
-                    txtbox.Text = "Output:";
                 }
                 if (!System.IO.Directory.Exists(path))
                 {
@@ -899,7 +910,7 @@ namespace BMBF_Manager
 
             if ((bool)auto.IsChecked)
             {
-                txtbox.AppendText("\nAuto Mode enabled! Copying all Songs to " + exe + "\\tmp. Please be patient.");
+                txtbox.AppendText("\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qSU.code.autoModeOn, exe + "\\tmp"));
                 txtbox.ScrollToEnd();
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
                 if (!copied)
@@ -918,7 +929,7 @@ namespace BMBF_Manager
                 {
                     Source = exe + "\\tmp";
                 }
-                txtbox.AppendText("\n\nZipping Songs");
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.qSU.code.zippingSongs);
                 txtbox.ScrollToEnd();
 
             }
@@ -934,7 +945,7 @@ namespace BMBF_Manager
 
                 if (!File.Exists(CD + "\\" + "Info.dat") && !File.Exists(CD + "\\" + "info.dat"))
                 {
-                    txtbox.AppendText("\n" + CD + " is no Song");
+                    txtbox.AppendText("\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qSU.code.isNoSong, CD));
                     txtbox.ScrollToEnd();
                     continue;
                 }
@@ -981,8 +992,8 @@ namespace BMBF_Manager
 
                     }
                     list.Add(Name.ToLower());
-                    txtbox.AppendText("\nSong Name: " + Name);
-                    txtbox.AppendText("\nFolder: " + CD);
+                    txtbox.AppendText("\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qSU.code.songName, Name));
+                    txtbox.AppendText("\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qSU.code.folder, CD));
 
                     if ((bool)box.IsChecked)
                     {
@@ -990,11 +1001,11 @@ namespace BMBF_Manager
                         if (v)
                         {
                             File.Delete(dest + "\\" + Name + ".zip");
-                            txtbox.AppendText("\noverwritten file: " + dest + "\\" + Name + ".zip");
+                            txtbox.AppendText("\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qSU.code.overwrittenFile, dest + "\\" + Name + ".zip"));
                             if (debug)
                             {
-                                over.Add("\nSong Name: " + Name);
-                                over.Add("\nFolder: " + CD);
+                                over.Add("\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qSU.code.songName, Name));
+                                over.Add("\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qSU.code.folder, CD));
                                 over.Add("\n");
                             }
 
@@ -1006,7 +1017,7 @@ namespace BMBF_Manager
                         bool v = File.Exists(dest + "\\" + Name + ".zip");
                         if (v)
                         {
-                            txtbox.AppendText("\nthis Song already exists");
+                            txtbox.AppendText("\n" + MainWindow.globalLanguage.qSU.code.songExists);
                         }
                     }
 
@@ -1030,26 +1041,26 @@ namespace BMBF_Manager
             txtbox.ScrollToEnd();
             if (exported == 0 && (bool)auto.IsChecked)
             {
-                txtbox.AppendText(MainWindow.QSU110);
+                txtbox.AppendText(MainWindow.globalLanguage.global.QSU110);
             }
             else if (exported == 0 && !(bool)auto.IsChecked)
             {
-                txtbox.AppendText(MainWindow.QSU100);
+                txtbox.AppendText(MainWindow.globalLanguage.global.QSU100);
             }
             else
             {
-                txtbox.AppendText("\nFinished! Backed up " + exported + " Songs.");
+                txtbox.AppendText("\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qSU.code.finishedZipping, exported.ToString())); ;
             }
             if ((bool)auto.IsChecked && dest == exe + "\\CustomSongs")
             {
-                txtbox.AppendText("\nAuto Mode was enabled. Your finished Songs are at the program location in a folder named CustomSongs.");
+                txtbox.AppendText("\n" + MainWindow.globalLanguage.qSU.code.autoModeWasEnabled);
             }
             if ((bool)box.IsChecked)
             {
-                txtbox.AppendText("\nOverwritten " + overwritten + " existing zips");
+                txtbox.AppendText("\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qSU.code.showOverwritten, overwritten.ToString()));
                 if (debug)
                 {
-                    txtbox.AppendText("\nOverwritten Files:\n");
+                    txtbox.AppendText("\n" + MainWindow.globalLanguage.qSU.code.debugOverwritten + "\n");
                     for (int cc = 0; cc < over.Count; cc++)
                     {
                         txtbox.AppendText(" " + over[cc]);
@@ -1135,10 +1146,10 @@ namespace BMBF_Manager
 
         private void CheckFolders(object sender, RoutedEventArgs e)
         {
-            MessageBoxResult r = MessageBox.Show("This option may nuke your Playlists. It will Backup all your Songs, rename them to the right folder name, check them if they are working and then put them back on your Quest. All in all it may take a few minutes without a responding window.\nDo you want to proceed?", "BMBF Manager - Quest Song Utilities", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            MessageBoxResult r = MessageBox.Show(MainWindow.globalLanguage.qSU.code.checkFoldersWarning, "BMBF Manager - Quest Song Utilities", MessageBoxButton.YesNo, MessageBoxImage.Question);
             if(r == MessageBoxResult.No) 
             {
-                txtbox.AppendText("\n\nAborted");
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.qSU.code.aborted);
                 return;
             }
             Directory.CreateDirectory(exe + "\\tmp\\CustomSongs");
@@ -1159,11 +1170,11 @@ namespace BMBF_Manager
                 if (Directory.Exists(exe + "\\tmp\\MoveSongs\\custom_level_" + hash)) Directory.Delete(exe + "\\tmp\\MoveSongs\\custom_level_" + hash, true); 
                 Directory.Move(exe + "\\tmp\\finished\\" + name.Trim(), exe + "\\tmp\\MoveSongs\\custom_level_" + hash);
                 adb("push \"" + exe + "\\tmp\\MoveSongs\\custom_level_" + hash + "\" /sdcard/BMBFData/CustomSongs");
-                txtbox.AppendText("\n\nSong " + hash + " has finished processing");
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qSU.code.songFinishedProcessing, hash));
                 txtbox.ScrollToEnd();
             }
             SongsWindow.Close();
-            txtbox.AppendText("\n\nFinished. Please reload your songs folder in BMBF");
+            txtbox.AppendText("\n\n" + MainWindow.globalLanguage.qSU.code.finishedChecking);
         }
 
 
@@ -1173,12 +1184,11 @@ namespace BMBF_Manager
             {
                 return;
             }
-            txtbox.Text = "Output:";
             if (!Directory.Exists(path))
             {
                 if ((bool)!auto.IsChecked)
                 {
-                    txtbox.AppendText("\n\nChoose a Source folder!");
+                    txtbox.AppendText("\n\n" + MainWindow.globalLanguage.qSU.code.chooseSongFolder);
                     txtbox.ScrollToEnd();
                     return;
                 }
@@ -1220,7 +1230,7 @@ namespace BMBF_Manager
                 Directory.CreateDirectory(exe + "\\tmp\\Zips");
             }
             String dest = exe + "\\tmp\\Zips";
-            txtbox.AppendText("\nUnziping files to temporary folder.");
+            txtbox.AppendText("\n" + MainWindow.globalLanguage.qSU.code.unzippingFiles);
             txtbox.ScrollToEnd();
 
             foreach (String CD in directories)
@@ -1237,7 +1247,7 @@ namespace BMBF_Manager
                 }));
 
             }
-            txtbox.AppendText("\nUnziping complete.");
+            txtbox.AppendText("\n" + MainWindow.globalLanguage.qSU.code.unzippingFilesComplete);
             txtbox.ScrollToEnd();
             IndexSongs(dest, Path, true);
         }
@@ -1261,15 +1271,11 @@ namespace BMBF_Manager
             int exported = 0;
             String Name = "";
             String Source = Path;
-            String B = "";
-            String A = "";
-            String S = "";
-            String M = "";
             Running = true;
 
             if ((bool)auto.IsChecked)
             {
-                txtbox.AppendText("\nAuto Mode enabled! Copying all Songs to " + exe + "\\tmp. Please be patient.");
+                txtbox.AppendText("\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qSU.code.autoModeOn, exe + "\\tmp"));
                 txtbox.ScrollToEnd();
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
                 if (!copied)
@@ -1303,7 +1309,7 @@ namespace BMBF_Manager
 
                 if (!File.Exists(CD + "\\" + "Info.dat") && !File.Exists(CD + "\\" + "info.dat"))
                 {
-                    txtbox.AppendText("\n" + CD + " is no Song");
+                    txtbox.AppendText("\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qSU.code.isNoSong, CD));
                     txtbox.ScrollToEnd();
                     continue;
                 }
@@ -1325,16 +1331,16 @@ namespace BMBF_Manager
                 json.SongName = json.SongName.Trim();
 
                 list.Add(json.SongName);
-                txtbox.AppendText("\nSong Name: " + json.SongName);
+                txtbox.AppendText("\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qSU.code.songName, json.SongName));
 
                 if (Zips)
                 {
                     zip = dest + "\\" + System.IO.Path.GetDirectoryName(CD) + ".zip";
-                    txtbox.AppendText("\nZip: " + zip);
+                    txtbox.AppendText("\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qSU.code.zip, zip));
                     Folder.Add(zip);
                 } else
                 {
-                    txtbox.AppendText("\nFolder: " + CD);
+                    txtbox.AppendText("\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qSU.code.folder, CD));
                     Folder.Add(CD);
                 }
                 exported++;
@@ -1391,34 +1397,30 @@ namespace BMBF_Manager
                 }
 
                 requierments.Add(requiered);
-                txtbox.AppendText("\nRequierments: " + requiered);
+                txtbox.AppendText("\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qSU.code.requirements, requiered));
                 characteristics.Add(characteristic);
-                txtbox.AppendText("\nBeatMap Characteristics: " + characteristic);
+                txtbox.AppendText("\nBeatMap Characteristics: " + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qSU.code.characteristics, characteristic));
 
                 /////////Song Sub Name
                 ///
                 SubName.Add(json.SubName == "" ? "N/A" : json.SubName);
-                txtbox.AppendText("\nSong Sub Name: " + (json.SubName == "" ? "N/A" : json.SubName));
-                S = "";
+                txtbox.AppendText("\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qSU.code.songSubName, json.SubName == "" ? "N/A" : json.SubName));
 
                 /////////Song Author
 
                 Author.Add(json.SongArtist == "" ? "N/A" : json.SongArtist);
-                txtbox.AppendText("\nSong author: " + (json.SongArtist == "" ? "N/A" : json.SongArtist));
-                A = "";
+                txtbox.AppendText("\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qSU.code.songAuthor, json.SongArtist == "" ? "N/A" : json.SongArtist));
 
                 /////////Map Author
 
                 MAuthor.Add(json.Mapper == "" ? "N/A" : json.Mapper);
-                txtbox.AppendText("\nMap author: " + (json.Mapper == "" ? "N/A" : json.Mapper));
-                M = "";
+                txtbox.AppendText("\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qSU.code.mapAuthor, json.Mapper == "" ? "N/A" : json.Mapper));
 
 
                 /////////BPM
 
                 BPM.Add(json.BPM == 0.0m ? "N/A" : json.BPM.ToString());
-                txtbox.AppendText("\nBPM: " + (json.BPM == 0.0m ? "N/A" : json.BPM.ToString()));
-                B = "";
+                txtbox.AppendText("\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qSU.code.bPM, json.BPM == 0.0m ? "N/A" : json.BPM.ToString()));
 
                 txtbox.ScrollToEnd();
             }
@@ -1430,27 +1432,27 @@ namespace BMBF_Manager
             //ArrayList Author = new ArrayList();
             //ArrayList SubName = new ArrayList();
             //ArrayList MAuthor = new ArrayList();
-            txt.Add("List of " + exported + " Songs");
-            txt.Add("Use ctrl + f to search for Songs");
+            txt.Add(MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qSU.code.listMeta, exported.ToString()));
+            txt.Add(MainWindow.globalLanguage.qSU.code.search);
             txt.Add("");
             txt.Add("");
             for (int C = 0; C < list.Count; C++)
             {
-                txt.Add("Name: " + list[C]);
-                txt.Add("Song Sub Name: " + SubName[C]);
-                txt.Add("BPM: " + BPM[C]);
-                txt.Add("Song Author: " + Author[C]);
-                txt.Add("Map Author: " + MAuthor[C]);
-                txt.Add("Requiered mods: " + requierments[C]);
-                txt.Add("BeatMap Characteristics: " + characteristics[C]);
+                txt.Add(MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qSU.code.songName, list[C].ToString()));
+                txt.Add(MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qSU.code.songSubName, SubName[C].ToString()));
+                txt.Add(MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qSU.code.bPM, BPM[C].ToString()));
+                txt.Add(MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qSU.code.songAuthor, Author[C].ToString()));
+                txt.Add(MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qSU.code.mapAuthor, MAuthor[C].ToString()));
+                txt.Add(MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qSU.code.requirements, requierments[C].ToString()));
+                txt.Add(MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qSU.code.characteristics, characteristics[C].ToString()));
                 
                 if (Zips)
                 {
-                    txt.Add("Zip: " + Folder[C]);
+                    txt.Add(MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qSU.code.zip, Folder[C].ToString()));
                 }
                 else
                 {
-                    txt.Add("Folder: " + Folder[C]);
+                    txt.Add(MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qSU.code.folder, Folder[C].ToString()));
                 }
 
                 txt.Add("");
@@ -1459,29 +1461,7 @@ namespace BMBF_Manager
             File.WriteAllLines(dest + "\\" + "Songs.txt", output);
             txtbox.AppendText("\n");
             txtbox.AppendText("\n");
-            txtbox.AppendText("Finished! Listed " + exported + " songs in Songs.txt");
-
-
-
-            if (debug)
-            {
-                txtbox.AppendText("\n\n");
-                txtbox.AppendText("\nNames: " + list.Count);
-                txtbox.AppendText("\nSongSubNames: " + SubName.Count);
-                txtbox.AppendText("\nBMPs: " + BPM.Count);
-                txtbox.AppendText("\nSong Authors: " + Author.Count);
-                txtbox.AppendText("\nMap Authors: " + MAuthor.Count);
-                txtbox.AppendText("\nRequiered Mods: " + requierments.Count);
-                if (Zips)
-                {
-                    txtbox.AppendText("\nZips: " + Folder.Count);
-                }
-                else
-                {
-                    txtbox.AppendText("\nFolders: " + Folder.Count);
-                }
-
-            }
+            txtbox.AppendText(MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qSU.code.finishedIndex, exported.ToString()));
             txtbox.ScrollToEnd();
             Running = false;
         }

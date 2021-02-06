@@ -19,6 +19,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using ComputerUtils.RegxTemplates;
 using Qosmetics;
 using SimpleJSON;
 
@@ -40,8 +41,9 @@ namespace BMBF_Manager
         public Qosmetics()
         {
             InitializeComponent();
+            ApplyLanguage();
             Quest.Text = MainWindow.IP;
-            DownloadLable.Text = "All finished";
+            DownloadLable.Text = MainWindow.globalLanguage.global.allFinished;
             GetQosmetics();
             if (MainWindow.CustomImage)
             {
@@ -59,9 +61,32 @@ namespace BMBF_Manager
             }
             if (!MainWindow.QosmeticsWarningShown)
             {
-                MessageBox.Show("Note: All Qosmetics got added automatically to this program. Not every Qosmetics is present here and you may see the wrong name. Check the Qosmetics Discord Server to get all available Qosmetics (https://discord.gg/qosmetics).\n\nFor Qosmetics to work the Qosmetics mod is needed. I'll check if it's installed every time all downloads are finished and if it isn't installed install it for you.", "BMBF Manager - Qosmetics", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show(MainWindow.globalLanguage.qosmetics.code.qosmeticsNote, "BMBF Manager - Qosmetics", MessageBoxButton.OK, MessageBoxImage.Information);
                 MainWindow.QosmeticsWarningShown = true;
             }
+        }
+
+        public void ApplyLanguage()
+        {
+            showImageButton1.Content = MainWindow.globalLanguage.qosmetics.UI.showImageButton;
+            showImageButton2.Content = MainWindow.globalLanguage.qosmetics.UI.showImageButton;
+            showImageButton3.Content = MainWindow.globalLanguage.qosmetics.UI.showImageButton;
+            addSelectedQSaberButton.Content = MainWindow.globalLanguage.qosmetics.UI.addSelectedQSaberButton;
+            addSelectedQWallButton.Content = MainWindow.globalLanguage.qosmetics.UI.addSelectedQWallButton;
+            addSelectedQBloqButton.Content = MainWindow.globalLanguage.qosmetics.UI.addSelectedQBloqButton;
+            showOriginalMessageQSaberButton.Content = MainWindow.globalLanguage.qosmetics.UI.showOriginalMessageQSaberButton;
+            showOriginalMessageQWallButton.Content = MainWindow.globalLanguage.qosmetics.UI.showOriginalMessageQWallButton;
+            showOriginalMessageQBloqButton.Content = MainWindow.globalLanguage.qosmetics.UI.showOriginalMessageQBloqButton;
+            qSabersText.Text = MainWindow.globalLanguage.qosmetics.UI.qSabersText;
+            qWallsText.Text = MainWindow.globalLanguage.qosmetics.UI.qWallsText;
+            qBloqsText.Text = MainWindow.globalLanguage.qosmetics.UI.qBloqsText;
+            ((GridView)QSaberList.View).Columns[0].Header = MainWindow.globalLanguage.qosmetics.UI.nameList;
+            ((GridView)QSaberList.View).Columns[1].Header = MainWindow.globalLanguage.qosmetics.UI.creatorList;
+            ((GridView)QWallList.View).Columns[0].Header = MainWindow.globalLanguage.qosmetics.UI.nameList;
+            ((GridView)QWallList.View).Columns[1].Header = MainWindow.globalLanguage.qosmetics.UI.creatorList;
+            ((GridView)QBloqList.View).Columns[0].Header = MainWindow.globalLanguage.qosmetics.UI.nameList;
+            ((GridView)QBloqList.View).Columns[1].Header = MainWindow.globalLanguage.qosmetics.UI.creatorList;
+            DownloadLable.Text = MainWindow.globalLanguage.global.allFinished;
         }
 
         public bool CheckQosmeticsInstalled()
@@ -81,12 +106,12 @@ namespace BMBF_Manager
                 }
                 if (!Installed)
                 {
-                    txtbox.AppendText("\n\nI'll install Qosmetics for you");
+                    txtbox.AppendText("\n\n" + MainWindow.globalLanguage.qosmetics.code.illInstallQosmetics);
                     txtbox.ScrollToEnd();
                     Support s = new Support();
                     s.Show();
                     s.StartSupport("bm://mods/install/Qosmetics");
-                    MessageBox.Show("Please start Beat Saber and check if it works. Then press the install button again.", "BMBF Manager - Install Qosmetics", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show(MainWindow.globalLanguage.qosmetics.code.checkIfQosmeticsInstalled, "BMBF Manager - Install Qosmetics", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return false;
                 }
             }
@@ -94,16 +119,16 @@ namespace BMBF_Manager
             {
                 if (!MainWindow.QosmeticsInstalled)
                 {
-                    MessageBoxResult result = MessageBox.Show("Do you have the Qosmetics mod installed;", "BMBF Manager - Install Qosmetics", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                    MessageBoxResult result = MessageBox.Show(MainWindow.globalLanguage.qosmetics.code.doYouHaveQomsietcsInstalled, "BMBF Manager - Install Qosmetics", MessageBoxButton.YesNo, MessageBoxImage.Question);
                     switch (result)
                     {
                         case MessageBoxResult.No:
-                            txtbox.AppendText("\n\nI'll install Qosmetics for you");
+                            txtbox.AppendText("\n\n" + MainWindow.globalLanguage.qosmetics.code.illInstallQosmetics);
                             txtbox.ScrollToEnd();
                             Support s = new Support();
                             s.Show();
                             s.StartSupport("bm://mods/install/Qosmetics");
-                            MessageBox.Show("Please start Beat Saber and check if it works. Then press the install button again.", "BMBF Manager - Install Qosmetics", MessageBoxButton.OK, MessageBoxImage.Warning);
+                            MessageBox.Show(MainWindow.globalLanguage.qosmetics.code.checkIfQosmeticsInstalled, "BMBF Manager - Install Qosmetics", MessageBoxButton.OK, MessageBoxImage.Warning);
                             return false;
                     }
                 }
@@ -187,7 +212,7 @@ namespace BMBF_Manager
 
         private void ClearText(object sender, RoutedEventArgs e)
         {
-            if (Quest.Text == "Quest IP")
+            if (Quest.Text == MainWindow.globalLanguage.global.defaultQuestIPText)
             {
                 Quest.Text = "";
             }
@@ -198,21 +223,17 @@ namespace BMBF_Manager
         {
             if (Quest.Text == "")
             {
-                Quest.Text = "Quest IP";
+                Quest.Text = MainWindow.globalLanguage.global.defaultQuestIPText;
             }
         }
 
         public Boolean CheckIP()
         {
             getQuestIP();
-            if (MainWindow.IP == "Quest IP")
+            String found;
+            if ((found = RegexTemplates.GetIP(MainWindow.IP)) != "")
             {
-                return false;
-            }
-            Match found = Regex.Match(MainWindow.IP, "((1?[0-9]?[0-9]|2(5[0-5]|[0-4][0-9]))\\.){3}(1?[0-9]?[0-9]|2(5[0-5]|[0-4][0-9]))");
-            if (found.Success)
-            {
-                MainWindow.IP = found.Value;
+                MainWindow.IP = found;
                 Quest.Text = MainWindow.IP;
                 return true;
             }
@@ -258,7 +279,7 @@ namespace BMBF_Manager
                             exeProcess.WaitForExit();
                             if (IPS.Contains("no devices/emulators found"))
                             {
-                                txtbox.AppendText(MainWindow.ADB110);
+                                txtbox.AppendText(MainWindow.globalLanguage.global.ADB110);
                                 txtbox.ScrollToEnd();
                                 return false;
                             }
@@ -276,7 +297,7 @@ namespace BMBF_Manager
                     continue;
                 }
             }
-            txtbox.AppendText(MainWindow.ADB100);
+            txtbox.AppendText(MainWindow.globalLanguage.global.ADB100);
             txtbox.ScrollToEnd();
             return false;
         }
@@ -310,7 +331,7 @@ namespace BMBF_Manager
                 return;
             }
 
-            MessageBox.Show("QSaber: " + qj.AllQSabers[QSaberList.SelectedIndex].name + "\nMessage Author: " + qj.AllQSabers[QSaberList.SelectedIndex].author + "\nMessage:\n\n" + qj.AllQSabers[QSaberList.SelectedIndex].orgmessage, "BMBF Manager - Qosmetics Installing");
+            MessageBox.Show(MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qosmetics.code.qosmeticsDescription, "QSaber", qj.AllQSabers[QSaberList.SelectedIndex].name, qj.AllQSabers[QSaberList.SelectedIndex].author, qj.AllQSabers[QSaberList.SelectedIndex].orgmessage), "BMBF Manager - Qosmetics Installing");
         }
 
         private void AddQSaberQueue(object sender, RoutedEventArgs e)
@@ -322,7 +343,7 @@ namespace BMBF_Manager
 
             if (downloadqueue.Contains(qj.AllQSabers[QSaberList.SelectedIndex]))
             {
-                txtbox.AppendText("\n" + qj.AllQSabers[QSaberList.SelectedIndex].name + " is already in the download queue");
+                txtbox.AppendText("\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qosmetics.code.qosmeticsAlreadyInQueue, qj.AllQSabers[QSaberList.SelectedIndex].name));
                 return;
             }
             downloadqueue.Add(qj.AllQSabers[QSaberList.SelectedIndex]);
@@ -358,7 +379,7 @@ namespace BMBF_Manager
                 return;
             }
 
-            MessageBox.Show("QWall: " + qj.qWalls[QWallList.SelectedIndex].name + "\nMessage Author: " + qj.qWalls[QWallList.SelectedIndex].author + "\nMessage:\n\n" + qj.qWalls[QWallList.SelectedIndex].orgmessage, "BMBF Manager - Qosmetics Installing");
+            MessageBox.Show(MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qosmetics.code.qosmeticsDescription, "QWall", qj.qWalls[QWallList.SelectedIndex].name, qj.qWalls[QWallList.SelectedIndex].author, qj.qWalls[QWallList.SelectedIndex].orgmessage), "BMBF Manager - Qosmetics Installing");
         }
 
         private void AddQWallQueue(object sender, RoutedEventArgs e)
@@ -370,7 +391,7 @@ namespace BMBF_Manager
 
             if (downloadqueue.Contains(qj.qWalls[QWallList.SelectedIndex]))
             {
-                txtbox.AppendText("\n" + qj.qWalls[QWallList.SelectedIndex].name + " is already in the download queue");
+                txtbox.AppendText("\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qosmetics.code.qosmeticsAlreadyInQueue, qj.qWalls[QWallList.SelectedIndex].name));
                 return;
             }
             downloadqueue.Add(qj.qWalls[QWallList.SelectedIndex]);
@@ -414,7 +435,7 @@ namespace BMBF_Manager
                 return;
             }
 
-            MessageBox.Show("QBloq: " + qj.qBloqs[QBloqList.SelectedIndex].name + "\nMessage Author: " + qj.qBloqs[QBloqList.SelectedIndex].author + "\nMessage:\n\n" + qj.qBloqs[QBloqList.SelectedIndex].orgmessage, "BMBF Manager - Qosmetics Installing");
+            MessageBox.Show(MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qosmetics.code.qosmeticsDescription, "QBloq", qj.qBloqs[QBloqList.SelectedIndex].name, qj.qBloqs[QBloqList.SelectedIndex].author, qj.qBloqs[QBloqList.SelectedIndex].orgmessage), "BMBF Manager - Qosmetics Installing");
         }
 
         private void AddQBloqQueue(object sender, RoutedEventArgs e)
@@ -426,7 +447,7 @@ namespace BMBF_Manager
 
             if (downloadqueue.Contains(qj.qBloqs[QBloqList.SelectedIndex]))
             {
-                txtbox.AppendText("\n" + qj.qBloqs[QBloqList.SelectedIndex].name + " is already in the download queue");
+                txtbox.AppendText("\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qosmetics.code.qosmeticsAlreadyInQueue, qj.qBloqs[QBloqList.SelectedIndex].name));
                 return;
             }
             downloadqueue.Add(qj.qBloqs[QBloqList.SelectedIndex]);
@@ -441,8 +462,8 @@ namespace BMBF_Manager
             }
             else
             {
-                DownloadLable.Text = "All finished";
-                txtbox.AppendText("\n\nAll finished");
+                DownloadLable.Text = MainWindow.globalLanguage.global.allFinished;
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.global.allFinished);
                 CheckQosmeticsInstalled();
             }
         }
@@ -451,7 +472,7 @@ namespace BMBF_Manager
         {
             if (!CheckIP())
             {
-                txtbox.AppendText("\n\nChoose a valid IP.");
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.global.ipInvalid);
                 txtbox.ScrollToEnd();
                 return;
             }
@@ -470,7 +491,7 @@ namespace BMBF_Manager
             WebClient c = new WebClient();
             Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
             {
-                txtbox.AppendText("\n\nDownloading " + downloadqueue[0].name + "\n");
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qosmetics.code.downloading, downloadqueue[0].name) + "\n");
                 txtbox.ScrollToEnd();
             }));
             Uri uri = new Uri(downloadqueue[0].downloadURL);
@@ -479,7 +500,7 @@ namespace BMBF_Manager
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
                 {
-                    DownloadLable.Text = "Downloading " + downloadqueue[0].name;
+                    DownloadLable.Text = MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qosmetics.code.downloading, downloadqueue[0].name);
                     c.DownloadFileCompleted += new AsyncCompletedEventHandler(finished_download);
                     c.DownloadProgressChanged += new DownloadProgressChangedEventHandler(client_DownloadProgressChanged);
                     c.DownloadFileAsync(uri, exe + "\\tmp\\" + System.IO.Path.GetFileNameWithoutExtension(downloadqueue[0].downloadURL) + C + System.IO.Path.GetExtension(downloadqueue[0].downloadURL));
@@ -487,7 +508,7 @@ namespace BMBF_Manager
             }
             catch
             {
-                txtbox.AppendText(MainWindow.BM200);
+                txtbox.AppendText(MainWindow.globalLanguage.global.BM200);
                 txtbox.ScrollToEnd();
                 Running = false;
                 return;
@@ -507,16 +528,16 @@ namespace BMBF_Manager
             StartBMBF();
             Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
             {
-                txtbox.AppendText("\nDownloaded " + downloadqueue[0].name + "\n");
+                txtbox.AppendText("\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qosmetics.code.downloaded, downloadqueue[0].name) + "\n");
                 txtbox.ScrollToEnd();
             }));
             String file = exe + "\\tmp\\" + System.IO.Path.GetFileNameWithoutExtension(downloadqueue[0].downloadURL) + C + System.IO.Path.GetExtension(downloadqueue[0].downloadURL);
             if(!File.Exists(file))
             {
-                txtbox.AppendText("\n\n" + downloadqueue[0].name + " couldn't get downloaded");
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qosmetics.code.downloadFailed, downloadqueue[0].name));
                 txtbox.ScrollToEnd();
                 Running = false;
-                DownloadLable.Text = "All finished";
+                DownloadLable.Text = MainWindow.globalLanguage.global.allFinished;
                 Progress.Value = 0;
                 downloadqueue.RemoveAt(0);
                 checkqueue();
@@ -524,7 +545,7 @@ namespace BMBF_Manager
             }
             if (file.ToLower().EndsWith(".zip"))
             {
-                txtbox.AppendText("\n\nExtracting Qosmetic from zip file");
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.qosmetics.code.extractingQosmetics);
                 file = Unzip(file);
                 JSONNode n = JSON.Parse(File.ReadAllText(file + "\\bmbfmod.json"));
                 txtbox.AppendText("\nFound " + n["components"][0]["sourceFileName"]);
@@ -545,14 +566,14 @@ namespace BMBF_Manager
 
             TimeoutWebClient client = new TimeoutWebClient();
 
-            txtbox.AppendText("\n\nUploading " + downloadqueue[0].name + " to BMBF");
+            txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qosmetics.code.uploadingToBMBF, downloadqueue[0].name));
             txtbox.ScrollToEnd();
             Uri uri = new Uri("http://" + MainWindow.IP + ":50000/host/beatsaber/upload?overwrite");
             try
             {
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
                 {
-                    DownloadLable.Text = "Uploading " + downloadqueue[0].name + " to BMBF";
+                    DownloadLable.Text = MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qosmetics.code.uploadingToBMBF, downloadqueue[0].name);
                     client.UploadProgressChanged += new UploadProgressChangedEventHandler(client_uploadchanged);
                     client.UploadFileCompleted += new UploadFileCompletedEventHandler(finished_upload);
                     client.UploadFileAsync(uri, path);
@@ -560,7 +581,7 @@ namespace BMBF_Manager
             }
             catch
             {
-                txtbox.AppendText(MainWindow.BMBF100);
+                txtbox.AppendText(MainWindow.globalLanguage.global.BMBF100);
                 txtbox.ScrollToEnd();
             }
         }
@@ -575,10 +596,10 @@ namespace BMBF_Manager
 
         private void finished_upload(object sender, AsyncCompletedEventArgs e)
         {
-            txtbox.AppendText("\n\n" + downloadqueue[0].name + " was uploaded to your Quest. Please enable your Qosmetic manually cia the BMBF Web Interface (Open BMBF in the main menu)");
+            txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qosmetics.code.uploadComplete, downloadqueue[0].name));
             txtbox.ScrollToEnd();
             Running = false;
-            DownloadLable.Text = "All finished";
+            DownloadLable.Text = MainWindow.globalLanguage.global.allFinished;
             Progress.Value = 0;
             downloadqueue.RemoveAt(0);
             checkqueue();
@@ -597,7 +618,7 @@ namespace BMBF_Manager
             }
             catch
             {
-                txtbox.AppendText(MainWindow.BMBF110);
+                txtbox.AppendText(MainWindow.globalLanguage.global.BMBF110);
                 Running = false;
             }
         }

@@ -1,4 +1,5 @@
-﻿using Microsoft.Win32;
+﻿using ComputerUtils.RegxTemplates;
+using Microsoft.Win32;
 using SimpleJSON;
 using System;
 using System.Collections.Generic;
@@ -30,12 +31,13 @@ namespace BMBF_Manager
         Boolean draggable = true;
         String exe = AppDomain.CurrentDomain.BaseDirectory.Substring(0, AppDomain.CurrentDomain.BaseDirectory.Length - 1);
 
-        String SelectedSound = "Nothing";
+        String SelectedSound = MainWindow.globalLanguage.hitSounds.code.nothing;
 
 
         public HitSounds()
         {
             InitializeComponent();
+            ApplyLanguage();
             Quest.Text = MainWindow.IP;
             if (MainWindow.CustomImage)
             {
@@ -51,6 +53,19 @@ namespace BMBF_Manager
                 uniformBrush.Stretch = Stretch.UniformToFill;
                 this.Background = uniformBrush;
             }
+        }
+
+        public void ApplyLanguage()
+        {
+            chooseSoundButton.Content = MainWindow.globalLanguage.hitSounds.UI.chooseSoundButton;
+            GoodHitSound.Content = MainWindow.globalLanguage.hitSounds.UI.hitSoundText;
+            BadHitSounds.Content = MainWindow.globalLanguage.hitSounds.UI.badHitSoundText;
+            MenuMusic.Content = MainWindow.globalLanguage.hitSounds.UI.menuMusicText;
+            MenuClickSound.Content = MainWindow.globalLanguage.hitSounds.UI.menuClickText;
+            FireWorks.Content = MainWindow.globalLanguage.hitSounds.UI.highscoreText;
+            LevelCleared.Content = MainWindow.globalLanguage.hitSounds.UI.levelClearedText;
+            installSoundButton.Content = MainWindow.globalLanguage.hitSounds.UI.installSoundButton;
+            defaultButton.Content = MainWindow.globalLanguage.hitSounds.UI.defaultButton;
         }
 
         private void Drag(object sender, RoutedEventArgs e)
@@ -93,7 +108,7 @@ namespace BMBF_Manager
 
         private void ClearText(object sender, RoutedEventArgs e)
         {
-            if (Quest.Text == "Quest IP")
+            if (Quest.Text == MainWindow.globalLanguage.global.defaultQuestIPText)
             {
                 Quest.Text = "";
             }
@@ -104,21 +119,17 @@ namespace BMBF_Manager
         {
             if (Quest.Text == "")
             {
-                Quest.Text = "Quest IP";
+                Quest.Text = MainWindow.globalLanguage.global.defaultQuestIPText;
             }
         }
 
         public Boolean CheckIP()
         {
             getQuestIP();
-            if (MainWindow.IP == "Quest IP")
+            String found;
+            if ((found = RegexTemplates.GetIP(MainWindow.IP)) != "")
             {
-                return false;
-            }
-            Match found = Regex.Match(MainWindow.IP, "((1?[0-9]?[0-9]|2(5[0-5]|[0-4][0-9]))\\.){3}(1?[0-9]?[0-9]|2(5[0-5]|[0-4][0-9]))");
-            if (found.Success)
-            {
-                MainWindow.IP = found.Value;
+                MainWindow.IP = found;
                 Quest.Text = MainWindow.IP;
                 return true;
             }
@@ -164,7 +175,7 @@ namespace BMBF_Manager
                             exeProcess.WaitForExit();
                             if (IPS.Contains("no devices/emulators found"))
                             {
-                                txtbox.AppendText(MainWindow.ADB110);
+                                txtbox.AppendText(MainWindow.globalLanguage.global.ADB110);
                                 txtbox.ScrollToEnd();
                                 return false;
                             }
@@ -182,7 +193,7 @@ namespace BMBF_Manager
                     continue;
                 }
             }
-            txtbox.AppendText(MainWindow.ADB100);
+            txtbox.AppendText(MainWindow.globalLanguage.global.ADB100);
             txtbox.ScrollToEnd();
             return false;
         }
@@ -190,7 +201,7 @@ namespace BMBF_Manager
         private void Choose(object sender, RoutedEventArgs e)
         {
             OpenFileDialog ofd = new OpenFileDialog();
-            ofd.Filter = "Sound Files (*.mp3, *.ogg, *.wav)|*.mp3;*.ogg;*.wav";
+            ofd.Filter = MainWindow.globalLanguage.hitSounds.code.soundFile + " (*.mp3, *.ogg, *.wav)|*.mp3;*.ogg;*.wav";
             bool? result = ofd.ShowDialog();
             if (result == true)
             {
@@ -201,8 +212,8 @@ namespace BMBF_Manager
                     Sound.Text = SelectedSound;
                 } else
                 {
-                    SelectedSound = "Nothing";
-                    MessageBox.Show("Please select a valid file", "BMBF Manager - HitSound installing", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    SelectedSound = MainWindow.globalLanguage.hitSounds.code.nothing;
+                    MessageBox.Show(MainWindow.globalLanguage.hitSounds.code.selectValidFile, "BMBF Manager - HitSound installing", MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
                 
             }
@@ -210,11 +221,11 @@ namespace BMBF_Manager
 
         private void Reset(object sender, RoutedEventArgs e)
         {
-            txtbox.AppendText("\n\nChanging Sound to default");
+            txtbox.AppendText("\n\n" + MainWindow.globalLanguage.hitSounds.code.changingToDefault);
             if (!adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/mod_cfgs/QuestSounds.json \"" + exe + "\\tmp\\QSounds.json\"")) return;
             if (!File.Exists(exe + "\\tmp\\QSounds.json"))
             {
-                txtbox.AppendText("\n\nDo you have your Quest plugged into your PC? Do you have the QuestSounds mod installed? I was unable to change the config");
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.hitSounds.code.configUnableToChange);
                 return;
             }
             JSONNode config = JSON.Parse(File.ReadAllText(exe + "\\tmp\\QSounds.json"));
@@ -244,18 +255,18 @@ namespace BMBF_Manager
             }
             else
             {
-                txtbox.AppendText("\n\nPlease choose a Sound Type.");
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.hitSounds.code.chooseASoundType);
                 return;
             }
-            txtbox.AppendText("\nChanged Sound to default");
+            txtbox.AppendText("\n" + MainWindow.globalLanguage.hitSounds.code.changedToDefault);
         }
 
         private void Install(object sender, RoutedEventArgs e)
         {
             if (!CheckIP()) return;
-            if(SelectedSound == "Nothing")
+            if(SelectedSound == MainWindow.globalLanguage.hitSounds.code.nothing)
             {
-                txtbox.AppendText("\n\nPlease select a sound");
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.hitSounds.code.selectSound);
                 return;
             }
             JSONNode BMBF = JSON.Parse("{}");
@@ -263,7 +274,7 @@ namespace BMBF_Manager
             //Check if QuestSoudns is installed
             Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
             {
-                txtbox.AppendText("\nChecking if QuestSoudns is installed.");
+                txtbox.AppendText("\n" + MainWindow.globalLanguage.hitSounds.code.qsoundsInstalled);
             }));
             try
             {
@@ -280,28 +291,28 @@ namespace BMBF_Manager
                 }
                 if(!Installed)
                 {
-                    txtbox.AppendText("\n\nI'll install QuestSounds for you");
+                    txtbox.AppendText("\n\n" + MainWindow.globalLanguage.hitSounds.code.willInstallQSounds);
                     txtbox.ScrollToEnd();
                     Support s = new Support();
                     s.Show();
                     s.StartSupport("bm://mods/install/QuestSounds");
-                    MessageBox.Show("Please start Beat Saber and check if it works. Then press the install button again.", "BMBF Manager - HitSound Installing", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show(MainWindow.globalLanguage.hitSounds.code.checkIfQSoundsWorks, "BMBF Manager - HitSound Installing", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
             } catch
             {
                 if (!MainWindow.QuestSoundsInstalled)
                 {
-                    MessageBoxResult result = MessageBox.Show("Do you have the QuestSounds mod installed;", "BMBF Manager - Hitsound Installing", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                    MessageBoxResult result = MessageBox.Show(MainWindow.globalLanguage.hitSounds.code.DoYouHaveQSounds, "BMBF Manager - Hitsound Installing", MessageBoxButton.YesNo, MessageBoxImage.Question);
                     switch (result)
                     {
                         case MessageBoxResult.No:
-                            txtbox.AppendText("\n\nI'll install QuestSounds for you");
+                            txtbox.AppendText("\n\n" + MainWindow.globalLanguage.hitSounds.code.willInstallQSounds);
                             txtbox.ScrollToEnd();
                             Support s = new Support();
                             s.Show();
                             s.StartSupport("bm://mods/install/QuestSounds");
-                            MessageBox.Show("Please start Beat Saber and check if it works. Then press the install button again.", "BMBF Manager - HitSound Installing", MessageBoxButton.OK, MessageBoxImage.Warning);
+                            MessageBox.Show(MainWindow.globalLanguage.hitSounds.code.checkIfQSoundsWorks, "BMBF Manager - HitSound Installing", MessageBoxButton.OK, MessageBoxImage.Warning);
                             return;
                     }
                 }
@@ -309,14 +320,14 @@ namespace BMBF_Manager
 
             Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
             {
-                txtbox.AppendText("\nChanging Sounds");
+                txtbox.AppendText("\n" + MainWindow.globalLanguage.hitSounds.code.changingSound);
             }));
             //Change Config
             if (!adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/mod_cfgs/QuestSounds.json \"" + exe + "\\tmp\\QSounds.json\"")) return;
             String SoundType = SelectedSound.Substring(SelectedSound.Length - 3, 3).ToLower();
             if(!File.Exists(exe + "\\tmp\\QSounds.json"))
             {
-                txtbox.AppendText("\n\nDo you have your Quest pluggwd into your PC? Do you have the QuestSounds mod installed? I was unable to change the config");
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.hitSounds.code.configUnableToChange);
                 return;
             }
             JSONNode config = JSON.Parse(File.ReadAllText(exe + "\\tmp\\QSounds.json"));
@@ -357,14 +368,14 @@ namespace BMBF_Manager
                 config["Sounds"]["LevelCleared"]["filepath"] = "/sdcard/Android/data/com.beatgames.beatsaber/files/sounds/LevelCleared." + SoundType;
             } else
             {
-                txtbox.AppendText("\n\nPlease choose a Sound Type.");
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.hitSounds.code.chooseASoundType);
                 return;
             }
             File.WriteAllText(exe + "\\tmp\\QSoundsChanged.json", config.ToString());
             if (!adb("push \"" + exe + "\\tmp\\QSoundsChanged.json\" /sdcard/Android/data/com.beatgames.beatsaber/files/mod_cfgs/QuestSounds.json")) return;
             Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
             {
-                txtbox.AppendText("\nSounds changed.");
+                txtbox.AppendText("\n" + MainWindow.globalLanguage.hitSounds.code.changedSound);
             }));
         }
 

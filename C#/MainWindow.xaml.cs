@@ -23,6 +23,8 @@ using System.Text.Json;
 using BeatSaber.Stats;
 using BMBF.Config;
 using System.Text.RegularExpressions;
+using BMBFManager.Language;
+using ComputerUtils.RegxTemplates;
 
 namespace BMBF_Manager
 {
@@ -32,8 +34,8 @@ namespace BMBF_Manager
     public partial class MainWindow : Window
     {
         int MajorV = 1;
-        int MinorV = 11;
-        int PatchV = 2;
+        int MinorV = 12;
+        int PatchV = 0;
         Boolean Preview = false;
 
         public static Boolean CustomProtocols = false;
@@ -56,24 +58,14 @@ namespace BMBF_Manager
         public static String BMBF = "https://bmbf.dev/stable/27153984";
         public static String CustomImageSource = "N/A";
         public static String GameVersion = "1.13.0";
+        public static String language = "en";
         JSONNode json = JSON.Parse("{}");
         public static JSONNode UpdateJSON = JSON.Parse("{}");
         JSONNode BMBFStable = JSON.Parse("{}");
         public static ArrayList ADBPaths = new ArrayList();
         bool Quest2 = false;
 
-        public static String BMBF100 = "\n\n\nAn error occured (Code: BMBF100). Check following:\n\n- Your Quest is on and BMBF opened\n\n- You put in the Quests IP right.\n\n- Your Quest hasn't gone into sleep";
-        public static String BMBF110 = "\n\nA error Occured (Code: BMBF100). Please try to sync manually.";
-        public static String ADB100 = "\n\n\nAn error Occured (Code: ADB100). Check following:\n\n- You have adb installed.";
-        public static String ADB110 = "\n\n\nAn error Occured (Code: ADB110). Check following:\n\n- Your Quest is connected, Developer Mode enabled and USB Debugging enabled.";
-        public static String PL100 = "\n\n\nAn error occured (Code: PL100). Check following:\n\n- You put in the Quests IP right.\n\n- You've choosen a Backup Name.\n\n- Your Quest is on.";
-        public static String UD100 = "\n\n\nAn error Occured (Code: UD100). Couldn't check for Updates. Check following:\n\n- Your PC has internet.";
-        public static String UD200 = "\n\n\nAn error Occured (Code: UD200). Couldn't download Update.";
-        public static String QSU100 = "\n\n\nAn error Occured (Code: QSU100). No Songs were zipped.";
-        public static String QSU110 = "\n\n\nAn error Occured (Code: QSU110). No Songs were zipped.";
-        public static String BM100 = "\n\n\nAn error Occured (Code: BM100). Couldn't reach the QuestBoard Website to get some available Mods. Nothing crucial.";
-        public static String BM200 = "\n\n\nAn error Occured (Code: BM200). Couldn't download Mod";
-
+        public static Language globalLanguage = new Language();
 
         public MainWindow()
         {
@@ -83,10 +75,16 @@ namespace BMBF_Manager
             if (Directory.Exists(exe + "\\ModChecks")) Directory.Delete(exe + "\\ModChecks", true);
             if (!Directory.Exists(exe + "\\ModChecks")) Directory.CreateDirectory(exe + "\\ModChecks");
             if (!Directory.Exists(exe + "\\tmp")) Directory.CreateDirectory(exe + "\\tmp");
+            if (!Directory.Exists(exe + "\\languages")) Directory.CreateDirectory(exe + "\\languages");
             if (File.Exists(exe + "\\BM_Update.exe")) File.Delete(exe + "\\BM_Update.exe");
-            UpdateB.Visibility = Visibility.Hidden;
-            txtbox.Text = "Output:";
+
             loadConfig();
+            SetupLanguage();
+
+            //MakeRandomLanguageFile();
+
+            UpdateB.Visibility = Visibility.Hidden;
+            txtbox.Text = globalLanguage.global.defaultOutputBoxText;
             Update();
             StartBMBF();
             QuestIP();
@@ -110,6 +108,72 @@ namespace BMBF_Manager
             CheckBMBFUpdate();
             //TryGetStats();
             KeepAliveTask();
+        }
+
+        private void MakeRandomLanguageFile()
+        {
+            //Generate random text for testing
+            JSONNode n = JSON.Parse(JsonSerializer.Serialize(globalLanguage));
+            JSONNode random = JSON.Parse("{}");
+            Random r = new Random();
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            foreach (KeyValuePair<string, JSONNode> n2 in n)
+            {
+                if(n2.Value.IsString) random[n2.Key] = new string(Enumerable.Repeat(chars, 10).Select(s => s[r.Next(s.Length)]).ToArray());
+                else
+                {
+                    foreach (KeyValuePair<string, JSONNode> n3 in n[n2.Key])
+                    {
+                        if (n3.Value.IsString) random[n2.Key][n3.Key] = new string(Enumerable.Repeat(chars, 10).Select(s => s[r.Next(s.Length)]).ToArray());
+                        else
+                        {
+                            foreach (KeyValuePair<string, JSONNode> n4 in n[n2.Key][n3.Key])
+                            {
+                                if (n4.Value.IsString) random[n2.Key][n3.Key][n4.Key] = new string(Enumerable.Repeat(chars, 10).Select(s => s[r.Next(s.Length)]).ToArray());
+                                else
+                                {
+                                    foreach (KeyValuePair<string, JSONNode> n5 in n[n2.Key][n3.Key][n4.Key])
+                                    {
+                                        random[n2.Key][n3.Key][n4.Key][n5.Key] = new string(Enumerable.Repeat(chars, 10).Select(s => s[r.Next(s.Length)]).ToArray());
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            File.WriteAllText("D:\\random.json", random.ToString());
+        }
+
+        private void SetupLanguage()
+        {
+            if (language == "en" || !File.Exists(language))
+            {
+                language = "en";
+                globalLanguage = new Language(); // Sets up english
+            }
+            else
+            {
+                globalLanguage = JsonSerializer.Deserialize<BMBFManager.Language.Language>(File.ReadAllText(language));
+            }
+
+            // Setup UI language for this window
+            UpdateB.Content = globalLanguage.mainMenu.UI.updateButton;
+            installSongsButton.Content = globalLanguage.mainMenu.UI.installSongsButton;
+            installModsButton.Content = globalLanguage.mainMenu.UI.installModsButton;
+            updateBMBFButton.Content = globalLanguage.mainMenu.UI.updateBMBFButton;
+            switchButton.Content = globalLanguage.mainMenu.UI.switchButton;
+            downloadBPListsButton.Content = globalLanguage.mainMenu.UI.downloadBPListsButton;
+            openBMBFButton.Content = globalLanguage.mainMenu.UI.openBMBFButton;
+            installSoundsButton.Content = globalLanguage.mainMenu.UI.installSoundsButton;
+            bBBUButton.Content = globalLanguage.mainMenu.UI.bBBUButton;
+            qSUButton.Content = globalLanguage.mainMenu.UI.qSUButton;
+            installQosmeticsButton.Content = globalLanguage.mainMenu.UI.installQosmeticsButton;
+            playlistEditorButton.Content = globalLanguage.mainMenu.UI.playlistEditorButton;
+            settingsButton.Content = globalLanguage.mainMenu.UI.settingsButton;
+
+            File.WriteAllText("D:\\en_BM.json", JsonSerializer.Serialize(globalLanguage));
         }
 
         private async Task KeepAliveTask()
@@ -152,42 +216,42 @@ namespace BMBF_Manager
 
                 if ((vn[0] >= vl[0] && vn[1] >= vl[1] && vn[2] > vl[2]) || (vn[0] >= vl[0] && vn[1] > vl[1]) || (vn[0] > vl[0]))
                 {
-                    txtbox.AppendText("\n\nNew BMBF version available to download!\nYour current BMBF version is " + local.version + "\nThe new version is " + v + "\n");
+                    txtbox.AppendText("\n\n" + globalLanguage.processer.ReturnProcessed(globalLanguage.mainMenu.code.newBMBFAvailable, local.version, v));
                 }
-                txtbox.AppendText("\n\nYou are on the newest BMBF version");
+                txtbox.AppendText("\n\n" + globalLanguage.mainMenu.code.onNewestBMBF);
             } catch { }
         }
 
         private void TryGetStats()
         {
-            txtbox.AppendText("\n\nTrying to pull Player Stats");
+            txtbox.AppendText("\n\n" + globalLanguage.mainMenu.code.tryPullPlayerStats);
             if(!adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/PlayerData.dat \"" + exe + "\\tmp\\PlayerData.dat\"", false))
             {
-                txtbox.AppendText("\nQuest isn't connected. Not displaying Player stats");
+                txtbox.AppendText("\n" + globalLanguage.mainMenu.code.questNotConnectedNoPlayerStats);
                 return;
             }
             if(!File.Exists(exe + "\\tmp\\PlayerData.dat"))
             {
-                txtbox.AppendText("\nCouldn't pull PlayerStats from Quest. Not displaying Player stats");
+                txtbox.AppendText("\n" + globalLanguage.mainMenu.code.pullPlayerStatsFailed);
                 return;
             }
             PlayerData stats = JsonSerializer.Deserialize<PlayerData>(File.ReadAllText(exe + "\\tmp\\PlayerData.dat"));
             if(stats.localPlayers.Count < 1)
             {
-                txtbox.AppendText("\nNo stats saved.");
+                txtbox.AppendText("\n" + globalLanguage.mainMenu.code.noPlayerStatsSaved);
                 return;
             }
-            txtbox.AppendText("\n\nOverall Stats:");
-            txtbox.AppendText("\n- Good Cuts count: " + stats.localPlayers[0].playerAllOverallStatsData.overallGoodCutsCount);
-            txtbox.AppendText("\n- Bad Cuts count: " + stats.localPlayers[0].playerAllOverallStatsData.overallBadCutsCount);
-            txtbox.AppendText("\n- Missed Cuts count: " + +stats.localPlayers[0].playerAllOverallStatsData.overallMissedCutsCount);
-            txtbox.AppendText("\n- Total Score: " + stats.localPlayers[0].playerAllOverallStatsData.overallTotalScore);
-            txtbox.AppendText("\n- Total Time Played: " + (stats.localPlayers[0].playerAllOverallStatsData.overallTimePlayed > 60.0 ? Math.Round(stats.localPlayers[0].playerAllOverallStatsData.overallTimePlayed / 60, 3) + " hours" : Math.Round(stats.localPlayers[0].playerAllOverallStatsData.overallTimePlayed, 2) + " minutes").Replace(",", "."));
-            txtbox.AppendText("\n- Total Hand distance travelled: " + (stats.localPlayers[0].playerAllOverallStatsData.overallHandDistanceTravelled > 1000.0 ? Math.Round(stats.localPlayers[0].playerAllOverallStatsData.overallHandDistanceTravelled / 1000, 3) + " km" : Math.Round(stats.localPlayers[0].playerAllOverallStatsData.overallHandDistanceTravelled, 2) + " metres").Replace(",", "."));
-            txtbox.AppendText("\n- Played levels: " + stats.localPlayers[0].playerAllOverallStatsData.overallPlayedLevelsCount);
-            txtbox.AppendText("\n- Cleared levels: " + stats.localPlayers[0].playerAllOverallStatsData.overallCleardLevelsCount);
-            txtbox.AppendText("\n- Failed levels: " + stats.localPlayers[0].playerAllOverallStatsData.overallFailedLevelsCount);
-            txtbox.AppendText("\n- Full Combo count:" + stats.localPlayers[0].playerAllOverallStatsData.overallFullComboCount);
+            txtbox.AppendText("\n\n" + globalLanguage.mainMenu.code.overallStats);
+            txtbox.AppendText("\n" + globalLanguage.mainMenu.code.goodCuts + stats.localPlayers[0].playerAllOverallStatsData.overallGoodCutsCount);
+            txtbox.AppendText("\n" + globalLanguage.mainMenu.code.badCuts + stats.localPlayers[0].playerAllOverallStatsData.overallBadCutsCount);
+            txtbox.AppendText("\n" + globalLanguage.mainMenu.code.missedCuts + stats.localPlayers[0].playerAllOverallStatsData.overallMissedCutsCount);
+            txtbox.AppendText("\n" + globalLanguage.mainMenu.code.totalScore + stats.localPlayers[0].playerAllOverallStatsData.overallTotalScore);
+            txtbox.AppendText("\n" + globalLanguage.mainMenu.code.totalPlayTime + (stats.localPlayers[0].playerAllOverallStatsData.overallTimePlayed > 60.0 ? Math.Round(stats.localPlayers[0].playerAllOverallStatsData.overallTimePlayed / 60, 3) + " hours" : Math.Round(stats.localPlayers[0].playerAllOverallStatsData.overallTimePlayed, 2) + " minutes").Replace(",", "."));
+            txtbox.AppendText("\n " + globalLanguage.mainMenu.code.totalHandDistance + (stats.localPlayers[0].playerAllOverallStatsData.overallHandDistanceTravelled > 1000.0 ? Math.Round(stats.localPlayers[0].playerAllOverallStatsData.overallHandDistanceTravelled / 1000, 3) + " km" : Math.Round(stats.localPlayers[0].playerAllOverallStatsData.overallHandDistanceTravelled, 2) + " metres").Replace(",", "."));
+            txtbox.AppendText("\n" + globalLanguage.mainMenu.code.playedLevels + stats.localPlayers[0].playerAllOverallStatsData.overallPlayedLevelsCount);
+            txtbox.AppendText("\n" + globalLanguage.mainMenu.code.clearedLevels + stats.localPlayers[0].playerAllOverallStatsData.overallCleardLevelsCount);
+            txtbox.AppendText("\n" + globalLanguage.mainMenu.code.failedLevels + stats.localPlayers[0].playerAllOverallStatsData.overallFailedLevelsCount);
+            txtbox.AppendText("\n" + globalLanguage.mainMenu.code.fullCombo + stats.localPlayers[0].playerAllOverallStatsData.overallFullComboCount);
         }
 
         public void Changelog()
@@ -206,7 +270,7 @@ namespace BMBF_Manager
                 {
                     creators = "ComputerElite";
                 }
-                txtbox.AppendText("\n\n\nYou installed a Update (Version: " + MajorV + "." + MinorV + "." + PatchV + ").\n\nUpdate posted by: " + creators + "\n\nChangelog:\n" + UpdateJSON["Updates"][0]["Changelog"]);
+                txtbox.AppendText("\n\n\n" + globalLanguage.processer.ReturnProcessed(globalLanguage.mainMenu.code.updateChangelog, MajorV + "." + MinorV + "." + PatchV, creators, UpdateJSON["Updates"][0]["Changelog"]));
             }
             
         }
@@ -215,7 +279,7 @@ namespace BMBF_Manager
         {
             if(!File.Exists(exe + "\\Config.json"))
             {
-                IP = "Quest IP";
+                IP = globalLanguage.global.defaultQuestIPText;
                 enablecustom();
                 return;
             }
@@ -239,6 +303,10 @@ namespace BMBF_Manager
             if (json["GameVersion"] != null)
             {
                 GameVersion = json["GameVersion"];
+            }
+            if(json["language"] != null)
+            {
+                language = json["language"];
             }
             QuestSoundsInstalled = json["QSoundsInstalled"].AsBool;
             QosmeticsInstalled = json["QosmeticsInstalled"].AsBool;
@@ -268,11 +336,11 @@ namespace BMBF_Manager
             try
             {
                 Process.Start(exe + "\\registry.reg");
-                txtbox.AppendText("\n\nCustom Links enabled");
+                txtbox.AppendText("\n\n" + globalLanguage.mainMenu.code.customLinksEnabled);
             }
             catch
             {
-                txtbox.AppendText("\n\nRegistry was unable to change... no Custom protocol enabled.");
+                txtbox.AppendText("\n\n" + globalLanguage.mainMenu.code.registryUnableToChangeNoCustomLinks);
                 return;
             }
             CustomProtocols = true;
@@ -300,6 +368,7 @@ namespace BMBF_Manager
             json["KeepAlive"] = KeepAlive;
             json["QosmeticsWarningShown"] = QosmeticsWarningShown;
             json["PEWarningShown"] = PEWarningShown;
+            json["language"] = language;
             int i = 0;
             foreach(String ADBPath in ADBPaths)
             {
@@ -311,7 +380,7 @@ namespace BMBF_Manager
 
         private void ClearText(object sender, RoutedEventArgs e)
         {
-            if (Quest.Text == "Quest IP")
+            if (Quest.Text == globalLanguage.global.defaultQuestIPText)
             {
                 Quest.Text = "";
             }
@@ -322,7 +391,7 @@ namespace BMBF_Manager
         {
             if (Quest.Text == "")
             {
-                Quest.Text = "Quest IP";
+                Quest.Text = globalLanguage.global.defaultQuestIPText;
             }
         }
 
@@ -366,9 +435,9 @@ namespace BMBF_Manager
                 }
             }
 
-            if (FIP == "" && IP == "Quest IP")
+            if (FIP == "" && IP == globalLanguage.global.defaultQuestIPText)
             {
-                IP = "Quest IP";
+                IP = globalLanguage.global.defaultQuestIPText;
                 return;
             }
             if (FIP == "") return;
@@ -419,14 +488,10 @@ namespace BMBF_Manager
         public Boolean CheckIP()
         {
             getQuestIP();
-            if (IP == "Quest IP")
+            String found;
+            if((found = RegexTemplates.GetIP(IP)) != "")
             {
-                return false;
-            }
-            Match found = Regex.Match(IP, "((1?[0-9]?[0-9]|2(5[0-5]|[0-4][0-9]))\\.){3}(1?[0-9]?[0-9]|2(5[0-5]|[0-4][0-9]))");
-            if(found.Success)
-            {
-                IP = found.Value;
+                IP = found;
                 Quest.Text = IP;
                 return true;
             } else
@@ -467,7 +532,7 @@ namespace BMBF_Manager
                             {
                                 if(showErrors)
                                 {
-                                    txtbox.AppendText(ADB110);
+                                    txtbox.AppendText(globalLanguage.global.ADB110);
                                     txtbox.ScrollToEnd();
                                 }
                                 
@@ -488,7 +553,7 @@ namespace BMBF_Manager
             }
             if (showErrors)
             {
-                txtbox.AppendText(ADB100);
+                txtbox.AppendText(globalLanguage.global.ADB100);
                 txtbox.ScrollToEnd();
             }
             return false;
@@ -517,7 +582,7 @@ namespace BMBF_Manager
                         exeProcess.WaitForExit();
                         if (IPS.Contains("no devices/emulators found"))
                         {
-                            txtbox.AppendText(ADB110);
+                            txtbox.AppendText(globalLanguage.global.ADB110);
                             txtbox.ScrollToEnd();
                             return "Error";
                         }
@@ -530,7 +595,7 @@ namespace BMBF_Manager
                     continue;
                 }
             }
-            txtbox.AppendText(ADB100);
+            txtbox.AppendText(globalLanguage.global.ADB100);
             txtbox.ScrollToEnd();
             return "Error";
         }
@@ -548,7 +613,7 @@ namespace BMBF_Manager
                     }
                     catch
                     {
-                        txtbox.AppendText(UD100);
+                        txtbox.AppendText(globalLanguage.global.UD100);
                         return;
                     }
                 }
@@ -583,14 +648,14 @@ namespace BMBF_Manager
                 if (VersionV > VersionU)
                 {
                     //Newer Version that hasn't been released yet
-                    txtbox.AppendText("\n\nLooks like you have a preview version. Downgrade now from " + MajorV + "." + MinorV + "." + PatchV + " to " + MajorU + "." + MinorU + "." + PatchU + " xD");
+                    txtbox.AppendText("\n\n" + globalLanguage.processer.ReturnProcessed(globalLanguage.mainMenu.code.previewVersion, MajorV + "." + MinorV + "." + PatchV, MajorU + "." + MinorU + "." + PatchU));
                     UpdateB.Visibility = Visibility.Visible;
-                    UpdateB.Content = "Downgrade Now xD";
+                    UpdateB.Content = globalLanguage.mainMenu.code.downgradeNow;
                 }
                 if (VersionV == VersionU && Preview)
                 {
                     //User has Preview Version but a release Version has been released
-                    txtbox.AppendText("\n\nLooks like you have a preview version. The release version has been released. Please Update now. ");
+                    txtbox.AppendText("\n\n" + globalLanguage.mainMenu.code.releaseVersionOut);
                     UpdateB.Visibility = Visibility.Visible;
                 }
             }
@@ -617,7 +682,7 @@ namespace BMBF_Manager
             catch
             {
                 // Log error.
-                txtbox.AppendText(UD200);
+                txtbox.AppendText(globalLanguage.global.UD200);
             }
         }
 
@@ -657,13 +722,15 @@ namespace BMBF_Manager
         {
             if (Running)
             {
-                txtbox.AppendText("\n\nA operation is already running. Please try again after it has finished.");
+                txtbox.AppendText("\n\n" + globalLanguage.mainMenu.code.operationRunning);
+                txtbox.ScrollToEnd();
                 return;
             }
             Running = true;
             if (!CheckIP())
             {
-                txtbox.AppendText("Please Type a valid IP");
+                txtbox.AppendText("\n\n" + globalLanguage.global.ipInvalid);
+                txtbox.ScrollToEnd();
                 Running = false;
                 return;
             }
@@ -675,17 +742,17 @@ namespace BMBF_Manager
                 return;
             }
 
-            MessageBoxResult r0 = MessageBox.Show("Are you on a Oculus Quest 2?", "BMBF Manager", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            MessageBoxResult r0 = MessageBox.Show(globalLanguage.mainMenu.code.onQuest2, "BMBF Manager", MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (r0 == MessageBoxResult.Yes) Quest2 = true;
 
             if (Directory.Exists(exe + "\\ModChecks\\mods"))
             {
                 //game is modded
-                MessageBoxResult result1 = MessageBox.Show("Modded Beat Saber has been detected. If you press yes I'll uninstall Beat Saber and BMBF and make a Backup of it to restore. If you press no you'll cancle Updating.", "BMBF Manager - BMBF Updater", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                MessageBoxResult result1 = MessageBox.Show(globalLanguage.mainMenu.code.moddedBSDetected, "BMBF Manager - BMBF Updater", MessageBoxButton.YesNo, MessageBoxImage.Warning);
                 switch (result1)
                 {
                     case MessageBoxResult.No:
-                        txtbox.AppendText("\n\nBMBF Updating aborted.");
+                        txtbox.AppendText("\n\n" + globalLanguage.mainMenu.code.bMBFUpdatatingAborted);
                         txtbox.ScrollToEnd();
                         Running = false;
                         return;
@@ -699,7 +766,7 @@ namespace BMBF_Manager
                 //Backup Playlists
                 try
                 {
-                    txtbox.AppendText("\n\nBacking up Playlist to " + exe + "\\Backup\\Playlists.json");
+                    txtbox.AppendText("\n\n" + globalLanguage.processer.ReturnProcessed(globalLanguage.mainMenu.code.playlistBackup, exe + "\\Backup\\Playlists.json"));
                     txtbox.ScrollToEnd();
                     Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
 
@@ -709,13 +776,13 @@ namespace BMBF_Manager
 
                     var j = JSON.Parse(client2.DownloadString("http://" + MainWindow.IP + ":50000/host/beatsaber/config"));
                     File.WriteAllText(exe + "\\Backup\\Playlists.json", j["Config"].ToString());
-                    txtbox.AppendText("\n\nBacked up Playlists to " + exe + "\\Backup\\Playlists.json");
+                    txtbox.AppendText("\n\n" + globalLanguage.processer.ReturnProcessed(globalLanguage.mainMenu.code.playlistBackupFinished, exe + "\\Backup\\Playlists.json"));
                     txtbox.ScrollToEnd();
                     Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
                 }
                 catch
                 {
-                    txtbox.AppendText(PL100);
+                    txtbox.AppendText(globalLanguage.global.PL100);
 
                 }
 
@@ -730,12 +797,12 @@ namespace BMBF_Manager
                     Running = false;
                     return;
                 }
-                MessageBoxResult result2 = MessageBox.Show("Please download Beat Saber from the oculus store, play a song and then close it. Press OK once you finished.", "BMBF Manager - BMBF Updater", MessageBoxButton.OK, MessageBoxImage.Warning);
-                MessageBoxResult result3 = MessageBox.Show("I want to make sure. Do you have unmodded Beat Saber installed and opened it at least once?", "BMBF Manager - BMBF Updater", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                MessageBoxResult result2 = MessageBox.Show(globalLanguage.mainMenu.code.downloadBS, "BMBF Manager - BMBF Updater", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBoxResult result3 = MessageBox.Show(globalLanguage.mainMenu.code.makingSure, "BMBF Manager - BMBF Updater", MessageBoxButton.YesNo, MessageBoxImage.Warning);
                 switch (result3)
                 {
                     case MessageBoxResult.No:
-                        txtbox.AppendText("\n\nBMBF Updating aborted. Please Install unmodded Beat Saber and start it once");
+                        txtbox.AppendText("\n\n" + globalLanguage.mainMenu.code.bMBFUpdatatingAbortedInstallBS);
                         txtbox.ScrollToEnd();
                         Running = false;
                         return;
@@ -748,11 +815,11 @@ namespace BMBF_Manager
                     Running = false;
                     return;
                 }
-                MessageBoxResult result = MessageBox.Show("Looks like you have unmodded Beat Saber installed. Did you open it at least once?", "BMBF Manager - BMBF Updater", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                MessageBoxResult result = MessageBox.Show(globalLanguage.mainMenu.code.unmoddedBSDetected, "BMBF Manager - BMBF Updater", MessageBoxButton.YesNo, MessageBoxImage.Warning);
                 switch (result)
                 {
                     case MessageBoxResult.No:
-                        txtbox.AppendText("\n\nBMBF Updating aborted. Please Install unmodded Beat Saber and start it once");
+                        txtbox.AppendText("\n\n" + globalLanguage.mainMenu.code.bMBFUpdatatingAbortedInstallBS);
                         txtbox.ScrollToEnd();
                         Running = false;
                         return;
@@ -789,11 +856,11 @@ namespace BMBF_Manager
                         break;
                     }
                 }
-                MessageBoxResult result4 = MessageBox.Show("The newest BMBF Version (" + BMBFStable[0]["tag"] + ") doesn't work for many people. I'd suggest you update to a more stable version. The last entry that's not listed as not working is BMBF version " + lastBMBF["tag"] + ".\nIf you want to install the recommended version of BMBF press yes. If you want to install the newest one press no. ", "BMBF Manager - BMBF Updater", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                MessageBoxResult result4 = MessageBox.Show(globalLanguage.processer.ReturnProcessed(globalLanguage.mainMenu.code.newestBMBFDoesntWork, BMBFStable[0]["tag"], lastBMBF["tag"]), "BMBF Manager - BMBF Updater", MessageBoxButton.YesNo, MessageBoxImage.Warning);
                 switch (result4)
                 {
                     case MessageBoxResult.No:
-                        txtbox.AppendText("\n\nDownloading newest BMBF version");
+                        txtbox.AppendText("\n\n" + globalLanguage.mainMenu.code.downloadingNewestBMBFVersion);
                         txtbox.ScrollToEnd();
                         foreach (JSONNode asset in BMBFStable[0]["assets"])
                         {
@@ -805,7 +872,7 @@ namespace BMBF_Manager
                         }
                         break;
                     case MessageBoxResult.Yes:
-                        txtbox.AppendText("\n\nDownloading recommended BMBF version");
+                        txtbox.AppendText("\n\n" + globalLanguage.mainMenu.code.downloadingRecommendedBMBFVersion);
                         txtbox.ScrollToEnd();
                         foreach (JSONNode asset in lastBMBF["assets"])
                         {
@@ -840,13 +907,13 @@ namespace BMBF_Manager
 
         private void finishedBMBFDownload(object sender, AsyncCompletedEventArgs e)
         {
-            txtbox.AppendText("\nDownload Complete");
+            txtbox.AppendText("\n" + globalLanguage.mainMenu.code.downloadComplete);
             txtbox.ScrollToEnd();
             Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
 
 
             //Install BMBF
-            txtbox.AppendText("\n\nInstalling new BMBF");
+            txtbox.AppendText("\n\n" + globalLanguage.mainMenu.code.installingBMBF);
             txtbox.ScrollToEnd();
             Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
 
@@ -854,7 +921,7 @@ namespace BMBF_Manager
             adb("install -r \"" + exe + "\\tmp\\BMBF.apk\"");
 
             //Mod Beat Saber
-            txtbox.AppendText("\n\nModding Beat Saber. Please wait...");
+            txtbox.AppendText("\n\n" + globalLanguage.mainMenu.code.moddingBS);
             txtbox.ScrollToEnd();
             Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
 
@@ -870,15 +937,15 @@ namespace BMBF_Manager
             System.Threading.Thread.Sleep(5000);
             if(Quest2)
             {
-                MessageBox.Show("You told me you were on Quest 2. I installed BMBF for you but DIDN'T Mod Beat Saber. You'll have to continue from here manually. I'm currently not able to automate it on Quest 2.\nOnce you modded Beat Saber press OK.", "BMBF Manager", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                MessageBoxResult r3 = MessageBox.Show("I'm now attempting to restore Beat Saber save data. \nDid you mod Beat Saber, started it once an want me to restore it?", "BMBF Manager", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                MessageBox.Show(globalLanguage.mainMenu.code.userOnQ2Reminder, "BMBF Manager", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                MessageBoxResult r3 = MessageBox.Show(globalLanguage.mainMenu.code.tryRestoreSaveData, "BMBF Manager", MessageBoxButton.YesNo, MessageBoxImage.Question);
                 switch (r3)
                 {
                     case MessageBoxResult.Yes:
                         RestoreStuff();
                         break;
                 }
-                txtbox.AppendText("\n\nOk, I've finished my part. Have fun now!");
+                txtbox.AppendText("\n\n" + globalLanguage.mainMenu.code.q2BMBFInstallFinished);
                 Running = false;
                 return;
             }
@@ -893,7 +960,7 @@ namespace BMBF_Manager
             adb("uninstall com.beatgames.beatsaber");
             client.UploadDataAsync(new Uri("http://" + MainWindow.IP + ":50000/host/mod/install/step2"), "POST", new byte[0]);
             client.UploadDataCompleted += new UploadDataCompletedEventHandler(finishedstep2);
-            txtbox.AppendText("\nStep 1 finished");
+            txtbox.AppendText("\n" + globalLanguage.processer.ReturnProcessed(globalLanguage.mainMenu.code.stepFinished, "1"));
         }
 
         private void finishedstep2(object sender, UploadDataCompletedEventArgs e)
@@ -903,12 +970,12 @@ namespace BMBF_Manager
             adb("install -r \"" + exe + "\\tmp\\beatsabermod.apk\"");
             client.UploadDataAsync(new Uri("http://" + MainWindow.IP + ":50000/host/mod/install/step3"), "POST", new byte[0]);
             client.UploadDataCompleted += new UploadDataCompletedEventHandler(finishedstep3);
-            txtbox.AppendText("\nStep 2 finished");
+            txtbox.AppendText("\n" + globalLanguage.processer.ReturnProcessed(globalLanguage.mainMenu.code.stepFinished, "2"));
         }
 
         private void finishedstep3(object sender, UploadDataCompletedEventArgs e)
         {
-            txtbox.AppendText("\nStep 3 finished");
+            txtbox.AppendText("\n" + globalLanguage.processer.ReturnProcessed(globalLanguage.mainMenu.code.stepFinished, "3"));
             adb("shell am force-stop com.weloveoculus.BMBF");
             adb("shell am start -n com.weloveoculus.BMBF/com.weloveoculus.BMBF.MainActivity"); //Start BMBF
             adb("shell pm grant com.beatgames.beatsaber android.permission.READ_EXTERNAL_STORAGE"); //Grant permission read
@@ -916,7 +983,6 @@ namespace BMBF_Manager
 
             RestoreStuff();
 
-            txtbox.AppendText("\n\n\nFinished Installing BMBF and modding Beat Saber. Please click \"Reload Songs Folder\" in BMBF to reload your Songs if you Updated BMBF.");
             txtbox.ScrollToEnd();
             Running = false;
         }
@@ -938,7 +1004,7 @@ namespace BMBF_Manager
             {
                 if (!File.Exists(exe + "\\Backup\\Playlists.json"))
                 {
-                    txtbox.AppendText("\n\n\nFinished Installing BMBF and modding Beat Saber. Please click \"Reload Songs Folder\" in BMBF to reload your Songs if you Updated BMBF.");
+                    txtbox.AppendText("\n\n\n" + globalLanguage.mainMenu.code.bMBFInstallationFinished);
                     txtbox.ScrollToEnd();
                     Running = false;
                     return;
@@ -957,13 +1023,13 @@ namespace BMBF_Manager
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate {
                     postChanges(exe + "\\tmp\\config.json");
                 }));
-                txtbox.AppendText("\n\nRestored old Playlists.");
+                txtbox.AppendText("\n\n" + globalLanguage.mainMenu.code.playlistsRestored);
                 txtbox.ScrollToEnd();
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
             }
             catch
             {
-                txtbox.AppendText(BMBF100);
+                txtbox.AppendText(globalLanguage.global.BMBF100);
             }
         }
 
@@ -988,7 +1054,7 @@ namespace BMBF_Manager
             {
                 if (directories[i].EndsWith(".png"))
                 {
-                    txtbox.AppendText("\n\nPushing " + directories[i] + " to Quest");
+                    txtbox.AppendText("\n\n" + globalLanguage.processer.ReturnProcessed(globalLanguage.mainMenu.code.pushingPng, directories[i]));
                     adb("push \"" + directories[i] + "\" /sdcard/BMBFData/Playlists/");
                     txtbox.ScrollToEnd();
                     Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
@@ -1005,7 +1071,7 @@ namespace BMBF_Manager
         {
             if (Running)
             {
-                txtbox.AppendText("\n\nA operation is already running. Please try again after it has finished.");
+                txtbox.AppendText("\n\n" + globalLanguage.mainMenu.code.operationRunning);
                 return;
             }
 
@@ -1028,28 +1094,28 @@ namespace BMBF_Manager
                 if (File.Exists(exe + "\\Backups\\modded.apk"))
                 {
                     //Unmodded Beat Saber may be installed
-                    MessageBoxResult result = MessageBox.Show("It looks like your last Action was installing unmodded Beat Saber. If you continue and have unmodded Beat Saber installed you must mod Beat Saber By hand.\nDo you wish to continue?", "BMBF Manager - Version Switcher", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                    MessageBoxResult result = MessageBox.Show(globalLanguage.mainMenu.code.lastActionUninstallingBS, "BMBF Manager - Version Switcher", MessageBoxButton.YesNo, MessageBoxImage.Warning);
                     switch (result)
                     {
                         case MessageBoxResult.No:
-                            txtbox.AppendText("\n\nAborted.");
+                            txtbox.AppendText("\n\n" + globalLanguage.mainMenu.code.aborted);
                             txtbox.ScrollToEnd();
                             Running = false;
                             return;
                     }
                 }
-                MessageBoxResult result2 = MessageBox.Show("I'll unmod Beat Saber for you.\nDo you want to proceed?", "BMBF Manager - Version Switcher", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                MessageBoxResult result2 = MessageBox.Show(globalLanguage.mainMenu.code.unmodBS, "BMBF Manager - Version Switcher", MessageBoxButton.YesNo, MessageBoxImage.Warning);
                 switch (result2)
                 {
                     case MessageBoxResult.No:
-                        txtbox.AppendText("\n\nAborted.");
+                        txtbox.AppendText("\n\n" + globalLanguage.mainMenu.code.aborted);
                         txtbox.ScrollToEnd();
                         Running = false;
                         return;
                 }
                 //Install the unmodded Version of Beat Saber
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate {
-                    txtbox.AppendText("\n\nBacking up everything.");
+                    txtbox.AppendText("\n\n" + globalLanguage.mainMenu.code.backingUpAll);
                     txtbox.ScrollToEnd();
                 }));
                 if (!adb("pull /sdcard/BMBFData/Backups/beatsaber-unmodded.apk \"" + exe + "\\tmp\\unmodded.apk\""))
@@ -1073,7 +1139,7 @@ namespace BMBF_Manager
                 }
 
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate {
-                    txtbox.AppendText("\n\nInstalling unmodded Beat Saber.");
+                    txtbox.AppendText("\n\n" + globalLanguage.mainMenu.code.installingUnmodded);
                     txtbox.ScrollToEnd();
                 }));
                 if (!adb("uninstall com.beatgames.beatsaber"))
@@ -1087,7 +1153,7 @@ namespace BMBF_Manager
                     return;
                 }
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate {
-                    txtbox.AppendText("\n\nRestoring Scores");
+                    txtbox.AppendText("\n\n" + globalLanguage.mainMenu.code.restoringScores);
                     txtbox.ScrollToEnd();
                 }));
                 adb("push \"" + exe + "\\Backups\\files\\LocalDailyLeaderboards.dat\" /sdcard/Android/data/com.beatgames.beatsaber/files/LocalDailyLeaderboards.dat");
@@ -1098,7 +1164,7 @@ namespace BMBF_Manager
 
 
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate {
-                    txtbox.AppendText("\n\nFinished. You can now play vanilla Beat Saber.");
+                    txtbox.AppendText("\n\n" + globalLanguage.mainMenu.code.finishedVanilla);
                     txtbox.ScrollToEnd();
                 }));
 
@@ -1108,15 +1174,15 @@ namespace BMBF_Manager
                 //game is unmodded
                 if (!File.Exists(exe + "\\Backups\\modded.apk"))
                 {
-                    txtbox.AppendText("\n\nPlease Click \"Install/Update BMBF\" to mod Beat Saber the first time.");
+                    txtbox.AppendText("\n\n" + globalLanguage.mainMenu.code.modGame);
                     Running = false;
                     return;
                 }
-                MessageBoxResult result2 = MessageBox.Show("I'll switch back to the modded Version of Beat Saber for you.\nDo you want to proceed?", "BMBF Manager - Version Switcher", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                MessageBoxResult result2 = MessageBox.Show(globalLanguage.mainMenu.code.switchToModded, "BMBF Manager - Version Switcher", MessageBoxButton.YesNo, MessageBoxImage.Warning);
                 switch (result2)
                 {
                     case MessageBoxResult.No:
-                        txtbox.AppendText("\n\nAborted.");
+                        txtbox.AppendText("\n\n" + globalLanguage.mainMenu.code.aborted);
                         txtbox.ScrollToEnd();
                         Running = false;
                         return;
@@ -1127,7 +1193,7 @@ namespace BMBF_Manager
                 adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/AvatarData.dat \"" + exe + "\\Backups\\files\\AvatarData.dat\"");
                 adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/settings.cfg \"" + exe + "\\Backups\\files\\settings.cfg\"");
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate {
-                    txtbox.AppendText("\n\nUninstalling Beat Saber.");
+                    txtbox.AppendText("\n\n" + globalLanguage.mainMenu.code.uninstallingBS);
                     txtbox.ScrollToEnd();
                 }));
                 if (!adb("uninstall com.beatgames.beatsaber"))
@@ -1136,7 +1202,7 @@ namespace BMBF_Manager
                     return;
                 }
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate {
-                    txtbox.AppendText("\n\nInstalling Modded Beat Saber");
+                    txtbox.AppendText("\n\n" + globalLanguage.mainMenu.code.installingModded);
                     txtbox.ScrollToEnd();
                 }));
                 if (!adb("install \"" + exe + "\\Backups\\modded.apk\""))
@@ -1145,7 +1211,7 @@ namespace BMBF_Manager
                     return;
                 }
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate {
-                    txtbox.AppendText("\n\nRestoring Game Data");
+                    txtbox.AppendText("\n\n" + globalLanguage.mainMenu.code.restoringSaveData);
                     txtbox.ScrollToEnd();
                 }));
                 if (!adb("push \"" + exe + "\\Backups\\files\" /sdcard/Android/data/com.beatgames.beatsaber/files"))
@@ -1154,14 +1220,14 @@ namespace BMBF_Manager
                     return;
                 }
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate {
-                    txtbox.AppendText("\n\nGranting Permissions");
+                    txtbox.AppendText("\n\n" + globalLanguage.mainMenu.code.grantingPerms);
                     txtbox.ScrollToEnd();
                 }));
                 adb("shell pm grant com.beatgames.beatsaber android.permission.READ_EXTERNAL_STORAGE"); //Grant permission read
                 adb("shell pm grant com.beatgames.beatsaber android.permission.WRITE_EXTERNAL_STORAGE"); //Grant permission write
                 Directory.Delete(exe + "\\Backups", true);
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate {
-                    txtbox.AppendText("\n\nfinished. You can now play your Custom Songs again.");
+                    txtbox.AppendText("\n\n" + globalLanguage.mainMenu.code.finishedModded);
                     txtbox.ScrollToEnd();
                 }));
             }
@@ -1196,7 +1262,7 @@ namespace BMBF_Manager
                 Process.Start("http://" + IP + ":50000/main/upload");
             } catch 
             {
-                MessageBox.Show("I couldn't reach BMBF. The IP you typed is: \"" + IP + "\". Is this right? If it is check that BMBF is opened on your Quest and that your Quest and PC are on the same Wifi network.", "BMBF Manager - BMBF opening", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show(globalLanguage.processer.ReturnProcessed(globalLanguage.mainMenu.code.bMBFNotReachable, IP), "BMBF Manager - BMBF opening", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
             
         }

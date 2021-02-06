@@ -21,6 +21,8 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 using BeatSaverAPI;
 using System.Text.RegularExpressions;
+using System.Text.Json;
+using ComputerUtils.RegxTemplates;
 
 namespace BMBF_Manager
 {
@@ -36,34 +38,67 @@ namespace BMBF_Manager
         Boolean ForThisVersion = true;
         List<Tuple<String, String, String, String, String, String, Boolean, Tuple<bool, String, String>>> AllModsList = new List<Tuple<String, String, String, String, String, String, Boolean, Tuple<bool, String, String>>>();
         BeatSaverAPIInteractor interactor = new BeatSaverAPIInteractor();
+        bool languageMessageBlock = false;
 
         public Support()
         {
             InitializeComponent();
+            ApplyLanguage();
+            LoadLanguages();
             Quest.Text = MainWindow.IP;
-            if(MainWindow.CustomProtocols)
+            UpdateImage();
+        }
+
+        public void ApplyLanguage()
+        {
+            backgroundButton.Content = MainWindow.globalLanguage.settings.UI.backgroundButton;
+            resetBackgroundButton.Content = MainWindow.globalLanguage.settings.UI.resetBackgroundButton;
+            KA.Content = MainWindow.globalLanguage.settings.UI.KeepAliveButton;
+            moveBBBUButton.Content = MainWindow.globalLanguage.settings.UI.moveBBBUButton;
+            moveQSUButton.Content = MainWindow.globalLanguage.settings.UI.moveQSUButton;
+            KA.Content = MainWindow.globalLanguage.settings.UI.KeepAliveButton;
+            CustomP.Content = MainWindow.CustomProtocols ? MainWindow.globalLanguage.settings.UI.disableBMButton : MainWindow.globalLanguage.settings.UI.enableBMButton;
+            BSaver.Content = MainWindow.OneClick ? MainWindow.globalLanguage.settings.UI.disableBSButton : MainWindow.globalLanguage.settings.UI.enableBSButton;
+            ADB.Content = MainWindow.ShowADB ? MainWindow.globalLanguage.settings.UI.disableADBOutputButton : MainWindow.globalLanguage.settings.UI.enableADBOutputButton;
+        }
+
+        public void LoadLanguages()
+        {
+            languageMessageBlock = true;
+            Language.Items.Clear();
+            Language.Items.Add(MainWindow.globalLanguage.settings.code.language);
+            Language.Items.Add("en");
+            Language.SelectedIndex = 0;
+            foreach (String file in Directory.GetFiles(exe + "\\languages"))
             {
-                CustomP.Content = "Disable BM Custom Protocol";
-            } else
-            {
-                CustomP.Content = "Enable BM Custom Protocol";
+                if (file.EndsWith(".json")) Language.Items.Add(System.IO.Path.GetFileNameWithoutExtension(file));
             }
-            if (MainWindow.OneClick)
+            languageMessageBlock = false;
+        }
+
+        private void ChangeLanguage(object sender, SelectionChangedEventArgs e)
+        {
+            if (languageMessageBlock) return;
+            if (Language.SelectedIndex == -1) return;
+            if(Language.SelectedIndex == 0)
             {
-                BSaver.Content = "Disable BeatSaver OneClick install";
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.settings.code.selectLanguage);
+                return;
+            }
+            if (Language.SelectedIndex == 1)
+            {
+                MainWindow.globalLanguage = new BMBFManager.Language.Language();
+                MainWindow.language = "en";
             }
             else
             {
-                BSaver.Content = "Enable BeatSaver OneClick install";
+                MainWindow.globalLanguage = JsonSerializer.Deserialize<BMBFManager.Language.Language>(File.ReadAllText(exe + "\\languages\\" + Language.SelectedItem + ".json"));
+                MainWindow.language = exe + "\\languages\\" + Language.SelectedItem + ".json";
             }
-            UpdateImage();
-            if(MainWindow.ShowADB)
-            {
-                ADB.Content = "Disable ADB output";
-            } else
-            {
-                ADB.Content = "Enable ADB output";
-            }
+            ApplyLanguage();
+            txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.settings.code.changedLanguage, Language.SelectedIndex == 1 ? "en" : Language.SelectedItem.ToString()));
+            txtbox.AppendText("\n" + MainWindow.globalLanguage.settings.code.restartProgram);
+            LoadLanguages();
         }
 
         private void KeepAlive(object sender, RoutedEventArgs e)
@@ -71,21 +106,21 @@ namespace BMBF_Manager
             if(MainWindow.KeepAlive)
             {
                 MainWindow.KeepAlive = false;
-                txtbox.AppendText("\n\nKeep Alive has been disabled.");
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.settings.code.keepAliveDisabled);
 
             } else
             {
-                MessageBoxResult result = MessageBox.Show("Are you sure you want to enable Keep Alive? That will result in your Quest not going to sleep until the program get's closed.\nThis will only work as long as your Quest is reachable via ADB (connected via cable)\nHightly recommended for Quest 2 Users", "BMBF Manager - Settings", MessageBoxButton.YesNo, MessageBoxImage.Information);
+                MessageBoxResult result = MessageBox.Show(MainWindow.globalLanguage.settings.code.keepAliveWarning, "BMBF Manager - Settings", MessageBoxButton.YesNo, MessageBoxImage.Information);
                 switch (result)
                 {
                     case MessageBoxResult.No:
-                        txtbox.AppendText("\n\nAborted.");
+                        txtbox.AppendText("\n\n" + MainWindow.globalLanguage.settings.code.aborted);
                         txtbox.ScrollToEnd();
                         Running = false;
                         return;
                 }
                 MainWindow.KeepAlive = true;
-                txtbox.AppendText("\n\nKeep Alive has been enabled.");
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.settings.code.keepAliveEnabled);
             }
         }
 
@@ -95,30 +130,30 @@ namespace BMBF_Manager
             {
                 //Disable
                 MainWindow.ShowADB = false;
-                txtbox.AppendText("\n\nADB output disabled.");
-                ADB.Content = "Enable ADB output";
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.settings.code.aDBOutputDisabled);
+                ADB.Content = MainWindow.globalLanguage.settings.UI.enableADBOutputButton;
             } else
             {
                 //enable
-                MessageBoxResult result = MessageBox.Show("Are you sure you want to enable ADB output? I won't check if your Quest is connected anymore and you will be able to pause the adb process when you click it.\nDo you really want to enable ADB output?", "BMBF Manager - Settings", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                MessageBoxResult result = MessageBox.Show(MainWindow.globalLanguage.settings.code.aDBOutputWarning, "BMBF Manager - Settings", MessageBoxButton.YesNo, MessageBoxImage.Warning);
                 switch (result)
                 {
                     case MessageBoxResult.No:
-                        txtbox.AppendText("\n\nAborted.");
+                        txtbox.AppendText("\n\n" + MainWindow.globalLanguage.settings.code.aborted);
                         txtbox.ScrollToEnd();
                         Running = false;
                         return;
                 }
                 MainWindow.ShowADB = true;
-                txtbox.AppendText("\n\nADB output enabled.");
-                ADB.Content = "Disable ADB output";
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.settings.code.aDBOutputEnabled);
+                ADB.Content = MainWindow.globalLanguage.settings.UI.disableADBOutputButton;
             }
         }
 
         private void ChooseImage(object sender, RoutedEventArgs e)
         {
             OpenFileDialog ofd = new OpenFileDialog();
-            ofd.Filter = "Pictures (*.jpg, *.png, *.bmp, *.img, *.tif, *.tiff, *.webp)|*.jpg;*.png;*.bmp;*.img;*.tif;*.tiff;*.webp";
+            ofd.Filter = MainWindow.globalLanguage.settings.code.pictures + " (*.jpg, *.png, *.bmp, *.img, *.tif, *.tiff, *.webp)|*.jpg;*.png;*.bmp;*.img;*.tif;*.tiff;*.webp";
             ofd.Multiselect = false;
             bool? result = ofd.ShowDialog();
             if (result == true)
@@ -129,11 +164,11 @@ namespace BMBF_Manager
                     MainWindow.CustomImageSource = ofd.FileName;
                     MainWindow.CustomImage = true;
                     UpdateImage();
-                    txtbox.AppendText("\n\nFor the changes to take effect program wide you have to restart it.");
+                    txtbox.AppendText("\n\n" + MainWindow.globalLanguage.settings.code.restartProgram);
                 }
                 else
                 {
-                    MessageBox.Show("Please select a valid file", "BMBF Manager - Settings", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show(MainWindow.globalLanguage.settings.code.selectFile, "BMBF Manager - Settings", MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
 
             }
@@ -157,7 +192,7 @@ namespace BMBF_Manager
             else
             {
                 ImageBrush uniformBrush = new ImageBrush();
-                uniformBrush.ImageSource = new BitmapImage(new Uri("pack://application:,,,/Support5.png", UriKind.Absolute));
+                uniformBrush.ImageSource = new BitmapImage(new Uri("pack://application:,,,/Support6.png", UriKind.Absolute));
                 uniformBrush.Stretch = Stretch.UniformToFill;
                 this.Background = uniformBrush;
             }
@@ -203,7 +238,7 @@ namespace BMBF_Manager
 
         private void ClearText(object sender, RoutedEventArgs e)
         {
-            if (Quest.Text == "Quest IP")
+            if (Quest.Text == MainWindow.globalLanguage.global.ipInvalid)
             {
                 Quest.Text = "";
             }
@@ -214,21 +249,17 @@ namespace BMBF_Manager
         {
             if (Quest.Text == "")
             {
-                Quest.Text = "Quest IP";
+                Quest.Text = MainWindow.globalLanguage.global.ipInvalid;
             }
         }
 
         public Boolean CheckIP()
         {
             getQuestIP();
-            if (MainWindow.IP == "Quest IP")
+            String found;
+            if ((found = RegexTemplates.GetIP(MainWindow.IP)) != "")
             {
-                return false;
-            }
-            Match found = Regex.Match(MainWindow.IP, "((1?[0-9]?[0-9]|2(5[0-5]|[0-4][0-9]))\\.){3}(1?[0-9]?[0-9]|2(5[0-5]|[0-4][0-9]))");
-            if (found.Success)
-            {
-                MainWindow.IP = found.Value;
+                MainWindow.IP = found;
                 Quest.Text = MainWindow.IP;
                 return true;
             }
@@ -262,37 +293,37 @@ namespace BMBF_Manager
         {
             if(!MainWindow.CustomProtocols)
             {
-                txtbox.AppendText("\n\nChanging Registry to enable BM Custom protocols");
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.settings.code.changingRegistryEnableBM);
                 String regFile = "Windows Registry Editor Version 5.00\n\n[HKEY_CLASSES_ROOT\\bm]\n@=\"URL: bm\"\n\"URL Protocol\"=\"bm\"\n\n[HKEY_CLASSES_ROOT\\bm]\n@=\"" + System.Reflection.Assembly.GetEntryAssembly().Location.Replace("\\", "\\\\") + "\"\n\n[HKEY_CLASSES_ROOT\\bm\\shell]\n\n[HKEY_CLASSES_ROOT\\bm\\shell\\open]\n\n[HKEY_CLASSES_ROOT\\bm\\shell\\open\\command]\n@=\"" + System.Reflection.Assembly.GetEntryAssembly().Location.Replace("\\", "\\\\") + " \\\"%1\\\"\"";
                 File.WriteAllText(exe + "\\registry.reg", regFile);
                 try
                 {
                     Process.Start(exe + "\\registry.reg");
-                    txtbox.AppendText("\n\nCustom Links enabled");
+                    txtbox.AppendText("\n\n" + MainWindow.globalLanguage.settings.code.customLinksEnabled);
                 }
                 catch
                 {
-                    txtbox.AppendText("\n\nRegistry was unable to change... no Custom protocol enabled.");
+                    txtbox.AppendText("\n\n" + MainWindow.globalLanguage.settings.code.registryUnableToChangeNoBM);
                     return;
                 }
-                CustomP.Content = "Disable BM Custom Protocol";
+                CustomP.Content = MainWindow.globalLanguage.settings.UI.disableBMButton;
                 MainWindow.CustomProtocols = true;
             } else
             {
-                txtbox.AppendText("\n\nChanging Registry to disable BM Custom protocols");
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.settings.code.changingRegistryDisableBM);
                 String regFile = "Windows Registry Editor Version 5.00\n\n[-HKEY_CLASSES_ROOT\\bm]";
                 File.WriteAllText(exe + "\\registry.reg", regFile);
                 try
                 {
                     Process.Start(exe + "\\registry.reg");
-                    txtbox.AppendText("\n\nCustom Links disabled");
+                    txtbox.AppendText("\n\n" + MainWindow.globalLanguage.settings.code.customLinksDisabled);
                 }
                 catch
                 {
-                    txtbox.AppendText("\n\nRegistry was unable to change.");
+                    txtbox.AppendText("\n\n" + MainWindow.globalLanguage.settings.code.registryUnableToChange);
                     return;
                 }
-                CustomP.Content = "Enable BM Custom Protocol";
+                CustomP.Content = MainWindow.globalLanguage.settings.UI.enableBMButton;
                 MainWindow.CustomProtocols = false;
             }
         }
@@ -301,56 +332,56 @@ namespace BMBF_Manager
         {
             if (!MainWindow.OneClick)
             {
-                MessageBoxResult result = MessageBox.Show("This will disable OneClick Install via Mod Assistent.\nDo you wish to continue?", "BMBF Manager - Settings", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                MessageBoxResult result = MessageBox.Show(MainWindow.globalLanguage.settings.code.oneClickWarning, "BMBF Manager - Settings", MessageBoxButton.YesNo, MessageBoxImage.Warning);
                 switch (result)
                 {
                     case MessageBoxResult.No:
-                        txtbox.AppendText("\n\nOneClick Install enabeling aborted");
+                        txtbox.AppendText("\n\n" + MainWindow.globalLanguage.settings.code.oneClickAborted);
                         Running = false;
                         txtbox.ScrollToEnd();
                         return;
                 }
-                txtbox.AppendText("\n\nChanging Registry to enable OneClick Custom protocols");
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.settings.code.changingRegistryEnableBS);
                 String regFile = "Windows Registry Editor Version 5.00\n\n[HKEY_CLASSES_ROOT\\beatsaver]\n@=\"URL: beatsaver\"\n\"URL Protocol\"=\"beatsaver\"\n\n[HKEY_CLASSES_ROOT\\beatsaver]\n@=\"" + System.Reflection.Assembly.GetEntryAssembly().Location.Replace("\\", "\\\\") + "\"\n\n[HKEY_CLASSES_ROOT\\beatsaver\\shell]\n\n[HKEY_CLASSES_ROOT\\beatsaver\\shell\\open]\n\n[HKEY_CLASSES_ROOT\\beatsaver\\shell\\open\\command]\n@=\"" + System.Reflection.Assembly.GetEntryAssembly().Location.Replace("\\", "\\\\") + " \\\"%1\\\"\"";
                 File.WriteAllText(exe + "\\registry.reg", regFile);
                 try
                 {
                     Process.Start(exe + "\\registry.reg");
-                    txtbox.AppendText("\n\nOneClick Install via BeatSaver enabled");
+                    txtbox.AppendText("\n\n" + MainWindow.globalLanguage.settings.code.oneClickEnabled);
                 }
                 catch
                 {
-                    txtbox.AppendText("\n\nRegistry was unable to change... no Custom protocol disabled.");
+                    txtbox.AppendText("\n\n" + MainWindow.globalLanguage.settings.code.registryUnableToChangeNoBM);
                     return;
                 }
-                BSaver.Content = "Disable BeatSaver OneClick install";
+                BSaver.Content = MainWindow.globalLanguage.settings.UI.disableBSButton;
                 MainWindow.OneClick = true;
             }
             else
             {
-                MessageBoxResult result = MessageBox.Show("This will disable OneClick Install via BMBF Manager.\nDo you wish to continue?", "BMBF manager - Settings", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                MessageBoxResult result = MessageBox.Show(MainWindow.globalLanguage.settings.code.oneClickDisableWarning, "BMBF manager - Settings", MessageBoxButton.YesNo, MessageBoxImage.Warning);
                 switch (result)
                 {
                     case MessageBoxResult.No:
-                        txtbox.AppendText("\n\nOneClick disabeling enabeling aborted");
+                        txtbox.AppendText("\n\n" + MainWindow.globalLanguage.settings.code.oneClickDisablingAborted);
                         Running = false;
                         txtbox.ScrollToEnd();
                         return;
                 }
-                txtbox.AppendText("\n\nChanging Registry to disable OneClick Custom protocols");
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.settings.code.changingRegistryDisableBS);
                 String regFile = "Windows Registry Editor Version 5.00\n\n[-HKEY_CLASSES_ROOT\\beatsaver]";
                 File.WriteAllText(exe + "\\registry.reg", regFile);
                 try
                 {
                     Process.Start(exe + "\\registry.reg");
-                    txtbox.AppendText("\n\nOneClick Install via BeatSaver disabled");
+                    txtbox.AppendText("\n\n" + MainWindow.globalLanguage.settings.code.oneClickDisabled);
                 }
                 catch
                 {
-                    txtbox.AppendText("\n\nRegistry was unable to change.");
+                    txtbox.AppendText("\n\n" + MainWindow.globalLanguage.settings.code.registryUnableToChange);
                     return;
                 }
-                BSaver.Content = "Enable BeatSaver OneClick install";
+                BSaver.Content = MainWindow.globalLanguage.settings.UI.enableBSButton;
                 MainWindow.OneClick = false;
             }
 
@@ -361,7 +392,7 @@ namespace BMBF_Manager
             try
             {
                 Sync();
-                txtbox.AppendText("\n\nBacking up Playlist to " + exe + "\\Backup\\Playlists.json");
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.mainMenu.code.playlistBackup, "\\tmp\\Playlists.json"));
                 txtbox.ScrollToEnd();
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
                 String BMBF = "";
@@ -377,13 +408,13 @@ namespace BMBF_Manager
 
                 var j = JSON.Parse(File.ReadAllText(Config));
                 File.WriteAllText(exe + "\\tmp\\Playlists.json", j["Config"].ToString());
-                txtbox.AppendText("\n\nBacked up Playlists to " + exe + "\\tmp\\Playlists.json");
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.mainMenu.code.playlistBackupFinished, "\\tmp\\Playlists.json"));
                 txtbox.ScrollToEnd();
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
             }
             catch
             {
-                txtbox.AppendText(MainWindow.PL100);
+                txtbox.AppendText(MainWindow.globalLanguage.global.PL100);
 
             }
         }
@@ -407,7 +438,7 @@ namespace BMBF_Manager
                 }));
             } catch
             {
-                txtbox.AppendText(MainWindow.PL100);
+                txtbox.AppendText(MainWindow.globalLanguage.global.PL100);
             }
         }
 
@@ -471,7 +502,7 @@ namespace BMBF_Manager
                         exeProcess.WaitForExit();
                         if (IPS.Contains("no devices/emulators found"))
                         {
-                            txtbox.AppendText(MainWindow.ADB100);
+                            txtbox.AppendText(MainWindow.globalLanguage.global.ADB100);
                             txtbox.ScrollToEnd();
                             return "Error";
                         }
@@ -484,7 +515,7 @@ namespace BMBF_Manager
                     continue;
                 }
             }
-            txtbox.AppendText(MainWindow.ADB100);
+            txtbox.AppendText(MainWindow.globalLanguage.global.ADB100);
             txtbox.ScrollToEnd();
             return "Error";
         }
@@ -519,7 +550,7 @@ namespace BMBF_Manager
                             exeProcess.WaitForExit();
                             if (IPS.Contains("no devices/emulators found"))
                             {
-                                txtbox.AppendText(MainWindow.ADB110);
+                                txtbox.AppendText(MainWindow.globalLanguage.global.ADB110);
                                 txtbox.ScrollToEnd();
                                 return false;
                             }
@@ -537,7 +568,7 @@ namespace BMBF_Manager
                     continue;
                 }
             }
-            txtbox.AppendText(MainWindow.ADB100);
+            txtbox.AppendText(MainWindow.globalLanguage.global.ADB100);
             txtbox.ScrollToEnd();
             return false;
         }
@@ -608,11 +639,11 @@ namespace BMBF_Manager
                 this.Close();
             } else if(section.StartsWith("update"))
             {
-                MessageBoxResult result = MessageBox.Show("You have clicked a link to Update/Install BMBF\nDo you wish to continue", "BMBF Manager - BMBF Updater", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                MessageBoxResult result = MessageBox.Show(MainWindow.globalLanguage.settings.code.updateBMBFWarning, "BMBF Manager - BMBF Updater", MessageBoxButton.YesNo, MessageBoxImage.Warning);
                 switch (result)
                 {
                     case MessageBoxResult.No:
-                        txtbox.AppendText("\n\nAborted.");
+                        txtbox.AppendText("\n\n" + MainWindow.globalLanguage.settings.code.aborted);
                         txtbox.ScrollToEnd();
                         Running = false;
                         return;
@@ -623,11 +654,11 @@ namespace BMBF_Manager
                 this.Close();
             } else if(section.StartsWith("switchversion"))
             {
-                MessageBoxResult result = MessageBox.Show("You have clicked a link to switch from the modded/unmodded to the unmodded/modded version of Beatsaber.\nDo you wish to continue", "BMBF Manager - Version Switcher", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                MessageBoxResult result = MessageBox.Show(MainWindow.globalLanguage.settings.code.switchWarning, "BMBF Manager - Version Switcher", MessageBoxButton.YesNo, MessageBoxImage.Warning);
                 switch (result)
                 {
                     case MessageBoxResult.No:
-                        txtbox.AppendText("\n\nAborted.");
+                        txtbox.AppendText("\n\n" + MainWindow.globalLanguage.settings.code.aborted);
                         txtbox.ScrollToEnd();
                         Running = false;
                         return;

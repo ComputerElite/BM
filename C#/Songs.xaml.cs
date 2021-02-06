@@ -27,6 +27,7 @@ using MessageBox = System.Windows.MessageBox;
 using MouseEventArgs = System.Windows.Input.MouseEventArgs;
 using BeatSaverAPI;
 using System.Text.RegularExpressions;
+using ComputerUtils.RegxTemplates;
 
 namespace BMBF_Manager
 {
@@ -53,8 +54,9 @@ namespace BMBF_Manager
         public Songs()
         {
             InitializeComponent();
+            ApplyLanguage();
             Quest.Text = MainWindow.IP;
-            DownloadLable.Text = "All finished";
+            DownloadLable.Text = MainWindow.globalLanguage.global.allFinished;
             if (MainWindow.CustomImage)
             {
                 ImageBrush uniformBrush = new ImageBrush();
@@ -69,6 +71,20 @@ namespace BMBF_Manager
                 uniformBrush.Stretch = Stretch.UniformToFill;
                 this.Background = uniformBrush;
             }
+        }
+
+        public void ApplyLanguage()
+        {
+            searchButton.Content = MainWindow.globalLanguage.songs.UI.searchButton;
+            showMetadataButton.Content = MainWindow.globalLanguage.songs.UI.showMetadataButton;
+            cancleDownloadsButton.Content = MainWindow.globalLanguage.songs.UI.cancleDownloadsButton;
+            installSongButton.Content = MainWindow.globalLanguage.songs.UI.installSongButton;
+            installPCSongButton.Content = MainWindow.globalLanguage.songs.UI.installPCSongButton;
+            SongKey.Text = MainWindow.globalLanguage.songs.UI.songKeyPlaceholder;
+            SearchTerm.Text = MainWindow.globalLanguage.songs.UI.searchTermPlaceholder;
+            ((GridView)SongList.View).Columns[0].Header = MainWindow.globalLanguage.playlistEditor.UI.songNameList;
+            ((GridView)SongList.View).Columns[1].Header = MainWindow.globalLanguage.playlistEditor.UI.mapperList;
+            ((GridView)SongList.View).Columns[2].Header = MainWindow.globalLanguage.playlistEditor.UI.artistList;
         }
 
         private void Drag(object sender, RoutedEventArgs e)
@@ -111,7 +127,7 @@ namespace BMBF_Manager
 
         private void ClearText(object sender, RoutedEventArgs e)
         {
-            if (Quest.Text == "Quest IP")
+            if (Quest.Text == MainWindow.globalLanguage.global.defaultQuestIPText)
             {
                 Quest.Text = "";
             }
@@ -120,7 +136,7 @@ namespace BMBF_Manager
 
         private void ClearKey(object sender, RoutedEventArgs e)
         {
-            if (SongKey.Text == "Song Key")
+            if (SongKey.Text == MainWindow.globalLanguage.songs.UI.songKeyPlaceholder)
             {
                 SongKey.Text = "";
             }
@@ -129,7 +145,7 @@ namespace BMBF_Manager
 
         private void ClearSearch(object sender, RoutedEventArgs e)
         {
-            if (SearchTerm.Text == "Search Term")
+            if (SearchTerm.Text == MainWindow.globalLanguage.songs.UI.searchTermPlaceholder)
             {
                 SearchTerm.Text = "";
             }
@@ -140,7 +156,7 @@ namespace BMBF_Manager
         {
             if (Quest.Text == "")
             {
-                Quest.Text = "Quest IP";
+                Quest.Text = MainWindow.globalLanguage.global.defaultQuestIPText;
             }
         }
 
@@ -148,7 +164,7 @@ namespace BMBF_Manager
         {
             if (SearchTerm.Text == "")
             {
-                SearchTerm.Text = "Search Term";
+                SearchTerm.Text = MainWindow.globalLanguage.songs.UI.searchTermPlaceholder;
             }
         }
 
@@ -156,16 +172,16 @@ namespace BMBF_Manager
         {
             if (SongKey.Text == "")
             {
-                SongKey.Text = "Song Key";
+                SongKey.Text = MainWindow.globalLanguage.songs.UI.songKeyPlaceholder;
             }
         }
 
 
         private void LoadSongData(object sender, RoutedEventArgs e)
         {
-            if (SongKey.Text == "Song Key")
+            if (SongKey.Text == MainWindow.globalLanguage.songs.UI.searchTermPlaceholder)
             {
-                txtbox.AppendText("\n\nPlease choose a Song Key. This can be found on BeatSaver.");
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.songs.code.chooseSongKey);
                 return;
             }
 
@@ -174,7 +190,7 @@ namespace BMBF_Manager
             BeatSaberSong song = interactor.GetBeatSaberSong(Key);
             if(!song.RequestGood)
             {
-                txtbox.AppendText("\n\nThe BeatMap " + Key + " doesn't exist.");
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.songs.code.beatmapDoesntExist, Key)) ;
                 txtbox.ScrollToEnd();
                 return;
             }
@@ -191,14 +207,14 @@ namespace BMBF_Manager
             if (SubName == "") SubName = "N/A";
             if (BPM == "") BPM = "N/A";
 
-            txtbox.AppendText("\n\nMetadata of the Song you choose:");
+            txtbox.AppendText("\n\n" + MainWindow.globalLanguage.songs.code.metadataShowing);
 
-            txtbox.AppendText("\n\nSong Name: " + SongName);
-            txtbox.AppendText("\nSong Artist: " + SongArtist);
-            txtbox.AppendText("\nMap Author: " + MapAuthor);
-            txtbox.AppendText("\nSong Sub Name: " + SubName);
-            txtbox.AppendText("\nBPM: " + BPM);
-            txtbox.AppendText("\nBeatMap Key: " + Key);
+            txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.songs.code.songName, SongName));
+            txtbox.AppendText("\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.songs.code.songArtist, SongArtist));
+            txtbox.AppendText("\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.songs.code.mapAuthor, MapAuthor));
+            txtbox.AppendText("\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.songs.code.songSubName, SubName));
+            txtbox.AppendText("\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.songs.code.bPM, BPM));
+            txtbox.AppendText("\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.songs.code.beatMapKey, Key));
             txtbox.ScrollToEnd();
         }
 
@@ -209,7 +225,7 @@ namespace BMBF_Manager
             BeatSaverAPISearchResult result = interactor.SearchText(SearchTerm.Text);
             if(!result.RequestGood)
             {
-                txtbox.AppendText("BeatSaver error");
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.songs.code.beatSaverError);
                 txtbox.ScrollToEnd();
                 return;
             }
@@ -220,13 +236,13 @@ namespace BMBF_Manager
                 String Mapper = doc.metadata.levelAuthorName;
                 String Artist = doc.metadata.songAuthorName;
 
-                SongList.Items.Add(new SongItem { Name = Name, Mapper = Mapper, Artist = Artist });
                 SongKeys.Add(doc.key);
+                SongList.Items.Add(new SongItem { Name = Name, Mapper = Mapper, Artist = Artist });
             }
 
             if(SongKeys.Count < 1)
             {
-                txtbox.AppendText("\n\nNo results found. Try another Search Term");
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.songs.code.noResultsFound);
                 txtbox.ScrollToEnd();
             }
 
@@ -236,14 +252,10 @@ namespace BMBF_Manager
         public Boolean CheckIP()
         {
             getQuestIP();
-            if (MainWindow.IP == "Quest IP")
+            String found;
+            if ((found = RegexTemplates.GetIP(MainWindow.IP)) != "")
             {
-                return false;
-            }
-            Match found = Regex.Match(MainWindow.IP, "((1?[0-9]?[0-9]|2(5[0-5]|[0-4][0-9]))\\.){3}(1?[0-9]?[0-9]|2(5[0-5]|[0-4][0-9]))");
-            if (found.Success)
-            {
-                MainWindow.IP = found.Value;
+                MainWindow.IP = found;
                 Quest.Text = MainWindow.IP;
                 return true;
             }
@@ -263,12 +275,12 @@ namespace BMBF_Manager
         {
             if(downloadqueue.Count() == 0)
             {
-                txtbox.AppendText("\n\nYou can't cancle a non active download.");
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.songs.code.cantCancleNonActive);
                 txtbox.ScrollToEnd();
             } else
             {
                 canceled = true;
-                txtbox.AppendText("\n\nremoved all queued downloads");
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.songs.code.clearedQueue);
                 txtbox.ScrollToEnd();
             }
         }
@@ -303,7 +315,7 @@ namespace BMBF_Manager
                             exeProcess.WaitForExit();
                             if (IPS.Contains("no devices/emulators found"))
                             {
-                                txtbox.AppendText(MainWindow.ADB110);
+                                txtbox.AppendText(MainWindow.globalLanguage.global.ADB110);
                                 txtbox.ScrollToEnd();
                                 return false;
                             }
@@ -321,7 +333,7 @@ namespace BMBF_Manager
                     continue;
                 }
             }
-            txtbox.AppendText(MainWindow.ADB100);
+            txtbox.AppendText(MainWindow.globalLanguage.global.ADB100);
             txtbox.ScrollToEnd();
             return false;
         }
@@ -330,14 +342,14 @@ namespace BMBF_Manager
         {
             if (!CheckIP())
             {
-                txtbox.AppendText("\n\nChoose a valid IP.");
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.global.ipInvalid);
                 txtbox.ScrollToEnd();
                 return;
             }
 
             String Input = "";
             System.Windows.Forms.OpenFileDialog ofd = new System.Windows.Forms.OpenFileDialog();
-            ofd.Filter = "Zip Files (*.zip)|*.zip";
+            ofd.Filter = MainWindow.globalLanguage.songs.code.zipFile + " (*.zip)|*.zip";
             DialogResult result = ofd.ShowDialog();
             if (result == System.Windows.Forms.DialogResult.Cancel) { Running = false; return; }
             if (result == System.Windows.Forms.DialogResult.OK)
@@ -349,7 +361,7 @@ namespace BMBF_Manager
                 }
                 else
                 {
-                    MessageBox.Show("Please select a valid Zip File", "BMBF Manager - Zip Song Installing", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show(MainWindow.globalLanguage.songs.code.selectValidZip, "BMBF Manager - Zip Song Installing", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
 
@@ -360,21 +372,21 @@ namespace BMBF_Manager
             {
                 if (downloadqueue.Contains(new Tuple<string, bool>(Input, true)))
                 {
-                    txtbox.AppendText("\nThe Song " + System.IO.Path.GetFileName(Input) + " is already in the queue");
+                    txtbox.AppendText("\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.songs.code.songAlreadyInQueue, System.IO.Path.GetFileName(Input)));
                     return;
                 }
                 downloadqueue.Add(new Tuple<string, bool>(Input, true));
-                txtbox.AppendText("\n\n" + System.IO.Path.GetFileName(Input) + " has been added to the queue");
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.songs.code.songAddedToQueue, System.IO.Path.GetFileName(Input)));
                 checkqueue();
                 return;
             }
 
-            MessageBoxResult result1 = MessageBox.Show("This Song is over 50MB. A experimental method to install sogns will be used. Is your Quest connected?", "BMBF Manager - Zip Song installing", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+            MessageBoxResult result1 = MessageBox.Show(MainWindow.globalLanguage.songs.code.songBig, "BMBF Manager - Zip Song installing", MessageBoxButton.YesNo, MessageBoxImage.Warning);
 
             switch (result1)
             {
                 case MessageBoxResult.No:
-                    txtbox.AppendText("\n\nSong Installing Aborted");
+                    txtbox.AppendText("\n\n" + MainWindow.globalLanguage.songs.code.songInstallAborted);
                     txtbox.ScrollToEnd();
                     return;
             }
@@ -391,10 +403,10 @@ namespace BMBF_Manager
                 return;
             }
 
-            txtbox.AppendText("\n\nunzipping Song");
-            txtbox.AppendText("\n\nunzipped Song");
+            txtbox.AppendText("\n\n" + MainWindow.globalLanguage.songs.code.unzippingSong);
             ZipFile.ExtractToDirectory(exe + "\\tmp\\finished\\" + name + ".zip", exe + "\\tmp\\unzipped");
-
+            txtbox.AppendText("\n\n" + MainWindow.globalLanguage.songs.code.unzippedSong);
+            
             String[] f = Directory.GetDirectories(exe + "\\tmp\\unzipped");
             if (f.Count() != 0)
             {
@@ -409,7 +421,7 @@ namespace BMBF_Manager
 
             String hash = GetCustomLevelHash(Input);
 
-            txtbox.AppendText("\n\nGenerated hash: " + hash);
+            txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.songs.code.generatedHash, hash));
             if (Directory.Exists(exe + "\\tmp\\custom_level_" + hash)) Directory.Delete(exe + "\\tmp\\custom_level_" + hash, true);
             Directory.Move(Input, exe + "\\tmp\\custom_level_" + hash);
             if (!adb("push \"" + exe + "\\tmp\\custom_level_" + hash + "\" /sdcard/BMBFData/CustomSongs")) return;
@@ -418,17 +430,17 @@ namespace BMBF_Manager
             //Playlist Backup
             BackupPlaylists();
 
-            txtbox.AppendText("\n\nsyncing Song to Beat Saber");
+            txtbox.AppendText("\n\n" + MainWindow.globalLanguage.global.syncingToBS);
             txtbox.ScrollToEnd();
             Sync();
-            txtbox.AppendText("\n\nsynced Song to Beat Saber");
+            txtbox.AppendText("\n\n" + MainWindow.globalLanguage.global.syncedToBS);
             txtbox.ScrollToEnd();
 
             reloadsongsfolder();
 
             RestorePlaylists();
 
-            txtbox.AppendText("\n\nInstalled Song.");
+            txtbox.AppendText("\n\n" + MainWindow.globalLanguage.songs.code.installedSong);
             txtbox.ScrollToEnd();
         }
 
@@ -437,7 +449,7 @@ namespace BMBF_Manager
             try
             {
                 Sync();
-                txtbox.AppendText("\n\nBacking up Playlist to " + exe + "\\Backup\\Playlists.json");
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.mainMenu.code.playlistBackup, "\\Backup\\Playlists.json"));
                 txtbox.ScrollToEnd();
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
                 String BMBF = "";
@@ -448,13 +460,13 @@ namespace BMBF_Manager
                 var json = JSON.Parse(BMBF);
                 json["IsCommitted"] = false;
                 File.WriteAllText(exe + "\\tmp\\Playlists.json", json["Config"].ToString());
-                txtbox.AppendText("\n\nBacked up Playlists to " + exe + "\\tmp\\Playlists.json");
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.mainMenu.code.playlistBackupFinished, "\\Backup\\Playlists.json"));
                 txtbox.ScrollToEnd();
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
             }
             catch
             {
-                txtbox.AppendText(MainWindow.PL100);
+                txtbox.AppendText(MainWindow.globalLanguage.global.PL100);
 
             }
         }
@@ -487,7 +499,7 @@ namespace BMBF_Manager
             }
             catch
             {
-                txtbox.AppendText(MainWindow.PL100);
+                txtbox.AppendText(MainWindow.globalLanguage.global.PL100);
             }
         }
 
@@ -541,7 +553,7 @@ namespace BMBF_Manager
                 {
                     Sync();
                 }
-                txtbox.AppendText("\n\n" + downloadqueue.Count + " Songs remaining to install");
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.songs.code.remainingToInstall, downloadqueue.Count.ToString()));
                 txtbox.ScrollToEnd();
                 InstallSong();
             }
@@ -549,9 +561,9 @@ namespace BMBF_Manager
             {
                 canceled = false;
                 downloadqueue.Clear();
-                txtbox.AppendText("\n\nAll finished.");
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.global.allFinished);
                 txtbox.ScrollToEnd();
-                DownloadLable.Text = "All finished";
+                DownloadLable.Text = MainWindow.globalLanguage.global.allFinished;
                 if (PEO)
                 {
                     PlaylistEditor.waiting = false;
@@ -573,7 +585,7 @@ namespace BMBF_Manager
 
         public void InstallSongPE(String Key)
         {
-            txtbox.AppendText("\n\nAdded Songs key " + Key + " to download for a BPList");
+            txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.songs.code.songKeyAddedToQueue, Key));
             txtbox.ScrollToEnd();
             downloadqueue.Add(new Tuple<string, bool>(Key, false));
             PEO = true;
@@ -584,18 +596,18 @@ namespace BMBF_Manager
         {
             if (downloadqueue.Contains(new Tuple<string, bool>(SongKey.Text, false)))
             {
-                txtbox.AppendText("\nThe Song " + SongKey.Text + " is already in the download queue");
+                txtbox.AppendText("\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.songs.code.songAlreadyInQueue, SongKey.Text));
                 txtbox.ScrollToEnd();
                 return;
             }
-            if (SongKey.Text == "Song Key")
+            if (SongKey.Text == MainWindow.globalLanguage.songs.UI.songKeyPlaceholder)
             {
-                txtbox.AppendText("\n\nPlease Choose a Song.");
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.songs.code.chooseSong);
                 txtbox.ScrollToEnd();
                 Running = false;
                 return;
             }
-            txtbox.AppendText("\n\nThe Song " + SongKey.Text + " was added to the queue");
+            txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.songs.code.songKeyAddedToQueue, SongKey.Text));
             downloadqueue.Add(new Tuple<string, bool>(SongKey.Text, false));
             checkqueue();
         }
@@ -604,7 +616,7 @@ namespace BMBF_Manager
         {
             if (!CheckIP())
             {
-                txtbox.AppendText("\n\nChoose a valid IP.");
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.global.ipInvalid);
                 txtbox.ScrollToEnd();
                 return;
             }
@@ -623,7 +635,7 @@ namespace BMBF_Manager
             BeatSaverAPISong song = interactor.GetBeatSaverAPISong(Key);
             if(!song.GoodRequest)
             {
-                txtbox.AppendText("\n\nThe BeatMap " + Key + " doesn't exist.");
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.songs.code.beatMapCantBeFound, Key));
                 txtbox.ScrollToEnd();
                 Running = false;
                 downloadqueue.RemoveAt(0);
@@ -636,7 +648,7 @@ namespace BMBF_Manager
                 C++;
             }
 
-            txtbox.AppendText("\nDownloading BeatMap " + Key);
+            txtbox.AppendText("\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.songs.code.downloadingBeatMap, Key));
             txtbox.ScrollToEnd();
             WebClient cl = new WebClient();
             cl.Headers.Add("user-agent", "BMBF Manager/1.0");
@@ -646,7 +658,7 @@ namespace BMBF_Manager
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
                 {
-                    DownloadLable.Text = "Downloading BeatMap " + Key;
+                    DownloadLable.Text = MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.songs.code.downloadingBeatMap, Key);
                     txtbox.ScrollToEnd();
                     cl.DownloadProgressChanged += new DownloadProgressChangedEventHandler(client_DownloadProgressChanged);
                     cl.DownloadFileCompleted += new AsyncCompletedEventHandler(finished_download);
@@ -655,7 +667,7 @@ namespace BMBF_Manager
             }
             catch
             {
-                txtbox.AppendText("\n\nIf you see this something in the code messed up or ComputerElite is dumb");
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.songs.code.downloadingBeatMap, Key));
                 txtbox.ScrollToEnd();
                 Running = false;
                 return;
@@ -673,8 +685,8 @@ namespace BMBF_Manager
         public void finished_download(object sender, AsyncCompletedEventArgs e)
         {
             adb("shell am start -n com.weloveoculus.BMBF/com.weloveoculus.BMBF.MainActivity");
-            txtbox.AppendText("\nDownloaded BeatMap " + Key + "\n");
-            txtbox.AppendText("\nChecking BeatMap " + Key);
+            txtbox.AppendText("\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.songs.code.downloadedBeatMap, Key) + "\n");
+            txtbox.AppendText("\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.songs.code.checkingBeatMap, Key));
             txtbox.ScrollToEnd();
             String name = CheckSongZip(exe + "\\tmp\\" + Key + C + ".zip");
             if (name == "Error")
@@ -694,15 +706,15 @@ namespace BMBF_Manager
 
             WebClient client = new WebClient();
             Uri uri = new Uri("http://" + MainWindow.IP + ":50000/host/beatsaber/upload?overwrite");
-            if(uploadfile) txtbox.AppendText("\n\nUploading BeatMap " + System.IO.Path.GetFileName(downloadqueue[0].Item1) + " to BMBF");
-            else txtbox.AppendText("\n\nUploading BeatMap " + downloadqueue[0].Item1 + " to BMBF");
+            if(uploadfile) txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.songs.code.uploadingBeatMap, System.IO.Path.GetFileName(downloadqueue[0].Item1)));
+            else txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.songs.code.uploadingBeatMap, downloadqueue[0].Item1));
             txtbox.ScrollToEnd();
             try
             {
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
                 {
-                    if (uploadfile) DownloadLable.Text = "Uploading " + System.IO.Path.GetFileName(downloadqueue[0].Item1) + " to BMBF";
-                    else DownloadLable.Text = "Uploading BeatMap " + downloadqueue[0].Item1 + " to BMBF";
+                    if (uploadfile) DownloadLable.Text = MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.songs.code.uploadingBeatMap, System.IO.Path.GetFileName(downloadqueue[0].Item1));
+                    else DownloadLable.Text = MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.songs.code.uploadingBeatMap, downloadqueue[0].Item1);
                     client.UploadProgressChanged += new UploadProgressChangedEventHandler(client_uploadchanged);
                     client.UploadFileCompleted += (sender, e) => finished_upload(sender, e, uploadfile);
                     client.UploadFileAsync(uri, path);
@@ -711,7 +723,7 @@ namespace BMBF_Manager
             }
             catch
             {
-                txtbox.AppendText(MainWindow.BMBF100);
+                txtbox.AppendText(MainWindow.globalLanguage.global.BMBF100);
                 txtbox.ScrollToEnd();
             }
         }
@@ -732,12 +744,12 @@ namespace BMBF_Manager
                 {
                     if (!PEO) Sync();
                 }));
-                txtbox.AppendText("\n\nSong " + downloadqueue[0].Item1 + " was synced to your Quest.");
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.songs.code.songWasSynced, downloadqueue[0].Item1));
                 txtbox.ScrollToEnd();
             }
             catch
             {
-                txtbox.AppendText("\n\nCouldn't sync with BeatSaber. Needs to be done manually.");
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.songs.code.couldntSync);
                 txtbox.ScrollToEnd();
             }
             downloadqueue.RemoveAt(0);
@@ -786,14 +798,14 @@ namespace BMBF_Manager
                 {
                     if (!File.Exists(entry + "\\Info.dat") || !File.Exists(entry + "\\info.dat"))
                     {
-                        found.Add("Fatal: Info.dat missing");
+                        found.Add(MainWindow.globalLanguage.songs.code.infoMissing);
                         sendfoundings(found, false);
                         return "Error";
                     }
                 }
                 else
                 {
-                    found.Add("Fatal: Info.dat missing");
+                    found.Add(MainWindow.globalLanguage.songs.code.infoMissing);
                     sendfoundings(found, false);
                     return "Error";
                 }
@@ -810,21 +822,21 @@ namespace BMBF_Manager
                     if (file.EndsWith(".ogg") || file.EndsWith(".egg") || file.EndsWith(".wav") || file.EndsWith(".bmp") || file.EndsWith(".exr") || file.EndsWith(".gif") || file.EndsWith(".hdr") || file.EndsWith(".iff") || file.EndsWith(".pict") || file.EndsWith(".psd") || file.EndsWith(".tga") || file.EndsWith(".tiff"))
                     {
                         info["_songFilename"] = System.IO.Path.GetFileName(file);
-                        found.Add("Corrected: Wrong song in Info.dat");
+                        found.Add(MainWindow.globalLanguage.songs.code.wrongSong);
                         corrected = true;
                         break;
                     }
                     if (info["_songFilename"].ToString().Replace("\"", "").StartsWith(System.IO.Path.GetFileNameWithoutExtension(file)))
                     {
                         info["_songFilename"] = System.IO.Path.GetFileName(file);
-                        found.Add("Corrected: Wrong song extension in Info.dat");
+                        found.Add(MainWindow.globalLanguage.songs.code.wrongSongExtension);
                         corrected = true;
                         break;
                     }
                 }
                 if (!corrected)
                 {
-                    found.Add("Fatal: no valid song found");
+                    found.Add(MainWindow.globalLanguage.songs.code.noSong);
                     sendfoundings(found, false);
                     return "Error";
                 }
@@ -838,21 +850,21 @@ namespace BMBF_Manager
                     if (file.EndsWith(".png") || file.EndsWith(".jpg") || file.EndsWith("."))
                     {
                         info["_coverImageFilename"] = System.IO.Path.GetFileName(file);
-                        found.Add("Corrected: Wrong cover name in Info.dat");
+                        found.Add(MainWindow.globalLanguage.songs.code.wrongCover);
                         corrected = true;
                         break;
                     }
                     if (info["_coverImageFilename"].ToString().Replace("\"", "").StartsWith(System.IO.Path.GetFileNameWithoutExtension(file)))
                     {
                         info["_coverImageFilename"] = System.IO.Path.GetFileName(file);
-                        found.Add("Corrected: Wrong cover extension in Info.dat");
+                        found.Add(MainWindow.globalLanguage.songs.code.wrongCoverExtension);
                         corrected = true;
                         break;
                     }
                 }
                 if (!corrected)
                 {
-                    found.Add("Fatal: no valid cover found");
+                    found.Add(MainWindow.globalLanguage.songs.code.noCover);
                     sendfoundings(found, false);
                     return "Error";
                 }
@@ -865,7 +877,7 @@ namespace BMBF_Manager
                 {
                     if (!File.Exists(entry + "\\" + difficulty["_beatmapFilename"]))
                     {
-                        found.Add("Fatal: Difficulty file for difficulty " + difficulty["_difficulty"] + " in BeatMapSet " + BeatmapSet["_beatmapCharacteristicName"] + " not found");
+                        found.Add(MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.songs.code.noDifficulty, difficulty["_difficulty"], BeatmapSet["_beatmapCharacteristicName"]));
                         baddiff = true;
                     }
                 }
@@ -890,7 +902,7 @@ namespace BMBF_Manager
                 {
 
                     ka.Add(c.Key);
-                    found.Add("corrected: changed unknown of key " + c.Key + " to k. A. in Info.dat");
+                    found.Add(MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.songs.code.changedUnknown, c.Key));
                 }
                 index++;
             }
@@ -910,12 +922,13 @@ namespace BMBF_Manager
             Name = Name.Replace(">", "");
             Name = Name.Replace("|", "");
             Name = Name.Replace(@"\", "");
+            Name = Name.Trim();
 
             if (File.Exists(exe + "\\tmp\\finished\\" + Name + ".zip")) File.Delete(exe + "\\tmp\\finished\\" + Name + ".zip");
             ZipFile.CreateFromDirectory(folder, exe + "\\tmp\\finished\\" + Name + ".zip");
             if (found.Count == 0)
             {
-                found.Add("All should be good. please check manually if you have any issues");
+                found.Add(MainWindow.globalLanguage.songs.code.allGood);
                 sendfoundings(found, true, true);
                 return Name;
             }
@@ -931,7 +944,7 @@ namespace BMBF_Manager
             {
                 if (found.Count == 0)
                 {
-                    found.Add("Corrected: Folder(s) in zip file");
+                    found.Add(MainWindow.globalLanguage.songs.code.correctedFolders);
                 }
 
                 MoveOutOfFolder(folder, found);
@@ -955,17 +968,17 @@ namespace BMBF_Manager
             }
             if (!sendZip)
             {
-                txtbox.AppendText("\n\nChecked Song: Founding:\n" + tosend + "\nNo correction possible");
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.songs.code.noCorrectionPossible, tosend));
             }
             else
             {
                 if (check)
                 {
-                    txtbox.AppendText("\n\nChecked Song: All good");
+                    txtbox.AppendText("\n\n" + MainWindow.globalLanguage.songs.code.songAllGood);
                 }
                 else
                 {
-                    txtbox.AppendText("\n\nChecked Song: Foundings:" + tosend + "");
+                    txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.songs.code.corrected, tosend));
                 }
 
             }

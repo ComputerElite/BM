@@ -1,4 +1,5 @@
-﻿using Microsoft.WindowsAPICodePack.Dialogs;
+﻿using ComputerUtils.RegxTemplates;
+using Microsoft.WindowsAPICodePack.Dialogs;
 using SimpleJSON;
 using System;
 using System.Collections;
@@ -45,8 +46,10 @@ namespace BMBF_Manager
             InitializeComponent();
 
             BackupF = exe + "\\BBBUBackups";
+            ApplyLanguage();
             Quest.Text = MainWindow.IP;
-            txtbox.Text = "Output:";
+            txtbox.Text = MainWindow.globalLanguage.global.defaultOutputBoxText;
+            BName.Text = MainWindow.globalLanguage.bBBU.code.backupNameName;
 
             if (!Directory.Exists(exe + "\\BBBUBackups"))
             {
@@ -73,18 +76,31 @@ namespace BMBF_Manager
             ChangeImage("BBBU4.png");
         }
 
+        public void ApplyLanguage()
+        {
+            RestoreB.Content = MainWindow.globalLanguage.bBBU.UI.restoreButton;
+            BackupB.Content = MainWindow.globalLanguage.bBBU.UI.backupButton;
+            ABackupB.Content = MainWindow.globalLanguage.bBBU.UI.AdvancedBackupButton;
+            RSongs.Content = MainWindow.globalLanguage.bBBU.UI.restoreSongsBox;
+            RPlaylists.Content = MainWindow.globalLanguage.bBBU.UI.restorePlaylistsBox;
+            RScores.Content = MainWindow.globalLanguage.bBBU.UI.restoreScoresBox;
+            RMods.Content = MainWindow.globalLanguage.bBBU.UI.restoreModsBox;
+            RReplays.Content = MainWindow.globalLanguage.bBBU.UI.restoreModDataBox;
+            RAPK.Content = MainWindow.globalLanguage.bBBU.UI.restoreVersionBox;
+        }
+
         public void TransferFromBBBU()
         {
             if (MainWindow.BBBUTransfered) return;
             MainWindow.BBBUTransfered = true;
-            MessageBoxResult r = MessageBox.Show("Hi. I'm asking you if I should import Backups from BMBF Beat Saber Backup Utility. Only click yes if you've used the seperate program before. You can always import again if you wish to from the settings.", "BMBF Manager - BMBF Beat Saber Backup Utility", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            MessageBoxResult r = MessageBox.Show(MainWindow.globalLanguage.bBBU.code.importBBBUQuestion, "BMBF Manager - BMBF Beat Saber Backup Utility", MessageBoxButton.YesNo, MessageBoxImage.Question);
             switch (r)
             {
                 case MessageBoxResult.No:
-                    txtbox.AppendText("\n\nNothing Imported");
+                    txtbox.AppendText("\n\n" + MainWindow.globalLanguage.bBBU.code.nothingImported);
                     return;
             }
-            MessageBox.Show("I'll open a window for you. Please choose the folder in which your BMBF Beat Saber Backup Utility Installation is located. I'll then transfer all Backups", "BMBF Manager - BMBF Beat Saber Backup Utility", MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show(MainWindow.globalLanguage.bBBU.code.selectBBBUFolderInfo, "BMBF Manager - BMBF Beat Saber Backup Utility", MessageBoxButton.OK, MessageBoxImage.Information);
 
             CommonOpenFileDialog ofd = new CommonOpenFileDialog();
             ofd.IsFolderPicker = true;
@@ -98,17 +114,17 @@ namespace BMBF_Manager
                         Console.WriteLine(folder);
                         String backupName = new DirectoryInfo(folder).Name;
                         Directory.Move(folder, exe + "\\BBBUBackups\\" + backupName);
-                        txtbox.AppendText("\n\nMoved Backup " + backupName);
+                        txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.bBBU.code.movedBackup, backupName));
                     }
                 }
                 else
                 {
-                    MessageBox.Show("Please select a valid Directory", "BMBF Manager - BMBF Beat Saber backup Utility", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show(MainWindow.globalLanguage.bBBU.code.selectValidDir, "BMBF Manager - BMBF Beat Saber backup Utility", MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
 
             }
 
-            txtbox.AppendText("\n\nAll Backups moved");
+            txtbox.AppendText("\n\n" + MainWindow.globalLanguage.bBBU.code.backupsMoved);
         }
 
         public void Convert()
@@ -167,18 +183,19 @@ namespace BMBF_Manager
             //Check Quest IP
             if (!CheckIP())
             {
-                txtbox.AppendText("\n\nChoose a valid IP!");
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.global.ipInvalid);
                 running = false;
                 return;
             }
 
             if(Advanced)
             {
-                MessageBoxResult r = MessageBox.Show("This Backup Method will Backup the Beat Saber APK and BMBF APK as well. If you don't make another Backup before you restore this Backup you have to mod Beat Saber again. Only do this when you know what you're doing. Note: This has only been tested on Quest 1. If you are on Quest 2 feel free to contact me and say if it worked.\nDo you want to continue?", "BMBF Manager - BMBF Beat Saber Backup Utility", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                MessageBoxResult r = MessageBox.Show(MainWindow.globalLanguage.bBBU.code.advancedBackupWarning, "BMBF Manager - BMBF Beat Saber Backup Utility", MessageBoxButton.YesNo, MessageBoxImage.Warning);
                 switch (r)
                 {
                     case MessageBoxResult.No:
-                        txtbox.AppendText("\n\nBackup Aborted.");
+                        txtbox.AppendText("\n\n" + MainWindow.globalLanguage.bBBU.code.backupAborted);
+                        running = false;
                         return;
                 }
             }
@@ -186,7 +203,7 @@ namespace BMBF_Manager
             //Create all Backup Folders
             if (!BackupFSet())
             {
-                txtbox.AppendText("\n\nThis Backup already exists!");
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.bBBU.code.backupExists);
                 running = false;
                 return;
             }
@@ -194,13 +211,13 @@ namespace BMBF_Manager
             BackupConfig = JSON.Parse("{}");
 
             //Scores
-            txtbox.AppendText("\n\nBacking up scores");
+            txtbox.AppendText("\n\n" + MainWindow.globalLanguage.bBBU.code.backingUpScores);
             adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/LocalDailyLeaderboards.dat \"" + Scores + "\"");
             adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/LocalLeaderboards.dat \"" + Scores + "\"");
             adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/PlayerData.dat \"" + Scores + "\"");
             adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/AvatarData.dat \"" + Scores + "\"");
             adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/settings.cfg \"" + Scores + "\"");
-            txtbox.AppendText("\nBacked up scores\n");
+            txtbox.AppendText("\n" + MainWindow.globalLanguage.bBBU.code.backedUpScores + "\n");
             txtbox.ScrollToEnd();
 
             //Songs
@@ -216,9 +233,9 @@ namespace BMBF_Manager
 
             //ModData
 
-            txtbox.AppendText("\n\nBacking up ModData");
+            txtbox.AppendText("\n\n" + MainWindow.globalLanguage.bBBU.code.backingUpModData);
             adb("pull /sdcard/ModData/com.beatgames.beatsaber \"" + BackupF + "\"");
-            txtbox.AppendText("\nBacked up replays\n");
+            txtbox.AppendText("\n" + MainWindow.globalLanguage.bBBU.code.backedUpModData + "\n");
             txtbox.ScrollToEnd();
 
             //Mods
@@ -230,11 +247,11 @@ namespace BMBF_Manager
                 BackupAPK();
                 if(!BackupConfig["BMBFBackup"])
                 {
-                    MessageBox.Show("I couldn't make a BMBF APK Backup. If you want to restore to this game Version you may want to install the right BMBF Version.", "BMBF Manager - BMBF Beat Saber Backup Utility", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show(MainWindow.globalLanguage.bBBU.code.bMBFAPKBackupFailed, "BMBF Manager - BMBF Beat Saber Backup Utility", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
                 if (!BackupConfig["BSBackup"])
                 {
-                    MessageBox.Show("I couldn't make a Beat Saber APK Backup. If you want to restore to this game Version it will not work.", "BMBF Manager - BMBF Beat Saber Backup Utility", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show(MainWindow.globalLanguage.bBBU.code.bSAPKBackupFailed, "BMBF Manager - BMBF Beat Saber Backup Utility", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
 
@@ -248,7 +265,7 @@ namespace BMBF_Manager
             BackupConfig["Qosmetics"] = true;
             File.WriteAllText(BackupF + "\\Backup.json", BackupConfig.ToString());
 
-            txtbox.AppendText("\n\n\nBMBF and Beat Saber Backup has been made.");
+            txtbox.AppendText("\n\n\n" + MainWindow.globalLanguage.bBBU.code.backupMade);
             txtbox.ScrollToEnd();
             running = false;
         }
@@ -277,7 +294,7 @@ namespace BMBF_Manager
 
             if (Backups.SelectedIndex == 0)
             {
-                txtbox.AppendText("\n\nSelect a valid Backup!");
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.bBBU.code.selectValidBackup);
                 running = false;
                 return;
             }
@@ -288,18 +305,18 @@ namespace BMBF_Manager
             //Check Quest IP
             if (!CheckIP())
             {
-                txtbox.AppendText("\n\nChoose a valid IP!");
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.global.ipInvalid);
                 running = false;
                 return;
             }
 
             if ((bool)RAPK.IsChecked)
             {
-                MessageBoxResult r = MessageBox.Show("You choose to restore the Beat Saber APK. This will install another Beat Saber version. If you didn't make a Backup you have to mod Beat Saber again. If you want to go back to the current Beat Saber Version make a Advanced Backup first. Also if you restore, BMBF Mods will be messed up a bit. Note: This has only been tested on Quest 1. If you are on Quest 2 feel free to contact me and say if it worked.\nDo you wish to abort?", "BMBF Manager - BMBF Beat Saber Backup Utility", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                MessageBoxResult r = MessageBox.Show(MainWindow.globalLanguage.bBBU.code.rAPKWarning, "BMBF Manager - BMBF Beat Saber Backup Utility", MessageBoxButton.YesNo, MessageBoxImage.Warning);
                 switch (r)
                 {
                     case MessageBoxResult.Yes:
-                        txtbox.AppendText("\n\nRestoring aborted.");
+                        txtbox.AppendText("\n\n" + MainWindow.globalLanguage.bBBU.code.restoringAborted);
                         return;
                 }
             }
@@ -313,25 +330,25 @@ namespace BMBF_Manager
             //Scores
             if ((bool)RScores.IsChecked == true && (bool)RAPK.IsChecked == false)
             {
-                txtbox.AppendText("\n\nPushing Scores");
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.bBBU.code.pushingScores);
                 adb("push \"" + Scores + "\\LocalDailyLeaderboards.dat\" /sdcard/Android/data/com.beatgames.beatsaber/files/LocalDailyLeaderboards.dat");
                 adb("push \"" + Scores + "\\LocalLeaderboards.dat\" /sdcard/Android/data/com.beatgames.beatsaber/files/LocalLeaderboards.dat");
                 adb("push \"" + Scores + "\\PlayerData.dat\" /sdcard/Android/data/com.beatgames.beatsaber/files/PlayerData.dat");
                 adb("push \"" + Scores + "\\AvatarData.dat\" /sdcard/Android/data/com.beatgames.beatsaber/files/AvatarData.dat");
                 adb("push \"" + Scores + "\\settings.cfg\" /sdcard/Android/data/com.beatgames.beatsaber/files/setting.cfg");
-                txtbox.AppendText("\nPushed Scores");
+                txtbox.AppendText("\n" + MainWindow.globalLanguage.bBBU.code.pushedScores);
                 txtbox.ScrollToEnd();
             }
 
             //ModData
             if ((bool)RReplays.IsChecked)
             {
-                txtbox.AppendText("\n\nPushing Replays");
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.bBBU.code.pushingModData);
                 if (Directory.Exists(BackupF + "\\replays")) adb("push \"" + BackupF + "\\replays\" /sdcard/ModData/com.beatgames.beatsaber/Mods/Replay/");
                 if (Directory.Exists(BackupF + "\\Configs")) adb("push \"" + BackupF + "\\Configs\" /sdcard/ModData/com.beatgames.beatsaber/");
                 if (Directory.Exists(BackupF + "\\Qosmetics")) adb("push \"" + BackupF + "\\Qosmetics\" /sdcard/ModData/com.beatgames.beatsaber/Mods/");
                 if (Directory.Exists(BackupF + "\\com.beatgames.beatsaber")) adb("push \"" + BackupF + "\\com.beatgames.beatsaber\" /sdcard/ModData/");
-                txtbox.AppendText("\nFinished Pushing Replays");
+                txtbox.AppendText("\n" + MainWindow.globalLanguage.bBBU.code.pushedModData);
                 txtbox.ScrollToEnd();
             }
 
@@ -340,15 +357,15 @@ namespace BMBF_Manager
             {
                 if (CheckVer() == 0)
                 {
-                    txtbox.AppendText("\n\nUploading Songs");
+                    txtbox.AppendText("\n\n" + MainWindow.globalLanguage.bBBU.code.uploadingSongs);
                     Upload(Songs);
-                    txtbox.AppendText("\nUploaded Songs");
+                    txtbox.AppendText("\n" + MainWindow.globalLanguage.bBBU.code.uploadedSongs);
                 }
                 else if (CheckVer() == 1)
                 {
-                    txtbox.AppendText("\nPushing Songs");
+                    txtbox.AppendText("\n" + MainWindow.globalLanguage.bBBU.code.pushingSongs);
                     adb("push \"" + Songs + "\" /sdcard/BMBFData");
-                    txtbox.AppendText("\nPushed Songs");
+                    txtbox.AppendText("\n" + MainWindow.globalLanguage.bBBU.code.pushedSongs);
                 }
                 txtbox.ScrollToEnd();
             }
@@ -364,13 +381,13 @@ namespace BMBF_Manager
             //Mods
             if ((bool)RMods.IsChecked)
             {
-                txtbox.AppendText("\n\nUploading Mods");
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.bBBU.code.uploadingMods);
                 Upload(Mods);
-                txtbox.AppendText("\nUploaded Mods");
+                txtbox.AppendText("\n" + MainWindow.globalLanguage.bBBU.code.uploadedMods);
                 txtbox.ScrollToEnd();
             }
 
-            txtbox.AppendText("\n\n\nBMBF and Beat Saber has been restored with the selected components.");
+            txtbox.AppendText("\n\n\n" + MainWindow.globalLanguage.bBBU.code.restored);
             txtbox.ScrollToEnd();
             running = false;
         }
@@ -379,33 +396,28 @@ namespace BMBF_Manager
         {
             BackupConfig["BSBackup"] = false;
             BackupConfig["BMBFBackup"] = false;
-            txtbox.AppendText("\n\nBacking up Beat Saber APK");
+            txtbox.AppendText("\n\n" + MainWindow.globalLanguage.bBBU.code.backingUpBSAPK);
             String moddedBS = adbS("shell pm path com.beatgames.beatsaber").Replace("package:", "").Replace(System.Environment.NewLine, "");
             if (adb("pull " + moddedBS + " \"" + APKs + "\\BeatSaber.apk\""))
             {
                 BackupConfig["BSBackup"] = true;
                 if(!File.Exists(APKs + "\\BeatSaber.apk")) BackupConfig["BSBackup"] = false;
-                txtbox.AppendText("\nBacked up Beat Saber APK");
+                txtbox.AppendText("\n" + MainWindow.globalLanguage.bBBU.code.backedUpBSAPK);
             }
 
-            txtbox.AppendText("\n\nBacking up BMBF APK");
+            txtbox.AppendText("\n\n" + MainWindow.globalLanguage.bBBU.code.backingUpBMBFAPK);
             String BMBF = adbS("shell pm path com.weloveoculus.BMBF").Replace("package:", "").Replace(System.Environment.NewLine, "");
             if (adb("pull " + BMBF + " \"" + APKs + "\\BMBF.apk\""))
             {
                 BackupConfig["BMBFBackup"] = true;
                 if (!File.Exists(APKs + "\\BMBF.apk")) BackupConfig["BMBFBackup"] = false;
-                txtbox.AppendText("\nBacked up BMBF APK");
+                txtbox.AppendText("\n" + MainWindow.globalLanguage.bBBU.code.backedUpBMBFAPK);
             }
 
-            txtbox.AppendText("\n\nBacking up Game Data");
+            txtbox.AppendText("\n\n" + MainWindow.globalLanguage.bBBU.code.backingUpGameData);
             if (adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files \"" + BackupF + "\""))
             {
-                txtbox.AppendText("\nBacked up Game Data");
-            }
-            txtbox.AppendText("\n\nBacking up ModData");
-            if (adb("pull /sdcard/ModData/com.beatgames.beatsaber \"" + BackupF + "\""))
-            {
-                txtbox.AppendText("\nBacked up ModData");
+                txtbox.AppendText("\n" + MainWindow.globalLanguage.bBBU.code.backedUpGameData);
             }
         }
 
@@ -413,36 +425,40 @@ namespace BMBF_Manager
         {
             if (!BackupConfig["BSBackup"].AsBool)
             {
-                MessageBox.Show("You Backup doesn't contain any Beat Saber APK backup. I must abort to prevent anything from going wrong.", "BMBF Manager - BMBF Beat Saber Backup Utility", MessageBoxButton.OK, MessageBoxImage.Error);
-                txtbox.AppendText("\n\nAPK Backup Restoring Aborted.");
+                MessageBox.Show(MainWindow.globalLanguage.bBBU.code.bSAPKNotFound, "BMBF Manager - BMBF Beat Saber Backup Utility", MessageBoxButton.OK, MessageBoxImage.Error);
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.bBBU.code.aPKRestoringAborted);
                 return;
             }
-            txtbox.AppendText("\n\nBacking up scores");
+            txtbox.AppendText("\n\n" + MainWindow.globalLanguage.bBBU.code.backingUpScores);
             adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/LocalDailyLeaderboards.dat \"" + Scores + "\"");
             adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/LocalLeaderboards.dat \"" + Scores + "\"");
             adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/PlayerData.dat \"" + Scores + "\"");
             adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/AvatarData.dat \"" + Scores + "\"");
             adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/settings.cfg \"" + Scores + "\"");
-            txtbox.AppendText("\nBacked up scores");
-            txtbox.AppendText("\n\nInstalling Beat Saber");
+            txtbox.AppendText("\n" + MainWindow.globalLanguage.bBBU.code.backedUpScores);
+
+            txtbox.AppendText("\n\n" + MainWindow.globalLanguage.bBBU.code.installingBS);
             if (!adb("uninstall com.beatgames.beatsaber")) return;
             if (!adb("install \"" + APKs + "\\BeatSaber.apk\"")) return;
-            txtbox.AppendText("\nInstalled Beat Saber");
-            txtbox.AppendText("\n\nInstalling BMBF");
+            txtbox.AppendText("\n" + MainWindow.globalLanguage.bBBU.code.installedBS);
+
+            txtbox.AppendText("\n\n" + MainWindow.globalLanguage.bBBU.code.installingBMBF);
             if (!adb("uninstall com.weloveoculus.BMBF")) return;
             if (!adb("install \"" + APKs + "\\BMBF.apk\"")) return;
-            txtbox.AppendText("\nInstalled BMBF");
-            txtbox.AppendText("\n\nRestoring Game Data");
+            txtbox.AppendText("\n" + MainWindow.globalLanguage.bBBU.code.installedBMBF);
+
+            txtbox.AppendText("\n\n" + MainWindow.globalLanguage.bBBU.code.restoringGameData);
             if (!adb("push \"" + BackupF + "\\files\" /sdcard/Android/data/com.beatgames.beatsaber/")) return;
             if (!adb("push \"" + BackupF + "\\com.beatgames.beatsaber\" /sdcard/ModData/")) return;
-            txtbox.AppendText("\n\nPushing Scores");
+            txtbox.AppendText("\n" + MainWindow.globalLanguage.bBBU.code.restoredGameData);
+
+            txtbox.AppendText("\n\n" + MainWindow.globalLanguage.bBBU.code.pushingScores);
             adb("push \"" + Scores + "\\LocalDailyLeaderboards.dat\" /sdcard/Android/data/com.beatgames.beatsaber/files/LocalDailyLeaderboards.dat");
             adb("push \"" + Scores + "\\LocalLeaderboards.dat\" /sdcard/Android/data/com.beatgames.beatsaber/files/LocalLeaderboards.dat");
             adb("push \"" + Scores + "\\PlayerData.dat\" /sdcard/Android/data/com.beatgames.beatsaber/files/PlayerData.dat");
             adb("push \"" + Scores + "\\AvatarData.dat\" /sdcard/Android/data/com.beatgames.beatsaber/files/AvatarData.dat");
             adb("push \"" + Scores + "\\AvatarData.dat\" /sdcard/Android/data/com.beatgames.beatsaber/files/setting.cfg");
-            txtbox.AppendText("\nPushed Scores");
-            txtbox.AppendText("\nRestored game Data");
+            txtbox.AppendText("\n" + MainWindow.globalLanguage.bBBU.code.pushedScores);
         }
 
         public String adbS(String Argument)
@@ -468,7 +484,7 @@ namespace BMBF_Manager
                         exeProcess.WaitForExit();
                         if (IPS.Contains("no devices/emulators found"))
                         {
-                            txtbox.AppendText(MainWindow.ADB110);
+                            txtbox.AppendText(MainWindow.globalLanguage.global.ADB110);
                             txtbox.ScrollToEnd();
                             return "Error";
                         }
@@ -481,7 +497,7 @@ namespace BMBF_Manager
                     continue;
                 }
             }
-            txtbox.AppendText(MainWindow.ADB100);
+            txtbox.AppendText(MainWindow.globalLanguage.global.ADB100);
             txtbox.ScrollToEnd();
             return "Error";
         }
@@ -513,9 +529,9 @@ namespace BMBF_Manager
             }
             MainWindow.IP = FIP;
             Quest.Text = FIP;
-            if (MainWindow.IP == "")
+            if (MainWindow.IP == MainWindow.globalLanguage.global.defaultQuestIPText)
             {
-                Quest.Text = "Quest IP";
+                Quest.Text = MainWindow.globalLanguage.global.defaultQuestIPText;
             }
 
         }
@@ -547,14 +563,10 @@ namespace BMBF_Manager
         public Boolean CheckIP()
         {
             getQuestIP();
-            if (MainWindow.IP == "Quest IP")
+            String found;
+            if ((found = RegexTemplates.GetIP(MainWindow.IP)) != "")
             {
-                return false;
-            }
-            Match found = Regex.Match(MainWindow.IP, "((1?[0-9]?[0-9]|2(5[0-5]|[0-4][0-9]))\\.){3}(1?[0-9]?[0-9]|2(5[0-5]|[0-4][0-9]))");
-            if (found.Success)
-            {
-                MainWindow.IP = found.Value;
+                MainWindow.IP = found;
                 Quest.Text = MainWindow.IP;
                 return true;
             }
@@ -574,7 +586,7 @@ namespace BMBF_Manager
             {
                 if (directories[i].EndsWith(".png"))
                 {
-                    txtbox.AppendText("\n\nPushing " + directories[i] + " to Quest");
+                    txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.mainMenu.code.pushingPng, directories[i]));
                     adb("push \"" + directories[i] + "\" /sdcard/BMBFData/Playlists/");
                     Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
                 }
@@ -590,7 +602,7 @@ namespace BMBF_Manager
 
                 String PlaylistsX;
 
-                txtbox.AppendText("\n\nRestoring Playlist from " + Playlists + "\\Playlists.json");
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.bBBU.code.restoringPlaylists, Playlists + "\\Playlists.json"));
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
 
 
@@ -612,12 +624,12 @@ namespace BMBF_Manager
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate {
                     postChanges(exe + "\\tmp\\config.json");
                 }));
-                txtbox.AppendText("\n\nRestored old Playlists.");
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.mainMenu.code.playlistsRestored);
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
             }
             catch
             {
-                txtbox.AppendText(MainWindow.BMBF100);
+                txtbox.AppendText(MainWindow.globalLanguage.global.BMBF100);
             }
         }
 
@@ -650,7 +662,7 @@ namespace BMBF_Manager
             {
                 WebClient client = new WebClient();
 
-                txtbox.AppendText("\n\nUploading " + directories[i] + " to BMBF");
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.bBBU.code.uploadingToBMBF, directories[i]));
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate {
                     try
                     {
@@ -659,13 +671,13 @@ namespace BMBF_Manager
                     }
                     catch
                     {
-                        txtbox.AppendText(MainWindow.BMBF100);
+                        txtbox.AppendText(MainWindow.globalLanguage.global.BMBF100);
                     }
                 }));
 
                 if (i % 20 == 0 && i != 0)
                 {
-                    txtbox.AppendText("\n\nSyncing to Beat Saber");
+                    txtbox.AppendText("\n\n" + MainWindow.globalLanguage.global.syncingToBS);
                     Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
                     Sync();
                     System.Threading.Thread.Sleep(2000);
@@ -693,7 +705,7 @@ namespace BMBF_Manager
             String Name = "";
             String Source = "";
 
-            txtbox.AppendText("\nCopying all Mods to " + exe + "\\tmp. Please be patient.");
+            txtbox.AppendText("\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.bBBU.code.copyingModsToTMP, exe + "\\tmp"));
             Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
             adb("pull /sdcard/BMBFData/Mods/ \"" + exe + "\\tmp\"");
             if (Directory.Exists(exe + "\\tmp\\Mods"))
@@ -723,20 +735,10 @@ namespace BMBF_Manager
                     Name = Name.Replace("<", "");
                     Name = Name.Replace(">", "");
                     Name = Name.Replace("|", "");
+                    Name = Name.Replace(@"\", "");
+                    Name = Name.Trim();
 
-                    for (int f = 0; f < Name.Length; f++)
-                    {
-                        if (Name.Substring(f, 1).Equals("\\"))
-                        {
-                            Name = Name.Substring(0, f - 1) + Name.Substring(f + 1, Name.Length - f - 1);
-                        }
-                    }
                     int Time = 0;
-                    while (Name.Substring(Name.Length - 1, 1).Equals(" "))
-                    {
-                        Name = Name.Substring(0, Name.Length - 1);
-                    }
-
                     while (list.Contains(Name.ToLower()))
                     {
                         Time++;
@@ -752,14 +754,14 @@ namespace BMBF_Manager
 
                     }
                     list.Add(Name.ToLower());
-                    txtbox.AppendText("\nMod Name: " + Name);
-                    txtbox.AppendText("\nFolder: " + cd);
+                    txtbox.AppendText("\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.bBBU.code.modName, Name));
+                    txtbox.AppendText("\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.bBBU.code.folder, cd));
 
                     bool v = File.Exists(Mods + "\\" + Name + ".zip");
                     if (v)
                     {
                         File.Delete(Mods + "\\" + Name + ".zip");
-                        txtbox.AppendText("\noverwritten file: " + Mods + "\\" + Name + ".zip");
+                        txtbox.AppendText("\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.bBBU.code.fileOverwritten, Mods + "\\" + Name + ".zip"));
 
                         overwritten++;
                     }
@@ -778,9 +780,7 @@ namespace BMBF_Manager
 
             }
 
-            txtbox.AppendText("\n");
-            txtbox.AppendText("\n");
-            txtbox.AppendText("\nFinished! Backed up " + exported + " Mods");
+            txtbox.AppendText("\n\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.bBBU.code.finishedModBackup, exported.ToString()));
             txtbox.ScrollToEnd();
         }
 
@@ -790,7 +790,7 @@ namespace BMBF_Manager
             {
                 getQuestIP();
 
-                txtbox.AppendText("\n\nBacking up Playlist to " + Playlists + "\\Playlists.json");
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.mainMenu.code.playlistBackup, Playlists + "\\Playlists.json"));
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
 
 
@@ -808,7 +808,7 @@ namespace BMBF_Manager
             }
             catch
             {
-                txtbox.AppendText(MainWindow.BMBF100);
+                txtbox.AppendText(MainWindow.globalLanguage.global.BMBF100);
 
             }
             getBackups();
@@ -823,7 +823,7 @@ namespace BMBF_Manager
             String Name = "";
             String Source = "";
 
-            txtbox.AppendText("\nCopying all Songs to " + exe + "\\tmp. Please be patient.");
+            txtbox.AppendText("\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.bBBU.code.copyingSongsToTMP, exe + "\\tmp"));
             Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
             adb("pull /sdcard/BMBFData/CustomSongs/ \"" + exe + "\\tmp\"");
             if (Directory.Exists(exe + "\\tmp\\CustomSongs"))
@@ -842,7 +842,7 @@ namespace BMBF_Manager
 
                 if (!File.Exists(cd + "\\" + "Info.dat") && !File.Exists(cd + "\\" + "info.dat"))
                 {
-                    txtbox.AppendText("\n" + cd + " is no Song");
+                    txtbox.AppendText("\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.bBBU.code.isNotSongs, cd));
                     continue;
                 }
                 String dat = "";
@@ -869,19 +869,9 @@ namespace BMBF_Manager
                     Name = Name.Replace("<", "");
                     Name = Name.Replace(">", "");
                     Name = Name.Replace("|", "");
-
-                    for (int f = 0; f < Name.Length; f++)
-                    {
-                        if (Name.Substring(f, 1).Equals("\\"))
-                        {
-                            Name = Name.Substring(0, f - 1) + Name.Substring(f + 1, Name.Length - f - 1);
-                        }
-                    }
+                    Name = Name.Replace(@"\", "");
+                    Name = Name.Trim();
                     int Time = 0;
-                    while (Name.Substring(Name.Length - 1, 1).Equals(" "))
-                    {
-                        Name = Name.Substring(0, Name.Length - 1);
-                    }
 
                     while (list.Contains(Name.ToLower()))
                     {
@@ -898,8 +888,8 @@ namespace BMBF_Manager
 
                     }
                     list.Add(Name.ToLower());
-                    txtbox.AppendText("\nSong Name: " + Name);
-                    txtbox.AppendText("\nFolder: " + cd);
+                    txtbox.AppendText("\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.bBBU.code.songName, Name));
+                    txtbox.AppendText("\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.bBBU.code.folder, cd));
 
 
 
@@ -914,16 +904,15 @@ namespace BMBF_Manager
 
                 }
             }
-            txtbox.AppendText("\n");
-            txtbox.AppendText("\n");
+            txtbox.AppendText("\n\n");
 
             if (exported == 0)
             {
-                txtbox.AppendText(MainWindow.QSU100);
+                txtbox.AppendText(MainWindow.globalLanguage.global.QSU100);
             }
             else
             {
-                txtbox.AppendText("\nFinished! Backed up " + exported + " Songs.");
+                txtbox.AppendText("\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.bBBU.code.finishedSongBackup, exported.ToString()));
             }
             txtbox.ScrollToEnd();
         }
@@ -964,14 +953,8 @@ namespace BMBF_Manager
             BName.Text = BName.Text.Replace("<", "");
             BName.Text = BName.Text.Replace(">", "");
             BName.Text = BName.Text.Replace("|", "");
-
-            for (int f = 0; f < BName.Text.Length; f++)
-            {
-                if (BName.Text.Substring(f, 1).Equals("\\"))
-                {
-                    BName.Text = BName.Text.Substring(0, f - 1) + BName.Text.Substring(f + 1, BName.Text.Length - f - 1);
-                }
-            }
+            BName.Text = BName.Text.Replace(@"\", "");
+            BName.Text = BName.Text.Trim();
 
             BackupF = exe + "\\BBBUBackups\\" + BName.Text;
 
@@ -1011,20 +994,15 @@ namespace BMBF_Manager
 
         public void getBackups()
         {
-            ArrayList Folders = new ArrayList();
             string[] Files = Directory.GetDirectories(exe + "\\BBBUBackups");
             Backups.Items.Clear();
-            Backups.Items.Add("Backups");
+            Backups.Items.Add(MainWindow.globalLanguage.bBBU.code.backupName);
 
             for (int i = 0; i < Files.Length; i++)
             {
-                Folders.Add(Files[i].Substring(Files[i].LastIndexOf("\\") + 1, Files[i].Length - 1 - Files[i].LastIndexOf("\\")));
+                Backups.Items.Add(Files[i].Substring(Files[i].LastIndexOf("\\") + 1, Files[i].Length - 1 - Files[i].LastIndexOf("\\")));
             }
 
-            for (int o = 0; o < Folders.Count; o++)
-            {
-                Backups.Items.Add(Folders[o]);
-            }
             Backups.SelectedIndex = 0;
         }
 
@@ -1063,7 +1041,7 @@ namespace BMBF_Manager
                             exeProcess.WaitForExit();
                             if (IPS.Contains("no devices/emulators found"))
                             {
-                                txtbox.AppendText(MainWindow.ADB110);
+                                txtbox.AppendText(MainWindow.globalLanguage.global.ADB110);
                                 txtbox.ScrollToEnd();
                                 return false;
                             }
@@ -1081,7 +1059,7 @@ namespace BMBF_Manager
                     continue;
                 }
             }
-            txtbox.AppendText(MainWindow.ADB100);
+            txtbox.AppendText(MainWindow.globalLanguage.global.ADB100);
             txtbox.ScrollToEnd();
             return false;
         }
@@ -1096,7 +1074,7 @@ namespace BMBF_Manager
         {
             if (Quest.Text == "")
             {
-                Quest.Text = "Quest IP";
+                Quest.Text = MainWindow.globalLanguage.global.defaultQuestIPText;
             }
         }
 
@@ -1104,7 +1082,7 @@ namespace BMBF_Manager
         {
             if (BName.Text == "")
             {
-                BName.Text = "Backup Name";
+                BName.Text = MainWindow.globalLanguage.bBBU.code.backupNameName;
             }
         }
 
@@ -1141,7 +1119,7 @@ namespace BMBF_Manager
 
         private void ClearText(object sender, RoutedEventArgs e)
         {
-            if (Quest.Text == "Quest IP")
+            if (Quest.Text == MainWindow.globalLanguage.global.defaultQuestIPText)
             {
                 Quest.Text = "";
             }
@@ -1150,7 +1128,7 @@ namespace BMBF_Manager
 
         private void ClearTextN(object sender, RoutedEventArgs e)
         {
-            if (BName.Text == "Backup Name")
+            if (BName.Text == MainWindow.globalLanguage.bBBU.code.backupNameName)
             {
                 BName.Text = "";
             }

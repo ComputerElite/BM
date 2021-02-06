@@ -111,6 +111,7 @@
     <Compile Include="HitSounds.xaml.cs">
       <DependentUpon>HitSounds.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Language.cs" />
     <Compile Include="ModObjects.cs" />
     <Compile Include="Mods.xaml.cs">
       <DependentUpon>Mods.xaml</DependentUpon>
@@ -126,6 +127,7 @@
     <Compile Include="QSU.xaml.cs">
       <DependentUpon>QSU.xaml</DependentUpon>
     </Compile>
+    <Compile Include="RegExTemplates.cs" />
     <Compile Include="SimpleJSON.cs" />
     <Compile Include="Songs.xaml.cs">
       <DependentUpon>Songs.xaml</DependentUpon>
@@ -225,9 +227,6 @@
     <Resource Include="BPLists2.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Support5.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Mods6.png" />
   </ItemGroup>
   <ItemGroup>
@@ -243,13 +242,13 @@
     <Resource Include="PlaylistEditor.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Image1.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="QSU3.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="BBBU4.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Support6.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

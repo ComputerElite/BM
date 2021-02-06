@@ -21,7 +21,7 @@ namespace BMBF.Config
 
     public class BMBFPlaylist
     {
-        public String PlaylistID { get; set; } = "N/A";
+        public String PlaylistID { get; set; } = "";
         public String PlaylistName { get; set; } = "N/A";
         public List<BMBFSong> SongList { get; set; } = new List<BMBFSong>();
         public string CoverImageBytes { get; set; } = null;
