@@ -1,4 +1,6 @@
 {
+    "language": "english",
+    "translator": "ComputerElite",
     "mainMenu": {
         "UI": {
             "updateButton": "Update",
@@ -523,7 +525,7 @@
             "switchWarning": "You have clicked a link to switch from the modded/unmodded to the unmodded/modded version of Beatsaber.\nDo you wish to continue",
             "language": "Language",
             "selectLanguage": "Please select a language",
-            "changedLanguage": "Changed language to {0}"
+            "changedLanguage": "Changed language to {0} translated by {1}"
         }
     },
     "global": {
