@@ -173,7 +173,7 @@ namespace BMBF_Manager
             playlistEditorButton.Content = globalLanguage.mainMenu.UI.playlistEditorButton;
             settingsButton.Content = globalLanguage.mainMenu.UI.settingsButton;
 
-            File.WriteAllText("D:\\en_BM.json", JsonSerializer.Serialize(globalLanguage));
+            //File.WriteAllText("D:\\en_BM.json", JsonSerializer.Serialize(globalLanguage));
         }
 
         private async Task KeepAliveTask()
