@@ -1,4 +1,4 @@
-﻿using SimpleJSON;
+using SimpleJSON;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -174,7 +174,7 @@ namespace BMBF_Manager
             playlistEditorButton.Content = globalLanguage.mainMenu.UI.playlistEditorButton;
             settingsButton.Content = globalLanguage.mainMenu.UI.settingsButton;
 
-            File.WriteAllText("D:\\en.json", JsonSerializer.Serialize(globalLanguage));
+            //File.WriteAllText("D:\\en.json", JsonSerializer.Serialize(globalLanguage));
         }
 
         private async Task KeepAliveTask()
