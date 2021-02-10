@@ -61,7 +61,7 @@ namespace BMBFManager.Language
 
     public class MainMenuCode
     {
-        public String newBMBFAvailable { get; set; } = "New BMBF version available to download!\nYour current BMBF version is {0}\nThe new version is{1}\n";
+        public String newBMBFAvailable { get; set; } = "New BMBF version available to download!\nYour current BMBF version is {0}\nThe new version is {1}\n";
         public String onNewestBMBF { get; set; } = "You are on the newest BMBF version";
 
         // Player Stats aren't used anymore
@@ -195,7 +195,7 @@ namespace BMBFManager.Language
         public String finishedModBackup { get; set; } = "Finished! Backed up {0} Mods";
         public String copyingSongsToTMP { get; set; } = "Copying all Songs to {0}. Please be patient.";
         public String isNotSongs { get; set; } = "{0} is no Song";
-        public String songName { get; set; } = "";
+        public String songName { get; set; } = "Song Name: {0}";
         public String finishedSongBackup { get; set; } = "Finished! Backed up {0} Songs";
         public String backupName { get; set; } = "Backups";
         public String backupNameName { get; set; } = "Backup Name";
@@ -207,7 +207,7 @@ namespace BMBFManager.Language
         public String pushingScores { get; set; } = "Pushing Scores";
         public String pushedScores { get; set; } = "Pushed Scores";
         public String pushingModData { get; set; } = "Pushing ModData";
-        public String pushedModData { get; set; } = "PushedModData";
+        public String pushedModData { get; set; } = "Pushed ModData";
         public String uploadingSongs { get; set; } = "Uploading Songs";
         public String uploadedSongs { get; set; } = "Uploaded Songs";
         public String pushingSongs { get; set; } = "Pushing Songs";
@@ -234,7 +234,7 @@ namespace BMBFManager.Language
         public String restoreSongsBox { get; set; } = "Restore Songs";
         public String restorePlaylistsBox { get; set; } = "Restore Playlists";
         public String restoreScoresBox { get; set; } = "Restore Scores";
-        public String restoreModsBox { get; set; } = "Restre Mods";
+        public String restoreModsBox { get; set; } = "Restore Mods";
         public String restoreModDataBox { get; set; } = "Restore ModData\n(includes configs\nand way more)";
         public String restoreVersionBox { get; set; } = "Restore old Game Version";
         public String restoreButton { get; set; } = "Restore";
@@ -509,6 +509,7 @@ namespace BMBFManager.Language
         public String checkSongsButton { get; set; } = "Check all songs for correct\nSong folder";
         public String loadPlaylists { get; set; } = "Load Playlists!";
         public String BackupName { get; set; } = "Backups";
+        public String SonglibswitcherButton { get; set; } = "Transfer song library";
     }
 
     public class QSUCode
@@ -540,7 +541,7 @@ namespace BMBFManager.Language
         public String backupAlreadyExists { get; set; } = "This Playlist Backup already exists!";
         public String backingUpPlaylists { get; set; } = "Backing up Playlist to {0}";
         public String backedUpPlaylists { get; set; } = "Backed up Playlists to {0}";
-        public String restoringPlaylists { get; set; } = "Restoring Playlist from  {0}";
+        public String restoringPlaylists { get; set; } = "Restoring Playlist from {0}";
         public String restoredPlaylists { get; set; } = "Restored old Playlists";
         public String oculusQuestName { get; set; } = "Oculus Quest";
         public String chooseSongFolder { get; set; } = "Please choose your Song Folder";
@@ -548,7 +549,7 @@ namespace BMBFManager.Language
 
         //main zipping
         public String autoModeOn { get; set; } = "Auto Mode enabled! Copying all Songs to {0}. Please be patient.";
-        public String zippingSongs { get; set; } = "ZippingSongs";
+        public String zippingSongs { get; set; } = "Zipping Songs";
         public String isNoSong { get; set; } = "{0} is no Song";
         public String songName { get; set; } = "Song Name: {0}";
         public String folder { get; set; } = "Folder: {0}";
@@ -579,6 +580,19 @@ namespace BMBFManager.Language
         public String listMeta { get; set; } = "List of {0} exported Songs";
         public String search { get; set; } = "use ctrl + f to search for Songs";
         public String finishedIndex { get; set; } = "Finished! Listed {0} songs in Songs.txt";
+
+        //Song Lib switching
+        public String songLibSwitchInfo { get; set; } = "So you want to transfer your Song library from the PC Version of Beat Saber to the Quest Version or from the Quest Version to the PC Version? You are in the right place! Please press following button:\nQuest to PC = Yes, PC to Quest = No, cancle = cancle";
+        public String choosePCModsFolder { get; set; } = "Please choose the CustomSongs folder of your PC installation and plug in your Quest via USB";
+        public String operationRunning { get; set; } = "A Operation is already running. Please wait until it has finished.";
+        public String folderDoesntExist { get; set; } = "The folder you choose doesn't exist.";
+        public String startInfoQuestToPC { get; set; } = "Alright I'll now attempt to pull your Quests CustomSongs and Playlist configuration. After that I'll Move all your Quests Songs and attempt to also restore the Playlists. Note: BMBF Manager will freeze. That means it IS WORKING. Just let it do the work and DO NOT close it if Windows asks you.";
+        public String startInfoPCToQuest { get; set; } = "Alright I'll now attempt to Copy all your Songs to the Quest, rename them to the right folder and even attempt to restore your Playlists. Note: BMBF Manager will freeze. That means it IS WORKING. Just let it do the work and DO NOT close it if Windows asks you.";
+        public String songLibraryMoved { get; set; } = "Your Songs have been moved. It were {0} in total.";
+        public String reloadSongsFolder { get; set; } = "I copied all Songs over. Please click reload songs folder in the window I opened and then press OK. I'll then attempt to restore your Playlists";
+        public String reloadSongsFolderConfirmation { get; set; } = "Did you reload your Songs folder AND it finished? After you confirmed I'll sort the Playlists via the Playlist editor.";
+        public String SongsFolderNotReloaded { get; set; } = "Aborted Playlist restore since the Songs folder hasn't been reloaded. Installed {0} Songs.";
+        public String tooMuchSongs { get; set; } = "I'm warning you, that you have more than 500 Songs ({0} Songs to be exacr) after you imported all your PC songs. This may/will cause issues. Do you want me to stop at 500 Songs (that's the safe limit)?";
     }
 
     public class Songs
@@ -687,7 +701,7 @@ namespace BMBFManager.Language
 
         //Custom Protocol
         public String changingRegistryEnableBM { get; set; } = "Changing Registry to enable BM Custom protocol";
-        public String customLinksEnabled { get; set; } = "CustomLinks Enabled";
+        public String customLinksEnabled { get; set; } = "Custom Links Enabled";
         public String registryUnableToChangeNoBM { get; set; } = "Registry was unable to change... no Custom protocol enabled.";
         public String changingRegistryDisableBM { get; set; } = "Changing Registry to disable BM Custom protocol";
         public String customLinksDisabled { get; set; } = "Custom Links disabled";

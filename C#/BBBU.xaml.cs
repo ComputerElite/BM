@@ -803,7 +803,7 @@ namespace BMBF_Manager
 
                 var j = JSON.Parse(client.DownloadString("http://" + MainWindow.IP + ":50000/host/beatsaber/config"));
                 File.WriteAllText(Playlists + "\\Playlists.json", j["Config"].ToString()); 
-                txtbox.AppendText("\n\nBacked up Playlists to " + Playlists + "Playlists.json");
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.mainMenu.code.playlistBackupFinished, Playlists + "\\Playlists.json"));
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
             }
             catch

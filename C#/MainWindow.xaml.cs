@@ -34,8 +34,8 @@ namespace BMBF_Manager
     public partial class MainWindow : Window
     {
         int MajorV = 1;
-        int MinorV = 12;
-        int PatchV = 1;
+        int MinorV = 13;
+        int PatchV = 0;
         Boolean Preview = false;
 
         public static Boolean CustomProtocols = false;
@@ -174,7 +174,7 @@ namespace BMBF_Manager
             playlistEditorButton.Content = globalLanguage.mainMenu.UI.playlistEditorButton;
             settingsButton.Content = globalLanguage.mainMenu.UI.settingsButton;
 
-            //File.WriteAllText("D:\\en.json", JsonSerializer.Serialize(globalLanguage));
+            File.WriteAllText("D:\\en.json", JsonSerializer.Serialize(globalLanguage));
         }
 
         private async Task KeepAliveTask()
@@ -219,7 +219,7 @@ namespace BMBF_Manager
                 {
                     txtbox.AppendText("\n\n" + globalLanguage.processer.ReturnProcessed(globalLanguage.mainMenu.code.newBMBFAvailable, local.version, v));
                 }
-                txtbox.AppendText("\n\n" + globalLanguage.mainMenu.code.onNewestBMBF);
+                else txtbox.AppendText("\n\n" + globalLanguage.mainMenu.code.onNewestBMBF);
             } catch { }
         }
 

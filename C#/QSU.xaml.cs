@@ -25,6 +25,8 @@ using BeatSaverAPI;
 using System.Text.RegularExpressions;
 using System.Threading;
 using ComputerUtils.RegxTemplates;
+using BMBF.Config;
+using ComputerUtils.StringFormatters;
 
 namespace BMBF_Manager
 {
@@ -88,7 +90,7 @@ namespace BMBF_Manager
             else
             {
                 ImageBrush uniformBrush = new ImageBrush();
-                uniformBrush.ImageSource = new BitmapImage(new Uri("pack://application:,,,/QSU3.png", UriKind.Absolute));
+                uniformBrush.ImageSource = new BitmapImage(new Uri("pack://application:,,,/QSU4.png", UriKind.Absolute));
                 uniformBrush.Stretch = Stretch.UniformToFill;
                 this.Background = uniformBrush;
             }
@@ -112,7 +114,7 @@ namespace BMBF_Manager
             zips.Content = MainWindow.globalLanguage.qSU.UI.onlyCheckZipsBox;
             box.Content = MainWindow.globalLanguage.qSU.UI.overwriteExistingBox;
             auto.Content = MainWindow.globalLanguage.qSU.UI.autoModeBox;
-
+            SonglibswitcherButton.Content = MainWindow.globalLanguage.qSU.UI.SonglibswitcherButton;
         }
 
         public void TransferFromQSU()
@@ -1177,6 +1179,252 @@ namespace BMBF_Manager
             txtbox.AppendText("\n\n" + MainWindow.globalLanguage.qSU.code.finishedChecking);
         }
 
+        private void TransferSongLib(object sender, RoutedEventArgs e)
+        {
+            if(Running)
+            {
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.qSU.code.operationRunning);
+                return;
+            }
+            MessageBoxResult r = MessageBox.Show(MainWindow.globalLanguage.qSU.code.songLibSwitchInfo, "BMBF Manager - Quest Song Utilities", MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
+            bool QuestToPC = false;
+            switch(r)
+            {
+                case MessageBoxResult.Yes:
+                    QuestToPC = true;
+                    break;
+                case MessageBoxResult.Cancel:
+                    txtbox.AppendText("\n\n" + MainWindow.globalLanguage.qSU.code.aborted);
+                    return;
+            }
+            MessageBox.Show(MainWindow.globalLanguage.qSU.code.choosePCModsFolder, "BMBF Manager - Quest Song Utilities", MessageBoxButton.OK, MessageBoxImage.Information);
+            CommonOpenFileDialog fd = new CommonOpenFileDialog();
+            fd.IsFolderPicker = true;
+            String CustomSongsFolder = "";
+            if(fd.ShowDialog() == CommonFileDialogResult.Ok)
+            {
+                if(Directory.Exists(fd.FileName))
+                {
+                    CustomSongsFolder = fd.FileName;
+                } else
+                {
+                    txtbox.AppendText("\n\n" + MainWindow.globalLanguage.qSU.code.folderDoesntExist);
+                    return;
+                }
+            } else
+            {
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.qSU.code.aborted);
+                return;
+            }
+
+            Running = true;
+
+            Directory.CreateDirectory(exe + "\\tmp\\Move");
+            
+            if(QuestToPC)
+            {
+                r = MessageBox.Show(MainWindow.globalLanguage.qSU.code.startInfoQuestToPC, "BMBF Manager - Quest Song Utilities", MessageBoxButton.OKCancel, MessageBoxImage.Information);
+                if(r == MessageBoxResult.Cancel)
+                {
+                    txtbox.AppendText("\n\n" + MainWindow.globalLanguage.qSU.code.aborted);
+                    Running = false;
+                    return;
+                }
+                if(!adb("pull /sdcard/BMBFData/CustomSongs \"" + exe + "\\tmp\""))
+                {
+                    Running = false;
+                    return;
+                }
+                List<SongLibraryMoveSong> songs = new List<SongLibraryMoveSong>();
+                TimeoutWebClientShort c = new TimeoutWebClientShort();
+                BMBFC config = JsonSerializer.Deserialize<BMBFC>(c.DownloadString("http://" + MainWindow.IP + ":50000/host/beatsaber/config"));
+                Songs s = new Songs();
+                BeatSaverAPIInteractor i = new BeatSaverAPIInteractor();
+                
+                
+                foreach(String dir in Directory.GetDirectories(exe + "\\tmp\\CustomSongs"))
+                {
+                    SongLibraryMoveSong moveSong = new SongLibraryMoveSong();
+                    String zipName;
+                    if ((zipName = s.CheckSong(dir)) == "Error") continue;
+                    if (Directory.Exists(exe + "\\tmp\\Move\\" + zipName.Trim())) Directory.Delete(exe + "\\tmp\\Move\\" + zipName.Trim(), true);
+                    ZipFile.ExtractToDirectory(exe + "\\tmp\\finished\\" + zipName + ".zip", exe + "\\tmp\\Move\\" + zipName.Trim());
+                    moveSong.sourceFolder = exe + "\\tmp\\Move\\" + zipName.Trim();
+                    moveSong.hash = Songs.GetCustomLevelHash(exe + "\\tmp\\Move\\" + zipName.Trim());
+                    BeatSaverAPISong song = i.GetBeatSaverAPISongViaHash(moveSong.hash);
+                    //Define default name
+                    String finishedName = "Custom_level_" + moveSong.hash;
+                    if(song.GoodRequest)
+                    {
+                        //Use SongInfo from BeatSaver
+                        finishedName = song.name + " - " + song.metadata.songAuthorName + " (" + song.key + ")";
+                        moveSong.songArtist = song.metadata.songAuthorName;
+                        moveSong.songName = song.metadata.songName;
+                        moveSong.key = song.key;
+                    } else
+                    {
+                        //Try to find song in BMBF Config
+                        foreach(BMBFPlaylist playlist in config.Config.Playlists)
+                        {
+                            foreach(BMBFSong song1 in playlist.SongList)
+                            {
+                                if(song1.SongID.ToLower().Contains(moveSong.hash.ToLower()))
+                                {
+                                    finishedName = song1.SongName + " - " + song1.SongAuthorName;
+                                    moveSong.songName = song1.SongName;
+                                    moveSong.songArtist = song1.SongAuthorName;
+                                    break;
+                                }
+                            }
+                        }
+                        if(moveSong.songName == "")
+                        {
+                            BeatSaberSong beatSaberSong = JsonSerializer.Deserialize<BeatSaberSong>(File.ReadAllText(Directory.GetFiles(moveSong.sourceFolder).FirstOrDefault(x => x.ToLower() == "info.dat")));
+                            finishedName = beatSaberSong.SongName + " - " + beatSaberSong.SongArtist;
+                            moveSong.songName = beatSaberSong.SongName;
+                            moveSong.songArtist = beatSaberSong.SongArtist;
+                        }
+                    }
+                    //Remove invalid chars
+                    finishedName = StringFormatter.FileNameSafe(finishedName);
+                    moveSong.targetFolder = CustomSongsFolder + "\\" + finishedName;
+                    int end = 0;
+                    while (Directory.Exists(moveSong.targetFolder))
+                    {
+                        end++;
+                        //Don't ask. It increments the number at the end by 1
+                        moveSong.targetFolder = moveSong.targetFolder.EndsWith((end - 1).ToString()) ? moveSong.targetFolder.Substring(0, moveSong.targetFolder.Length - (end - 1).ToString().Length) + end : moveSong.targetFolder + " " + end;
+                    }
+                    //Now everything should be right ig.
+                    songs.Add(moveSong);
+                    Directory.Move(moveSong.sourceFolder, moveSong.targetFolder);
+                    //Wait 500ms to reduce 429's
+                    Thread.Sleep(500);
+                }
+
+                //Restore Playlists
+                String PlaylistFolder = String.Join("\\", CustomSongsFolder.Split('\\').ToList<String>().GetRange(0, CustomSongsFolder.Split('\\').Length - 1)) + "\\Playlists";
+                if (!Directory.Exists(PlaylistFolder)) Directory.CreateDirectory(PlaylistFolder);
+
+                BSKFile known = new BSKFile();
+
+                WebClient client = new WebClient();
+                try
+                {
+                    String t = client.DownloadString(PlaylistEditor.bsk);
+                    known = JsonSerializer.Deserialize<BSKFile>(t);
+                }
+                catch
+                {
+                    txtbox.AppendText("\n\n" + MainWindow.globalLanguage.global.anErrorOccured);
+                    txtbox.ScrollToEnd();
+                }
+
+                foreach (BMBFPlaylist p in config.Config.Playlists)
+                {
+                    if (known.knownLevelPackIds.Contains(p.PlaylistID)) continue;
+                    BPList list = new BPList();
+                    list.playlistTitle = p.PlaylistName;
+                    list.playlistAuthor = "BMBF Manager";
+                    foreach(BMBFSong song1 in p.SongList)
+                    {
+                        foreach(SongLibraryMoveSong moveSong in songs)
+                        {
+                            if(song1.SongID.ToLower().Contains(moveSong.hash.ToLower()))
+                            {
+                                BPListSong song = new BPListSong();
+                                song.hash = moveSong.hash;
+                                song.songName = moveSong.songName;
+                                list.songs.Add(song);
+                                break;
+                            }
+                        }
+                    }
+                    File.WriteAllText(PlaylistFolder + "\\" + list.playlistTitle + ".bplist", JsonSerializer.Serialize(list));
+                }
+                MessageBox.Show(MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qSU.code.songLibraryMoved, songs.Count.ToString()), "BMBF Manager - Quest Song Utilities", MessageBoxButton.OK, MessageBoxImage.Information);
+            } else
+            {
+                r = MessageBox.Show(MainWindow.globalLanguage.qSU.code.startInfoPCToQuest, "BMBF Manager - Quest Song Utilities", MessageBoxButton.OKCancel, MessageBoxImage.Information);
+                if (r == MessageBoxResult.Cancel)
+                {
+                    txtbox.AppendText("\n\n" + MainWindow.globalLanguage.qSU.code.aborted);
+                    Running = false;
+                    return;
+                }
+
+                Songs s = new Songs();
+
+                TimeoutWebClientShort c = new TimeoutWebClientShort();
+                BMBFC config = JsonSerializer.Deserialize<BMBFC>(c.DownloadString("http://" + MainWindow.IP + ":50000/host/beatsaber/config"));
+                int songCount = Directory.GetDirectories(CustomSongsFolder).Length;
+                songCount += config.Config.GetTotalSongsCount();
+
+                int limit = -1;
+
+                if (songCount > 500)
+                {
+                    r = MessageBox.Show(MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qSU.code.tooMuchSongs, limit.ToString()), "BMBF Manager - Quest Song Utilities", MessageBoxButton.YesNo, MessageBoxImage.Exclamation);
+                    if (r == MessageBoxResult.Yes) limit = 500;
+                }
+
+                List<SongLibraryMoveSong> songs = new List<SongLibraryMoveSong>();
+                int i = config.Config.GetTotalSongsCount();
+                foreach (String dir in Directory.GetDirectories(CustomSongsFolder))
+                {
+                    //Do stuff for checking...
+                    if (i > 500 && i != -1) break;
+                    SongLibraryMoveSong moveSong = new SongLibraryMoveSong();
+                    String zipName;
+                    if ((zipName = s.CheckSong(dir)) == "Error") continue;
+                    if (Directory.Exists(exe + "\\tmp\\Move\\" + zipName.Trim())) Directory.Delete(exe + "\\tmp\\Move\\" + zipName.Trim(), true);
+                    ZipFile.ExtractToDirectory(exe + "\\tmp\\finished\\" + zipName + ".zip", exe + "\\tmp\\Move\\" + zipName.Trim());
+                    moveSong.hash = Songs.GetCustomLevelHash(exe + "\\tmp\\Move\\" + zipName.Trim());
+                    String finishedName = "custom_level_" + moveSong.hash;
+                    finishedName = StringFormatter.FileNameSafe(finishedName);
+                    Directory.Move(exe + "\\tmp\\Move\\" + zipName.Trim(), exe + "\\tmp\\Move\\" + finishedName);
+                    moveSong.sourceFolder = exe + "\\tmp\\Move\\" + finishedName;
+                    
+                    //Push
+                    if(!adb("push \"" + moveSong.sourceFolder + "\" /sdcard/BMBFData/CustomSongs/"))
+                    {
+                        Running = false;
+                        break;
+                    }
+
+                    songs.Add(moveSong);
+                }
+
+
+                //Can fail so I'm asking the user to do it
+                //Support support = new Support();
+                //support.reloadsongsfolder();
+                //Wait for BMBF to finish stuff
+                Thread.Sleep(3000);
+
+                Process.Start("http://" + MainWindow.IP + ":50000/main/tools");
+                MessageBox.Show(MainWindow.globalLanguage.qSU.code.reloadSongsFolder, "BMBF Manager - Quest Song Utilities");
+                r = MessageBox.Show(MainWindow.globalLanguage.qSU.code.reloadSongsFolderConfirmation, "BMBF Manager - Quest Song Utilities", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                if(r == MessageBoxResult.No)
+                {
+                    txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qSU.code.SongsFolderNotReloaded, songs.Count.ToString()));
+                    Running = false;
+                    return;
+                }
+                
+                PlaylistEditor PE = new PlaylistEditor();
+                PE.Show();
+
+                String PlaylistFolder = String.Join("\\", CustomSongsFolder.Split('\\').ToList<String>().GetRange(0, CustomSongsFolder.Split('\\').Length - 1)) + "\\Playlists";
+                foreach (String file in Directory.GetFiles(PlaylistFolder))
+                {
+                    PE.ImportBPList(JsonSerializer.Deserialize<BPList>(File.ReadAllText(file)), true);
+                }
+                PE.SaveAll();
+                MessageBox.Show(MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qSU.code.songLibraryMoved, songs.Count.ToString()), "BMBF Manager - Quest Song Utilities", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            Running = false;
+        }
 
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {

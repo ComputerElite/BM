@@ -39,7 +39,7 @@ namespace BMBF_Manager
         BSKFile known = new BSKFile();
         bool loaded = false;
 
-        String bsk = "https://raw.githubusercontent.com/ComputerElite/resources/master/assets/beatsaber-knowns.json";
+        public static String bsk = "https://raw.githubusercontent.com/ComputerElite/resources/master/assets/beatsaber-knowns.json";
 
         public static bool waiting = false;
 
@@ -117,7 +117,7 @@ namespace BMBF_Manager
             SortMapperButton2.Content = MainWindow.globalLanguage.playlistEditor.UI.sortMapperButton;
             SortByText1.Text = MainWindow.globalLanguage.playlistEditor.UI.sortByText;
             SortByText2.Text = MainWindow.globalLanguage.playlistEditor.UI.sortByText;
-            TotalSongs.Text = MainWindow.globalLanguage.playlistEditor.UI.totalSongs;
+            TotalSongs.Text = MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.playlistEditor.UI.totalSongs, "");
             PlaylistSongCount.Text = MainWindow.globalLanguage.playlistEditor.UI.amountSongs;
             UnsortedSongcount.Text = MainWindow.globalLanguage.playlistEditor.UI.amountSongs;
             PlaylistName.Text = MainWindow.globalLanguage.playlistEditor.UI.playlistName;
@@ -823,7 +823,7 @@ namespace BMBF_Manager
             ImportBPList(BPList);
         }
 
-        public async void ImportBPList(BPList BPList)
+        public async void ImportBPList(BPList BPList, bool AutoMode = false)
         {
             if(BPList == null)
             {
@@ -875,44 +875,53 @@ namespace BMBF_Manager
 
             bool moveexisting = false;
 
+
             // 0 = make new Playlist, 1 = add all songs to existing PL, 2 = delete existing PL and make new one
             int action = 0;
-            if(existing.Count > 0)
+            if(!AutoMode)
             {
-                MessageBoxResult r = MessageBox.Show(MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.playlistEditor.code.existingSongsFound, existing.Count.ToString(), BPList.songs.Count.ToString(), BPList.playlistTitle, BPList.playlistAuthor), "BMBF Manager - Playlist Editor", MessageBoxButton.YesNo, MessageBoxImage.Question);
-                switch(r)
+                if (existing.Count > 0)
                 {
-                    case MessageBoxResult.Yes:
-                        moveexisting = true;
-                        break;
+                    MessageBoxResult r = MessageBox.Show(MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.playlistEditor.code.existingSongsFound, existing.Count.ToString(), BPList.songs.Count.ToString(), BPList.playlistTitle, BPList.playlistAuthor), "BMBF Manager - Playlist Editor", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                    switch (r)
+                    {
+                        case MessageBoxResult.Yes:
+                            moveexisting = true;
+                            break;
+                    }
                 }
-            }
 
-            if(PLExists)
-            {
-                MessageBoxResult r = MessageBox.Show(MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.playlistEditor.code.playlistExists, BPList.playlistTitle), "BMBF Manager - Playlist Editor", MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
-                switch (r)
+                if (PLExists)
                 {
-                    case MessageBoxResult.No:
-                        action = 1;
-                        break;
-                    case MessageBoxResult.Cancel:
-                        action = 2;
-                        break;
+                    MessageBoxResult r = MessageBox.Show(MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.playlistEditor.code.playlistExists, BPList.playlistTitle), "BMBF Manager - Playlist Editor", MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
+                    switch (r)
+                    {
+                        case MessageBoxResult.No:
+                            action = 1;
+                            break;
+                        case MessageBoxResult.Cancel:
+                            action = 2;
+                            break;
+                    }
                 }
-            }
 
-            if(PLExists || existing.Count > 0)
-            {
-                MessageBoxResult r = MessageBox.Show(MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.playlistEditor.code.bPListImportSummaryPart1, existing.Count.ToString(), (BPList.songs.Count - existing.Count).ToString()) + " " + (action == 0 ? MainWindow.globalLanguage.playlistEditor.code.bPListImportSummaryPart2a : "") + (action == 1 ? MainWindow.globalLanguage.playlistEditor.code.bPListImportSummaryPart2b : "") + (action == 2 ? MainWindow.globalLanguage.playlistEditor.code.bPListImportSummaryPart2c : "") + " " + MainWindow.globalLanguage.playlistEditor.code.bPListImportSummaryPart3, "BMBF Manager - Playlist Editor", MessageBoxButton.YesNo, MessageBoxImage.Question);
-                switch (r)
+                if (PLExists || existing.Count > 0)
                 {
-                    case MessageBoxResult.No:
-                        txtbox.AppendText("\n\n" + MainWindow.globalLanguage.playlistEditor.code.bPListImportingAborted);
-                        txtbox.ScrollToEnd();
-                        return;
+                    MessageBoxResult r = MessageBox.Show(MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.playlistEditor.code.bPListImportSummaryPart1, existing.Count.ToString(), (BPList.songs.Count - existing.Count).ToString()) + " " + (action == 0 ? MainWindow.globalLanguage.playlistEditor.code.bPListImportSummaryPart2a : "") + (action == 1 ? MainWindow.globalLanguage.playlistEditor.code.bPListImportSummaryPart2b : "") + (action == 2 ? MainWindow.globalLanguage.playlistEditor.code.bPListImportSummaryPart2c : "") + " " + MainWindow.globalLanguage.playlistEditor.code.bPListImportSummaryPart3, "BMBF Manager - Playlist Editor", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                    switch (r)
+                    {
+                        case MessageBoxResult.No:
+                            txtbox.AppendText("\n\n" + MainWindow.globalLanguage.playlistEditor.code.bPListImportingAborted);
+                            txtbox.ScrollToEnd();
+                            return;
+                    }
                 }
+            } else
+            {
+                action = 1;
+                moveexisting = true;
             }
+            
             txtbox.ScrollToEnd();
             if (tmp.Count > 0)
             {
@@ -1256,10 +1265,15 @@ namespace BMBF_Manager
 
         private void SavePlaylists(object sender, RoutedEventArgs e)
         {
-            if(UnsortedPlaylist.Count > 0)
+            SaveAll();
+        }
+
+        public void SaveAll()
+        {
+            if (UnsortedPlaylist.Count > 0)
             {
                 MessageBoxResult r = MessageBox.Show(MainWindow.globalLanguage.playlistEditor.code.unsortedSongsWarning, "BMBF Manager - Playlist Editor", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-                switch(r)
+                switch (r)
                 {
                     case MessageBoxResult.Yes:
                         txtbox.AppendText("\n\n" + MainWindow.globalLanguage.playlistEditor.code.savingAborted);
@@ -1268,7 +1282,7 @@ namespace BMBF_Manager
                 }
             }
 
-            if(BMBFConfig.Config.Playlists.Count < 0)
+            if (BMBFConfig.Config.Playlists.Count < 0)
             {
                 txtbox.AppendText("\n\n" + MainWindow.globalLanguage.playlistEditor.code.savingAbortedNoPlaylists);
                 txtbox.ScrollToEnd();

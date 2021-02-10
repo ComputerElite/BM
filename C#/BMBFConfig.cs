@@ -17,6 +17,13 @@ namespace BMBF.Config
         public JsonElement LeftColor { get; set; } = new JsonElement();
         public JsonElement RightColor { get; set; } = new JsonElement();
         public List<JsonElement> TextChanges { get; set; } = new List<JsonElement>();
+
+        public int GetTotalSongsCount()
+        {
+            int i = 0;
+            foreach (BMBFPlaylist pl in Playlists) i += pl.SongList.Count;
+            return i;
+        }
     }
 
     public class BMBFPlaylist
@@ -26,6 +33,11 @@ namespace BMBF.Config
         public List<BMBFSong> SongList { get; set; } = new List<BMBFSong>();
         public string CoverImageBytes { get; set; } = null;
         public bool IsCoverLoaded { get; set; } = true;
+
+        public int GetSongCount()
+        {
+            return SongList.Count;
+        }
     }
 
     public class BMBFSong
@@ -92,5 +104,16 @@ namespace BMBF.Config
         public String created { get; set; } = "N/A";
         public String updated { get; set; } = "N/A";
         public String content_type { get; set; } = "N/A";
+    }
+
+    public class SongLibraryMoveSong
+    {
+        public String sourceFolder { get; set; } = "";
+        public String hash { get; set; } = "";
+        public String targetFolder { get; set; } = "";
+        public String songName { get; set; } = "";
+        public String key { get; set; } = "";
+        public String songArtist { get; set; } = "";
+        public String Playlist { get; set; } = "default";
     }
 }

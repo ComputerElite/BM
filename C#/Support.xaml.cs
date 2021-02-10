@@ -67,7 +67,7 @@ namespace BMBF_Manager
             languageMessageBlock = true;
             Language.Items.Clear();
             Language.Items.Add(MainWindow.globalLanguage.settings.code.language);
-            Language.Items.Add("en");
+            Language.Items.Add("English");
             Language.SelectedIndex = 0;
             foreach (String file in Directory.GetFiles(exe + "\\languages"))
             {
@@ -98,7 +98,7 @@ namespace BMBF_Manager
             }
             ApplyLanguage();
             txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.settings.code.changedLanguage, MainWindow.globalLanguage.language, MainWindow.globalLanguage.translator));
-            txtbox.AppendText("\n" + MainWindow.globalLanguage.settings.code.restartProgram);
+            txtbox.AppendText("\n\n" + MainWindow.globalLanguage.settings.code.restartProgram);
             LoadLanguages();
         }
 

@@ -108,6 +108,7 @@
     <Compile Include="BPLists.xaml.cs">
       <DependentUpon>BPLists.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ComputerUtils.cs" />
     <Compile Include="HitSounds.xaml.cs">
       <DependentUpon>HitSounds.xaml</DependentUpon>
     </Compile>
@@ -242,13 +243,13 @@
     <Resource Include="PlaylistEditor.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="QSU3.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="BBBU4.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Support6.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="QSU4.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

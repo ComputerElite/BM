@@ -94,7 +94,7 @@ namespace BMBF_Manager
 
             try
             {
-                BMBF = SimpleJSON.JSON.Parse(client.DownloadString("http://" + MainWindow.IP + ":50000/host/beatsaber/config"));
+                BMBF = SimpleJSON.JSON.Parse(client.DownloadString("http://" + MainWindow.IP + ":50000/host/beatsaber/config?nonsensecauseofcaching=" + DateTime.Now));
                 MainWindow.GameVersion = BMBF["BeatSaberVersion"];
             }
             catch
@@ -119,7 +119,7 @@ namespace BMBF_Manager
             ModList CE = new ModList();
 
             //json = JSON.Parse(c.DownloadString("https://raw.githubusercontent.com/ComputerElite/BM/main/testing.json"));
-            CE = JsonSerializer.Deserialize<ModList>(c.DownloadString("https://raw.githubusercontent.com/ComputerElite/BM/main/mods.json"));
+            CE = JsonSerializer.Deserialize<ModList>(c.DownloadString("https://raw.githubusercontent.com/ComputerElite/BM/main/mods.json?nonsensecauseofcaching=" + DateTime.Now));
 
             ModUtils mu = new ModUtils();
             QB = mu.RemoveIncompatibleMods(QB, String.Join(".", GameVersion), CE);
@@ -161,7 +161,7 @@ namespace BMBF_Manager
                 WebClient client = new WebClient();
                 try
                 {
-                    BMBF = SimpleJSON.JSON.Parse(client.DownloadString("http://" + MainWindow.IP + ":50000/host/beatsaber/config"));
+                    BMBF = SimpleJSON.JSON.Parse(client.DownloadString("http://" + MainWindow.IP + ":50000/host/beatsaber/config?nonsensecauseofcaching=" + DateTime.Now));
                 }
                 catch
                 {
