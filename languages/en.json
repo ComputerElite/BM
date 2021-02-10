@@ -18,7 +18,7 @@
             "settingsButton": "Settings"
         },
         "code": {
-            "newBMBFAvailable": "New BMBF version available to download!\nYour current BMBF version is {0}\nThe new version is{1}\n",
+            "newBMBFAvailable": "New BMBF version available to download!\nYour current BMBF version is {0}\nThe new version is {1}\n",
             "onNewestBMBF": "You are on the newest BMBF version",
             "tryPullPlayerStats": "Trying to pull Player Stats",
             "questNotConnectedNoPlayerStats": "Quest isn't connected. Not displaying Player stats",
@@ -88,7 +88,7 @@
             "restoreSongsBox": "Restore Songs",
             "restorePlaylistsBox": "Restore Playlists",
             "restoreScoresBox": "Restore Scores",
-            "restoreModsBox": "Restre Mods",
+            "restoreModsBox": "Restore Mods",
             "restoreModDataBox": "Restore ModData\n(includes configs\nand way more)",
             "restoreVersionBox": "Restore old Game Version",
             "restoreButton": "Restore"
@@ -123,7 +123,7 @@
             "finishedModBackup": "Finished! Backed up {0} Mods",
             "copyingSongsToTMP": "Copying all Songs to {0}. Please be patient.",
             "isNotSongs": "{0} is no Song",
-            "songName": "",
+            "songName": "Song Name: {0}",
             "finishedSongBackup": "Finished! Backed up {0} Songs",
             "backupName": "Backups",
             "backupNameName": "Backup Name",
@@ -133,7 +133,7 @@
             "pushingScores": "Pushing Scores",
             "pushedScores": "Pushed Scores",
             "pushingModData": "Pushing ModData",
-            "pushedModData": "PushedModData",
+            "pushedModData": "Pushed ModData",
             "uploadingSongs": "Uploading Songs",
             "uploadedSongs": "Uploaded Songs",
             "pushingSongs": "Pushing Songs",
@@ -365,7 +365,8 @@
             "createBPListButton": "Create BPList",
             "checkSongsButton": "Check all songs for correct\nSong folder",
             "loadPlaylists": "Load Playlists!",
-            "BackupName": "Backups"
+            "BackupName": "Backups",
+            "SonglibswitcherButton": "Transfer song library"
         },
         "code": {
             "qSUImportQuestion": "Hi. I'm asking you if I should import data from Quest Song Utilities. Only click yes if you've used the seperate program before. You can always import again if you wish to from the settings.",
@@ -388,13 +389,13 @@
             "backupAlreadyExists": "This Playlist Backup already exists!",
             "backingUpPlaylists": "Backing up Playlist to {0}",
             "backedUpPlaylists": "Backed up Playlists to {0}",
-            "restoringPlaylists": "Restoring Playlist from  {0}",
+            "restoringPlaylists": "Restoring Playlist from {0}",
             "restoredPlaylists": "Restored old Playlists",
             "oculusQuestName": "Oculus Quest",
             "chooseSongFolder": "Please choose your Song Folder",
             "debuggingEnabled": "(Debugging enabled)",
             "autoModeOn": "Auto Mode enabled! Copying all Songs to {0}. Please be patient.",
-            "zippingSongs": "ZippingSongs",
+            "zippingSongs": "Zipping Songs",
             "isNoSong": "{0} is no Song",
             "songName": "Song Name: {0}",
             "folder": "Folder: {0}",
@@ -419,7 +420,18 @@
             "characteristics": "BeatMap Characteristics: {0}",
             "listMeta": "List of {0} exported Songs",
             "search": "use ctrl + f to search for Songs",
-            "finishedIndex": "Finished! Listed {0} songs in Songs.txt"
+            "finishedIndex": "Finished! Listed {0} songs in Songs.txt",
+            "songLibSwitchInfo": "So you want to transfer your Song library from the PC Version of Beat Saber to the Quest Version or from the Quest Version to the PC Version? You are in the right place! Please press following button:\nQuest to PC = Yes, PC to Quest = No, cancle = cancle",
+            "choosePCModsFolder": "Please choose the CustomSongs folder of your PC installation and plug in your Quest via USB",
+            "operationRunning": "A Operation is already running. Please wait until it has finished.",
+            "folderDoesntExist": "The folder you choose doesn't exist.",
+            "startInfoQuestToPC": "Alright I'll now attempt to pull your Quests CustomSongs and Playlist configuration. After that I'll Move all your Quests Songs and attempt to also restore the Playlists. Note: BMBF Manager will freeze. That means it IS WORKING. Just let it do the work and DO NOT close it if Windows asks you.",
+            "startInfoPCToQuest": "Alright I'll now attempt to Copy all your Songs to the Quest, rename them to the right folder and even attempt to restore your Playlists. Note: BMBF Manager will freeze. That means it IS WORKING. Just let it do the work and DO NOT close it if Windows asks you.",
+            "songLibraryMoved": "Your Songs have been moved. It were {0} in total.",
+            "reloadSongsFolder": "I copied all Songs over. Please click reload songs folder in the window I opened and then press OK. I'll then attempt to restore your Playlists",
+            "reloadSongsFolderConfirmation": "Did you reload your Songs folder AND it finished? After you confirmed I'll sort the Playlists via the Playlist editor.",
+            "SongsFolderNotReloaded": "Aborted Playlist restore since the Songs folder hasn't been reloaded. Installed {0} Songs.",
+            "tooMuchSongs": "I'm warning you, that you have more than 500 Songs ({0} Songs to be exacr) after you imported all your PC songs. This may/will cause issues. Do you want me to stop at 500 Songs (that's the safe limit)?"
         }
     },
     "songs": {
@@ -508,7 +520,7 @@
             "restartProgram": "For the changes to take effect program wide you have to restart it.",
             "selectFile": "Please select a valid file",
             "changingRegistryEnableBM": "Changing Registry to enable BM Custom protocol",
-            "customLinksEnabled": "CustomLinks Enabled",
+            "customLinksEnabled": "Custom Links Enabled",
             "registryUnableToChangeNoBM": "Registry was unable to change... no Custom protocol enabled.",
             "changingRegistryDisableBM": "Changing Registry to disable BM Custom protocol",
             "customLinksDisabled": "Custom Links disabled",
