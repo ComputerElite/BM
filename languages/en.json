@@ -476,7 +476,7 @@
             "downloadedBeatMap": "Downloaded BeatMap {0}",
             "checkingBeatMap": "Checking BeatMap {0}",
             "uploadingBeatMap": "Uploading BeatMap {0} to BMBF",
-            "songWasSynced": "Song {0} was synced to your Quest.",
+            "songWasSynced": "Song {0} was uploaded to your Quest.",
             "couldntSync": "Couldn't sync with BeatSaber. Needs to be done manually.",
             "infoMissing": "Fatal: Info.dat missing",
             "wrongSong": "Corrected: Wrong song in Info.dat",
