@@ -645,7 +645,7 @@ namespace BMBFManager.Language
         public String downloadedBeatMap { get; set; } = "Downloaded BeatMap {0}";
         public String checkingBeatMap { get; set; } = "Checking BeatMap {0}";
         public String uploadingBeatMap { get; set; } = "Uploading BeatMap {0} to BMBF";
-        public String songWasSynced { get; set; } = "Song {0} was synced to your Quest.";
+        public String songWasSynced { get; set; } = "Song {0} was uploaded to your Quest.";
         public String couldntSync { get; set; } = "Couldn't sync with BeatSaber. Needs to be done manually.";
 
         //Song Checking

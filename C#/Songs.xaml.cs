@@ -566,6 +566,7 @@ namespace BMBF_Manager
                 DownloadLable.Text = MainWindow.globalLanguage.global.allFinished;
                 if (PEO)
                 {
+                    Sync();
                     PlaylistEditor.waiting = false;
                     this.Close();
                 }
@@ -596,7 +597,7 @@ namespace BMBF_Manager
         {
             if (downloadqueue.Contains(new Tuple<string, bool>(SongKey.Text, false)))
             {
-                txtbox.AppendText("\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.songs.code.songAlreadyInQueue, SongKey.Text));
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.songs.code.songAlreadyInQueue, SongKey.Text));
                 txtbox.ScrollToEnd();
                 return;
             }
@@ -642,10 +643,10 @@ namespace BMBF_Manager
                 checkqueue();
                 return;
             }
-            C = 0;
-            while (File.Exists(exe + "\\tmp\\" + Key + C + ".zip"))
+            if (File.Exists(exe + "\\tmp\\" + Key + ".zip"))
             {
-                C++;
+                finished_download(null, null);
+                return;
             }
 
             txtbox.AppendText("\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.songs.code.downloadingBeatMap, Key));
@@ -662,7 +663,7 @@ namespace BMBF_Manager
                     txtbox.ScrollToEnd();
                     cl.DownloadProgressChanged += new DownloadProgressChangedEventHandler(client_DownloadProgressChanged);
                     cl.DownloadFileCompleted += new AsyncCompletedEventHandler(finished_download);
-                    cl.DownloadFileAsync(keys, exe + "\\tmp\\" + Key + C + ".zip");
+                    cl.DownloadFileAsync(keys, exe + "\\tmp\\" + Key + ".zip");
                 }));
             }
             catch
@@ -688,7 +689,7 @@ namespace BMBF_Manager
             txtbox.AppendText("\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.songs.code.downloadedBeatMap, Key) + "\n");
             txtbox.AppendText("\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.songs.code.checkingBeatMap, Key));
             txtbox.ScrollToEnd();
-            String name = CheckSongZip(exe + "\\tmp\\" + Key + C + ".zip");
+            String name = CheckSongZip(exe + "\\tmp\\" + Key + ".zip");
             if (name == "Error")
             {
                 downloadqueue.RemoveAt(0);
@@ -738,34 +739,33 @@ namespace BMBF_Manager
 
         private void finished_upload(object sender, AsyncCompletedEventArgs e, bool uploadfile)
         {
-            try
-            {
-                Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
-                {
-                    if (!PEO) Sync();
-                }));
-                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.songs.code.songWasSynced, downloadqueue[0].Item1));
-                txtbox.ScrollToEnd();
-            }
-            catch
-            {
-                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.songs.code.couldntSync);
-                txtbox.ScrollToEnd();
-            }
+            if (!PEO) Sync();
+            txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.songs.code.songWasSynced, downloadqueue[0].Item1));
+            txtbox.ScrollToEnd();
             downloadqueue.RemoveAt(0);
             Running = false;
             Progress.Value = 0;
+            installed++;
             checkqueue();
         }
 
         public void Sync()
         {
             System.Threading.Thread.Sleep(2000);
-            using (WebClient client = new WebClient())
+            try
             {
-                client.QueryString.Add("foo", "foo");
-                client.UploadValues("http://" + MainWindow.IP + ":50000/host/beatsaber/commitconfig", "POST", client.QueryString);
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.global.syncingToBS);
+                using (WebClient client = new WebClient())
+                {
+                    client.QueryString.Add("foo", "foo");
+                    client.UploadValues("http://" + MainWindow.IP + ":50000/host/beatsaber/commitconfig", "POST", client.QueryString);
+                }
+                txtbox.AppendText("\n" + MainWindow.globalLanguage.global.syncedToBS);
+            } catch
+            {
+                txtbox.AppendText("\n" + MainWindow.globalLanguage.songs.code.couldntSync);
             }
+            txtbox.ScrollToEnd();
         }
 
         private void SelectionChanged(object sender, SelectionChangedEventArgs e)
