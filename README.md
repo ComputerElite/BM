@@ -16,7 +16,8 @@ The utility to install songs, install mods, install/update BMBF, install HitSoun
 # [wiki](https://github.com/ComputerElite/wiki)
 
 # Known Issues
-- N/A
+- Non fixable issues:
+   - Advanced Backups and Automatic BMBF Modding will most likely not work on Quest 2 since adb is more locked down.
 
 # To-Do
 - N/A
