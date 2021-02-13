@@ -2,7 +2,7 @@
 The utility to install songs, install mods, install/update BMBF, install HitSounds, download automatically made playlists, get better support, switch between the modded and unmodded Beat Saber Version, do full backups and way more
 # How-to
 **Note: BMBF Manager only works on Windows.**
-## **Go to [releases](https://github.com/ComputerElite/BM/releases) and download the latest zip file (named BM.zip) first. Then right click the downloaded zip and click "extract all".**
+## **Go to [releases](https://github.com/ComputerElite/BM/releases) and download the latest zip file (named BM.zip) first. Then right click the downloaded zip and click "extract all". Then open the exe with the `BM` as icon**
 ## **For BMBF Manager to work properly you have to enable developer mode on your Quest. You can find a written guide [here](https://github.com/ComputerElite/wiki/wiki/Enable-Developer-Mode-for-OQ)**
 ## The First Time you launch the program it asks you for administrative access. If you want the best support click yes. otherwise no. (can be changed any time in the settings)
 
