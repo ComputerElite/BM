@@ -1,5 +1,5 @@
 # BMBF Manager
-The utility to install songs, install mods, install/update BMBF, install HitSounds, download automatically made playlists, get better support, switch between the modded and unmodded Beat Saber Version, do full backups and way more
+The utility to install songs, install mods, install/update BMBF, install HitSounds, download automatically made playlists, get better support, switch between the modded and unmodded Beat Saber Version, do full backups, edit playlists, transfer your song library, install Qosmetics and way more
 # How-to
 **Note: BMBF Manager only works on Windows.**
 ## **Go to [releases](https://github.com/ComputerElite/BM/releases) and download the latest zip file (named BM.zip) first. Then right click the downloaded zip and click "extract all". Then open the exe with the `BM` as icon**
