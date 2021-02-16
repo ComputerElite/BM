@@ -13,6 +13,7 @@ The utility to install songs, install mods, install/update BMBF, install HitSoun
 - [Bunny83](https://github.com/Bunny83) with [SimpleJSON.cs](https://github.com/Bunny83/SimpleJSON/blob/master/SimpleJSON.cs)
 - darkuni (helped me making the Playlist backuping and restoring possible. Check out his nice program: [Playlist Editor Pro](https://beatsaberquest.com/bmbf/my-tools/playlist-editor-pro/#:~:text=Playlist%20Editor%20Pro%20is%20a,details%20and%20download%20it%20here.))
 - [Sc2ad](https://github.com/sc2ad) (made automatic modding possible)
+- [ppotatoo](https://github.com/ppotatoo) (Suggested a change in the readme)
 
 - Used services
    - [Jellyfish with BeatSaver](https://beatsaver.com/) (Public song distributin service)
