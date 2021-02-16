@@ -593,6 +593,7 @@ namespace BMBFManager.Language
         public String reloadSongsFolderConfirmation { get; set; } = "Did you reload your Songs folder AND it finished? After you confirmed I'll sort the Playlists via the Playlist editor.";
         public String SongsFolderNotReloaded { get; set; } = "Aborted Playlist restore since the Songs folder hasn't been reloaded. Installed {0} Songs.";
         public String tooMuchSongs { get; set; } = "I'm warning you, that you have more than 500 Songs ({0} Songs to be exacr) after you imported all your PC songs. This may/will cause issues. Do you want me to stop at 500 Songs (that's the safe limit)?";
+        public String notRestoringPlaylists { get; set; } = "I wasn't able to reach BMBF to alter/retrieve your Playlist configuration. Your songs are ok but I'm unable to change the Playlists.";
     }
 
     public class Songs

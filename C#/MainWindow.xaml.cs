@@ -35,8 +35,9 @@ namespace BMBF_Manager
     {
         int MajorV = 1;
         int MinorV = 13;
-        int PatchV = 1;
+        int PatchV = 2;
         Boolean Preview = false;
+        public static bool log = false;
 
         public static Boolean CustomProtocols = false;
         public static Boolean QuestSoundsInstalled = false;
@@ -53,7 +54,7 @@ namespace BMBF_Manager
         Boolean draggable = true;
         Boolean Running = false;
         Boolean ComeFromUpdate = false;
-        String exe = AppDomain.CurrentDomain.BaseDirectory.Substring(0, AppDomain.CurrentDomain.BaseDirectory.Length - 1);
+        static String exe = AppDomain.CurrentDomain.BaseDirectory.Substring(0, AppDomain.CurrentDomain.BaseDirectory.Length - 1);
         public static String IP = "";
         public static String BMBF = "https://bmbf.dev/stable/27153984";
         public static String CustomImageSource = "N/A";
@@ -175,6 +176,13 @@ namespace BMBF_Manager
             settingsButton.Content = globalLanguage.mainMenu.UI.settingsButton;
 
             //File.WriteAllText("D:\\en.json", JsonSerializer.Serialize(globalLanguage));
+        }
+
+        public static void Log(String s)
+        {
+            if (!log) return;
+            DateTime d = DateTime.Now;
+            File.AppendAllText(exe + "\\log.log", d.Hour.ToString("d2") + ":" + d.Minute.ToString("d2") + ":" + d.Second.ToString("d2") + "." + d.Millisecond.ToString("d5") + ":     " + s + "\n");
         }
 
         private async Task KeepAliveTask()

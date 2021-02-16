@@ -28,6 +28,7 @@ using MouseEventArgs = System.Windows.Input.MouseEventArgs;
 using BeatSaverAPI;
 using System.Text.RegularExpressions;
 using ComputerUtils.RegxTemplates;
+using ComputerUtils.StringFormatters;
 
 namespace BMBF_Manager
 {
@@ -913,16 +914,7 @@ namespace BMBF_Manager
             }
 
             String Name = info["_songName"];
-            Name = Name.Replace("/", "");
-            Name = Name.Replace(":", "");
-            Name = Name.Replace("*", "");
-            Name = Name.Replace("?", "");
-            Name = Name.Replace("\"", "");
-            Name = Name.Replace("<", "");
-            Name = Name.Replace(">", "");
-            Name = Name.Replace("|", "");
-            Name = Name.Replace(@"\", "");
-            Name = Name.Trim();
+            Name = StringFormatter.FileNameSafe(Name).Trim();
 
             if (File.Exists(exe + "\\tmp\\finished\\" + Name + ".zip")) File.Delete(exe + "\\tmp\\finished\\" + Name + ".zip");
             ZipFile.CreateFromDirectory(folder, exe + "\\tmp\\finished\\" + Name + ".zip");
