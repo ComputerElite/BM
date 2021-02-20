@@ -56,12 +56,12 @@ namespace BMBF_Manager
         {
             InitializeComponent();
             ApplyLanguage();
-            Quest.Text = MainWindow.IP;
+            Quest.Text = MainWindow.config.IP;
             DownloadLable.Text = MainWindow.globalLanguage.global.allFinished;
-            if (MainWindow.CustomImage)
+            if (MainWindow.config.CustomImage)
             {
                 ImageBrush uniformBrush = new ImageBrush();
-                uniformBrush.ImageSource = new BitmapImage(new Uri(MainWindow.CustomImageSource, UriKind.Absolute));
+                uniformBrush.ImageSource = new BitmapImage(new Uri(MainWindow.config.CustomImageSource, UriKind.Absolute));
                 uniformBrush.Stretch = Stretch.UniformToFill;
                 this.Background = uniformBrush;
             }
@@ -72,6 +72,7 @@ namespace BMBF_Manager
                 uniformBrush.Stretch = Stretch.UniformToFill;
                 this.Background = uniformBrush;
             }
+            MainWindow.DCRPM.SetActivity(MainWindow.globalLanguage.dRCP.installingSongs);
         }
 
         public void ApplyLanguage()
@@ -116,8 +117,7 @@ namespace BMBF_Manager
 
         private void Close(object sender, RoutedEventArgs e)
         {
-            CheckIP();
-            MainWindow.IP = Quest.Text;
+            MainWindow.iPUtils.CheckIP(Quest);
             this.Close();
         }
 
@@ -224,7 +224,7 @@ namespace BMBF_Manager
             SongList.Items.Clear();
 
             BeatSaverAPISearchResult result = interactor.SearchText(SearchTerm.Text);
-            if(!result.RequestGood)
+            if (!result.RequestGood)
             {
                 txtbox.AppendText("\n\n" + MainWindow.globalLanguage.songs.code.beatSaverError);
                 txtbox.ScrollToEnd();
@@ -241,35 +241,13 @@ namespace BMBF_Manager
                 SongList.Items.Add(new SongItem { Name = Name, Mapper = Mapper, Artist = Artist });
             }
 
-            if(SongKeys.Count < 1)
+            if (SongKeys.Count < 1)
             {
                 txtbox.AppendText("\n\n" + MainWindow.globalLanguage.songs.code.noResultsFound);
                 txtbox.ScrollToEnd();
             }
 
             SongList.SelectedIndex = 0;
-        }
-
-        public Boolean CheckIP()
-        {
-            getQuestIP();
-            String found;
-            if ((found = RegexTemplates.GetIP(MainWindow.IP)) != "")
-            {
-                MainWindow.IP = found;
-                Quest.Text = MainWindow.IP;
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        public void getQuestIP()
-        {
-            MainWindow.IP = Quest.Text;
-            return;
         }
 
         private void cancel(object sender, RoutedEventArgs e)
@@ -286,62 +264,9 @@ namespace BMBF_Manager
             }
         }
 
-        public Boolean adb(String Argument)
-        {
-            String User = System.Environment.GetEnvironmentVariable("USERPROFILE");
-
-            foreach (String ADB in MainWindow.ADBPaths)
-            {
-                ProcessStartInfo s = new ProcessStartInfo();
-                s.CreateNoWindow = true;
-                s.UseShellExecute = false;
-                s.FileName = ADB.Replace("User", User);
-                s.WindowStyle = ProcessWindowStyle.Minimized;
-                s.Arguments = Argument;
-                s.RedirectStandardOutput = true;
-                if (MainWindow.ShowADB)
-                {
-                    s.RedirectStandardOutput = false;
-                    s.CreateNoWindow = false;
-                }
-                try
-                {
-                    // Start the process with the info we specified.
-                    // Call WaitForExit and then the using statement will close.
-                    using (Process exeProcess = Process.Start(s))
-                    {
-                        if (!MainWindow.ShowADB)
-                        {
-                            String IPS = exeProcess.StandardOutput.ReadToEnd();
-                            exeProcess.WaitForExit();
-                            if (IPS.Contains("no devices/emulators found"))
-                            {
-                                txtbox.AppendText(MainWindow.globalLanguage.global.ADB110);
-                                txtbox.ScrollToEnd();
-                                return false;
-                            }
-                        }
-                        else
-                        {
-                            exeProcess.WaitForExit();
-                        }
-
-                        return true;
-                    }
-                }
-                catch
-                {
-                    continue;
-                }
-            }
-            txtbox.AppendText(MainWindow.globalLanguage.global.ADB100);
-            txtbox.ScrollToEnd();
-            return false;
-        }
-
         private void InstallZip(object sender, RoutedEventArgs e)
         {
-            if (!CheckIP())
+            if (!MainWindow.iPUtils.CheckIP(Quest))
             {
                 txtbox.AppendText("\n\n" + MainWindow.globalLanguage.global.ipInvalid);
                 txtbox.ScrollToEnd();
@@ -425,7 +350,7 @@ namespace BMBF_Manager
             txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.songs.code.generatedHash, hash));
             if (Directory.Exists(exe + "\\tmp\\custom_level_" + hash)) Directory.Delete(exe + "\\tmp\\custom_level_" + hash, true);
             Directory.Move(Input, exe + "\\tmp\\custom_level_" + hash);
-            if (!adb("push \"" + exe + "\\tmp\\custom_level_" + hash + "\" /sdcard/BMBFData/CustomSongs")) return;
+            if (!MainWindow.aDBI.adb("push \"" + exe + "\\tmp\\custom_level_" + hash + "\" /sdcard/BMBFData/CustomSongs", txtbox)) return;
             Directory.Delete(exe + "\\tmp\\custom_level_" + hash, true);
 
             //Playlist Backup
@@ -456,7 +381,7 @@ namespace BMBF_Manager
                 String BMBF = "";
                 using (TimeoutWebClient client2 = new TimeoutWebClient())
                 {
-                    BMBF = client2.DownloadString("http://" + MainWindow.IP + ":50000/host/beatsaber/config");
+                    BMBF = client2.DownloadString("http://" + MainWindow.config.IP + ":50000/host/beatsaber/config");
                 }
                 var json = JSON.Parse(BMBF);
                 json["IsCommitted"] = false;
@@ -477,7 +402,7 @@ namespace BMBF_Manager
             System.Threading.Thread.Sleep(3000);
             TimeoutWebClient client = new TimeoutWebClient();
             client.QueryString.Add("foo", "foo");
-            client.UploadValues("http://" + MainWindow.IP + ":50000/host/beatsaber/reloadsongfolders", "POST", client.QueryString);
+            client.UploadValues("http://" + MainWindow.config.IP + ":50000/host/beatsaber/reloadsongfolders", "POST", client.QueryString);
         }
 
         public void RestorePlaylists()
@@ -489,7 +414,7 @@ namespace BMBF_Manager
 
                 String Playlists = exe + "\\tmp\\Playlists.json";
 
-                var j = JSON.Parse(client3.DownloadString("http://" + MainWindow.IP + ":50000/host/beatsaber/config"));
+                var j = JSON.Parse(client3.DownloadString("http://" + MainWindow.config.IP + ":50000/host/beatsaber/config"));
                 var p = JSON.Parse(File.ReadAllText(Playlists));
 
                 j["Config"]["Playlists"] = p["Playlists"];
@@ -510,8 +435,8 @@ namespace BMBF_Manager
             using (TimeoutWebClient client = new TimeoutWebClient())
             {
                 client.QueryString.Add("foo", "foo");
-                client.UploadFile("http://" + MainWindow.IP + ":50000/host/beatsaber/config", "PUT", Config);
-                client.UploadValues("http://" + MainWindow.IP + ":50000/host/beatsaber/commitconfig", "POST", client.QueryString);
+                client.UploadFile("http://" + MainWindow.config.IP + ":50000/host/beatsaber/config", "PUT", Config);
+                client.UploadValues("http://" + MainWindow.config.IP + ":50000/host/beatsaber/commitconfig", "POST", client.QueryString);
             }
         }
 
@@ -616,7 +541,7 @@ namespace BMBF_Manager
 
         private void InstallSong()
         {
-            if (!CheckIP())
+            if (!MainWindow.iPUtils.CheckIP(Quest))
             {
                 txtbox.AppendText("\n\n" + MainWindow.globalLanguage.global.ipInvalid);
                 txtbox.ScrollToEnd();
@@ -627,10 +552,13 @@ namespace BMBF_Manager
                 return;
             }
             Running = true;
+
+            MainWindow.DCRPM.SetActivity(MainWindow.globalLanguage.dRCP.installingSongs);
+
             Key = downloadqueue[0].Item1;
             if(downloadqueue[0].Item2)
             {
-                adb("shell am start -n com.weloveoculus.BMBF/com.weloveoculus.BMBF.MainActivity");
+                MainWindow.aDBI.StartBMBF(txtbox);
                 upload(Key, true);
                 return;
             }
@@ -686,7 +614,7 @@ namespace BMBF_Manager
 
         public void finished_download(object sender, AsyncCompletedEventArgs e)
         {
-            adb("shell am start -n com.weloveoculus.BMBF/com.weloveoculus.BMBF.MainActivity");
+            MainWindow.aDBI.StartBMBF(txtbox);
             txtbox.AppendText("\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.songs.code.downloadedBeatMap, Key) + "\n");
             txtbox.AppendText("\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.songs.code.checkingBeatMap, Key));
             txtbox.ScrollToEnd();
@@ -704,10 +632,10 @@ namespace BMBF_Manager
 
         public void upload(String path, bool uploadfile = false)
         {
-            getQuestIP();
+            MainWindow.iPUtils.CheckIP(Quest);
 
             WebClient client = new WebClient();
-            Uri uri = new Uri("http://" + MainWindow.IP + ":50000/host/beatsaber/upload?overwrite");
+            Uri uri = new Uri("http://" + MainWindow.config.IP + ":50000/host/beatsaber/upload?overwrite");
             if(uploadfile) txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.songs.code.uploadingBeatMap, System.IO.Path.GetFileName(downloadqueue[0].Item1)));
             else txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.songs.code.uploadingBeatMap, downloadqueue[0].Item1));
             txtbox.ScrollToEnd();
@@ -759,7 +687,7 @@ namespace BMBF_Manager
                 using (WebClient client = new WebClient())
                 {
                     client.QueryString.Add("foo", "foo");
-                    client.UploadValues("http://" + MainWindow.IP + ":50000/host/beatsaber/commitconfig", "POST", client.QueryString);
+                    client.UploadValues("http://" + MainWindow.config.IP + ":50000/host/beatsaber/commitconfig", "POST", client.QueryString);
                 }
                 txtbox.AppendText("\n" + MainWindow.globalLanguage.global.syncedToBS);
             } catch

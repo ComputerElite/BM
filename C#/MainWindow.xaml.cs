@@ -25,6 +25,9 @@ using BMBF.Config;
 using System.Text.RegularExpressions;
 using BMBFManager.Language;
 using ComputerUtils.RegxTemplates;
+using DCRPManager;
+using BMBFManager.Config;
+using BMBFManager.Utils;
 
 namespace BMBF_Manager
 {
@@ -34,43 +37,32 @@ namespace BMBF_Manager
     public partial class MainWindow : Window
     {
         int MajorV = 1;
-        int MinorV = 13;
-        int PatchV = 2;
+        int MinorV = 14;
+        int PatchV = 0;
         Boolean Preview = false;
         public static bool log = false;
 
-        public static Boolean CustomProtocols = false;
-        public static Boolean QuestSoundsInstalled = false;
-        public static bool QosmeticsInstalled = false;
-        public static Boolean CustomImage = false;
-        public static Boolean BBBUTransfered = false;
-        public static Boolean QSUTransfered = false;
-        public static Boolean ShowADB = false;
-        public static Boolean Converted = false;
-        public static Boolean OneClick = false;
-        public static Boolean KeepAlive = true;
-        public static bool QosmeticsWarningShown = false;
-        public static bool PEWarningShown = false;
+        public static ConfigFile config = new ConfigFile();
         Boolean draggable = true;
         Boolean Running = false;
         Boolean ComeFromUpdate = false;
         static String exe = AppDomain.CurrentDomain.BaseDirectory.Substring(0, AppDomain.CurrentDomain.BaseDirectory.Length - 1);
-        public static String IP = "";
         public static String BMBF = "https://bmbf.dev/stable/27153984";
-        public static String CustomImageSource = "N/A";
-        public static String GameVersion = "1.13.0";
-        public static String language = "en";
-        JSONNode json = JSON.Parse("{}");
         public static JSONNode UpdateJSON = JSON.Parse("{}");
         JSONNode BMBFStable = JSON.Parse("{}");
-        public static ArrayList ADBPaths = new ArrayList();
         bool Quest2 = false;
+        public static PresenceManager DCRPM;
+        public static ADBInteractor aDBI = new ADBInteractor();
+        public static IPUtils iPUtils = new IPUtils();
 
         public static Language globalLanguage = new Language();
 
         public MainWindow()
         {
             InitializeComponent();
+
+            SetupExceptionHandlers();
+
             if (!Directory.Exists(exe + "\\Backups")) Directory.CreateDirectory(exe + "\\Backups");
             if (!Directory.Exists(exe + "\\Backup")) Directory.CreateDirectory(exe + "\\Backup");
             if (Directory.Exists(exe + "\\ModChecks")) Directory.Delete(exe + "\\ModChecks", true);
@@ -89,11 +81,11 @@ namespace BMBF_Manager
             Update();
             StartBMBF();
             QuestIP();
-            Quest.Text = IP;
-            if (MainWindow.CustomImage)
+            Quest.Text = config.IP;
+            if (config.CustomImage)
             {
                 ImageBrush uniformBrush = new ImageBrush();
-                uniformBrush.ImageSource = new BitmapImage(new Uri(MainWindow.CustomImageSource, UriKind.Absolute));
+                uniformBrush.ImageSource = new BitmapImage(new Uri(config.CustomImageSource, UriKind.Absolute));
                 uniformBrush.Stretch = Stretch.UniformToFill;
                 this.Background = uniformBrush;
             }
@@ -107,8 +99,49 @@ namespace BMBF_Manager
             Changelog();
             ComeFromUpdate = false;
             CheckBMBFUpdate();
+
+            DCRPM = new PresenceManager("812060183407886376", config.DCRPE);
+            DCRPM.SetOneButton(globalLanguage.dRCP.gitHubLink, "https://github.com/ComputerElite/BM");
+            DCRPM.SetActivity(globalLanguage.dRCP.inMainMenu);
+
             //TryGetStats();
             KeepAliveTask();
+            
+        }
+
+        public void SetupExceptionHandlers()
+        {
+            AppDomain.CurrentDomain.UnhandledException += (s, e) =>
+            HandleExtenption((Exception)e.ExceptionObject, "AppDomain.CurrentDomain.UnhandledException");
+
+            Application.Current.DispatcherUnhandledException += (s, e) =>
+            {
+                HandleExtenption(e.Exception, "Application.Current.DispatcherUnhandledException");
+                e.Handled = true;
+            };
+
+            TaskScheduler.UnobservedTaskException += (s, e) =>
+            {
+                HandleExtenption(e.Exception, "TaskScheduler.UnobservedTaskException");
+                e.SetObserved();
+            };
+        }
+
+        public void HandleExtenption(Exception e, string source)
+        {
+            DateTime t = DateTime.Now;
+            String Save = "\n\nCrash of BMBF Manager has been catched at " + t.Day.ToString("d2") + "." + t.Month.ToString("d2") + "." + t.Year.ToString("d4") + "   " + t.Hour.ToString("d2") + ":" + t.Minute.ToString("d2") + ":" + t.Second.ToString("d2") + "." + t.Millisecond.ToString("d5");
+            Save += "\nUseful information:";
+            Save += "\n- IP (Quest private IP): " + config.IP;
+            Save += "\n- Version: " + MajorV + "." + MinorV + "." + PatchV + "   Preview Version: " + Preview.ToString() + "   Logging enabled: " + log.ToString();
+            Save += "\n- On Quest 2 (probably not right): " + Quest2.ToString();
+            Save += "\n- Execution directory (Usernames Removed): " + RegexTemplates.ReplaceUserName(exe, "CensoredUsername");
+            Save += "\n- Language: " + globalLanguage.language + " by " + globalLanguage.translator;
+            Save += "\n\nException:\n" + e.ToString();
+            File.AppendAllText(exe + "\\Crash.log", Save);
+            MessageBoxResult r = MessageBox.Show(globalLanguage.mainMenu.code.Exception + "\n\n" + e.ToString(), "BMBF Manager - Exception Reporter", MessageBoxButton.OKCancel, MessageBoxImage.Error);
+            if (r == MessageBoxResult.Cancel) return;
+            RealClose();
         }
 
         private void MakeRandomLanguageFile()
@@ -149,15 +182,15 @@ namespace BMBF_Manager
 
         private void SetupLanguage()
         {
-            if (language == "en" || !File.Exists(language))
+            if (config.language == "en" || !File.Exists(config.language))
             {
-                language = "en";
+                config.language = "en";
                 globalLanguage = new Language(); // Sets up english
                 globalLanguage.translator = "ComputerElite";
             }
             else
             {
-                globalLanguage = JsonSerializer.Deserialize<BMBFManager.Language.Language>(File.ReadAllText(language));
+                globalLanguage = JsonSerializer.Deserialize<BMBFManager.Language.Language>(File.ReadAllText(config.language));
             }
 
             // Setup UI language for this window
@@ -175,7 +208,7 @@ namespace BMBF_Manager
             playlistEditorButton.Content = globalLanguage.mainMenu.UI.playlistEditorButton;
             settingsButton.Content = globalLanguage.mainMenu.UI.settingsButton;
 
-            //File.WriteAllText("D:\\en.json", JsonSerializer.Serialize(globalLanguage));
+            File.WriteAllText("D:\\en.json", JsonSerializer.Serialize(globalLanguage));
         }
 
         public static void Log(String s)
@@ -189,9 +222,9 @@ namespace BMBF_Manager
         {
             while(true)
             {
-                if(KeepAlive)
+                if(config.KeepAlive)
                 {
-                    adb("shell input keyevent KEYCODE_WAKEUP");
+                    aDBI.adb("shell input keyevent KEYCODE_WAKEUP", txtbox);
                 }
                 await Task.Delay(15000);
             }
@@ -204,7 +237,7 @@ namespace BMBF_Manager
             try
             {
                 TimeoutWebClientShort c = new TimeoutWebClientShort();
-                String l = await c.DownloadStringTaskAsync(new Uri("http://" + MainWindow.IP + ":50000/host/version/local"));
+                String l = await c.DownloadStringTaskAsync(new Uri("http://" + config.IP + ":50000/host/version/local"));
                 String n = await c.DownloadStringTaskAsync(new Uri("https://bmbf.dev/stable/json"));
                 local = JsonSerializer.Deserialize<BMBFlocal>(l);
                 stable = JsonSerializer.Deserialize<List<BMBFStableVersions>>(n);
@@ -234,7 +267,7 @@ namespace BMBF_Manager
         private void TryGetStats()
         {
             txtbox.AppendText("\n\n" + globalLanguage.mainMenu.code.tryPullPlayerStats);
-            if(!adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/PlayerData.dat \"" + exe + "\\tmp\\PlayerData.dat\"", false))
+            if(!aDBI.adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/PlayerData.dat \"" + exe + "\\tmp\\PlayerData.dat\"", txtbox))
             {
                 txtbox.AppendText("\n" + globalLanguage.mainMenu.code.questNotConnectedNoPlayerStats);
                 return;
@@ -288,53 +321,22 @@ namespace BMBF_Manager
         {
             if(!File.Exists(exe + "\\Config.json"))
             {
-                IP = globalLanguage.global.defaultQuestIPText;
+                config.IP = globalLanguage.global.defaultQuestIPText;
                 enablecustom();
                 return;
             }
-            json = JSON.Parse(File.ReadAllText(exe + "\\Config.json"));
+            config = ConfigFile.LoadConfig(exe + "\\Config.json");
 
-            foreach(JSONNode ADBPath in json["CachedADBPaths"])
-            {
-                ADBPaths.Add(ADBPath.ToString().Replace("\"", ""));
-            }
+            Quest.Text = config.IP;
 
-            CustomProtocols = json["CustomProtocols"].AsBool;
-            Converted = json["Converted"].AsBool;
-            OneClick = json["OneClick"].AsBool;
-            KeepAlive = json["KeepAlive"].AsBool;
-            IP = json["IP"];
-            QosmeticsWarningShown = json["QosmeticsWarningShown"].AsBool;
-            PEWarningShown = json["PEWarningShown"].AsBool;
-            BBBUTransfered = json["BBBUTransfered"].AsBool;
-            QSUTransfered = json["QSUTransfered"].AsBool;
-            ShowADB = json["ShowADB"].AsBool;
-            if (json["GameVersion"] != null)
-            {
-                GameVersion = json["GameVersion"];
-            }
-            if(json["language"] != null)
-            {
-                language = json["language"];
-            }
-            QuestSoundsInstalled = json["QSoundsInstalled"].AsBool;
-            QosmeticsInstalled = json["QosmeticsInstalled"].AsBool;
-
-            ComeFromUpdate = json["ComeFromUpdate"].AsBool;
-
-            Quest.Text = IP;
-
-            if (!json["NotFirstRun"].AsBool)
+            if (!config.NotFirstRun)
             {
                 enablecustom();
             }
-            else if (!json["Location"].Equals(System.Reflection.Assembly.GetEntryAssembly().Location))
+            else if (!(config.Location == System.Reflection.Assembly.GetEntryAssembly().Location))
             {
                 enablecustom();
             }
-
-            CustomImage = json["CustomImage"].AsBool;
-            CustomImageSource = json["CustomImageSource"];
             
         }
 
@@ -352,39 +354,13 @@ namespace BMBF_Manager
                 txtbox.AppendText("\n\n" + globalLanguage.mainMenu.code.registryUnableToChangeNoCustomLinks);
                 return;
             }
-            CustomProtocols = true;
+            config.CustomProtocols = true;
         }
 
         public void saveConfig()
         {
-            CheckIP();
-            json["IP"] = IP;
-            json["Version"] = MajorV.ToString() + MinorV.ToString() + PatchV.ToString();
-            json["NotFirstRun"] = true;
-            json["Location"] = System.Reflection.Assembly.GetEntryAssembly().Location;
-            json["CustomProtocols"] = CustomProtocols;
-            json["QSoundsInstalled"] = QuestSoundsInstalled;
-            json["QosmeticsInstalled"] = QosmeticsInstalled;
-            json["CustomImage"] = CustomImage;
-            json["CustomImageSource"] = CustomImageSource;
-            json["GameVersion"] = GameVersion;
-            json["ComeFromUpdate"] = ComeFromUpdate;
-            json["BBBUTransfered"] = BBBUTransfered;
-            json["QSUTransfered"] = QSUTransfered;
-            json["ShowADB"] = ShowADB;
-            json["Converted"] = Converted;
-            json["OneClick"] = OneClick;
-            json["KeepAlive"] = KeepAlive;
-            json["QosmeticsWarningShown"] = QosmeticsWarningShown;
-            json["PEWarningShown"] = PEWarningShown;
-            json["language"] = language;
-            int i = 0;
-            foreach(String ADBPath in ADBPaths)
-            {
-                json["CachedADBPaths"][i] = ADBPath.Replace("\\\\", "\\");
-                i++;
-            }
-            File.WriteAllText(exe + "\\Config.json", json.ToString());
+            iPUtils.CheckIP(Quest);
+            config.SaveConfig();
         }
 
         private void ClearText(object sender, RoutedEventArgs e)
@@ -425,7 +401,7 @@ namespace BMBF_Manager
 
         public void QuestIP()
         {
-            String IPS = adbS("shell ifconfig wlan0");
+            String IPS = aDBI.adbS("shell ifconfig wlan0", txtbox);
             int Index = IPS.IndexOf("inet addr:");
             Boolean space = false;
             String FIP = "";
@@ -444,13 +420,13 @@ namespace BMBF_Manager
                 }
             }
 
-            if (FIP == "" && IP == globalLanguage.global.defaultQuestIPText)
+            if (FIP == "" && config.IP == globalLanguage.global.defaultQuestIPText)
             {
-                IP = globalLanguage.global.defaultQuestIPText;
+                config.IP = globalLanguage.global.defaultQuestIPText;
                 return;
             }
             if (FIP == "") return;
-            IP = FIP;
+            config.IP = FIP;
         }
 
         public void noDrag(object sender, MouseEventArgs e)
@@ -464,6 +440,11 @@ namespace BMBF_Manager
         }
 
         private void Close(object sender, RoutedEventArgs e)
+        {
+            RealClose();
+        }
+
+        private void RealClose()
         {
             try
             {
@@ -484,129 +465,8 @@ namespace BMBF_Manager
         {
             Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
             {
-                adb("shell am start -n com.weloveoculus.BMBF/com.weloveoculus.BMBF.MainActivity");
+                aDBI.adb("shell am start -n com.weloveoculus.BMBF/com.weloveoculus.BMBF.MainActivity", txtbox);
             }));
-        }
-
-        public void getQuestIP()
-        {
-            IP = Quest.Text;
-            return;
-        }
-
-        public Boolean CheckIP()
-        {
-            getQuestIP();
-            String found;
-            if((found = RegexTemplates.GetIP(IP)) != "")
-            {
-                IP = found;
-                Quest.Text = IP;
-                return true;
-            } else
-            {
-                return false;
-            }
-        }
-
-        public Boolean adb(String Argument, bool showErrors = true)
-        {
-            String User = System.Environment.GetEnvironmentVariable("USERPROFILE");
-            
-            foreach (String ADB in ADBPaths)
-            {
-                ProcessStartInfo s = new ProcessStartInfo();
-                s.CreateNoWindow = true;
-                s.UseShellExecute = false;
-                s.FileName = ADB.Replace("User", User);
-                s.WindowStyle = ProcessWindowStyle.Minimized;
-                s.Arguments = Argument;
-                s.RedirectStandardOutput = true;
-                if (MainWindow.ShowADB)
-                {
-                    s.RedirectStandardOutput = false;
-                    s.CreateNoWindow = false;
-                }
-                try
-                {
-                    // Start the process with the info we specified.
-                    // Call WaitForExit and then the using statement will close.
-                    using (Process exeProcess = Process.Start(s))
-                    {
-                        if(!MainWindow.ShowADB)
-                        {
-                            String IPS = exeProcess.StandardOutput.ReadToEnd();
-                            exeProcess.WaitForExit();
-                            if (IPS.Contains("no devices/emulators found"))
-                            {
-                                if(showErrors)
-                                {
-                                    txtbox.AppendText(globalLanguage.global.ADB110);
-                                    txtbox.ScrollToEnd();
-                                }
-                                
-                                return false;
-                            }
-                        } else
-                        {
-                            exeProcess.WaitForExit();
-                        }
-                        
-                        return true;
-                    }
-                }
-                catch
-                {
-                    continue;
-                }
-            }
-            if (showErrors)
-            {
-                txtbox.AppendText(globalLanguage.global.ADB100);
-                txtbox.ScrollToEnd();
-            }
-            return false;
-        }
-
-        public String adbS(String Argument)
-        {
-            String User = System.Environment.GetEnvironmentVariable("USERPROFILE");
-
-            foreach (String ADB in MainWindow.ADBPaths)
-            {
-                ProcessStartInfo s = new ProcessStartInfo();
-                s.CreateNoWindow = true;
-                s.UseShellExecute = false;
-                s.FileName = ADB.Replace("User", User);
-                s.WindowStyle = ProcessWindowStyle.Minimized;
-                s.Arguments = Argument;
-                s.RedirectStandardOutput = true;
-                try
-                {
-                    // Start the process with the info we specified.
-                    // Call WaitForExit and then the using statement will close.
-                    using (Process exeProcess = Process.Start(s))
-                    {
-                        String IPS = exeProcess.StandardOutput.ReadToEnd();
-                        exeProcess.WaitForExit();
-                        if (IPS.Contains("no devices/emulators found"))
-                        {
-                            txtbox.AppendText(globalLanguage.global.ADB110);
-                            txtbox.ScrollToEnd();
-                            return "Error";
-                        }
-
-                        return IPS;
-                    }
-                }
-                catch
-                {
-                    continue;
-                }
-            }
-            txtbox.AppendText(globalLanguage.global.ADB100);
-            txtbox.ScrollToEnd();
-            return "Error";
         }
 
         public async void Update()
@@ -627,10 +487,10 @@ namespace BMBF_Manager
                     }
                 }
 
-                ADBPaths.Clear();
+                config.CachedADBPaths.Clear();
                 foreach (JSONNode adbp in UpdateJSON["ADBPaths"])
                 {
-                    ADBPaths.Add(adbp.ToString().Replace("\"", ""));
+                    config.CachedADBPaths.Add(adbp.ToString().Replace("\"", ""));
                 }
 
                 int MajorU = UpdateJSON["Updates"][0]["Major"];
@@ -702,14 +562,14 @@ namespace BMBF_Manager
 
         private void InstallSongs(object sender, RoutedEventArgs e)
         {
-            CheckIP();
+            iPUtils.CheckIP(Quest);
             Songs SongsWindow = new Songs();
             SongsWindow.Show();
         }
 
         private void InstallMods (object sender, RoutedEventArgs e)
         {
-            CheckIP();
+            iPUtils.CheckIP(Quest);
             Mods ModsWindow = new Mods();
             ModsWindow.Show();
         }
@@ -736,16 +596,15 @@ namespace BMBF_Manager
                 return;
             }
             Running = true;
-            if (!CheckIP())
+            if (!iPUtils.CheckIP(Quest))
             {
                 txtbox.AppendText("\n\n" + globalLanguage.global.ipInvalid);
                 txtbox.ScrollToEnd();
                 Running = false;
                 return;
             }
-            getQuestIP();
             BMBF_Link();
-            if (!adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/mods \"" + exe + "\\ModChecks"))
+            if (!aDBI.adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/mods \"" + exe + "\\ModChecks", txtbox))
             {
                 Running = false;
                 return;
@@ -754,6 +613,7 @@ namespace BMBF_Manager
             MessageBoxResult r0 = MessageBox.Show(globalLanguage.mainMenu.code.onQuest2, "BMBF Manager", MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (r0 == MessageBoxResult.Yes) Quest2 = true;
 
+            DCRPM.SetActivity(globalLanguage.dRCP.updatingBMBF);
             if (Directory.Exists(exe + "\\ModChecks\\mods"))
             {
                 //game is modded
@@ -766,7 +626,7 @@ namespace BMBF_Manager
                         Running = false;
                         return;
                 }
-                if (!adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/ \"" + exe + "\\Backup\""))
+                if (!aDBI.adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/ \"" + exe + "\\Backup\"", txtbox))
                 {
                     Running = false;
                     return;
@@ -779,11 +639,11 @@ namespace BMBF_Manager
                     txtbox.ScrollToEnd();
                     Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
 
-                    if (!adb("pull /sdcard/BMBFData/Playlists/ \"" + exe + "\\Backup\"")) return;
+                    if (!aDBI.adb("pull /sdcard/BMBFData/Playlists/ \"" + exe + "\\Backup\"", txtbox)) return;
 
                     WebClient client2 = new WebClient();
 
-                    var j = JSON.Parse(client2.DownloadString("http://" + MainWindow.IP + ":50000/host/beatsaber/config"));
+                    var j = JSON.Parse(client2.DownloadString("http://" + config.IP + ":50000/host/beatsaber/config"));
                     File.WriteAllText(exe + "\\Backup\\Playlists.json", j["Config"].ToString());
                     txtbox.AppendText("\n\n" + globalLanguage.processer.ReturnProcessed(globalLanguage.mainMenu.code.playlistBackupFinished, exe + "\\Backup\\Playlists.json"));
                     txtbox.ScrollToEnd();
@@ -796,12 +656,12 @@ namespace BMBF_Manager
                 }
 
 
-                if (!adb("uninstall com.beatgames.beatsaber"))
+                if (!aDBI.adb("uninstall com.beatgames.beatsaber", txtbox))
                 {
                     Running = false;
                     return;
                 }
-                if (!adb("uninstall com.weloveoculus.BMBF"))
+                if (!aDBI.adb("uninstall com.weloveoculus.BMBF", txtbox))
                 {
                     Running = false;
                     return;
@@ -819,7 +679,7 @@ namespace BMBF_Manager
             }
             else
             {
-                if (!adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/ \"" + exe + "\\Backup\""))
+                if (!aDBI.adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/ \"" + exe + "\\Backup\"", txtbox))
                 {
                     Running = false;
                     return;
@@ -927,7 +787,7 @@ namespace BMBF_Manager
             Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
 
 
-            adb("install -r \"" + exe + "\\tmp\\BMBF.apk\"");
+            aDBI.adb("install -r \"" + exe + "\\tmp\\BMBF.apk\"", txtbox);
 
             //Mod Beat Saber
             txtbox.AppendText("\n\n" + globalLanguage.mainMenu.code.moddingBS);
@@ -935,14 +795,14 @@ namespace BMBF_Manager
             Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
 
 
-            adb("shell am start -n com.weloveoculus.BMBF/com.weloveoculus.BMBF.MainActivity"); //Start BMBF
-            adb("shell pm grant com.weloveoculus.BMBF android.permission.READ_EXTERNAL_STORAGE"); //Grant permission read
-            adb("shell pm grant com.weloveoculus.BMBF android.permission.WRITE_EXTERNAL_STORAGE"); //Grant permission write
+            aDBI.adb("shell am start -n com.weloveoculus.BMBF/com.weloveoculus.BMBF.MainActivity", txtbox); //Start BMBF
+            aDBI.adb("shell pm grant com.weloveoculus.BMBF android.permission.READ_EXTERNAL_STORAGE", txtbox); //Grant permission read
+            aDBI.adb("shell pm grant com.weloveoculus.BMBF android.permission.WRITE_EXTERNAL_STORAGE", txtbox); //Grant permission write
             // Need to add a delay
             System.Threading.Thread.Sleep(6000);
-            adb("shell am start -n com.weloveoculus.BMBF/com.weloveoculus.BMBF.MainActivity"); //Start BMBF
+            aDBI.adb("shell am start -n com.weloveoculus.BMBF/com.weloveoculus.BMBF.MainActivity", txtbox); //Start BMBF
             System.Threading.Thread.Sleep(5000);
-            adb("shell am start -n com.weloveoculus.BMBF/com.weloveoculus.BMBF.MainActivity"); //Start BMBF
+            aDBI.adb("shell am start -n com.weloveoculus.BMBF/com.weloveoculus.BMBF.MainActivity", txtbox); //Start BMBF
             System.Threading.Thread.Sleep(5000);
             if(Quest2)
             {
@@ -959,15 +819,15 @@ namespace BMBF_Manager
                 return;
             }
             TimeoutWebClient client = new TimeoutWebClient();
-            client.UploadDataAsync(new Uri("http://" + MainWindow.IP + ":50000/host/mod/install/step1"), "POST", new byte[0]);
+            client.UploadDataAsync(new Uri("http://" + config.IP + ":50000/host/mod/install/step1"), "POST", new byte[0]);
             client.UploadDataCompleted += new UploadDataCompletedEventHandler(finishedstep1);
         }
 
         private void finishedstep1(object sender, AsyncCompletedEventArgs e)
         {
             TimeoutWebClient client = new TimeoutWebClient();
-            adb("uninstall com.beatgames.beatsaber");
-            client.UploadDataAsync(new Uri("http://" + MainWindow.IP + ":50000/host/mod/install/step2"), "POST", new byte[0]);
+            aDBI.adb("uninstall com.beatgames.beatsaber", txtbox);
+            client.UploadDataAsync(new Uri("http://" + config.IP + ":50000/host/mod/install/step2"), "POST", new byte[0]);
             client.UploadDataCompleted += new UploadDataCompletedEventHandler(finishedstep2);
             txtbox.AppendText("\n" + globalLanguage.processer.ReturnProcessed(globalLanguage.mainMenu.code.stepFinished, "1"));
         }
@@ -975,9 +835,9 @@ namespace BMBF_Manager
         private void finishedstep2(object sender, UploadDataCompletedEventArgs e)
         {
             TimeoutWebClient client = new TimeoutWebClient();
-            adb("pull /sdcard/Android/data/com.weloveoculus.BMBF/cache/beatsabermod.apk \"" + exe + "\\tmp\\beatsabermod.apk\"");
-            adb("install -r \"" + exe + "\\tmp\\beatsabermod.apk\"");
-            client.UploadDataAsync(new Uri("http://" + MainWindow.IP + ":50000/host/mod/install/step3"), "POST", new byte[0]);
+            aDBI.adb("pull /sdcard/Android/data/com.weloveoculus.BMBF/cache/beatsabermod.apk \"" + exe + "\\tmp\\beatsabermod.apk\"", txtbox);
+            aDBI.adb("install -r \"" + exe + "\\tmp\\beatsabermod.apk\"", txtbox);
+            client.UploadDataAsync(new Uri("http://" + config.IP + ":50000/host/mod/install/step3"), "POST", new byte[0]);
             client.UploadDataCompleted += new UploadDataCompletedEventHandler(finishedstep3);
             txtbox.AppendText("\n" + globalLanguage.processer.ReturnProcessed(globalLanguage.mainMenu.code.stepFinished, "2"));
         }
@@ -985,10 +845,10 @@ namespace BMBF_Manager
         private void finishedstep3(object sender, UploadDataCompletedEventArgs e)
         {
             txtbox.AppendText("\n" + globalLanguage.processer.ReturnProcessed(globalLanguage.mainMenu.code.stepFinished, "3"));
-            adb("shell am force-stop com.weloveoculus.BMBF");
-            adb("shell am start -n com.weloveoculus.BMBF/com.weloveoculus.BMBF.MainActivity"); //Start BMBF
-            adb("shell pm grant com.beatgames.beatsaber android.permission.READ_EXTERNAL_STORAGE"); //Grant permission read
-            adb("shell pm grant com.beatgames.beatsaber android.permission.WRITE_EXTERNAL_STORAGE"); //Grant permission write
+            aDBI.adb("shell am force-stop com.weloveoculus.BMBF", txtbox);
+            aDBI.adb("shell am start -n com.weloveoculus.BMBF/com.weloveoculus.BMBF.MainActivity", txtbox); //Start BMBF
+            aDBI.adb("shell pm grant com.beatgames.beatsaber android.permission.READ_EXTERNAL_STORAGE", txtbox); //Grant permission read
+            aDBI.adb("shell pm grant com.beatgames.beatsaber android.permission.WRITE_EXTERNAL_STORAGE", txtbox); //Grant permission write
 
             RestoreStuff();
 
@@ -998,7 +858,7 @@ namespace BMBF_Manager
 
         public void RestoreStuff()
         {
-            if (!adb("push \"" + exe + "\\Backup\\files\" /sdcard/Android/data/com.beatgames.beatsaber"))
+            if (!aDBI.adb("push \"" + exe + "\\Backup\\files\" /sdcard/Android/data/com.beatgames.beatsaber", txtbox))
             {
                 Running = false;
                 return;
@@ -1023,7 +883,7 @@ namespace BMBF_Manager
 
                 String Playlists = exe + "\\Backup\\Playlists.json";
 
-                var j = JSON.Parse(client3.DownloadString("http://" + MainWindow.IP + ":50000/host/beatsaber/config"));
+                var j = JSON.Parse(client3.DownloadString("http://" + config.IP + ":50000/host/beatsaber/config"));
                 var p = JSON.Parse(File.ReadAllText(Playlists));
 
                 j["Config"]["Playlists"] = p["Playlists"];
@@ -1048,8 +908,8 @@ namespace BMBF_Manager
             using (WebClient client = new WebClient())
             {
                 client.QueryString.Add("foo", "foo");
-                client.UploadFile("http://" + IP + ":50000/host/beatsaber/config", "PUT", Config);
-                client.UploadValues("http://" + IP + ":50000/host/beatsaber/commitconfig", "POST", client.QueryString);
+                client.UploadFile("http://" + config.IP + ":50000/host/beatsaber/config", "PUT", Config);
+                client.UploadValues("http://" + config.IP + ":50000/host/beatsaber/commitconfig", "POST", client.QueryString);
             }
         }
 
@@ -1064,7 +924,7 @@ namespace BMBF_Manager
                 if (directories[i].EndsWith(".png"))
                 {
                     txtbox.AppendText("\n\n" + globalLanguage.processer.ReturnProcessed(globalLanguage.mainMenu.code.pushingPng, directories[i]));
-                    adb("push \"" + directories[i] + "\" /sdcard/BMBFData/Playlists/");
+                    aDBI.adb("push \"" + directories[i] + "\" /sdcard/BMBFData/Playlists/", txtbox);
                     txtbox.ScrollToEnd();
                     Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
                 }
@@ -1084,17 +944,19 @@ namespace BMBF_Manager
                 return;
             }
 
-            if (!adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/mods \"" + exe + "\\ModChecks"))
+            if (!aDBI.adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/mods \"" + exe + "\\ModChecks", txtbox))
             {
                 Running = false;
                 return;
             }
 
-            if (!adb("shell am force-stop com.weloveoculus.BMBF"))
+            if (!aDBI.adb("shell am force-stop com.weloveoculus.BMBF", txtbox))
             {
                 Running = false;
                 return;
             }
+
+            DCRPM.SetActivity(globalLanguage.dRCP.switchingVersion);
 
             if (Directory.Exists(exe + "\\ModChecks\\mods"))
             {
@@ -1127,12 +989,12 @@ namespace BMBF_Manager
                     txtbox.AppendText("\n\n" + globalLanguage.mainMenu.code.backingUpAll);
                     txtbox.ScrollToEnd();
                 }));
-                if (!adb("pull /sdcard/BMBFData/Backups/beatsaber-unmodded.apk \"" + exe + "\\tmp\\unmodded.apk\""))
+                if (!aDBI.adb("pull /sdcard/BMBFData/Backups/beatsaber-unmodded.apk \"" + exe + "\\tmp\\unmodded.apk\"", txtbox))
                 {
                     Running = false;
                     return;
                 }
-                if (!adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files \"" + exe + "\\Backups\""))
+                if (!aDBI.adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files \"" + exe + "\\Backups\"", txtbox))
                 {
                     Running = false;
                     return;
@@ -1140,8 +1002,8 @@ namespace BMBF_Manager
                 //Directory.Delete(exe + "\\Backups\\files\\mods", true);
                 //Directory.Delete(exe + "\\Backups\\files\\libs", true);
 
-                String moddedBS = adbS("shell pm path com.beatgames.beatsaber").Replace("package:", "").Replace(System.Environment.NewLine, "");
-                if (!adb("pull " + moddedBS + " \"" + exe + "\\Backups\\modded.apk\""))
+                String moddedBS = aDBI.adbS("shell pm path com.beatgames.beatsaber", txtbox).Replace("package:", "").Replace(System.Environment.NewLine, "");
+                if (!aDBI.adb("pull " + moddedBS + " \"" + exe + "\\Backups\\modded.apk\"", txtbox))
                 {
                     Running = false;
                     return;
@@ -1151,12 +1013,12 @@ namespace BMBF_Manager
                     txtbox.AppendText("\n\n" + globalLanguage.mainMenu.code.installingUnmodded);
                     txtbox.ScrollToEnd();
                 }));
-                if (!adb("uninstall com.beatgames.beatsaber"))
+                if (!aDBI.adb("uninstall com.beatgames.beatsaber", txtbox))
                 {
                     Running = false;
                     return;
                 }
-                if (!adb("install \"" + exe + "\\tmp\\unmodded.apk\""))
+                if (!aDBI.adb("install \"" + exe + "\\tmp\\unmodded.apk\"", txtbox))
                 {
                     Running = false;
                     return;
@@ -1165,11 +1027,11 @@ namespace BMBF_Manager
                     txtbox.AppendText("\n\n" + globalLanguage.mainMenu.code.restoringScores);
                     txtbox.ScrollToEnd();
                 }));
-                adb("push \"" + exe + "\\Backups\\files\\LocalDailyLeaderboards.dat\" /sdcard/Android/data/com.beatgames.beatsaber/files/LocalDailyLeaderboards.dat");
-                adb("push \"" + exe + "\\Backups\\files\\LocalLeaderboards.dat\" /sdcard/Android/data/com.beatgames.beatsaber/files/LocalLeaderboards.dat");
-                adb("push \"" + exe + "\\Backups\\files\\PlayerData.dat\" /sdcard/Android/data/com.beatgames.beatsaber/files/PlayerData.dat");
-                adb("push \"" + exe + "\\Backups\\files\\AvatarData.dat\" /sdcard/Android/data/com.beatgames.beatsaber/files/AvatarData.dat");
-                adb("push \"" + exe + "\\Backups\\files\\settings.cfg\" /sdcard/Android/data/com.beatgames.beatsaber/files/settings.cfg");
+                aDBI.adb("push \"" + exe + "\\Backups\\files\\LocalDailyLeaderboards.dat\" /sdcard/Android/data/com.beatgames.beatsaber/files/LocalDailyLeaderboards.dat", txtbox);
+                aDBI.adb("push \"" + exe + "\\Backups\\files\\LocalLeaderboards.dat\" /sdcard/Android/data/com.beatgames.beatsaber/files/LocalLeaderboards.dat", txtbox);
+                aDBI.adb("push \"" + exe + "\\Backups\\files\\PlayerData.dat\" /sdcard/Android/data/com.beatgames.beatsaber/files/PlayerData.dat", txtbox);
+                aDBI.adb("push \"" + exe + "\\Backups\\files\\AvatarData.dat\" /sdcard/Android/data/com.beatgames.beatsaber/files/AvatarData.dat", txtbox);
+                aDBI.adb("push \"" + exe + "\\Backups\\files\\settings.cfg\" /sdcard/Android/data/com.beatgames.beatsaber/files/settings.cfg", txtbox);
 
 
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate {
@@ -1196,16 +1058,16 @@ namespace BMBF_Manager
                         Running = false;
                         return;
                 }
-                adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/LocalDailyLeaderboards.dat \"" + exe + "\\Backups\\files\\LocalDailyLeaderboards.dat\"");
-                adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/LocalLeaderboards.dat \"" + exe + "\\Backups\\files\\LocalLeaderboards.dat\"");
-                adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/PlayerData.dat \"" + exe + "\\Backups\\files\\PlayerData.dat\"");
-                adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/AvatarData.dat \"" + exe + "\\Backups\\files\\AvatarData.dat\"");
-                adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/settings.cfg \"" + exe + "\\Backups\\files\\settings.cfg\"");
+                aDBI.adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/LocalDailyLeaderboards.dat \"" + exe + "\\Backups\\files\\LocalDailyLeaderboards.dat\"", txtbox);
+                aDBI.adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/LocalLeaderboards.dat \"" + exe + "\\Backups\\files\\LocalLeaderboards.dat\"", txtbox);
+                aDBI.adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/PlayerData.dat \"" + exe + "\\Backups\\files\\PlayerData.dat\"", txtbox);
+                aDBI.adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/AvatarData.dat \"" + exe + "\\Backups\\files\\AvatarData.dat\"", txtbox);
+                aDBI.adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/settings.cfg \"" + exe + "\\Backups\\files\\settings.cfg\"", txtbox);
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate {
                     txtbox.AppendText("\n\n" + globalLanguage.mainMenu.code.uninstallingBS);
                     txtbox.ScrollToEnd();
                 }));
-                if (!adb("uninstall com.beatgames.beatsaber"))
+                if (!aDBI.adb("uninstall com.beatgames.beatsaber", txtbox))
                 {
                     Running = false;
                     return;
@@ -1214,7 +1076,7 @@ namespace BMBF_Manager
                     txtbox.AppendText("\n\n" + globalLanguage.mainMenu.code.installingModded);
                     txtbox.ScrollToEnd();
                 }));
-                if (!adb("install \"" + exe + "\\Backups\\modded.apk\""))
+                if (!aDBI.adb("install \"" + exe + "\\Backups\\modded.apk\"", txtbox))
                 {
                     Running = false;
                     return;
@@ -1223,7 +1085,7 @@ namespace BMBF_Manager
                     txtbox.AppendText("\n\n" + globalLanguage.mainMenu.code.restoringSaveData);
                     txtbox.ScrollToEnd();
                 }));
-                if (!adb("push \"" + exe + "\\Backups\\files\" /sdcard/Android/data/com.beatgames.beatsaber/files"))
+                if (!aDBI.adb("push \"" + exe + "\\Backups\\files\" /sdcard/Android/data/com.beatgames.beatsaber/files", txtbox))
                 {
                     Running = false;
                     return;
@@ -1232,8 +1094,8 @@ namespace BMBF_Manager
                     txtbox.AppendText("\n\n" + globalLanguage.mainMenu.code.grantingPerms);
                     txtbox.ScrollToEnd();
                 }));
-                adb("shell pm grant com.beatgames.beatsaber android.permission.READ_EXTERNAL_STORAGE"); //Grant permission read
-                adb("shell pm grant com.beatgames.beatsaber android.permission.WRITE_EXTERNAL_STORAGE"); //Grant permission write
+                aDBI.adb("shell pm grant com.beatgames.beatsaber android.permission.READ_EXTERNAL_STORAGE", txtbox); //Grant permission read
+                aDBI.adb("shell pm grant com.beatgames.beatsaber android.permission.WRITE_EXTERNAL_STORAGE", txtbox); //Grant permission write
                 Directory.Delete(exe + "\\Backups", true);
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate {
                     txtbox.AppendText("\n\n" + globalLanguage.mainMenu.code.finishedModded);
@@ -1247,7 +1109,7 @@ namespace BMBF_Manager
 
         private void BPLists(object sender, RoutedEventArgs e)
         {
-            CheckIP();
+            iPUtils.CheckIP(Quest);
             BPLists BPListsWindow = new BPLists();
             BPListsWindow.Show();
         }
@@ -1257,70 +1119,70 @@ namespace BMBF_Manager
             System.Threading.Thread.Sleep(3000);
             TimeoutWebClient client = new TimeoutWebClient();
             client.QueryString.Add("foo", "foo");
-            client.UploadValues("http://" + MainWindow.IP + ":50000/host/beatsaber/reloadsongfolders", "POST", client.QueryString);
+            client.UploadValues("http://" + config.IP + ":50000/host/beatsaber/reloadsongfolders", "POST", client.QueryString);
         }
 
         private void OpenBMBF(object sender, RoutedEventArgs e)
         {
             StartBMBF();
-            CheckIP();
+            iPUtils.CheckIP(Quest);
             try
             {
                 TimeoutWebClientShort c = new TimeoutWebClientShort();
-                c.DownloadString("http://" + IP + ":50000/host/beatsaber/config");
-                Process.Start("http://" + IP + ":50000/main/upload");
+                c.DownloadString("http://" + config.IP + ":50000/host/beatsaber/config");
+                Process.Start("http://" + config.IP + ":50000/main/upload");
             } catch 
             {
-                MessageBox.Show(globalLanguage.processer.ReturnProcessed(globalLanguage.mainMenu.code.bMBFNotReachable, IP), "BMBF Manager - BMBF opening", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show(globalLanguage.processer.ReturnProcessed(globalLanguage.mainMenu.code.bMBFNotReachable, config.IP), "BMBF Manager - BMBF opening", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
             
         }
 
         private void Support(object sender, RoutedEventArgs e)
         {
-            CheckIP();
+            iPUtils.CheckIP(Quest);
             Support SupportWindow = new Support();
             SupportWindow.Show();
         }
 
         private void HitSounds(object sender, RoutedEventArgs e)
         {
-            CheckIP();
+            iPUtils.CheckIP(Quest);
             HitSounds HitSoundsWindow = new HitSounds();
             HitSoundsWindow.Show();
         }
 
         private void BBBU(object sender, RoutedEventArgs e)
         {
-            CheckIP();
+            iPUtils.CheckIP(Quest);
             BBBU BBBUWindow = new BBBU();
             BBBUWindow.Show();
         }
 
         private void QSU(object sender, RoutedEventArgs e)
         {
-            CheckIP();
+            iPUtils.CheckIP(Quest);
             QSU QSUWindow = new QSU();
             QSUWindow.Show();
         }
 
         private void Qosmetics(object sender, RoutedEventArgs e)
         {
-            CheckIP();
+            iPUtils.CheckIP(Quest);
             Qosmetics QosmeticsWindow = new Qosmetics();
             QosmeticsWindow.Show();
         }
 
         private void PE(object sender, RoutedEventArgs e)
         {
-            CheckIP();
+            iPUtils.CheckIP(Quest);
             PlaylistEditor PlaylistEditorWindow = new PlaylistEditor();
             PlaylistEditorWindow.Show();
         }
 
         internal void CustomProto(string Link)
         {
-            CheckIP();
+            iPUtils.CheckIP(Quest);
             Support SupportWindow = new Support();
             SupportWindow.Show();
             SupportWindow.StartSupport(Link);

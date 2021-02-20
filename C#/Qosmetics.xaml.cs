@@ -42,13 +42,13 @@ namespace BMBF_Manager
         {
             InitializeComponent();
             ApplyLanguage();
-            Quest.Text = MainWindow.IP;
+            Quest.Text = MainWindow.config.IP;
             DownloadLable.Text = MainWindow.globalLanguage.global.allFinished;
             GetQosmetics();
-            if (MainWindow.CustomImage)
+            if (MainWindow.config.CustomImage)
             {
                 ImageBrush uniformBrush = new ImageBrush();
-                uniformBrush.ImageSource = new BitmapImage(new Uri(MainWindow.CustomImageSource, UriKind.Absolute));
+                uniformBrush.ImageSource = new BitmapImage(new Uri(MainWindow.config.CustomImageSource, UriKind.Absolute));
                 uniformBrush.Stretch = Stretch.UniformToFill;
                 this.Background = uniformBrush;
             }
@@ -59,11 +59,12 @@ namespace BMBF_Manager
                 uniformBrush.Stretch = Stretch.UniformToFill;
                 this.Background = uniformBrush;
             }
-            if (!MainWindow.QosmeticsWarningShown)
+            if (!MainWindow.config.QosmeticsWarningShown)
             {
                 MessageBox.Show(MainWindow.globalLanguage.qosmetics.code.qosmeticsNote, "BMBF Manager - Qosmetics", MessageBoxButton.OK, MessageBoxImage.Information);
-                MainWindow.QosmeticsWarningShown = true;
+                MainWindow.config.QosmeticsWarningShown = true;
             }
+            MainWindow.DCRPM.SetActivity(MainWindow.globalLanguage.dRCP.browsingQosmetics);
         }
 
         public void ApplyLanguage()
@@ -94,7 +95,7 @@ namespace BMBF_Manager
             try
             {
                 WebClient c = new WebClient();
-                JSONNode BMBF = JSON.Parse(c.DownloadString("http://" + MainWindow.IP + ":50000/host/beatsaber/config"));
+                JSONNode BMBF = JSON.Parse(c.DownloadString("http://" + MainWindow.config.IP + ":50000/host/beatsaber/config"));
                 Boolean Installed = false;
                 foreach (JSONNode mod in BMBF["Config"]["Mods"])
                 {
@@ -117,7 +118,7 @@ namespace BMBF_Manager
             }
             catch
             {
-                if (!MainWindow.QosmeticsInstalled)
+                if (!MainWindow.config.QosmeticsInstalled)
                 {
                     MessageBoxResult result = MessageBox.Show(MainWindow.globalLanguage.qosmetics.code.doYouHaveQomsietcsInstalled, "BMBF Manager - Install Qosmetics", MessageBoxButton.YesNo, MessageBoxImage.Question);
                     switch (result)
@@ -200,8 +201,7 @@ namespace BMBF_Manager
 
         private void Close(object sender, RoutedEventArgs e)
         {
-            CheckIP();
-            MainWindow.IP = Quest.Text;
+            MainWindow.iPUtils.CheckIP(Quest);
             this.Close();
         }
 
@@ -225,81 +225,6 @@ namespace BMBF_Manager
             {
                 Quest.Text = MainWindow.globalLanguage.global.defaultQuestIPText;
             }
-        }
-
-        public Boolean CheckIP()
-        {
-            getQuestIP();
-            String found;
-            if ((found = RegexTemplates.GetIP(MainWindow.IP)) != "")
-            {
-                MainWindow.IP = found;
-                Quest.Text = MainWindow.IP;
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        public void getQuestIP()
-        {
-            MainWindow.IP = Quest.Text;
-            return;
-        }
-
-        public Boolean adb(String Argument)
-        {
-            String User = System.Environment.GetEnvironmentVariable("USERPROFILE");
-
-            foreach (String ADB in MainWindow.ADBPaths)
-            {
-                ProcessStartInfo s = new ProcessStartInfo();
-                s.CreateNoWindow = true;
-                s.UseShellExecute = false;
-                s.FileName = ADB.Replace("User", User);
-                s.WindowStyle = ProcessWindowStyle.Minimized;
-                s.Arguments = Argument;
-                s.RedirectStandardOutput = true;
-                if (MainWindow.ShowADB)
-                {
-                    s.RedirectStandardOutput = false;
-                    s.CreateNoWindow = false;
-                }
-                try
-                {
-                    // Start the process with the info we specified.
-                    // Call WaitForExit and then the using statement will close.
-                    using (Process exeProcess = Process.Start(s))
-                    {
-                        if (!MainWindow.ShowADB)
-                        {
-                            String IPS = exeProcess.StandardOutput.ReadToEnd();
-                            exeProcess.WaitForExit();
-                            if (IPS.Contains("no devices/emulators found"))
-                            {
-                                txtbox.AppendText(MainWindow.globalLanguage.global.ADB110);
-                                txtbox.ScrollToEnd();
-                                return false;
-                            }
-                        }
-                        else
-                        {
-                            exeProcess.WaitForExit();
-                        }
-
-                        return true;
-                    }
-                }
-                catch
-                {
-                    continue;
-                }
-            }
-            txtbox.AppendText(MainWindow.globalLanguage.global.ADB100);
-            txtbox.ScrollToEnd();
-            return false;
         }
 
         private void GetQSaberPicture(object sender, SelectionChangedEventArgs e)
@@ -424,7 +349,7 @@ namespace BMBF_Manager
         {
             Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
             {
-                adb("shell am start -n com.weloveoculus.BMBF/com.weloveoculus.BMBF.MainActivity");
+                MainWindow.aDBI.adb("shell am start -n com.weloveoculus.BMBF/com.weloveoculus.BMBF.MainActivity", txtbox);
             }));
         }
 
@@ -465,12 +390,13 @@ namespace BMBF_Manager
                 DownloadLable.Text = MainWindow.globalLanguage.global.allFinished;
                 txtbox.AppendText("\n\n" + MainWindow.globalLanguage.global.allFinished);
                 CheckQosmeticsInstalled();
+                MainWindow.DCRPM.SetActivity(MainWindow.globalLanguage.dRCP.browsingQosmetics);
             }
         }
 
         private void InstallQosmetic()
         {
-            if (!CheckIP())
+            if (!MainWindow.iPUtils.CheckIP(Quest))
             {
                 txtbox.AppendText("\n\n" + MainWindow.globalLanguage.global.ipInvalid);
                 txtbox.ScrollToEnd();
@@ -481,6 +407,8 @@ namespace BMBF_Manager
                 return;
             }
             Running = true;
+
+            MainWindow.DCRPM.SetActivity(MainWindow.globalLanguage.dRCP.installingQosmetics);
 
             C = 0;
             while (File.Exists(exe + "\\tmp\\" + System.IO.Path.GetFileNameWithoutExtension(downloadqueue[0].downloadURL) + C + System.IO.Path.GetExtension(downloadqueue[0].downloadURL)))
@@ -562,13 +490,13 @@ namespace BMBF_Manager
 
         public void upload(String path)
         {
-            getQuestIP();
+            MainWindow.iPUtils.CheckIP(Quest);
 
             TimeoutWebClient client = new TimeoutWebClient();
 
             txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qosmetics.code.uploadingToBMBF, downloadqueue[0].name));
             txtbox.ScrollToEnd();
-            Uri uri = new Uri("http://" + MainWindow.IP + ":50000/host/beatsaber/upload?overwrite");
+            Uri uri = new Uri("http://" + MainWindow.config.IP + ":50000/host/beatsaber/upload?overwrite");
             try
             {
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
@@ -613,7 +541,7 @@ namespace BMBF_Manager
                 using (WebClient client = new WebClient())
                 {
                     client.QueryString.Add("foo", "foo");
-                    client.UploadValues("http://" + MainWindow.IP + ":50000/host/beatsaber/commitconfig", "POST", client.QueryString);
+                    client.UploadValues("http://" + MainWindow.config.IP + ":50000/host/beatsaber/commitconfig", "POST", client.QueryString);
                 }
             }
             catch

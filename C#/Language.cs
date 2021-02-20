@@ -17,6 +17,7 @@ namespace BMBFManager.Language
         public Songs songs { get; set; } = new Songs();
         public Settings settings { get; set; } = new Settings();
         public Global global { get; set; } = new Global();
+        public DCRP dRCP { get; set; } = new DCRP();
         public VariableProcesser processer = new VariableProcesser();
     }
 
@@ -136,6 +137,9 @@ namespace BMBFManager.Language
 
         //Open BMBF
         public String bMBFNotReachable { get; set; } = "I couldn't reach BMBF. The IP you typed is: \"{0}\". Is this right? If it is check that BMBF is opened on your Quest and that your Quest and PC are on the same Wifi network.";
+
+        //Exception
+        public String Exception { get; set; } = "You just noticed a bug. This window shouldn't show up if all goes right. I saved useful information for ComputerElite (Creator of BMBF Manager) to fix your bug in a file labeled \"Crash.log\". Please send that file to ComputerElite via Discord and tell him what you wanted to do. I'll close myself once you clicked ok so nothing gets messed up (If you still want to continue press cancle).\n\nException:";
     }
 
     public class MainMenuUI
@@ -479,7 +483,7 @@ namespace BMBFManager.Language
         public String downloadFailed { get; set; } = "{0} couldn't get downloaded";
         public String extractingQosmetics { get; set; } = "Extracting Qosmetics from zip file";
         public String uploadingToBMBF { get; set; } = "Uploading {0} to BMBF";
-        public String uploadComplete { get; set; } = "{0} was uploaded to your Quest. Please enable your Qosmetic manually via the BMBF Web Interface (Open BMBF in the main menu)";
+        public String uploadComplete { get; set; } = "{0} was uploaded to your Quest.";
     }
 
     public class QSU
@@ -685,6 +689,9 @@ namespace BMBFManager.Language
         public String enableADBOutputButton { get; set; } = "Enable ADB Output";
         public String disableADBOutputButton { get; set; } = "Disable ADB Output";
         public String KeepAliveButton { get; set; } = "Keep Alive (Quest 2)";
+        public String CreditsButton { get; set; } = "Credits";
+        public String enableDCRP { get; set; } = "Enable Discord rich presence";
+        public String disableDCRP { get; set; } = "Disable Discord rich presence";
     }
 
     public class SettingsCode
@@ -699,6 +706,8 @@ namespace BMBFManager.Language
         public String pictures { get; set; } = "Pictures";
         public String restartProgram { get; set; } = "For the changes to take effect program wide you have to restart it.";
         public String selectFile { get; set; } = "Please select a valid file";
+        public String dCRPEnabled { get; set; } = "Discord rich presence has been enabled.";
+        public String dCRPDisabled { get; set; } = "Discord rich presence has been disabled.";
 
         //Custom Protocol
         public String changingRegistryEnableBM { get; set; } = "Changing Registry to enable BM Custom protocol";
@@ -724,5 +733,52 @@ namespace BMBFManager.Language
 
         public String selectLanguage { get; set; } = "Please select a language";
         public String changedLanguage { get; set; } = "Changed language to {0} translated by {1}";
+    }
+
+    public class DCRP
+    {
+        //BBBU
+        public String restoringBBBUBackup { get; set; } = "Restoring BMBF and Beat Saber Backup";
+        public String creatingBBBUBackup { get; set; } = "Creating BMBF and Beat Saber Backup";
+        
+        //BPList installing
+        public String installingBookmarks { get; set; } = "Installing Bookmarks";
+        public String installingRanked { get; set; } = "Installing ranked Songs";
+        
+        //MainMenu
+        public String inMainMenu { get; set; } = "In Main Menu";
+        public String updatingBMBF { get; set; } = "Updating BMBF";
+        public String switchingVersion { get; set; } = "Switching between unmodded and modded Beat Saber version";
+        
+        //Mods
+        public String installingMods { get; set; } = "Installing mods";
+        public String browsingMods { get; set; } = "Browsing mods";
+        
+        //Playlist Editor
+        public String editingPlaylists { get; set; } = "Editing Playlists";
+        public String exportingBPList { get; set; } = "Exporting BPList";
+        public String importingBPList { get; set; } = "Importing BPList";
+        
+        //Qosmetics
+        public String browsingQosmetics { get; set; } = "Browsing Qosmetics";
+        public String installingQosmetics { get; set; } = "Installing Qosmetics";
+        
+        //QSU
+        public String backingUpPlaylists { get; set; } = "Backing playlists up";
+        public String restoringPlaylists { get; set; } = "Restoring playlists";
+        public String zippingSongs { get; set; } = "Zipping Songs";
+        public String correctingSongPath { get; set; } = "Correcting invalid Song path";
+        public String switchingSongLibraryQuestPC { get; set; } = "Switching Song library from Quest to PC";
+        public String switchingSongLibraryPCQuest { get; set; } = "Switching Song library from PC to Quest";
+        public String makingSongList { get; set; } = "Making list of all songs";
+        
+        //Songs
+        public String installingSongs { get; set; } = "Installing Songs";
+
+        //Settings
+        public String changingSettings { get; set; } = "Changing Settings";
+
+        //Meta
+        public String gitHubLink { get; set; } = "GitHub Link";
     }
 }

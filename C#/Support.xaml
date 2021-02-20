@@ -8,7 +8,7 @@
         ResizeMode="CanMinimize"
         WindowStyle="None"
         MouseMove="Drag"
-        Title="BMBF Manager - Settings" Height="406" Width="464" Background="#FF282828">
+        Title="BMBF Manager - Settings" Height="478" Width="464" Background="#FF282828">
     <Grid>
 
         <Image Source="Logo.png" HorizontalAlignment="Left" Height="25" VerticalAlignment="Top" Width="25" Margin="10,2,0,0"/>
@@ -24,7 +24,7 @@
             </Button.RenderTransform>
         </Button>
         <TextBox LostFocus="QuestIPCheck" FontFamily="lucida console" GotFocus="ClearText" MouseEnter="noDrag" MouseLeave="doDrag" Opacity="0.8" x:Name="Quest" HorizontalAlignment="Left" Height="23" Margin="203,30,0,0" TextWrapping="Wrap" Text="Quest IP" VerticalAlignment="Top" Width="251" Background="#FF494949" BorderBrush="#FFD30000" Foreground="White"/>
-        <TextBox MouseEnter="noDrag" MouseLeave="doDrag" FontFamily="lucida console" Opacity="0.8" IsReadOnly="True" x:Name="txtbox" HorizontalAlignment="Left" Height="365" Margin="10,30,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="188" Background="#FF494949" Foreground="#FFA6A6A6" BorderBrush="#FFD30000"/>
+        <TextBox MouseEnter="noDrag" MouseLeave="doDrag" FontFamily="lucida console" Opacity="0.8" IsReadOnly="True" x:Name="txtbox" HorizontalAlignment="Left" Height="441" Margin="10,30,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="188" Background="#FF494949" Foreground="#FFA6A6A6" BorderBrush="#FFD30000"/>
         <AccessText Opacity="0.8" HorizontalAlignment="Left" Height="24" VerticalAlignment="Top" Width="249" RenderTransformOrigin="0.5,0.5" Text="BMBF Manager - Settings" FontSize="14" Foreground="Black" Margin="40,4,0,0"/>
         <Button x:Name="CustomP" MouseEnter="noDrag" MouseLeave="doDrag" FontFamily="lucida console" Opacity="0.8" Click="EnableCustom" Content="Enable BM://" HorizontalAlignment="Left" Margin="203,145,0,0" VerticalAlignment="Top" Width="251" Height="33" RenderTransformOrigin="-0.858,0.891" Background="#FF005654" Foreground="#FFF3F3F3" BorderBrush="#FFB94747"/>
         <Button x:Name="backgroundButton" MouseEnter="noDrag" MouseLeave="doDrag" FontFamily="lucida console" Opacity="0.8" Click="ChooseImage" Content="Choose Background Image" HorizontalAlignment="Left" Margin="203,69,0,0" VerticalAlignment="Top" Width="251" Height="33" RenderTransformOrigin="-0.858,0.891" Background="#FF005654" Foreground="#FFF3F3F3" BorderBrush="#FFB94747"/>
@@ -34,6 +34,8 @@
         <Button x:Name="BSaver" MouseEnter="noDrag" MouseLeave="doDrag" FontFamily="lucida console" Opacity="0.8" Click="enable_BeatSaver" Content="Enable beatsaver://" HorizontalAlignment="Left" Margin="203,183,0,0" VerticalAlignment="Top" Width="251" Height="33" RenderTransformOrigin="-0.858,0.891" Background="#FF005654" Foreground="#FFF3F3F3" BorderBrush="#FFB94747"/>
         <Button x:Name="KA" MouseEnter="noDrag" MouseLeave="doDrag" FontFamily="lucida console" Opacity="0.8" Click="KeepAlive" Content="Keep Alive (Quest 2)" HorizontalAlignment="Left" Margin="203,335,0,0" VerticalAlignment="Top" Width="251" Height="33" RenderTransformOrigin="-0.858,0.891" Background="#FF005654" Foreground="#FFF3F3F3" BorderBrush="#FFB94747"/>
         <Button x:Name="moveQSUButton" MouseEnter="noDrag" MouseLeave="doDrag" FontFamily="lucida console" Opacity="0.8" Click="EnableQSUMove" Content="Move Data from QSU" HorizontalAlignment="Left" Margin="203,259,0,0" VerticalAlignment="Top" Width="251" Height="33" RenderTransformOrigin="-0.858,0.891" Background="#FF005654" Foreground="#FFF3F3F3" BorderBrush="#FFB94747"/>
-        <ComboBox SelectionChanged="ChangeLanguage"  Opacity="0.8" MouseEnter="noDrag" MouseLeave="doDrag" x:Name="Language" HorizontalAlignment="Left" Margin="203,373,0,0" VerticalAlignment="Top" Width="250" BorderBrush="#FFB94747" Background="#FF005654" Foreground="Black"/>
+        <ComboBox SelectionChanged="ChangeLanguage"  Opacity="0.8" MouseEnter="noDrag" MouseLeave="doDrag" x:Name="Language" HorizontalAlignment="Left" Margin="203,411,0,0" VerticalAlignment="Top" Width="250" BorderBrush="#FFB94747" Background="#FF005654" Foreground="Black"/>
+        <Button x:Name="CreditsButton" MouseEnter="noDrag" MouseLeave="doDrag" FontFamily="lucida console" Opacity="0.8" Click="ShowCredits" Content="Credits" HorizontalAlignment="Left" Margin="203,438,0,0" VerticalAlignment="Top" Width="251" Height="33" RenderTransformOrigin="-0.858,0.891" Background="#FF005654" Foreground="#FFF3F3F3" BorderBrush="#FFB94747"/>
+        <Button x:Name="DCRPB" MouseEnter="noDrag" MouseLeave="doDrag" FontFamily="lucida console" Opacity="0.8" Click="ToggleDCRP" Content="toggle DCRP" HorizontalAlignment="Left" Margin="203,373,0,0" VerticalAlignment="Top" Width="251" Height="33" RenderTransformOrigin="-0.858,0.891" Background="#FF005654" Foreground="#FFF3F3F3" BorderBrush="#FFB94747"/>
     </Grid>
 </Window>

@@ -44,13 +44,13 @@ namespace BMBF_Manager
         {
             InitializeComponent();
             ApplyLanguage();
-            Quest.Text = MainWindow.IP;
+            Quest.Text = MainWindow.config.IP;
             DownloadLable.Text = MainWindow.globalLanguage.global.allFinished;
             getMods();
-            if (MainWindow.CustomImage)
+            if (MainWindow.config.CustomImage)
             {
                 ImageBrush uniformBrush = new ImageBrush();
-                uniformBrush.ImageSource = new BitmapImage(new Uri(MainWindow.CustomImageSource, UriKind.Absolute));
+                uniformBrush.ImageSource = new BitmapImage(new Uri(MainWindow.config.CustomImageSource, UriKind.Absolute));
                 uniformBrush.Stretch = Stretch.UniformToFill;
                 this.Background = uniformBrush;
             }
@@ -61,6 +61,7 @@ namespace BMBF_Manager
                 uniformBrush.Stretch = Stretch.UniformToFill;
                 this.Background = uniformBrush;
             }
+            MainWindow.DCRPM.SetActivity(MainWindow.globalLanguage.dRCP.browsingMods);
         }
 
         public void ApplyLanguage()
@@ -77,7 +78,7 @@ namespace BMBF_Manager
 
         public void getMods()
         {
-            getQuestIP();
+            MainWindow.iPUtils.CheckIP(Quest);
             TimeoutWebClientShort client = new TimeoutWebClientShort();
 
             string json = "";
@@ -94,15 +95,15 @@ namespace BMBF_Manager
 
             try
             {
-                BMBF = SimpleJSON.JSON.Parse(client.DownloadString("http://" + MainWindow.IP + ":50000/host/beatsaber/config?nonsensecauseofcaching=" + DateTime.Now));
-                MainWindow.GameVersion = BMBF["BeatSaberVersion"];
+                BMBF = SimpleJSON.JSON.Parse(client.DownloadString("http://" + MainWindow.config.IP + ":50000/host/beatsaber/config?nonsensecauseofcaching=" + DateTime.Now));
+                MainWindow.config.GameVersion = BMBF["BeatSaberVersion"];
             }
             catch
             {
                 txtbox.AppendText(MainWindow.globalLanguage.global.BMBF100);
                 Reaching = false;
             }
-            String[] GameVersion = MainWindow.GameVersion.ToString().Replace("\"", "").Split('.');
+            String[] GameVersion = MainWindow.config.GameVersion.ToString().Replace("\"", "").Split('.');
             //String[] GameVersion = "1.13.0".Replace("\"", "").Split('.');
             int major = Convert.ToInt32(GameVersion[0]);
             int minor = Convert.ToInt32(GameVersion[1]);
@@ -130,7 +131,7 @@ namespace BMBF_Manager
             updatemodlist(false);
             if(!Reaching)
             {
-                MessageBox.Show(MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.mods.code.couldntReachBMBFForVersion, MainWindow.GameVersion), "BMBF Manager - Mod Installing", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show(MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.mods.code.couldntReachBMBFForVersion, MainWindow.config.GameVersion), "BMBF Manager - Mod Installing", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 
@@ -161,7 +162,7 @@ namespace BMBF_Manager
                 WebClient client = new WebClient();
                 try
                 {
-                    BMBF = SimpleJSON.JSON.Parse(client.DownloadString("http://" + MainWindow.IP + ":50000/host/beatsaber/config?nonsensecauseofcaching=" + DateTime.Now));
+                    BMBF = SimpleJSON.JSON.Parse(client.DownloadString("http://" + MainWindow.config.IP + ":50000/host/beatsaber/config?nonsensecauseofcaching=" + DateTime.Now));
                 }
                 catch
                 {
@@ -222,8 +223,7 @@ namespace BMBF_Manager
 
         private void Close(object sender, RoutedEventArgs e)
         {
-            CheckIP();
-            MainWindow.IP = Quest.Text;
+            MainWindow.iPUtils.CheckIP(Quest);
             this.Close();
         }
 
@@ -249,27 +249,6 @@ namespace BMBF_Manager
             }
         }
 
-        public Boolean CheckIP()
-        {
-            getQuestIP();
-            String found;
-            if ((found = RegexTemplates.GetIP(MainWindow.IP)) != "")
-            {
-                MainWindow.IP = found;
-                Quest.Text = MainWindow.IP;
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        public void getQuestIP()
-        {
-            MainWindow.IP = Quest.Text;
-            return;
-        }
         public void MoreInfo(object sender, RoutedEventArgs e)
         {
             //Name, Version, DownloadLink, Creator, gameVersion, Desciption, Forward, new Tuple (CoreMod, ModID, currentversion, islatest)
@@ -290,7 +269,7 @@ namespace BMBF_Manager
 
         public void InstallMod()
         {
-            if (!CheckIP())
+            if (!MainWindow.iPUtils.CheckIP(Quest))
             {
                 txtbox.AppendText("\n\n" + MainWindow.globalLanguage.global.ipInvalid);
                 txtbox.ScrollToEnd();
@@ -302,7 +281,7 @@ namespace BMBF_Manager
             }
             Running = true;
 
-
+            MainWindow.DCRPM.SetActivity(MainWindow.globalLanguage.dRCP.installingMods);
 
             C = 0;
             while (File.Exists(exe + "\\tmp\\" + AllModList[downloadqueue[0]].name + C + ".zip"))
@@ -325,7 +304,7 @@ namespace BMBF_Manager
                         checkqueue();
                         return;
                 }
-                Process.Start("http://" + MainWindow.IP + ":50000/main/upload");
+                Process.Start("http://" + MainWindow.config.IP + ":50000/main/upload");
                 Process.Start(AllModList[Index].downloads[AllModList[Index].MatchingDownload].download);
                 return;
             }
@@ -333,7 +312,7 @@ namespace BMBF_Manager
             if (AllModList[Index].downloads[AllModList[Index].MatchingDownload].coremod)
             {
                 MessageBox.Show(MainWindow.globalLanguage.mods.code.coreMod, "BMBF Manager - Mod Installing", MessageBoxButton.OK, MessageBoxImage.Warning);
-                Process.Start("http://" + MainWindow.IP + ":50000/main/mods");
+                Process.Start("http://" + MainWindow.config.IP + ":50000/main/mods");
                 MessageBoxResult result1 = MessageBox.Show(MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.mods.code.isCoreModInstalled, AllModList[Index].name), "BMBF Manager - Mod Installing", MessageBoxButton.YesNo, MessageBoxImage.Warning);
                 switch (result1)
                 {
@@ -347,7 +326,7 @@ namespace BMBF_Manager
                 }
             }
 
-            if (AllModList[Index].downloads[AllModList[Index].MatchingDownload].gameversion[AllModList[Index].MatchingGameVersion] != MainWindow.GameVersion)
+            if (AllModList[Index].downloads[AllModList[Index].MatchingDownload].gameversion[AllModList[Index].MatchingGameVersion] != MainWindow.config.GameVersion)
             {
                 MessageBoxResult result1 = MessageBox.Show(MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.mods.code.oldVerInstall, AllModList[Index].name, AllModList[Index].downloads[AllModList[Index].MatchingDownload].gameversion[AllModList[Index].MatchingGameVersion]), "BMBF Manager - Mod Installing", MessageBoxButton.YesNo, MessageBoxImage.Warning);
                 switch (result1)
@@ -422,7 +401,7 @@ namespace BMBF_Manager
             TimeoutWebClientShort c = new TimeoutWebClientShort();
             try
             {
-                BMBF = JSON.Parse(c.DownloadString("http://" + MainWindow.IP + ":50000/host/beatsaber/config"));
+                BMBF = JSON.Parse(c.DownloadString("http://" + MainWindow.config.IP + ":50000/host/beatsaber/config"));
             }
             catch
             {
@@ -472,62 +451,9 @@ namespace BMBF_Manager
             checkqueue();
         }
 
-        public Boolean adb(String Argument)
-        {
-            String User = System.Environment.GetEnvironmentVariable("USERPROFILE");
-
-            foreach (String ADB in MainWindow.ADBPaths)
-            {
-                ProcessStartInfo s = new ProcessStartInfo();
-                s.CreateNoWindow = true;
-                s.UseShellExecute = false;
-                s.FileName = ADB.Replace("User", User);
-                s.WindowStyle = ProcessWindowStyle.Minimized;
-                s.Arguments = Argument;
-                s.RedirectStandardOutput = true;
-                if (MainWindow.ShowADB)
-                {
-                    s.RedirectStandardOutput = false;
-                    s.CreateNoWindow = false;
-                }
-                try
-                {
-                    // Start the process with the info we specified.
-                    // Call WaitForExit and then the using statement will close.
-                    using (Process exeProcess = Process.Start(s))
-                    {
-                        if (!MainWindow.ShowADB)
-                        {
-                            String IPS = exeProcess.StandardOutput.ReadToEnd();
-                            exeProcess.WaitForExit();
-                            if (IPS.Contains("no devices/emulators found"))
-                            {
-                                txtbox.AppendText(MainWindow.globalLanguage.global.ADB110);
-                                txtbox.ScrollToEnd();
-                                return false;
-                            }
-                        }
-                        else
-                        {
-                            exeProcess.WaitForExit();
-                        }
-
-                        return true;
-                    }
-                }
-                catch
-                {
-                    continue;
-                }
-            }
-            txtbox.AppendText(MainWindow.globalLanguage.global.ADB100);
-            txtbox.ScrollToEnd();
-            return false;
-        }
-
         private void finished_download(object sender, AsyncCompletedEventArgs e)
         {
-            adb("shell am start -n com.weloveoculus.BMBF/com.weloveoculus.BMBF.MainActivity");
+            MainWindow.aDBI.adb("shell am start -n com.weloveoculus.BMBF/com.weloveoculus.BMBF.MainActivity", txtbox);
             Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
             {
                 txtbox.AppendText("\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.mods.code.downloadedMod, AllModList[Index].name));
@@ -538,13 +464,13 @@ namespace BMBF_Manager
 
         public void upload(String path)
         {
-            getQuestIP();
+            MainWindow.iPUtils.CheckIP(Quest);
 
             TimeoutWebClient client = new TimeoutWebClient();
 
             txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.mods.code.uploadingToBMBF, AllModList[Index].name));
             txtbox.ScrollToEnd();
-            Uri uri = new Uri("http://" + MainWindow.IP + ":50000/host/beatsaber/upload?overwrite");
+            Uri uri = new Uri("http://" + MainWindow.config.IP + ":50000/host/beatsaber/upload?overwrite");
             try
             {
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
@@ -572,7 +498,7 @@ namespace BMBF_Manager
 
         private void finished_upload(object sender, AsyncCompletedEventArgs e)
         {
-            if (AllModList[Index].downloads[AllModList[Index].MatchingDownload].gameversion[AllModList[Index].MatchingGameVersion] == MainWindow.GameVersion)
+            if (AllModList[Index].downloads[AllModList[Index].MatchingDownload].gameversion[AllModList[Index].MatchingGameVersion] == MainWindow.config.GameVersion)
             {
                 try
                 {
@@ -591,7 +517,7 @@ namespace BMBF_Manager
             }
             else
             {
-                Process.Start("http://" + MainWindow.IP + ":50000/main/mods");
+                Process.Start("http://" + MainWindow.config.IP + ":50000/main/mods");
                 txtbox.AppendText("\n\n" + MainWindow.globalLanguage.mods.code.enableManually);
                 txtbox.ScrollToEnd();
             }
@@ -610,8 +536,8 @@ namespace BMBF_Manager
             using (WebClient client = new WebClient())
             {
                 client.QueryString.Add("foo", "foo");
-                client.UploadFile("http://" + MainWindow.IP + ":50000/host/beatsaber/config", "PUT", Config);
-                client.UploadValues("http://" + MainWindow.IP + ":50000/host/beatsaber/commitconfig", "POST", client.QueryString);
+                client.UploadFile("http://" + MainWindow.config.IP + ":50000/host/beatsaber/config", "PUT", Config);
+                client.UploadValues("http://" + MainWindow.config.IP + ":50000/host/beatsaber/commitconfig", "POST", client.QueryString);
             }
         }
 
@@ -623,7 +549,7 @@ namespace BMBF_Manager
                 using (WebClient client = new WebClient())
                 {
                     client.QueryString.Add("foo", "foo");
-                    client.UploadValues("http://" + MainWindow.IP + ":50000/host/beatsaber/commitconfig", "POST", client.QueryString);
+                    client.UploadValues("http://" + MainWindow.config.IP + ":50000/host/beatsaber/commitconfig", "POST", client.QueryString);
                 }
             }
             catch

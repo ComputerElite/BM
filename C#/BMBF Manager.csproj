@@ -38,6 +38,9 @@
     <ApplicationIcon>Logo.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DiscordRPC, Version=1.0.175.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DiscordRichPresence.1.0.175\lib\net35\DiscordRPC.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=5.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.5.0.0\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
     </Reference>
@@ -48,7 +51,7 @@
       <HintPath>..\packages\WindowsAPICodePack-Shell.1.1.1\lib\Microsoft.WindowsAPICodePack.Shell.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
@@ -109,6 +112,8 @@
       <DependentUpon>BPLists.xaml</DependentUpon>
     </Compile>
     <Compile Include="ComputerUtils.cs" />
+    <Compile Include="Config.cs" />
+    <Compile Include="DCRP.cs" />
     <Compile Include="HitSounds.xaml.cs">
       <DependentUpon>HitSounds.xaml</DependentUpon>
     </Compile>
@@ -139,6 +144,7 @@
     <Compile Include="TimeoutWebClient.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Utils.cs" />
     <Page Include="BBBU.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -246,10 +252,10 @@
     <Resource Include="BBBU4.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Support6.png" />
+    <Resource Include="QSU4.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="QSU4.png" />
+    <Resource Include="Support8.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -16,5 +16,10 @@ namespace ComputerUtils.RegxTemplates
             if (!found.Success) return "";
             return found.Value;
         }
+
+        public static String ReplaceUserName(String input, String replacement)
+        {
+            return Regex.Replace(input, @"([A-Z]{1}\:\\[Uu]sers\\)([^\\]*\\)(.*)", "$1$3");
+        }
     }
 }

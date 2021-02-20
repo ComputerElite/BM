@@ -45,8 +45,9 @@ namespace BMBF_Manager
             InitializeComponent();
             ApplyLanguage();
             LoadLanguages();
-            Quest.Text = MainWindow.IP;
+            Quest.Text = MainWindow.config.IP;
             UpdateImage();
+            MainWindow.DCRPM.SetActivity(MainWindow.globalLanguage.dRCP.changingSettings);
         }
 
         public void ApplyLanguage()
@@ -57,9 +58,16 @@ namespace BMBF_Manager
             moveBBBUButton.Content = MainWindow.globalLanguage.settings.UI.moveBBBUButton;
             moveQSUButton.Content = MainWindow.globalLanguage.settings.UI.moveQSUButton;
             KA.Content = MainWindow.globalLanguage.settings.UI.KeepAliveButton;
-            CustomP.Content = MainWindow.CustomProtocols ? MainWindow.globalLanguage.settings.UI.disableBMButton : MainWindow.globalLanguage.settings.UI.enableBMButton;
-            BSaver.Content = MainWindow.OneClick ? MainWindow.globalLanguage.settings.UI.disableBSButton : MainWindow.globalLanguage.settings.UI.enableBSButton;
-            ADB.Content = MainWindow.ShowADB ? MainWindow.globalLanguage.settings.UI.disableADBOutputButton : MainWindow.globalLanguage.settings.UI.enableADBOutputButton;
+            CustomP.Content = MainWindow.config.CustomProtocols ? MainWindow.globalLanguage.settings.UI.disableBMButton : MainWindow.globalLanguage.settings.UI.enableBMButton;
+            BSaver.Content = MainWindow.config.OneClick ? MainWindow.globalLanguage.settings.UI.disableBSButton : MainWindow.globalLanguage.settings.UI.enableBSButton;
+            ADB.Content = MainWindow.config.ShowADB ? MainWindow.globalLanguage.settings.UI.disableADBOutputButton : MainWindow.globalLanguage.settings.UI.enableADBOutputButton;
+            CreditsButton.Content = MainWindow.globalLanguage.settings.UI.CreditsButton;
+            DCRPB.Content = MainWindow.config.DCRPE ? MainWindow.globalLanguage.settings.UI.disableDCRP : MainWindow.globalLanguage.settings.UI.enableDCRP;
+        }
+
+        private void ShowCredits(object sender, RoutedEventArgs e)
+        {
+            Process.Start("https://github.com/ComputerElite/wiki/wiki/BM#credits");
         }
 
         public void LoadLanguages()
@@ -88,13 +96,13 @@ namespace BMBF_Manager
             if (Language.SelectedIndex == 1)
             {
                 MainWindow.globalLanguage = new BMBFManager.Language.Language();
-                MainWindow.language = "en";
+                MainWindow.config.language = "en";
                 MainWindow.globalLanguage.translator = "ComputerElite";
             }
             else
             {
                 MainWindow.globalLanguage = JsonSerializer.Deserialize<BMBFManager.Language.Language>(File.ReadAllText(exe + "\\languages\\" + Language.SelectedItem + ".json"));
-                MainWindow.language = exe + "\\languages\\" + Language.SelectedItem + ".json";
+                MainWindow.config.language = exe + "\\languages\\" + Language.SelectedItem + ".json";
             }
             ApplyLanguage();
             txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.settings.code.changedLanguage, MainWindow.globalLanguage.language, MainWindow.globalLanguage.translator));
@@ -102,11 +110,19 @@ namespace BMBF_Manager
             LoadLanguages();
         }
 
+        private void ToggleDCRP(object sender, RoutedEventArgs e)
+        {
+            MainWindow.config.DCRPE = !MainWindow.config.DCRPE;
+            if (MainWindow.config.DCRPE) txtbox.AppendText("\n\n" + MainWindow.globalLanguage.settings.code.dCRPEnabled + "\n\n" + MainWindow.globalLanguage.settings.code.restartProgram);
+            else txtbox.AppendText("\n\n" + MainWindow.globalLanguage.settings.code.dCRPDisabled + "\n\n" + MainWindow.globalLanguage.settings.code.restartProgram);
+            DCRPB.Content = MainWindow.config.DCRPE ? MainWindow.globalLanguage.settings.UI.disableDCRP : MainWindow.globalLanguage.settings.UI.enableDCRP;
+        }
+
         private void KeepAlive(object sender, RoutedEventArgs e)
         {
-            if(MainWindow.KeepAlive)
+            if(MainWindow.config.KeepAlive)
             {
-                MainWindow.KeepAlive = false;
+                MainWindow.config.KeepAlive = false;
                 txtbox.AppendText("\n\n" + MainWindow.globalLanguage.settings.code.keepAliveDisabled);
 
             } else
@@ -120,17 +136,17 @@ namespace BMBF_Manager
                         Running = false;
                         return;
                 }
-                MainWindow.KeepAlive = true;
+                MainWindow.config.KeepAlive = true;
                 txtbox.AppendText("\n\n" + MainWindow.globalLanguage.settings.code.keepAliveEnabled);
             }
         }
 
         private void ADBshow(object sender, RoutedEventArgs e)
         {
-            if(MainWindow.ShowADB)
+            if(MainWindow.config.ShowADB)
             {
                 //Disable
-                MainWindow.ShowADB = false;
+                MainWindow.config.ShowADB = false;
                 txtbox.AppendText("\n\n" + MainWindow.globalLanguage.settings.code.aDBOutputDisabled);
                 ADB.Content = MainWindow.globalLanguage.settings.UI.enableADBOutputButton;
             } else
@@ -145,7 +161,7 @@ namespace BMBF_Manager
                         Running = false;
                         return;
                 }
-                MainWindow.ShowADB = true;
+                MainWindow.config.ShowADB = true;
                 txtbox.AppendText("\n\n" + MainWindow.globalLanguage.settings.code.aDBOutputEnabled);
                 ADB.Content = MainWindow.globalLanguage.settings.UI.disableADBOutputButton;
             }
@@ -162,8 +178,8 @@ namespace BMBF_Manager
                 //Get the path of specified file
                 if (File.Exists(ofd.FileName))
                 {
-                    MainWindow.CustomImageSource = ofd.FileName;
-                    MainWindow.CustomImage = true;
+                    MainWindow.config.CustomImageSource = ofd.FileName;
+                    MainWindow.config.CustomImage = true;
                     UpdateImage();
                     txtbox.AppendText("\n\n" + MainWindow.globalLanguage.settings.code.restartProgram);
                 }
@@ -177,23 +193,23 @@ namespace BMBF_Manager
 
         private void ResetImage(object sender, RoutedEventArgs e)
         {
-            MainWindow.CustomImage = false;
+            MainWindow.config.CustomImage = false;
             UpdateImage();
         }
 
         private void UpdateImage()
         {
-            if (MainWindow.CustomImage)
+            if (MainWindow.config.CustomImage)
             {
                 ImageBrush uniformBrush = new ImageBrush();
-                uniformBrush.ImageSource = new BitmapImage(new Uri(MainWindow.CustomImageSource, UriKind.Absolute));
+                uniformBrush.ImageSource = new BitmapImage(new Uri(MainWindow.config.CustomImageSource, UriKind.Absolute));
                 uniformBrush.Stretch = Stretch.UniformToFill;
                 this.Background = uniformBrush;
             }
             else
             {
                 ImageBrush uniformBrush = new ImageBrush();
-                uniformBrush.ImageSource = new BitmapImage(new Uri("pack://application:,,,/Support6.png", UriKind.Absolute));
+                uniformBrush.ImageSource = new BitmapImage(new Uri("pack://application:,,,/Support8.png", UriKind.Absolute));
                 uniformBrush.Stretch = Stretch.UniformToFill;
                 this.Background = uniformBrush;
             }
@@ -227,8 +243,7 @@ namespace BMBF_Manager
 
         private void Close(object sender, RoutedEventArgs e)
         {
-            CheckIP();
-            MainWindow.IP = Quest.Text;
+            MainWindow.iPUtils.CheckIP(Quest);
             this.Close();
         }
 
@@ -254,45 +269,23 @@ namespace BMBF_Manager
             }
         }
 
-        public Boolean CheckIP()
-        {
-            getQuestIP();
-            String found;
-            if ((found = RegexTemplates.GetIP(MainWindow.IP)) != "")
-            {
-                MainWindow.IP = found;
-                Quest.Text = MainWindow.IP;
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        public void getQuestIP()
-        {
-            MainWindow.IP = Quest.Text;
-            return;
-        }
-
         private void EnableBBBUMove(object sender, RoutedEventArgs e)
         {
-            MainWindow.BBBUTransfered = false;
+            MainWindow.config.BBBUTransfered = false;
             BBBU BBBUWindow = new BBBU();
             BBBUWindow.Show();
         }
 
         private void EnableQSUMove(object sender, RoutedEventArgs e)
         {
-            MainWindow.QSUTransfered = false;
+            MainWindow.config.QSUTransfered = false;
             QSU QSUWindow = new QSU();
             QSUWindow.Show();
         }
 
         private void EnableCustom(object sender, RoutedEventArgs e)
         {
-            if(!MainWindow.CustomProtocols)
+            if(!MainWindow.config.CustomProtocols)
             {
                 txtbox.AppendText("\n\n" + MainWindow.globalLanguage.settings.code.changingRegistryEnableBM);
                 String regFile = "Windows Registry Editor Version 5.00\n\n[HKEY_CLASSES_ROOT\\bm]\n@=\"URL: bm\"\n\"URL Protocol\"=\"bm\"\n\n[HKEY_CLASSES_ROOT\\bm]\n@=\"" + System.Reflection.Assembly.GetEntryAssembly().Location.Replace("\\", "\\\\") + "\"\n\n[HKEY_CLASSES_ROOT\\bm\\shell]\n\n[HKEY_CLASSES_ROOT\\bm\\shell\\open]\n\n[HKEY_CLASSES_ROOT\\bm\\shell\\open\\command]\n@=\"" + System.Reflection.Assembly.GetEntryAssembly().Location.Replace("\\", "\\\\") + " \\\"%1\\\"\"";
@@ -308,7 +301,7 @@ namespace BMBF_Manager
                     return;
                 }
                 CustomP.Content = MainWindow.globalLanguage.settings.UI.disableBMButton;
-                MainWindow.CustomProtocols = true;
+                MainWindow.config.CustomProtocols = true;
             } else
             {
                 txtbox.AppendText("\n\n" + MainWindow.globalLanguage.settings.code.changingRegistryDisableBM);
@@ -325,13 +318,13 @@ namespace BMBF_Manager
                     return;
                 }
                 CustomP.Content = MainWindow.globalLanguage.settings.UI.enableBMButton;
-                MainWindow.CustomProtocols = false;
+                MainWindow.config.CustomProtocols = false;
             }
         }
 
         public void enable_BeatSaver(object sender, RoutedEventArgs e)
         {
-            if (!MainWindow.OneClick)
+            if (!MainWindow.config.OneClick)
             {
                 MessageBoxResult result = MessageBox.Show(MainWindow.globalLanguage.settings.code.oneClickWarning, "BMBF Manager - Settings", MessageBoxButton.YesNo, MessageBoxImage.Warning);
                 switch (result)
@@ -356,7 +349,7 @@ namespace BMBF_Manager
                     return;
                 }
                 BSaver.Content = MainWindow.globalLanguage.settings.UI.disableBSButton;
-                MainWindow.OneClick = true;
+                MainWindow.config.OneClick = true;
             }
             else
             {
@@ -383,7 +376,7 @@ namespace BMBF_Manager
                     return;
                 }
                 BSaver.Content = MainWindow.globalLanguage.settings.UI.enableBSButton;
-                MainWindow.OneClick = false;
+                MainWindow.config.OneClick = false;
             }
 
         }
@@ -399,7 +392,7 @@ namespace BMBF_Manager
                 String BMBF = "";
                 using (TimeoutWebClient client2 = new TimeoutWebClient())
                 {
-                    BMBF = client2.DownloadString("http://" + MainWindow.IP + ":50000/host/beatsaber/config");
+                    BMBF = client2.DownloadString("http://" + MainWindow.config.IP + ":50000/host/beatsaber/config");
                 }
                 var json = JSON.Parse(BMBF);
                 json["IsCommitted"] = false;
@@ -429,7 +422,7 @@ namespace BMBF_Manager
 
                 String Playlists = exe + "\\tmp\\Playlists.json";
 
-                var j = JSON.Parse(client3.DownloadString("http://" + MainWindow.IP + ":50000/host/beatsaber/config"));
+                var j = JSON.Parse(client3.DownloadString("http://" + MainWindow.config.IP + ":50000/host/beatsaber/config"));
                 var p = JSON.Parse(File.ReadAllText(Playlists));
 
                 j["Config"]["Playlists"] = p["Playlists"];
@@ -447,7 +440,7 @@ namespace BMBF_Manager
         {
             System.Threading.Thread.Sleep(3000);
             TimeoutWebClient client = new TimeoutWebClient();
-            client.UploadData("http://" + MainWindow.IP + ":50000/host/mod/resetassets", "POST", new byte[0]);
+            client.UploadData("http://" + MainWindow.config.IP + ":50000/host/mod/resetassets", "POST", new byte[0]);
         }
 
         public void reloadsongsfolder()
@@ -455,7 +448,7 @@ namespace BMBF_Manager
             System.Threading.Thread.Sleep(3000);
             TimeoutWebClient client = new TimeoutWebClient();
             client.QueryString.Add("foo", "foo");
-            client.UploadValues("http://" + MainWindow.IP + ":50000/host/beatsaber/reloadsongfolders", "POST", client.QueryString);
+            client.UploadValues("http://" + MainWindow.config.IP + ":50000/host/beatsaber/reloadsongfolders", "POST", client.QueryString);
         }
 
         public void postChanges(String Config)
@@ -464,8 +457,8 @@ namespace BMBF_Manager
             using (TimeoutWebClient client = new TimeoutWebClient())
             {
                 client.QueryString.Add("foo", "foo");
-                client.UploadFile("http://" + MainWindow.IP + ":50000/host/beatsaber/config", "PUT", Config);
-                client.UploadValues("http://" + MainWindow.IP + ":50000/host/beatsaber/commitconfig", "POST", client.QueryString);
+                client.UploadFile("http://" + MainWindow.config.IP + ":50000/host/beatsaber/config", "PUT", Config);
+                client.UploadValues("http://" + MainWindow.config.IP + ":50000/host/beatsaber/commitconfig", "POST", client.QueryString);
             }
         }
 
@@ -475,103 +468,8 @@ namespace BMBF_Manager
             using (TimeoutWebClient client = new TimeoutWebClient())
             {
                 client.QueryString.Add("foo", "foo");
-                client.UploadValues("http://" + MainWindow.IP + ":50000/host/beatsaber/commitconfig", "POST", client.QueryString);
+                client.UploadValues("http://" + MainWindow.config.IP + ":50000/host/beatsaber/commitconfig", "POST", client.QueryString);
             }
-        }
-
-
-        public String adbS(String Argument)
-        {
-            String User = System.Environment.GetEnvironmentVariable("USERPROFILE");
-
-            foreach (String ADB in MainWindow.ADBPaths)
-            {
-                ProcessStartInfo s = new ProcessStartInfo();
-                s.CreateNoWindow = true;
-                s.UseShellExecute = false;
-                s.FileName = ADB.Replace("User", User);
-                s.WindowStyle = ProcessWindowStyle.Minimized;
-                s.Arguments = Argument;
-                s.RedirectStandardOutput = true;
-                try
-                {
-                    // Start the process with the info we specified.
-                    // Call WaitForExit and then the using statement will close.
-                    using (Process exeProcess = Process.Start(s))
-                    {
-                        String IPS = exeProcess.StandardOutput.ReadToEnd();
-                        exeProcess.WaitForExit();
-                        if (IPS.Contains("no devices/emulators found"))
-                        {
-                            txtbox.AppendText(MainWindow.globalLanguage.global.ADB100);
-                            txtbox.ScrollToEnd();
-                            return "Error";
-                        }
-
-                        return IPS;
-                    }
-                }
-                catch
-                {
-                    continue;
-                }
-            }
-            txtbox.AppendText(MainWindow.globalLanguage.global.ADB100);
-            txtbox.ScrollToEnd();
-            return "Error";
-        }
-
-        public Boolean adb(String Argument)
-        {
-            String User = System.Environment.GetEnvironmentVariable("USERPROFILE");
-
-            foreach (String ADB in MainWindow.ADBPaths)
-            {
-                ProcessStartInfo s = new ProcessStartInfo();
-                s.CreateNoWindow = true;
-                s.UseShellExecute = false;
-                s.FileName = ADB.Replace("User", User);
-                s.WindowStyle = ProcessWindowStyle.Minimized;
-                s.Arguments = Argument;
-                s.RedirectStandardOutput = true;
-                if (MainWindow.ShowADB)
-                {
-                    s.RedirectStandardOutput = false;
-                    s.CreateNoWindow = false;
-                }
-                try
-                {
-                    // Start the process with the info we specified.
-                    // Call WaitForExit and then the using statement will close.
-                    using (Process exeProcess = Process.Start(s))
-                    {
-                        if (!MainWindow.ShowADB)
-                        {
-                            String IPS = exeProcess.StandardOutput.ReadToEnd();
-                            exeProcess.WaitForExit();
-                            if (IPS.Contains("no devices/emulators found"))
-                            {
-                                txtbox.AppendText(MainWindow.globalLanguage.global.ADB110);
-                                txtbox.ScrollToEnd();
-                                return false;
-                            }
-                        }
-                        else
-                        {
-                            exeProcess.WaitForExit();
-                        }
-
-                        return true;
-                    }
-                }
-                catch
-                {
-                    continue;
-                }
-            }
-            txtbox.AppendText(MainWindow.globalLanguage.global.ADB100);
-            txtbox.ScrollToEnd();
-            return false;
         }
 
         public async void StartSupport(String Link)

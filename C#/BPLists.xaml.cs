@@ -43,11 +43,11 @@ namespace BMBF_Manager
         {
             InitializeComponent();
             ApplyLanguage();
-            Quest.Text = MainWindow.IP;
-            if (MainWindow.CustomImage)
+            Quest.Text = MainWindow.config.IP;
+            if (MainWindow.config.CustomImage)
             {
                 ImageBrush uniformBrush = new ImageBrush();
-                uniformBrush.ImageSource = new BitmapImage(new Uri(MainWindow.CustomImageSource, UriKind.Absolute));
+                uniformBrush.ImageSource = new BitmapImage(new Uri(MainWindow.config.CustomImageSource, UriKind.Absolute));
                 uniformBrush.Stretch = Stretch.UniformToFill;
                 this.Background = uniformBrush;
             }
@@ -58,7 +58,6 @@ namespace BMBF_Manager
                 uniformBrush.Stretch = Stretch.UniformToFill;
                 this.Background = uniformBrush;
             }
-
         }
 
         public void ApplyLanguage()
@@ -97,8 +96,7 @@ namespace BMBF_Manager
 
         private void Close(object sender, RoutedEventArgs e)
         {
-            CheckIP();
-            MainWindow.IP = Quest.Text;
+            MainWindow.iPUtils.CheckIP(Quest);
             this.Close();
         }
 
@@ -158,28 +156,6 @@ namespace BMBF_Manager
             }
         }
 
-        public Boolean CheckIP()
-        {
-            getQuestIP();
-            String found;
-            if ((found = RegexTemplates.GetIP(MainWindow.IP)) != "")
-            {
-                MainWindow.IP = found;
-                Quest.Text = MainWindow.IP;
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        public void getQuestIP()
-        {
-            MainWindow.IP = Quest.Text;
-            return;
-        }
-
         private void finished_download(object sender, AsyncCompletedEventArgs e)
         {
             ZipFile.ExtractToDirectory(exe + "\\tmp\\ScoreSaber.zip", exe + "\\tmp");
@@ -188,7 +164,7 @@ namespace BMBF_Manager
 
         public void InstallBookmarked(object sender, RoutedEventArgs e)
         {
-            if (!CheckIP())
+            if (!MainWindow.iPUtils.CheckIP(Quest))
             {
                 txtbox.AppendText("\n\n" + MainWindow.globalLanguage.global.ipInvalid);
                 return;
@@ -199,6 +175,8 @@ namespace BMBF_Manager
                 return;
             }
             Running = true;
+
+            MainWindow.DCRPM.SetActivity(MainWindow.globalLanguage.dRCP.installingBookmarks);
 
             int Max = 0;
             txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.bPLists.code.makingBookmarks, UserName.Text));
@@ -235,7 +213,7 @@ namespace BMBF_Manager
 
         public void InstallRanked(object sender, RoutedEventArgs e)
         {
-            if (!CheckIP())
+            if (!MainWindow.iPUtils.CheckIP(Quest))
             {
                 txtbox.AppendText("\n\n" + MainWindow.globalLanguage.global.ipInvalid);
                 return;
@@ -246,6 +224,8 @@ namespace BMBF_Manager
                 return;
             }
             Running = true;
+
+            MainWindow.DCRPM.SetActivity(MainWindow.globalLanguage.dRCP.installingRanked);
 
             int Max = 0;
             try
@@ -286,12 +266,10 @@ namespace BMBF_Manager
 
         public void upload(String path)
         {
-            getQuestIP();
-
             TimeoutWebClient client = new TimeoutWebClient();
 
             txtbox.AppendText("\n\n" + MainWindow.globalLanguage.bPLists.code.uploadingBPList);
-            Uri uri = new Uri("http://" + MainWindow.IP + ":50000/host/beatsaber/upload?overwrite");
+            Uri uri = new Uri("http://" + MainWindow.config.IP + ":50000/host/beatsaber/upload?overwrite");
             try
             {
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
@@ -326,13 +304,13 @@ namespace BMBF_Manager
                 using (WebClient client = new WebClient())
                 {
                     client.QueryString.Add("foo", "foo");
-                    client.UploadValues("http://" + MainWindow.IP + ":50000/host/beatsaber/commitconfig", "POST", client.QueryString);
+                    client.UploadValues("http://" + MainWindow.config.IP + ":50000/host/beatsaber/commitconfig", "POST", client.QueryString);
                 }
             }
             catch
             {
                 txtbox.AppendText(MainWindow.globalLanguage.global.BMBF110);
-                Process.Start("http://" + MainWindow.IP + ":50000/main/playlists");
+                Process.Start("http://" + MainWindow.config.IP + ":50000/main/playlists");
                 Running = false;
             }
         }

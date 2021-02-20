@@ -72,7 +72,7 @@ namespace BMBF_Manager
             TransferFromQSU();
             Move();
 
-            Quest.Text = MainWindow.IP;
+            Quest.Text = MainWindow.config.IP;
 
             Backups.SelectedIndex = 0;
             getBackups(exe + "\\Playlists");
@@ -80,10 +80,10 @@ namespace BMBF_Manager
             Playlists.Items.Add(MainWindow.globalLanguage.qSU.UI.loadPlaylists);
             Playlists.SelectedIndex = 0;
 
-            if (MainWindow.CustomImage)
+            if (MainWindow.config.CustomImage)
             {
                 ImageBrush uniformBrush = new ImageBrush();
-                uniformBrush.ImageSource = new BitmapImage(new Uri(MainWindow.CustomImageSource, UriKind.Absolute));
+                uniformBrush.ImageSource = new BitmapImage(new Uri(MainWindow.config.CustomImageSource, UriKind.Absolute));
                 uniformBrush.Stretch = Stretch.UniformToFill;
                 this.Background = uniformBrush;
             }
@@ -119,8 +119,8 @@ namespace BMBF_Manager
 
         public void TransferFromQSU()
         {
-            if (MainWindow.QSUTransfered) return;
-            MainWindow.QSUTransfered = true;
+            if (MainWindow.config.QSUTransfered) return;
+            MainWindow.config.QSUTransfered = true;
             MessageBoxResult r = MessageBox.Show(MainWindow.globalLanguage.qSU.code.qSUImportQuestion, "BMBF Manager - Quest Song Utilities", MessageBoxButton.YesNo, MessageBoxImage.Question);
             switch (r)
             {
@@ -224,7 +224,7 @@ namespace BMBF_Manager
             using (WebClient client = new WebClient())
             {
                 client.QueryString.Add("foo", "foo");
-                client.UploadValues("http://" + MainWindow.IP + ":50000/host/beatsaber/commitconfig", "POST", client.QueryString);
+                client.UploadValues("http://" + MainWindow.config.IP + ":50000/host/beatsaber/commitconfig", "POST", client.QueryString);
             }
         }
 
@@ -232,108 +232,14 @@ namespace BMBF_Manager
         {
             Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
             {
-                adb("shell am start -n com.weloveoculus.BMBF/com.weloveoculus.BMBF.MainActivity");
+                MainWindow.aDBI.adb("shell am start -n com.weloveoculus.BMBF/com.weloveoculus.BMBF.MainActivity", txtbox);
             }));
-        }
-
-        public Boolean adb(String Argument)
-        {
-            String User = System.Environment.GetEnvironmentVariable("USERPROFILE");
-
-            foreach (String ADB in MainWindow.ADBPaths)
-            {
-                ProcessStartInfo s = new ProcessStartInfo();
-                s.CreateNoWindow = true;
-                s.UseShellExecute = false;
-                s.FileName = ADB.Replace("User", User);
-                s.WindowStyle = ProcessWindowStyle.Minimized;
-                s.Arguments = Argument;
-                s.RedirectStandardOutput = true;
-                if (MainWindow.ShowADB)
-                {
-                    s.RedirectStandardOutput = false;
-                    s.CreateNoWindow = false;
-                }
-                try
-                {
-                    // Start the process with the info we specified.
-                    // Call WaitForExit and then the using statement will close.
-                    using (Process exeProcess = Process.Start(s))
-                    {
-                        if (!MainWindow.ShowADB)
-                        {
-                            String IPS = exeProcess.StandardOutput.ReadToEnd();
-                            exeProcess.WaitForExit();
-                            if (IPS.Contains("no devices/emulators found"))
-                            {
-                                txtbox.AppendText(MainWindow.globalLanguage.global.ADB110);
-                                txtbox.ScrollToEnd();
-                                return false;
-                            }
-                        }
-                        else
-                        {
-                            exeProcess.WaitForExit();
-                        }
-
-                        return true;
-                    }
-                }
-                catch
-                {
-                    continue;
-                }
-            }
-            txtbox.AppendText(MainWindow.globalLanguage.global.ADB100);
-            txtbox.ScrollToEnd();
-            return false;
-        }
-
-        public String adbS(String Argument)
-        {
-            String User = System.Environment.GetEnvironmentVariable("USERPROFILE");
-
-            foreach (String ADB in MainWindow.ADBPaths)
-            {
-                ProcessStartInfo s = new ProcessStartInfo();
-                s.CreateNoWindow = true;
-                s.UseShellExecute = false;
-                s.FileName = ADB.Replace("User", User);
-                s.WindowStyle = ProcessWindowStyle.Minimized;
-                s.Arguments = Argument;
-                s.RedirectStandardOutput = true;
-                try
-                {
-                    // Start the process with the info we specified.
-                    // Call WaitForExit and then the using statement will close.
-                    using (Process exeProcess = Process.Start(s))
-                    {
-                        String IPS = exeProcess.StandardOutput.ReadToEnd();
-                        exeProcess.WaitForExit();
-                        if (IPS.Contains("no devices/emulators found"))
-                        {
-                            txtbox.AppendText(MainWindow.globalLanguage.global.ADB110);
-                            txtbox.ScrollToEnd();
-                            return "Error";
-                        }
-
-                        return IPS;
-                    }
-                }
-                catch
-                {
-                    continue;
-                }
-            }
-            txtbox.AppendText(MainWindow.globalLanguage.global.ADB100);
-            txtbox.ScrollToEnd();
-            return "Error";
         }
 
         public void getPlaylists(object sender, RoutedEventArgs e)
         {
             StartBMBF();
-            if (!CheckIP())
+            if (!MainWindow.iPUtils.CheckIP(Quest))
             {
                 txtbox.AppendText("\n\n" + MainWindow.globalLanguage.global.ipInvalid);
                 return;
@@ -354,7 +260,7 @@ namespace BMBF_Manager
 
             P = new ArrayList();
 
-            var json = SimpleJSON.JSON.Parse(client.DownloadString("http://" + MainWindow.IP + ":50000/host/beatsaber/config"));
+            var json = SimpleJSON.JSON.Parse(client.DownloadString("http://" + MainWindow.config.IP + ":50000/host/beatsaber/config"));
             int index = 0;
 
             ArrayList PN = new ArrayList();
@@ -388,13 +294,16 @@ namespace BMBF_Manager
             {
                 return;
             }
-            if (!CheckIP())
+            if (!MainWindow.iPUtils.CheckIP(Quest))
             {
                 txtbox.AppendText("\n\n" + MainWindow.globalLanguage.global.ipInvalid);
                 txtbox.ScrollToEnd();
                 return;
             }
             Running = true;
+
+            MainWindow.DCRPM.SetActivity(MainWindow.globalLanguage.dRCP.exportingBPList);
+
             if (Playlists.SelectedIndex == 0)
             {
                 txtbox.AppendText("\n\n" + MainWindow.globalLanguage.qSU.code.choosePlaylist);
@@ -404,7 +313,7 @@ namespace BMBF_Manager
             }
 
             WebClient c = new WebClient();
-            var json = JSON.Parse(c.DownloadString("http://" + MainWindow.IP + ":50000/host/beatsaber/config"));
+            var json = JSON.Parse(c.DownloadString("http://" + MainWindow.config.IP + ":50000/host/beatsaber/config"));
             Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
             {
                 txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qSU.code.makingBPList, json["Config"]["Playlists"][Playlists.SelectedIndex + Lists - 1]["PlaylistName"]));
@@ -422,7 +331,7 @@ namespace BMBF_Manager
             {
                 try
                 {
-                    client.DownloadFile("http://" + MainWindow.IP + ":50000/host/beatsaber/playlist/cover?PlaylistID=" + json["Config"]["Playlists"][Playlists.SelectedIndex + Lists - 1]["PlaylistID"], exe + "\\tmp\\Playlist.png");
+                    client.DownloadFile("http://" + MainWindow.config.IP + ":50000/host/beatsaber/playlist/cover?PlaylistID=" + json["Config"]["Playlists"][Playlists.SelectedIndex + Lists - 1]["PlaylistID"], exe + "\\tmp\\Playlist.png");
                 }
                 catch
                 {
@@ -465,7 +374,7 @@ namespace BMBF_Manager
             {
                 return;
             }
-            if (!CheckIP())
+            if (!MainWindow.iPUtils.CheckIP(Quest))
             {
                 txtbox.AppendText("\n\n" + MainWindow.globalLanguage.global.ipInvalid);
                 txtbox.ScrollToEnd();
@@ -493,7 +402,7 @@ namespace BMBF_Manager
 
             foreach (JSONNode song in json["Config"]["Playlists"][Playlists.SelectedIndex + Lists - 1]["SongList"])
             {
-                if (!adb("shell rm -rR /sdcard/BMBFData/CustomSongs/" + song["SongID"].ToString().Replace("\"", "")))
+                if (!MainWindow.aDBI.adb("shell rm -rR /sdcard/BMBFData/CustomSongs/" + song["SongID"].ToString().Replace("\"", ""), txtbox))
                 {
                     return;
                 }
@@ -527,7 +436,7 @@ namespace BMBF_Manager
 
         public void Move()
         {
-            if (MainWindow.Converted) return;
+            if (MainWindow.config.Converted) return;
 
             foreach (String file in Directory.GetFiles(exe + "\\CustomSongs"))
             {
@@ -552,23 +461,7 @@ namespace BMBF_Manager
                 }
             }
 
-            MainWindow.Converted = true;
-        }
-
-        public Boolean CheckIP()
-        {
-            getQuestIP();
-            String found;
-            if ((found = RegexTemplates.GetIP(MainWindow.IP)) != "")
-            {
-                MainWindow.IP = found;
-                Quest.Text = MainWindow.IP;
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            MainWindow.config.Converted = true;
         }
 
         public void getBackups(String Path)
@@ -617,7 +510,7 @@ namespace BMBF_Manager
             {
                 return;
             }
-            Boolean good = CheckIP();
+            Boolean good = MainWindow.iPUtils.CheckIP(Quest);
             if (!good)
             {
                 txtbox.AppendText("\n\n" + MainWindow.globalLanguage.global.ipInvalid);
@@ -626,9 +519,12 @@ namespace BMBF_Manager
                 return;
             }
             Running = true;
+
+            MainWindow.DCRPM.SetActivity(MainWindow.globalLanguage.dRCP.backingUpPlaylists);
+
             try
             {
-                CheckIP();
+                MainWindow.iPUtils.CheckIP(Quest);
                 if (dest == null)
                 {
                     dest = exe + "\\Playlists";
@@ -661,10 +557,10 @@ namespace BMBF_Manager
                 txtbox.ScrollToEnd();
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
 
-                adb("pull /sdcard/BMBFData/Playlists/ \"" + exe + "\\Playlists\"");
+                MainWindow.aDBI.adb("pull /sdcard/BMBFData/Playlists/ \"" + exe + "\\Playlists\"", txtbox);
 
                 WebClient client = new WebClient();
-                var json = JSON.Parse(client.DownloadString("http://" + MainWindow.IP + ":50000/host/beatsaber/config"));
+                var json = JSON.Parse(client.DownloadString("http://" + MainWindow.config.IP + ":50000/host/beatsaber/config"));
                 json["IsCommitted"] = false;
                 File.WriteAllText(exe + "\\Playlists\\" + BName.Text + ".json", json["Config"].ToString());
 
@@ -695,7 +591,7 @@ namespace BMBF_Manager
                 if (directories[i].EndsWith(".png"))
                 {
                     txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.mainMenu.code.pushingPng, directories[i]));
-                    adb("push \"" + directories[i] + "\" /sdcard/BMBFData/Playlists/");
+                    MainWindow.aDBI.adb("push \"" + directories[i] + "\" /sdcard/BMBFData/Playlists/", txtbox);
                     txtbox.ScrollToEnd();
                     Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
                 }
@@ -707,8 +603,8 @@ namespace BMBF_Manager
             using (WebClient client = new WebClient())
             {
                 client.QueryString.Add("foo", "foo");
-                client.UploadFile("http://" + MainWindow.IP + ":50000/host/beatsaber/config", "PUT", Config);
-                client.UploadValues("http://" + MainWindow.IP + ":50000/host/beatsaber/commitconfig", "POST", client.QueryString);
+                client.UploadFile("http://" + MainWindow.config.IP + ":50000/host/beatsaber/config", "PUT", Config);
+                client.UploadValues("http://" + MainWindow.config.IP + ":50000/host/beatsaber/commitconfig", "POST", client.QueryString);
             }
         }
 
@@ -720,7 +616,7 @@ namespace BMBF_Manager
             {
                 return;
             }
-            if (!CheckIP())
+            if (!MainWindow.iPUtils.CheckIP(Quest))
             {
                 txtbox.AppendText("\n\n" + MainWindow.globalLanguage.global.ipInvalid);
                 txtbox.ScrollToEnd();
@@ -732,9 +628,12 @@ namespace BMBF_Manager
                 return;
             }
             Running = true;
+
+            MainWindow.DCRPM.SetActivity(MainWindow.globalLanguage.dRCP.restoringPlaylists);
+
             try
             {
-                CheckIP();
+                MainWindow.iPUtils.CheckIP(Quest);
 
                 String Playlists;
                 if (dest == null)
@@ -756,7 +655,7 @@ namespace BMBF_Manager
 
                 Playlists = exe + "\\Playlists\\" + Backups.SelectedValue + ".json";
 
-                var j = JSON.Parse(client.DownloadString("http://" + MainWindow.IP + ":50000/host/beatsaber/config"));
+                var j = JSON.Parse(client.DownloadString("http://" + MainWindow.config.IP + ":50000/host/beatsaber/config"));
                 var p = JSON.Parse(File.ReadAllText(Playlists));
 
 
@@ -852,6 +751,7 @@ namespace BMBF_Manager
 
         private void Close(object sender, RoutedEventArgs e)
         {
+            MainWindow.iPUtils.CheckIP(Quest);
             this.Close();
         }
 
@@ -889,12 +789,6 @@ namespace BMBF_Manager
             }
         }
 
-        public void getQuestIP()
-        {
-            MainWindow.IP = Quest.Text;
-            return;
-        }
-
         public void input(String Path, String dest)
         {
             if (Running)
@@ -910,6 +804,8 @@ namespace BMBF_Manager
             String Source = Path;
             Running = true;
 
+            MainWindow.DCRPM.SetActivity(MainWindow.globalLanguage.dRCP.zippingSongs);
+
             if ((bool)auto.IsChecked)
             {
                 txtbox.AppendText("\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qSU.code.autoModeOn, exe + "\\tmp"));
@@ -917,7 +813,7 @@ namespace BMBF_Manager
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
                 if (!copied)
                 {
-                    if (!adb("pull /sdcard/BMBFData/CustomSongs/ \"" + exe + "\\tmp\""))
+                    if (!MainWindow.aDBI.adb("pull /sdcard/BMBFData/CustomSongs/ \"" + exe + "\\tmp\"", txtbox))
                     {
                         return;
                     }
@@ -1155,8 +1051,11 @@ namespace BMBF_Manager
                 return;
             }
             Directory.CreateDirectory(exe + "\\tmp\\CustomSongs");
-            if (!adb("pull /sdcard/BMBFData/CustomSongs/ \"" + exe + "\\tmp\"")) return;
-            adb("shell rm -r /sdcard/BMBFData/CustomSongs/");
+
+            MainWindow.DCRPM.SetActivity(MainWindow.globalLanguage.dRCP.correctingSongPath);
+
+            if (!MainWindow.aDBI.adb("pull /sdcard/BMBFData/CustomSongs/ \"" + exe + "\\tmp\"", txtbox)) return;
+            MainWindow.aDBI.adb("shell rm -r /sdcard/BMBFData/CustomSongs/", txtbox);
             Songs SongsWindow = new Songs();
             SongsWindow.Show();
             Directory.CreateDirectory(exe + "\\tmp\\MoveSongs");
@@ -1171,7 +1070,7 @@ namespace BMBF_Manager
                 String hash = Songs.GetCustomLevelHash(exe + "\\tmp\\finished\\" + name.Trim());
                 if (Directory.Exists(exe + "\\tmp\\MoveSongs\\custom_level_" + hash)) Directory.Delete(exe + "\\tmp\\MoveSongs\\custom_level_" + hash, true); 
                 Directory.Move(exe + "\\tmp\\finished\\" + name.Trim(), exe + "\\tmp\\MoveSongs\\custom_level_" + hash);
-                adb("push \"" + exe + "\\tmp\\MoveSongs\\custom_level_" + hash + "\" /sdcard/BMBFData/CustomSongs");
+                MainWindow.aDBI.adb("push \"" + exe + "\\tmp\\MoveSongs\\custom_level_" + hash + "\" /sdcard/BMBFData/CustomSongs", txtbox);
                 txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qSU.code.songFinishedProcessing, hash));
                 txtbox.ScrollToEnd();
             }
@@ -1188,7 +1087,7 @@ namespace BMBF_Manager
                 txtbox.AppendText("\n\n" + MainWindow.globalLanguage.qSU.code.operationRunning);
                 return;
             }
-            if(!CheckIP())
+            if(!MainWindow.iPUtils.CheckIP(Quest))
             {
                 txtbox.AppendText(MainWindow.globalLanguage.global.ipInvalid);
                 return;
@@ -1234,6 +1133,8 @@ namespace BMBF_Manager
 
             if (QuestToPC)
             {
+                MainWindow.DCRPM.SetActivity(MainWindow.globalLanguage.dRCP.switchingSongLibraryQuestPC);
+
                 MainWindow.Log("User choose QuestToPC");
                 r = MessageBox.Show(MainWindow.globalLanguage.qSU.code.startInfoQuestToPC, "BMBF Manager - Quest Song Utilities", MessageBoxButton.OKCancel, MessageBoxImage.Information);
                 if (r == MessageBoxResult.Cancel)
@@ -1242,7 +1143,7 @@ namespace BMBF_Manager
                     Running = false;
                     return;
                 }
-                if (!adb("pull /sdcard/BMBFData/CustomSongs \"" + exe + "\\tmp\""))
+                if (!MainWindow.aDBI.adb("pull /sdcard/BMBFData/CustomSongs \"" + exe + "\\tmp\"", txtbox))
                 {
                     Running = false;
                     return;
@@ -1254,7 +1155,7 @@ namespace BMBF_Manager
                 BMBFC config = new BMBFC();
                 try
                 {
-                    configString = c.DownloadString("http://" + MainWindow.IP + ":50000/host/beatsaber/config");
+                    configString = c.DownloadString("http://" + MainWindow.config.IP + ":50000/host/beatsaber/config");
                     config = JsonSerializer.Deserialize<BMBFC>(configString);
                 } catch
                 {
@@ -1378,6 +1279,7 @@ namespace BMBF_Manager
             }
             else
             {
+                MainWindow.DCRPM.SetActivity(MainWindow.globalLanguage.dRCP.switchingSongLibraryPCQuest);
                 MainWindow.Log("User choose PCToQuest");
                 r = MessageBox.Show(MainWindow.globalLanguage.qSU.code.startInfoPCToQuest, "BMBF Manager - Quest Song Utilities", MessageBoxButton.OKCancel, MessageBoxImage.Information);
                 if (r == MessageBoxResult.Cancel)
@@ -1395,7 +1297,7 @@ namespace BMBF_Manager
                 BMBFC config = new BMBFC();
                 try
                 {
-                    configString = c.DownloadString("http://" + MainWindow.IP + ":50000/host/beatsaber/config");
+                    configString = c.DownloadString("http://" + MainWindow.config.IP + ":50000/host/beatsaber/config");
                     config = JsonSerializer.Deserialize<BMBFC>(configString);
                 }
                 catch
@@ -1440,7 +1342,7 @@ namespace BMBF_Manager
                     MainWindow.Log("Moving Song: Name: " + moveSong.songName + ", hash: " + moveSong.hash + ", source: " + moveSong.sourceFolder + ", dest: /sdcard/BMBFData/CustomSongs/" + finishedName);
 
                     //Push
-                    if (!adb("push \"" + moveSong.sourceFolder + "\" /sdcard/BMBFData/CustomSongs/"))
+                    if (!MainWindow.aDBI.adb("push \"" + moveSong.sourceFolder + "\" /sdcard/BMBFData/CustomSongs/", txtbox))
                     {
                         Running = false;
                         break;
@@ -1458,7 +1360,7 @@ namespace BMBF_Manager
                 Thread.Sleep(3000);
 
                 MainWindow.Log("Asking user to reload songs");
-                Process.Start("http://" + MainWindow.IP + ":50000/main/tools");
+                Process.Start("http://" + MainWindow.config.IP + ":50000/main/tools");
                 MessageBox.Show(MainWindow.globalLanguage.qSU.code.reloadSongsFolder, "BMBF Manager - Quest Song Utilities");
                 r = MessageBox.Show(MainWindow.globalLanguage.qSU.code.reloadSongsFolderConfirmation, "BMBF Manager - Quest Song Utilities", MessageBoxButton.YesNo, MessageBoxImage.Question);
                 if (r == MessageBoxResult.No)
@@ -1594,6 +1496,8 @@ namespace BMBF_Manager
             String Source = Path;
             Running = true;
 
+            MainWindow.DCRPM.SetActivity(MainWindow.globalLanguage.dRCP.makingSongList);
+
             if ((bool)auto.IsChecked)
             {
                 txtbox.AppendText("\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qSU.code.autoModeOn, exe + "\\tmp"));
@@ -1601,7 +1505,7 @@ namespace BMBF_Manager
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
                 if (!copied)
                 {
-                    if (!adb("pull /sdcard/BMBFData/CustomSongs/ \"" + exe + "\\tmp\""))
+                    if (!MainWindow.aDBI.adb("pull /sdcard/BMBFData/CustomSongs/ \"" + exe + "\\tmp\"", txtbox))
                     {
                         return;
                     }
