@@ -38,7 +38,7 @@ namespace BMBF_Manager
     {
         int MajorV = 1;
         int MinorV = 14;
-        int PatchV = 0;
+        int PatchV = 1;
         Boolean Preview = false;
         public static bool log = false;
 
@@ -208,7 +208,7 @@ namespace BMBF_Manager
             playlistEditorButton.Content = globalLanguage.mainMenu.UI.playlistEditorButton;
             settingsButton.Content = globalLanguage.mainMenu.UI.settingsButton;
 
-            File.WriteAllText("D:\\en.json", JsonSerializer.Serialize(globalLanguage));
+            //File.WriteAllText("D:\\en.json", JsonSerializer.Serialize(globalLanguage));
         }
 
         public static void Log(String s)
@@ -360,6 +360,9 @@ namespace BMBF_Manager
         public void saveConfig()
         {
             iPUtils.CheckIP(Quest);
+            config.Location = System.Reflection.Assembly.GetEntryAssembly().Location;
+            config.Version = MajorV.ToString() + "." + MinorV.ToString() + "." + PatchV.ToString();
+            config.NotFirstRun = true;
             config.SaveConfig();
         }
 
