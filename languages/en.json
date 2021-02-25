@@ -568,11 +568,12 @@
         "BM100": "\n\n\nAn error Occured (Code: BM100). Couldn't reach the QuestBoard Website to get some available Mods. Nothing crucial.",
         "BM200": "\n\n\nAn error Occured (Code: BM200). Couldn't download Mod"
     },
-    "dRCP": {
+    "dCRP": {
         "restoringBBBUBackup": "Restoring BMBF and Beat Saber Backup",
         "creatingBBBUBackup": "Creating BMBF and Beat Saber Backup",
         "installingBookmarks": "Installing Bookmarks",
         "installingRanked": "Installing ranked Songs",
+        "installingSounds": "Installing Sounds",
         "inMainMenu": "In Main Menu",
         "updatingBMBF": "Updating BMBF",
         "switchingVersion": "Switching between unmodded and modded Beat Saber version",
