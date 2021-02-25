@@ -72,7 +72,7 @@ namespace BMBF_Manager
                 uniformBrush.Stretch = Stretch.UniformToFill;
                 this.Background = uniformBrush;
             }
-            MainWindow.DCRPM.SetActivity(MainWindow.globalLanguage.dRCP.installingSongs);
+            MainWindow.DCRPM.SetActivity(MainWindow.globalLanguage.dCRP.installingSongs);
         }
 
         public void ApplyLanguage()
@@ -553,7 +553,7 @@ namespace BMBF_Manager
             }
             Running = true;
 
-            MainWindow.DCRPM.SetActivity(MainWindow.globalLanguage.dRCP.installingSongs);
+            MainWindow.DCRPM.SetActivity(MainWindow.globalLanguage.dCRP.installingSongs);
 
             Key = downloadqueue[0].Item1;
             if(downloadqueue[0].Item2)

@@ -17,7 +17,7 @@ namespace BMBFManager.Language
         public Songs songs { get; set; } = new Songs();
         public Settings settings { get; set; } = new Settings();
         public Global global { get; set; } = new Global();
-        public DCRP dRCP { get; set; } = new DCRP();
+        public DCRP dCRP { get; set; } = new DCRP();
         public VariableProcesser processer = new VariableProcesser();
     }
 
@@ -744,7 +744,10 @@ namespace BMBFManager.Language
         //BPList installing
         public String installingBookmarks { get; set; } = "Installing Bookmarks";
         public String installingRanked { get; set; } = "Installing ranked Songs";
-        
+
+        //Hitsounds
+        public String installingSounds { get; set; } = "Installing Sounds";
+
         //MainMenu
         public String inMainMenu { get; set; } = "In Main Menu";
         public String updatingBMBF { get; set; } = "Updating BMBF";

@@ -200,7 +200,7 @@ namespace BMBF_Manager
                 }
             }
 
-            MainWindow.DCRPM.SetActivity(MainWindow.globalLanguage.dRCP.creatingBBBUBackup);
+            MainWindow.DCRPM.SetActivity(MainWindow.globalLanguage.dCRP.creatingBBBUBackup);
 
             //Create all Backup Folders
             if (!BackupFSet())
@@ -323,7 +323,7 @@ namespace BMBF_Manager
                 }
             }
 
-            MainWindow.DCRPM.SetActivity(MainWindow.globalLanguage.dRCP.restoringBBBUBackup);
+            MainWindow.DCRPM.SetActivity(MainWindow.globalLanguage.dCRP.restoringBBBUBackup);
 
             //APKs
             if ((bool)RAPK.IsChecked)

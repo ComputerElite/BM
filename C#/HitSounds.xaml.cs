@@ -53,6 +53,7 @@ namespace BMBF_Manager
                 uniformBrush.Stretch = Stretch.UniformToFill;
                 this.Background = uniformBrush;
             }
+            MainWindow.DCRPM.SetActivity(MainWindow.globalLanguage.dCRP.installingSounds);
         }
 
         public void ApplyLanguage()
@@ -146,7 +147,7 @@ namespace BMBF_Manager
         private void Reset(object sender, RoutedEventArgs e)
         {
             txtbox.AppendText("\n\n" + MainWindow.globalLanguage.hitSounds.code.changingToDefault);
-            if (!MainWindow.aDBI.adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/mod_cfgs/QuestSounds.json \"" + exe + "\\tmp\\QSounds.json\"", txtbox)) return;
+            if (!MainWindow.aDBI.adb("pull /sdcard/ModData/com.beatgames.beatsaber/Configs/QuestSounds.json \"" + exe + "\\tmp\\QSounds.json\"", txtbox)) return;
             if (!File.Exists(exe + "\\tmp\\QSounds.json"))
             {
                 txtbox.AppendText("\n\n" + MainWindow.globalLanguage.hitSounds.code.configUnableToChange);
@@ -207,7 +208,7 @@ namespace BMBF_Manager
                 Boolean Installed = false;
                 foreach(JSONNode mod in BMBF["Config"]["Mods"])
                 {
-                    if(mod["ID"] == "questsounds" && mod["Status"] == "Installed")
+                    if(mod["ID"] == "QuestSounds" && mod["Status"] == "Installed")
                     {
                         Installed = true;
                         break;
@@ -247,7 +248,7 @@ namespace BMBF_Manager
                 txtbox.AppendText("\n" + MainWindow.globalLanguage.hitSounds.code.changingSound);
             }));
             //Change Config
-            if (!MainWindow.aDBI.adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/mod_cfgs/QuestSounds.json \"" + exe + "\\tmp\\QSounds.json\"", txtbox)) return;
+            if (!MainWindow.aDBI.adb("pull /sdcard/ModData/com.beatgames.beatsaber/Configs/QuestSounds.json \"" + exe + "\\tmp\\QSounds.json\"", txtbox)) return;
             String SoundType = SelectedSound.Substring(SelectedSound.Length - 3, 3).ToLower();
             if(!File.Exists(exe + "\\tmp\\QSounds.json"))
             {
@@ -257,46 +258,46 @@ namespace BMBF_Manager
             JSONNode config = JSON.Parse(File.ReadAllText(exe + "\\tmp\\QSounds.json"));
             if ((bool)GoodHitSound.IsChecked)
             {
-                if (!MainWindow.aDBI.adb("push \"" + SelectedSound + "\" /sdcard/Android/data/com.beatgames.beatsaber/files/sounds/HitSound." + SoundType, txtbox)) return;
+                if (!MainWindow.aDBI.adb("push \"" + SelectedSound + "\" /sdcard/ModData/com.beatgames.beatsaber/Mods/QuestSounds/HitSound." + SoundType, txtbox)) return;
                 config["Sounds"]["HitSound"]["activated"] = true;
-                config["Sounds"]["HitSound"]["filepath"] = "/sdcard/Android/data/com.beatgames.beatsaber/files/sounds/HitSound." + SoundType;
+                config["Sounds"]["HitSound"]["filepath"] = "/sdcard/ModData/com.beatgames.beatsaber/Mods/QuestSounds/HitSound." + SoundType;
             }
             else if((bool)BadHitSounds.IsChecked)
             {
-                if (!MainWindow.aDBI.adb("push \"" + SelectedSound + "\" /sdcard/Android/data/com.beatgames.beatsaber/files/sounds/BadHitSound." + SoundType, txtbox)) return;
+                if (!MainWindow.aDBI.adb("push \"" + SelectedSound + "\" /sdcard/ModData/com.beatgames.beatsaber/Mods/QuestSounds/BadHitSound." + SoundType, txtbox)) return;
                 config["Sounds"]["BadHitSound"]["activated"] = true;
-                config["Sounds"]["BadHitSound"]["filepath"] = "/sdcard/Android/data/com.beatgames.beatsaber/files/sounds/BadHitSound." + SoundType;
+                config["Sounds"]["BadHitSound"]["filepath"] = "/sdcard/ModData/com.beatgames.beatsaber/Mods/QuestSounds/BadHitSound." + SoundType;
             }
             else if ((bool)MenuMusic.IsChecked)
             {
-                if (!MainWindow.aDBI.adb("push \"" + SelectedSound + "\" /sdcard/Android/data/com.beatgames.beatsaber/files/sounds/MenuMusic." + SoundType, txtbox)) return;
+                if (!MainWindow.aDBI.adb("push \"" + SelectedSound + "\" /sdcard/ModData/com.beatgames.beatsaber/Mods/QuestSounds/MenuMusic." + SoundType, txtbox)) return;
                 config["Sounds"]["MenuMusic"]["activated"] = true;
-                config["Sounds"]["MenuMusic"]["filepath"] = "/sdcard/Android/data/com.beatgames.beatsaber/files/sounds/MenuMusic." + SoundType;
+                config["Sounds"]["MenuMusic"]["filepath"] = "/sdcard/ModData/com.beatgames.beatsaber/Mods/QuestSounds/MenuMusic." + SoundType;
             }
             else if ((bool)MenuClickSound.IsChecked)
             {
-                if (!MainWindow.aDBI.adb("push \"" + SelectedSound + "\" /sdcard/Android/data/com.beatgames.beatsaber/files/sounds/MenuClick." + SoundType, txtbox)) return;
+                if (!MainWindow.aDBI.adb("push \"" + SelectedSound + "\" /sdcard/ModData/com.beatgames.beatsaber/Mods/QuestSounds/MenuClick." + SoundType, txtbox)) return;
                 config["Sounds"]["MenuClick"]["activated"] = true;
-                config["Sounds"]["MenuClick"]["filepath"] = "/sdcard/Android/data/com.beatgames.beatsaber/files/sounds/MenuClick." + SoundType;
+                config["Sounds"]["MenuClick"]["filepath"] = "/sdcard/ModData/com.beatgames.beatsaber/Mods/QuestSounds/MenuClick." + SoundType;
             }
             else if ((bool)FireWorks.IsChecked)
             {
-                if (!MainWindow.aDBI.adb("push \"" + SelectedSound + "\" /sdcard/Android/data/com.beatgames.beatsaber/files/sounds/Firework." + SoundType, txtbox)) return;
+                if (!MainWindow.aDBI.adb("push \"" + SelectedSound + "\" /sdcard/ModData/com.beatgames.beatsaber/Mods/QuestSounds/Firework." + SoundType, txtbox)) return;
                 config["Sounds"]["Firework"]["activated"] = true;
-                config["Sounds"]["Firework"]["filepath"] = "/sdcard/Android/data/com.beatgames.beatsaber/files/sounds/Firework." + SoundType;
+                config["Sounds"]["Firework"]["filepath"] = "/sdcard/ModData/com.beatgames.beatsaber/Mods/QuestSounds/Firework." + SoundType;
             }
             else if ((bool)LevelCleared.IsChecked)
             {
-                if (!MainWindow.aDBI.adb("push \"" + SelectedSound + "\" /sdcard/Android/data/com.beatgames.beatsaber/files/sounds/LevelCleared." + SoundType, txtbox)) return;
+                if (!MainWindow.aDBI.adb("push \"" + SelectedSound + "\" /sdcard/ModData/com.beatgames.beatsaber/Mods/QuestSounds/LevelCleared." + SoundType, txtbox)) return;
                 config["Sounds"]["LevelCleared"]["activated"] = true;
-                config["Sounds"]["LevelCleared"]["filepath"] = "/sdcard/Android/data/com.beatgames.beatsaber/files/sounds/LevelCleared." + SoundType;
+                config["Sounds"]["LevelCleared"]["filepath"] = "/sdcard/ModData/com.beatgames.beatsaber/Mods/QuestSounds/LevelCleared." + SoundType;
             } else
             {
                 txtbox.AppendText("\n\n" + MainWindow.globalLanguage.hitSounds.code.chooseASoundType);
                 return;
             }
             File.WriteAllText(exe + "\\tmp\\QSoundsChanged.json", config.ToString());
-            if (!MainWindow.aDBI.adb("push \"" + exe + "\\tmp\\QSoundsChanged.json\" /sdcard/Android/data/com.beatgames.beatsaber/files/mod_cfgs/QuestSounds.json", txtbox)) return;
+            if (!MainWindow.aDBI.adb("push \"" + exe + "\\tmp\\QSoundsChanged.json\" /sdcard/ModData/com.beatgames.beatsaber/Configs/QuestSounds.json", txtbox)) return;
             Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
             {
                 txtbox.AppendText("\n" + MainWindow.globalLanguage.hitSounds.code.changedSound);

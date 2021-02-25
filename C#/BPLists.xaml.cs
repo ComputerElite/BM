@@ -176,7 +176,7 @@ namespace BMBF_Manager
             }
             Running = true;
 
-            MainWindow.DCRPM.SetActivity(MainWindow.globalLanguage.dRCP.installingBookmarks);
+            MainWindow.DCRPM.SetActivity(MainWindow.globalLanguage.dCRP.installingBookmarks);
 
             int Max = 0;
             txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.bPLists.code.makingBookmarks, UserName.Text));
@@ -225,7 +225,7 @@ namespace BMBF_Manager
             }
             Running = true;
 
-            MainWindow.DCRPM.SetActivity(MainWindow.globalLanguage.dRCP.installingRanked);
+            MainWindow.DCRPM.SetActivity(MainWindow.globalLanguage.dCRP.installingRanked);
 
             int Max = 0;
             try
@@ -262,6 +262,7 @@ namespace BMBF_Manager
         {
             PE.Show();
             PE.ImportBPList(l);
+            PE.SaveAll();
         }
 
         public void upload(String path)

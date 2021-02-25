@@ -61,7 +61,7 @@ namespace BMBF_Manager
                 uniformBrush.Stretch = Stretch.UniformToFill;
                 this.Background = uniformBrush;
             }
-            MainWindow.DCRPM.SetActivity(MainWindow.globalLanguage.dRCP.browsingMods);
+            MainWindow.DCRPM.SetActivity(MainWindow.globalLanguage.dCRP.browsingMods);
         }
 
         public void ApplyLanguage()
@@ -281,7 +281,7 @@ namespace BMBF_Manager
             }
             Running = true;
 
-            MainWindow.DCRPM.SetActivity(MainWindow.globalLanguage.dRCP.installingMods);
+            MainWindow.DCRPM.SetActivity(MainWindow.globalLanguage.dCRP.installingMods);
 
             C = 0;
             while (File.Exists(exe + "\\tmp\\" + AllModList[downloadqueue[0]].name + C + ".zip"))

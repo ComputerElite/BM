@@ -47,7 +47,7 @@ namespace BMBF_Manager
             LoadLanguages();
             Quest.Text = MainWindow.config.IP;
             UpdateImage();
-            MainWindow.DCRPM.SetActivity(MainWindow.globalLanguage.dRCP.changingSettings);
+            MainWindow.DCRPM.SetActivity(MainWindow.globalLanguage.dCRP.changingSettings);
         }
 
         public void ApplyLanguage()

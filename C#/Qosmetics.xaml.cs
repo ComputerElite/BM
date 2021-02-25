@@ -64,7 +64,7 @@ namespace BMBF_Manager
                 MessageBox.Show(MainWindow.globalLanguage.qosmetics.code.qosmeticsNote, "BMBF Manager - Qosmetics", MessageBoxButton.OK, MessageBoxImage.Information);
                 MainWindow.config.QosmeticsWarningShown = true;
             }
-            MainWindow.DCRPM.SetActivity(MainWindow.globalLanguage.dRCP.browsingQosmetics);
+            MainWindow.DCRPM.SetActivity(MainWindow.globalLanguage.dCRP.browsingQosmetics);
         }
 
         public void ApplyLanguage()
@@ -390,7 +390,7 @@ namespace BMBF_Manager
                 DownloadLable.Text = MainWindow.globalLanguage.global.allFinished;
                 txtbox.AppendText("\n\n" + MainWindow.globalLanguage.global.allFinished);
                 CheckQosmeticsInstalled();
-                MainWindow.DCRPM.SetActivity(MainWindow.globalLanguage.dRCP.browsingQosmetics);
+                MainWindow.DCRPM.SetActivity(MainWindow.globalLanguage.dCRP.browsingQosmetics);
             }
         }
 
@@ -408,7 +408,7 @@ namespace BMBF_Manager
             }
             Running = true;
 
-            MainWindow.DCRPM.SetActivity(MainWindow.globalLanguage.dRCP.installingQosmetics);
+            MainWindow.DCRPM.SetActivity(MainWindow.globalLanguage.dCRP.installingQosmetics);
 
             C = 0;
             while (File.Exists(exe + "\\tmp\\" + System.IO.Path.GetFileNameWithoutExtension(downloadqueue[0].downloadURL) + C + System.IO.Path.GetExtension(downloadqueue[0].downloadURL)))

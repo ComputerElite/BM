@@ -302,7 +302,7 @@ namespace BMBF_Manager
             }
             Running = true;
 
-            MainWindow.DCRPM.SetActivity(MainWindow.globalLanguage.dRCP.exportingBPList);
+            MainWindow.DCRPM.SetActivity(MainWindow.globalLanguage.dCRP.exportingBPList);
 
             if (Playlists.SelectedIndex == 0)
             {
@@ -520,7 +520,7 @@ namespace BMBF_Manager
             }
             Running = true;
 
-            MainWindow.DCRPM.SetActivity(MainWindow.globalLanguage.dRCP.backingUpPlaylists);
+            MainWindow.DCRPM.SetActivity(MainWindow.globalLanguage.dCRP.backingUpPlaylists);
 
             try
             {
@@ -629,7 +629,7 @@ namespace BMBF_Manager
             }
             Running = true;
 
-            MainWindow.DCRPM.SetActivity(MainWindow.globalLanguage.dRCP.restoringPlaylists);
+            MainWindow.DCRPM.SetActivity(MainWindow.globalLanguage.dCRP.restoringPlaylists);
 
             try
             {
@@ -804,7 +804,7 @@ namespace BMBF_Manager
             String Source = Path;
             Running = true;
 
-            MainWindow.DCRPM.SetActivity(MainWindow.globalLanguage.dRCP.zippingSongs);
+            MainWindow.DCRPM.SetActivity(MainWindow.globalLanguage.dCRP.zippingSongs);
 
             if ((bool)auto.IsChecked)
             {
@@ -1052,7 +1052,7 @@ namespace BMBF_Manager
             }
             Directory.CreateDirectory(exe + "\\tmp\\CustomSongs");
 
-            MainWindow.DCRPM.SetActivity(MainWindow.globalLanguage.dRCP.correctingSongPath);
+            MainWindow.DCRPM.SetActivity(MainWindow.globalLanguage.dCRP.correctingSongPath);
 
             if (!MainWindow.aDBI.adb("pull /sdcard/BMBFData/CustomSongs/ \"" + exe + "\\tmp\"", txtbox)) return;
             MainWindow.aDBI.adb("shell rm -r /sdcard/BMBFData/CustomSongs/", txtbox);
@@ -1133,7 +1133,7 @@ namespace BMBF_Manager
 
             if (QuestToPC)
             {
-                MainWindow.DCRPM.SetActivity(MainWindow.globalLanguage.dRCP.switchingSongLibraryQuestPC);
+                MainWindow.DCRPM.SetActivity(MainWindow.globalLanguage.dCRP.switchingSongLibraryQuestPC);
 
                 MainWindow.Log("User choose QuestToPC");
                 r = MessageBox.Show(MainWindow.globalLanguage.qSU.code.startInfoQuestToPC, "BMBF Manager - Quest Song Utilities", MessageBoxButton.OKCancel, MessageBoxImage.Information);
@@ -1279,7 +1279,7 @@ namespace BMBF_Manager
             }
             else
             {
-                MainWindow.DCRPM.SetActivity(MainWindow.globalLanguage.dRCP.switchingSongLibraryPCQuest);
+                MainWindow.DCRPM.SetActivity(MainWindow.globalLanguage.dCRP.switchingSongLibraryPCQuest);
                 MainWindow.Log("User choose PCToQuest");
                 r = MessageBox.Show(MainWindow.globalLanguage.qSU.code.startInfoPCToQuest, "BMBF Manager - Quest Song Utilities", MessageBoxButton.OKCancel, MessageBoxImage.Information);
                 if (r == MessageBoxResult.Cancel)
@@ -1496,7 +1496,7 @@ namespace BMBF_Manager
             String Source = Path;
             Running = true;
 
-            MainWindow.DCRPM.SetActivity(MainWindow.globalLanguage.dRCP.makingSongList);
+            MainWindow.DCRPM.SetActivity(MainWindow.globalLanguage.dCRP.makingSongList);
 
             if ((bool)auto.IsChecked)
             {

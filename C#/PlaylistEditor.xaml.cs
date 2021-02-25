@@ -88,7 +88,7 @@ namespace BMBF_Manager
             {
                 txtbox.AppendText(MainWindow.globalLanguage.global.anErrorOccured);
             }
-            MainWindow.DCRPM.SetActivity(MainWindow.globalLanguage.dRCP.editingPlaylists);
+            MainWindow.DCRPM.SetActivity(MainWindow.globalLanguage.dCRP.editingPlaylists);
         }
 
         public void ApplyLanguage()
@@ -188,7 +188,7 @@ namespace BMBF_Manager
 
         private void reloadPLs(bool changed = false)
         {
-            MainWindow.DCRPM.SetActivity(MainWindow.globalLanguage.dRCP.editingPlaylists);
+            MainWindow.DCRPM.SetActivity(MainWindow.globalLanguage.dCRP.editingPlaylists);
             if (Playlists.SelectedIndex < 0 || Playlists.SelectedIndex >= BMBFConfig.Config.Playlists.Count)
             {
                 //txtbox.AppendText("\n\nPlease select a valid Playlist");
@@ -704,7 +704,7 @@ namespace BMBF_Manager
                 return;
             }
 
-            MainWindow.DCRPM.SetActivity(MainWindow.globalLanguage.dRCP.exportingBPList);
+            MainWindow.DCRPM.SetActivity(MainWindow.globalLanguage.dCRP.exportingBPList);
 
             txtbox.AppendText("\n\n" + MainWindow.globalLanguage.playlistEditor.code.downloadingPlaylistCover);
             txtbox.ScrollToEnd();
@@ -849,7 +849,7 @@ namespace BMBF_Manager
                 return;
             }
 
-            MainWindow.DCRPM.SetActivity(MainWindow.globalLanguage.dRCP.importingBPList);
+            MainWindow.DCRPM.SetActivity(MainWindow.globalLanguage.dCRP.importingBPList);
 
             List<BPListSong> tmp = new List<BPListSong>(BPList.songs);
             List<BMBFSong> existing = new List<BMBFSong>();
@@ -982,213 +982,206 @@ namespace BMBF_Manager
                 txtbox.ScrollToEnd();
                 return;
             }
-            try
+            if (action == 0)
             {
-                if (action == 0)
+                BMBFPlaylist newpl = new BMBFPlaylist();
+                newpl.PlaylistName = BPList.playlistTitle;
+                newpl.CoverImageBytes = BPList.image.Replace("data:image/png;base64,", "").Replace("data:image/jpg;base64,", "").Replace("data:image/jpeg;base64,", "").Replace(",", "");
+                if (moveexisting)
                 {
-                    BMBFPlaylist newpl = new BMBFPlaylist();
-                    newpl.PlaylistName = BPList.playlistTitle;
-                    newpl.CoverImageBytes = BPList.image.Replace("data:image/png;base64,", "").Replace("data:image/jpg;base64,", "").Replace("data:image/jpeg;base64,", "").Replace(",", "");
-                    if (moveexisting)
-                    {
-                        // Move existing Songs
-                        int removed2 = 0;
-                        int pl2 = 0;
-                        foreach (BMBFPlaylist p in BMBFConfig.Config.Playlists)
-                        {
-                            removed2 = 0;
-                            List<BMBFSong> tmp2 = new List<BMBFSong>(p.SongList);
-                            int i = 0;
-                            foreach (BMBFSong s in tmp2)
-                            {
-                                foreach (BMBFSong search in existing)
-                                {
-                                    if (search.SongID.ToLower() == s.SongID.ToLower())
-                                    {
-                                        txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.playlistEditor.code.removedSongFromPlaylist, s.SongName));
-                                        BMBFConfig.Config.Playlists[pl2].SongList.RemoveAt(i - removed2);
-                                        removed2++;
-                                        break;
-                                    }
-                                }
-                                i++;
-                            }
-                            pl2++;
-                        }
-
-                        foreach (BMBFSong s in existing) newpl.SongList.Add(s);
-                        txtbox.AppendText("\n\n" + MainWindow.globalLanguage.playlistEditor.code.addedExistingToPlaylist);
-                    }
-                    txtbox.ScrollToEnd();
-
-                    // Move new Songs
-                    foreach (BMBFPlaylist p in current.Config.Playlists)
-                    {
-                        foreach (BMBFSong s in p.SongList)
-                        {
-                            foreach (BPListSong search in tmp)
-                            {
-                                if (search.hash.ToLower().Contains(s.SongID.ToLower()))
-                                {
-                                    txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.playlistEditor.code.movedSongToBPList, s.SongName));
-                                    newpl.SongList.Add(s);
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                    txtbox.ScrollToEnd();
-                    BMBFConfig.Config.Playlists.Add(newpl);
-                }
-                else if (action == 1)
-                {
-                    int pl = 0;
+                    // Move existing Songs
+                    int removed2 = 0;
+                    int pl2 = 0;
                     foreach (BMBFPlaylist p in BMBFConfig.Config.Playlists)
                     {
-                        if (p.PlaylistName == BPList.playlistTitle) break;
-                        pl++;
-                    }
-                    BMBFConfig.Config.Playlists[pl].CoverImageBytes = BPList.image.Replace("data:image/png;base64,", "").Replace("data:image/jpg;base64,", "").Replace("data:image/jpeg;base64,", "").Replace(",", "");
-                    if (moveexisting)
-                    {
-                        // Move existing Songs
-                        int removed2 = 0;
-                        int pl2 = 0;
-                        foreach (BMBFPlaylist p in BMBFConfig.Config.Playlists)
+                        removed2 = 0;
+                        List<BMBFSong> tmp2 = new List<BMBFSong>(p.SongList);
+                        int i = 0;
+                        foreach (BMBFSong s in tmp2)
                         {
-                            removed2 = 0;
-                            if (p.PlaylistName == BPList.playlistTitle) PLExists = true;
-                            List<BMBFSong> tmp2 = new List<BMBFSong>(p.SongList);
-                            int i = 0;
-                            foreach (BMBFSong s in tmp2)
+                            foreach (BMBFSong search in existing)
                             {
-                                foreach (BMBFSong search in existing)
+                                if (search.SongID.ToLower() == s.SongID.ToLower())
                                 {
-                                    if (search.SongID.ToLower() == s.SongID.ToLower())
-                                    {
-                                        txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.playlistEditor.code.removedSongFromPlaylist, s.SongName));
-                                        BMBFConfig.Config.Playlists[pl2].SongList.RemoveAt(i - removed2);
-                                        removed2++;
-                                        break;
-                                    }
-                                }
-                                i++;
-                            }
-                            pl2++;
-                        }
-
-                        foreach (BMBFSong s in existing) BMBFConfig.Config.Playlists[pl].SongList.Add(s);
-                        txtbox.AppendText("\n\n" + MainWindow.globalLanguage.playlistEditor.code.addedExistingToPlaylist);
-                        txtbox.ScrollToEnd();
-                    }
-
-                    // Move new Songs
-                    foreach (BMBFPlaylist p in current.Config.Playlists)
-                    {
-                        foreach (BMBFSong s in p.SongList)
-                        {
-                            foreach (BPListSong search in tmp)
-                            {
-                                if (search.hash.ToLower() == s.SongID.ToLower().Replace("custom_level_", ""))
-                                {
-                                    txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.playlistEditor.code.movedSongToBPList, s.SongName));
-                                    BMBFConfig.Config.Playlists[pl].SongList.Add(s);
+                                    txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.playlistEditor.code.removedSongFromPlaylist, s.SongName));
+                                    BMBFConfig.Config.Playlists[pl2].SongList.RemoveAt(i - removed2);
+                                    removed2++;
                                     break;
                                 }
                             }
+                            i++;
                         }
+                        pl2++;
                     }
+
+                    foreach (BMBFSong s in existing) newpl.SongList.Add(s);
+                    txtbox.AppendText("\n\n" + MainWindow.globalLanguage.playlistEditor.code.addedExistingToPlaylist);
                 }
-                else if (action == 2)
-                {
-                    int pl = 0;
-                    foreach (BMBFPlaylist p in BMBFConfig.Config.Playlists)
-                    {
-                        if (p.PlaylistName == BPList.playlistTitle)
-                        {
-                            BMBFConfig.Config.Playlists.RemoveAt(pl);
-                            break;
-                        }
-                        pl++;
-                    }
-
-                    BMBFPlaylist newpl = new BMBFPlaylist();
-                    newpl.PlaylistName = BPList.playlistTitle;
-                    newpl.CoverImageBytes = BPList.image.Replace("data:image/png;base64,", "").Replace("data:image/jpg;base64", "").Replace("data:image/jpeg;base64", "").Replace(",", "");
-
-                    if (moveexisting)
-                    {
-                        // Move existing Songs
-                        int removed2 = 0;
-                        int pl2 = 0;
-                        foreach (BMBFPlaylist p in BMBFConfig.Config.Playlists)
-                        {
-                            removed2 = 0;
-                            if (p.PlaylistName == BPList.playlistTitle) PLExists = true;
-                            List<BMBFSong> tmp2 = new List<BMBFSong>(p.SongList);
-                            int i = 0;
-                            foreach (BMBFSong s in tmp2)
-                            {
-                                foreach (BMBFSong search in existing)
-                                {
-                                    if (search.SongID.ToLower() == s.SongID.ToLower())
-                                    {
-                                        txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.playlistEditor.code.removedSongFromPlaylist, s.SongName));
-                                        BMBFConfig.Config.Playlists[pl2].SongList.RemoveAt(i - removed2);
-                                        removed2++;
-                                        break;
-                                    }
-                                }
-                                i++;
-                            }
-                            pl2++;
-                            if (pl2 >= BMBFConfig.Config.Playlists.Count) break;
-                        }
-
-                        foreach (BMBFSong s in existing) newpl.SongList.Add(s);
-                        txtbox.AppendText("\n\n" + MainWindow.globalLanguage.playlistEditor.code.addedExistingToPlaylist);
-                    }
-
-                    // Move new Songs
-                    foreach (BMBFPlaylist p in current.Config.Playlists)
-                    {
-                        foreach (BMBFSong s in p.SongList)
-                        {
-                            foreach (BPListSong search in tmp)
-                            {
-                                if (search.hash.ToLower() == s.SongID.ToLower().Replace("custom_level_", ""))
-                                {
-                                    txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.playlistEditor.code.movedSongToBPList, s.SongName));
-                                    newpl.SongList.Add(s);
-                                    break;
-                                }
-                            }
-                        }
-                    }
-
-                    BMBFConfig.Config.Playlists.Add(newpl);
-                }
-
-                txtbox.AppendText("\n\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.playlistEditor.code.installedBPList, BPList.playlistTitle, BPList.playlistAuthor));
                 txtbox.ScrollToEnd();
-                // Update All Lists
-                Playlists.Items.Clear();
-                foreach (BMBFPlaylist Playlist in BMBFConfig.Config.Playlists)
+
+                // Move new Songs
+                foreach (BMBFPlaylist p in current.Config.Playlists)
                 {
-                    Playlists.Items.Add(Playlist.PlaylistName);
+                    foreach (BMBFSong s in p.SongList)
+                    {
+                        foreach (BPListSong search in tmp)
+                        {
+                            if (search.hash.ToLower().Contains(s.SongID.ToLower()))
+                            {
+                                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.playlistEditor.code.movedSongToBPList, s.SongName));
+                                newpl.SongList.Add(s);
+                                break;
+                            }
+                        }
+                    }
                 }
-                if (Playlists.Items.Count < 1)
-                {
-                    txtbox.AppendText("\n\n" + MainWindow.globalLanguage.playlistEditor.code.somethingWentWrong);
-                    txtbox.ScrollToEnd();
-                    return;
-                }
-                Playlists.SelectedIndex = 0;
+                txtbox.ScrollToEnd();
+                BMBFConfig.Config.Playlists.Add(newpl);
             }
-            catch (Exception eeee)
+            else if (action == 1)
             {
-                txtbox.AppendText(eeee.ToString());
+                int pl = 0;
+                foreach (BMBFPlaylist p in BMBFConfig.Config.Playlists)
+                {
+                    if (p.PlaylistName == BPList.playlistTitle) break;
+                    pl++;
+                }
+                BMBFConfig.Config.Playlists[pl].CoverImageBytes = BPList.image.Replace("data:image/png;base64,", "").Replace("data:image/jpg;base64,", "").Replace("data:image/jpeg;base64,", "").Replace(",", "");
+                if (moveexisting)
+                {
+                    // Move existing Songs
+                    int removed2 = 0;
+                    int pl2 = 0;
+                    foreach (BMBFPlaylist p in BMBFConfig.Config.Playlists)
+                    {
+                        removed2 = 0;
+                        if (p.PlaylistName == BPList.playlistTitle) PLExists = true;
+                        List<BMBFSong> tmp2 = new List<BMBFSong>(p.SongList);
+                        int i = 0;
+                        foreach (BMBFSong s in tmp2)
+                        {
+                            foreach (BMBFSong search in existing)
+                            {
+                                if (search.SongID.ToLower() == s.SongID.ToLower())
+                                {
+                                    txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.playlistEditor.code.removedSongFromPlaylist, s.SongName));
+                                    BMBFConfig.Config.Playlists[pl2].SongList.RemoveAt(i - removed2);
+                                    removed2++;
+                                    break;
+                                }
+                            }
+                            i++;
+                        }
+                        pl2++;
+                    }
+
+                    foreach (BMBFSong s in existing) BMBFConfig.Config.Playlists[pl].SongList.Add(s);
+                    txtbox.AppendText("\n\n" + MainWindow.globalLanguage.playlistEditor.code.addedExistingToPlaylist);
+                    txtbox.ScrollToEnd();
+                }
+
+                // Move new Songs
+                foreach (BMBFPlaylist p in current.Config.Playlists)
+                {
+                    foreach (BMBFSong s in p.SongList)
+                    {
+                        foreach (BPListSong search in tmp)
+                        {
+                            if (search.hash.ToLower() == s.SongID.ToLower().Replace("custom_level_", ""))
+                            {
+                                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.playlistEditor.code.movedSongToBPList, s.SongName));
+                                BMBFConfig.Config.Playlists[pl].SongList.Add(s);
+                                break;
+                            }
+                        }
+                    }
+                }
             }
+            else if (action == 2)
+            {
+                int pl = 0;
+                foreach (BMBFPlaylist p in BMBFConfig.Config.Playlists)
+                {
+                    if (p.PlaylistName == BPList.playlistTitle)
+                    {
+                        BMBFConfig.Config.Playlists.RemoveAt(pl);
+                        break;
+                    }
+                    pl++;
+                }
+
+                BMBFPlaylist newpl = new BMBFPlaylist();
+                newpl.PlaylistName = BPList.playlistTitle;
+                newpl.CoverImageBytes = BPList.image.Replace("data:image/png;base64,", "").Replace("data:image/jpg;base64", "").Replace("data:image/jpeg;base64", "").Replace(",", "");
+
+                if (moveexisting)
+                {
+                    // Move existing Songs
+                    int removed2 = 0;
+                    int pl2 = 0;
+                    foreach (BMBFPlaylist p in BMBFConfig.Config.Playlists)
+                    {
+                        removed2 = 0;
+                        if (p.PlaylistName == BPList.playlistTitle) PLExists = true;
+                        List<BMBFSong> tmp2 = new List<BMBFSong>(p.SongList);
+                        int i = 0;
+                        foreach (BMBFSong s in tmp2)
+                        {
+                            foreach (BMBFSong search in existing)
+                            {
+                                if (search.SongID.ToLower() == s.SongID.ToLower())
+                                {
+                                    txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.playlistEditor.code.removedSongFromPlaylist, s.SongName));
+                                    BMBFConfig.Config.Playlists[pl2].SongList.RemoveAt(i - removed2);
+                                    removed2++;
+                                    break;
+                                }
+                            }
+                            i++;
+                        }
+                        pl2++;
+                        if (pl2 >= BMBFConfig.Config.Playlists.Count) break;
+                    }
+
+                    foreach (BMBFSong s in existing) newpl.SongList.Add(s);
+                    txtbox.AppendText("\n\n" + MainWindow.globalLanguage.playlistEditor.code.addedExistingToPlaylist);
+                }
+
+                // Move new Songs
+                foreach (BMBFPlaylist p in current.Config.Playlists)
+                {
+                    foreach (BMBFSong s in p.SongList)
+                    {
+                        foreach (BPListSong search in tmp)
+                        {
+                            if (search.hash.ToLower() == s.SongID.ToLower().Replace("custom_level_", ""))
+                            {
+                                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.playlistEditor.code.movedSongToBPList, s.SongName));
+                                newpl.SongList.Add(s);
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                BMBFConfig.Config.Playlists.Add(newpl);
+            }
+
+            txtbox.AppendText("\n\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.playlistEditor.code.installedBPList, BPList.playlistTitle, BPList.playlistAuthor));
+            txtbox.ScrollToEnd();
+            // Update All Lists
+            Playlists.Items.Clear();
+            foreach (BMBFPlaylist Playlist in BMBFConfig.Config.Playlists)
+            {
+                Playlists.Items.Add(Playlist.PlaylistName);
+            }
+            if (Playlists.Items.Count < 1)
+            {
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.playlistEditor.code.somethingWentWrong);
+                txtbox.ScrollToEnd();
+                return;
+            }
+            Playlists.SelectedIndex = 0;
         }
 
         private void ChaPlC(object sender, RoutedEventArgs e)

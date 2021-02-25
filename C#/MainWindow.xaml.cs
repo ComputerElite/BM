@@ -38,7 +38,7 @@ namespace BMBF_Manager
     {
         int MajorV = 1;
         int MinorV = 14;
-        int PatchV = 1;
+        int PatchV = 2;
         Boolean Preview = false;
         public static bool log = false;
 
@@ -101,8 +101,8 @@ namespace BMBF_Manager
             CheckBMBFUpdate();
 
             DCRPM = new PresenceManager("812060183407886376", config.DCRPE);
-            DCRPM.SetOneButton(globalLanguage.dRCP.gitHubLink, "https://github.com/ComputerElite/BM");
-            DCRPM.SetActivity(globalLanguage.dRCP.inMainMenu);
+            DCRPM.SetOneButton(globalLanguage.dCRP.gitHubLink, "https://github.com/ComputerElite/BM");
+            DCRPM.SetActivity(globalLanguage.dCRP.inMainMenu);
 
             //TryGetStats();
             KeepAliveTask();
@@ -146,7 +146,7 @@ namespace BMBF_Manager
 
         private void MakeRandomLanguageFile()
         {
-            //Generate random text for testing
+            //Generate random text for testing and yes ik that's bad code
             JSONNode n = JSON.Parse(JsonSerializer.Serialize(globalLanguage));
             JSONNode random = JSON.Parse("{}");
             Random r = new Random();
@@ -616,7 +616,7 @@ namespace BMBF_Manager
             MessageBoxResult r0 = MessageBox.Show(globalLanguage.mainMenu.code.onQuest2, "BMBF Manager", MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (r0 == MessageBoxResult.Yes) Quest2 = true;
 
-            DCRPM.SetActivity(globalLanguage.dRCP.updatingBMBF);
+            DCRPM.SetActivity(globalLanguage.dCRP.updatingBMBF);
             if (Directory.Exists(exe + "\\ModChecks\\mods"))
             {
                 //game is modded
@@ -959,7 +959,7 @@ namespace BMBF_Manager
                 return;
             }
 
-            DCRPM.SetActivity(globalLanguage.dRCP.switchingVersion);
+            DCRPM.SetActivity(globalLanguage.dCRP.switchingVersion);
 
             if (Directory.Exists(exe + "\\ModChecks\\mods"))
             {
