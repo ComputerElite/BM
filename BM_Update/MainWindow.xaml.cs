@@ -29,9 +29,6 @@ namespace BM_Update
     public partial class MainWindow : Window
     {
         String exe = AppDomain.CurrentDomain.BaseDirectory.Substring(0, AppDomain.CurrentDomain.BaseDirectory.Length - 1);
-        int MajorU = 0;
-        int MinorU = 0;
-        int PatchU = 0;
 
         public MainWindow()
         {
@@ -50,31 +47,29 @@ namespace BM_Update
                 Update = JSON.Parse(client.DownloadString("https://raw.githubusercontent.com/ComputerElite/BM/main/update.json"));
             }
 
-            MajorU = Update["Updates"][0]["Major"];
-            MinorU = Update["Updates"][0]["Minor"];
-            PatchU = Update["Updates"][0]["Patch"];
-
             txtbox.Text = "Downloading BMBF Manager";
 
             using (WebClient client = new WebClient())
             {
                 client.DownloadProgressChanged += new DownloadProgressChangedEventHandler(client_DownloadProgressChanged);
                 client.DownloadFileCompleted += new AsyncCompletedEventHandler(client_DownloadFileCompleted);
-                client.DownloadFileAsync(new Uri(Update["Updates"][0]["Download"]), exe + "\\tmp\\BM_V_" + MajorU + "_" + MinorU + "_" + PatchU + ".zip");
+                client.DownloadFileAsync(new Uri(Update["Updates"][0]["Download"]), exe + "\\tmp\\BM.zip");
             }
         }
 
         private void client_DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
         {
-            using (ZipArchive archive = ZipFile.OpenRead(exe + "\\tmp\\BM_V_" + MajorU + "_" + MinorU + "_" + PatchU + ".zip"))
+            using (ZipArchive archive = ZipFile.OpenRead(exe + "\\tmp\\BM.zip"))
             {
                 foreach (ZipArchiveEntry entry in archive.Entries)
                 {
-                    if(File.Exists(exe + "\\" + entry.FullName)) File.Delete(exe + "\\" + entry.FullName);
+                    String name = entry.FullName;
+                    if (name.EndsWith("/")) continue;
+                    if (name.Contains("/")) Directory.CreateDirectory(exe + "\\" + System.IO.Path.GetDirectoryName(name));
+                    entry.ExtractToFile(exe + "\\" + entry.FullName, true);
                 }
             }
-            ZipFile.ExtractToDirectory(exe + "\\tmp\\BM_V_" + MajorU + "_" + MinorU + "_" + PatchU + ".zip", exe);
-            File.Delete(exe + "\\tmp\\BM_V_" + MajorU + "_" + MinorU + "_" + PatchU + ".zip");
+            File.Delete(exe + "\\tmp\\BM.zip");
             try
             {
                 Process.Start(exe + "\\BMBF Manager.exe");
