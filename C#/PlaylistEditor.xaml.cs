@@ -22,6 +22,7 @@ using SimpleJSON;
 using Microsoft.Win32;
 using System.Text.RegularExpressions;
 using ComputerUtils.RegxTemplates;
+using ComputerUtils.StringFormatters;
 
 namespace BMBF_Manager
 {
@@ -736,7 +737,7 @@ namespace BMBF_Manager
                 song.songName = s.SongName;
                 l.songs.Add(song);
             }
-            File.WriteAllText(exe + "\\BPLists\\" + l.playlistTitle + ".bplist", JsonSerializer.Serialize(l));
+            File.WriteAllText(exe + "\\BPLists\\" + StringFormatter.FileNameSafe(l.playlistTitle) + ".bplist", JsonSerializer.Serialize(l));
             txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.playlistEditor.code.exportedBPList, l.playlistTitle, l.songs.Count.ToString()));
             txtbox.ScrollToEnd();
         }
