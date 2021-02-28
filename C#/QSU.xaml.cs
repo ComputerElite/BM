@@ -359,7 +359,7 @@ namespace BMBF_Manager
                 i++;
             }
 
-            File.WriteAllText(exe + "\\BPLists\\" + json["Config"]["Playlists"][Playlists.SelectedIndex + Lists - 1]["PlaylistName"] + ".bplist", result.ToString());
+            File.WriteAllText(exe + "\\BPLists\\" + StringFormatter.FileNameSafe(json["Config"]["Playlists"][Playlists.SelectedIndex + Lists - 1]["PlaylistName"]) + ".bplist", result.ToString());
             Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
             {
                 txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qSU.code.bPListMade, json["Config"]["Playlists"][Playlists.SelectedIndex + Lists - 1]["PlaylistName"], "BPLists\\" + json["Config"]["Playlists"][Playlists.SelectedIndex + Lists - 1]["PlaylistName"] + ".bplist"));
@@ -1269,7 +1269,7 @@ namespace BMBF_Manager
                             }
                         }
                     }
-                    File.WriteAllText(PlaylistFolder + "\\" + list.playlistTitle + ".bplist", JsonSerializer.Serialize(list));
+                    File.WriteAllText(PlaylistFolder + "\\" + StringFormatter.FileNameSafe(list.playlistTitle) + ".bplist", JsonSerializer.Serialize(list));
                 }
                 if(!importPlaylists)
                 {
