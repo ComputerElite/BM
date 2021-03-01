@@ -434,12 +434,26 @@ namespace BeatSaverAPI
 
         public BeatSaverAPISong GetBeatSaverAPISongViaKey(String key)
         {
-            return BeatSaverAPISongKey(key).Result;
+            try
+            {
+                BeatSaverAPISong s = BeatSaverAPISongKey(key).Result;
+                return s;
+            } catch
+            {
+                return new BeatSaverAPISong();
+            }
         }
 
         public BeatSaverAPISong GetBeatSaverAPISongViaHash(String hash)
         {
-            return BeatSaverAPISongHash(hash).Result;
+            try
+            {
+                BeatSaverAPISong s = BeatSaverAPISongHash(hash).Result;
+                return s;
+            } catch
+            {
+                return new BeatSaverAPISong();
+            }
         }
 
         public BeatSaverAPISong GetBeatSaverAPISong(String HashOrKey)

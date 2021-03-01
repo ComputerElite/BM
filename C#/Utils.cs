@@ -2,6 +2,8 @@
 using ComputerUtils.RegxTemplates;
 using System;
 using System.Diagnostics;
+using System.IO;
+using System.IO.Compression;
 using System.Windows.Controls;
 
 namespace BMBFManager.Utils
@@ -129,6 +131,23 @@ namespace BMBFManager.Utils
         public void getQuestIP(TextBox Quest)
         {
             MainWindow.config.IP = Quest.Text;
+        }
+    }
+
+    public class ZipUtils
+    {
+        public static void ExtractSafe(String sourceZip, String destinationFolder)
+        {
+            using (ZipArchive archive = ZipFile.OpenRead(sourceZip))
+            {
+                foreach (ZipArchiveEntry entry in archive.Entries)
+                {
+                    String name = entry.FullName;
+                    if (name.EndsWith("/")) continue;
+                    if (name.Contains("/")) Directory.CreateDirectory(destinationFolder + "\\" + System.IO.Path.GetDirectoryName(name));
+                    entry.ExtractToFile(destinationFolder + "\\" + entry.FullName, true);
+                }
+            }
         }
     }
 }

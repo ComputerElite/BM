@@ -1298,10 +1298,13 @@ namespace BMBF_Manager
                 txtbox.ScrollToEnd();
                 return;
             }
-            File.WriteAllText(exe + "\\tmp\\config.json", JsonSerializer.Serialize(BMBFConfig.Config));
-            postChanges(exe + "\\tmp\\config.json");
-            txtbox.AppendText("\n\n" + MainWindow.globalLanguage.playlistEditor.code.saved);
-            txtbox.ScrollToEnd();
+            if(BMBFConfig.Config != null)
+            {
+                File.WriteAllText(exe + "\\tmp\\config.json", JsonSerializer.Serialize(BMBFConfig.Config));
+                postChanges(exe + "\\tmp\\config.json");
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.playlistEditor.code.saved);
+                txtbox.ScrollToEnd();
+            }
         }
 
         public void postChanges(String Config)

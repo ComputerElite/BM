@@ -29,6 +29,7 @@ using BeatSaverAPI;
 using System.Text.RegularExpressions;
 using ComputerUtils.RegxTemplates;
 using ComputerUtils.StringFormatters;
+using BMBFManager.Utils;
 
 namespace BMBF_Manager
 {
@@ -707,7 +708,8 @@ namespace BMBF_Manager
 
         public String CheckSongZip(String zip)
         {
-            ZipFile.ExtractToDirectory(zip, exe + "\\tmp\\correct");
+            ZipUtils.ExtractSafe(zip, exe + "\\tmp\\correct");
+            //ZipFile.ExtractToDirectory(zip, exe + "\\tmp\\correct");
             return CheckSong(exe + "\\tmp\\correct");
         }
 
@@ -860,6 +862,7 @@ namespace BMBF_Manager
 
         public void MoveOutOfFolder(String FolderToMoveAll, ArrayList found)
         {
+            if (!Directory.Exists(FolderToMoveAll)) return;
             foreach (String folder in Directory.GetDirectories(FolderToMoveAll))
             {
                 if (found.Count == 0)
@@ -870,6 +873,7 @@ namespace BMBF_Manager
                 MoveOutOfFolder(folder, found);
                 foreach (String file in Directory.GetFiles(folder))
                 {
+                    if (File.Exists(FolderToMoveAll + "\\" + System.IO.Path.GetFileName(file))) File.Delete(FolderToMoveAll + "\\" + System.IO.Path.GetFileName(file));
                     File.Move(file, FolderToMoveAll + "\\" + System.IO.Path.GetFileName(file));
                 }
                 Directory.Delete(folder);
