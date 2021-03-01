@@ -586,7 +586,7 @@ namespace BMBFManager.Language
         public String finishedIndex { get; set; } = "Finished! Listed {0} songs in Songs.txt";
 
         //Song Lib switching
-        public String songLibSwitchInfo { get; set; } = "So you want to transfer your Song library from the PC Version of Beat Saber to the Quest Version or from the Quest Version to the PC Version? You are in the right place! Please press following button:\nQuest to PC = Yes, PC to Quest = No, cancle = cancle";
+        public String songLibSwitchInfo { get; set; } = "So you want to transfer your Song library from the PC Version of Beat Saber to the Quest Version or from the Quest Version to the PC Version? You are in the right place! It's hightly suggested to make a backup before proceeding! Please press following button:\nQuest to PC = Yes, PC to Quest = No, cancle = cancle";
         public String choosePCModsFolder { get; set; } = "Please choose the CustomSongs folder of your PC installation and plug in your Quest via USB";
         public String operationRunning { get; set; } = "A Operation is already running. Please wait until it has finished.";
         public String folderDoesntExist { get; set; } = "The folder you choose doesn't exist.";

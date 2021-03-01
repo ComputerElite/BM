@@ -138,6 +138,7 @@ namespace BMBFManager.Utils
     {
         public static void ExtractSafe(String sourceZip, String destinationFolder)
         {
+            if (!Directory.Exists(destinationFolder)) Directory.CreateDirectory(destinationFolder);
             using (ZipArchive archive = ZipFile.OpenRead(sourceZip))
             {
                 foreach (ZipArchiveEntry entry in archive.Entries)
