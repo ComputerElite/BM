@@ -38,7 +38,7 @@ namespace BMBF_Manager
     {
         int MajorV = 1;
         int MinorV = 14;
-        int PatchV = 4;
+        int PatchV = 5;
         Boolean Preview = false;
         public static bool log = false;
 

@@ -721,6 +721,8 @@ namespace BMBF_Manager
             String entry = folder;
             String dat = entry + "\\Info.dat";
 
+            if (!Directory.Exists(entry)) return "Error";
+
             //get Info.dat
             MoveOutOfFolder(entry, found);
             if (!File.Exists(entry + "\\Info.dat") || !File.Exists(entry + "\\info.dat"))
@@ -862,7 +864,6 @@ namespace BMBF_Manager
 
         public void MoveOutOfFolder(String FolderToMoveAll, ArrayList found)
         {
-            if (!Directory.Exists(FolderToMoveAll)) return;
             foreach (String folder in Directory.GetDirectories(FolderToMoveAll))
             {
                 if (found.Count == 0)
