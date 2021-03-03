@@ -38,7 +38,7 @@ namespace BMBF_Manager
     {
         int MajorV = 1;
         int MinorV = 14;
-        int PatchV = 6;
+        int PatchV = 7;
         Boolean Preview = false;
         public static bool log = false;
 
@@ -208,7 +208,7 @@ namespace BMBF_Manager
             playlistEditorButton.Content = globalLanguage.mainMenu.UI.playlistEditorButton;
             settingsButton.Content = globalLanguage.mainMenu.UI.settingsButton;
 
-            File.WriteAllText("D:\\en.json", JsonSerializer.Serialize(globalLanguage));
+            //File.WriteAllText("D:\\en.json", JsonSerializer.Serialize(globalLanguage));
         }
 
         public static void Log(String s)
