@@ -103,7 +103,7 @@
         },
         {
             "name": "Added Modifiers",
-            "details": "This is my first mod so any feedback is very appreciated\r\n\r\nThis mod implements two game modifiers which were previously unused. Toggles are in settings -> mod settings -> Added Modifiers\r\n\r\n(Note that enabling either modifier will disable score submission)\r\n\r\nKnown issue:\r\nTricksaber disables saber-saber collision, rendering fail on saber clash useless",
+            "details": "This is my first mod so any feedback is very appreciated\r\n\r\nThis mod implements two game modifiers which were previously unused. Toggles are in settings -> mod settings -> Added Modifiers\r\n\r\n(Note that enabling either modifier will disable score submission)\r\n\r\nKnown issue:\r\nfsaber disables saber-saber collision, rendering fail on saber clash useless",
             "ModID": "AddedModifiers",
             "creator": [
                 "Inferno._."
@@ -353,7 +353,7 @@
             ]
         },
         {
-            "name": "TrickSaber",
+            "name": "Trick Saber",
             "details": "The infamous Trick Saber mod, ported to Quest. \r\n\r\n\r\nBefore we continue, I'd like for all of you to read this first (unrelated to the mod itself)\r\nFirst of all, this release is far overdue. It was planned to come the next couple days of the UI update, though it took much longer than that, for good reason though. I'd like to thank everyone who was involved in stabilizing the mod, who found and helped fixed so many of the bugs in the mod. Thank you very much both Quest Testers for testing and fellow modders for helping me. \r\nI'd like to also remind you all to support Michael Zoller.\r\nMichael Zoller, the previous developer of TrickSaber, has had lots of trouble lately due to the pandemic. I urge you to support him for his contributions to the Beat Saber community in the 1.11 era of the game by porting Mapping Extensions and Trick Saber. Without him, this mod wouldn't be here today.\r\nhttps://www.paypal.com/paypalme/zoller27osu?locale.x=en_US \r\n\r\nFeatures: \r\n- Allows you to spin your sabers (left & right on the joystick)\r\n- Allows you to throw your saber (trigger)\r\n- Qosmetics support (not fully tested with all kinds of sabers)\r\n- UI support\r\n\r\nKnown Incompatibilities:\r\n- Some sabers do not work properly and cause many issues. Please test your sabers before reporting the bugs.",
             "ModID": "TrickSaber",
             "creator": [
