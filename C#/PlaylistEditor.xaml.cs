@@ -796,7 +796,7 @@ namespace BMBF_Manager
         private async void IBPList(object sender, RoutedEventArgs e)
         {
             OpenFileDialog ofd = new OpenFileDialog();
-            ofd.Multiselect = false;
+            ofd.Multiselect = true;
             ofd.Filter = "BPLists (*.json, *.bplist) | *.json;*.bplist";
 
             bool? result = ofd.ShowDialog();
@@ -973,7 +973,7 @@ namespace BMBF_Manager
 
             try
             {
-                current = JsonSerializer.Deserialize<BMBFC>(client.DownloadString("http://" + MainWindow.config.IP + ":50000/host/beatsaber/config"));
+                current = JsonSerializer.Deserialize<BMBFC>(client.DownloadString("http://" + MainWindow.config.IP + ":50000/host/beatsaber/config?nothing=" + DateTime.Now));
 
             }
             catch
@@ -1298,7 +1298,7 @@ namespace BMBF_Manager
                 txtbox.ScrollToEnd();
                 return;
             }
-            if(BMBFConfig.Config != null)
+            if(BMBFConfig.Config.LeftColor.ValueKind != JsonValueKind.Undefined)
             {
                 File.WriteAllText(exe + "\\tmp\\config.json", JsonSerializer.Serialize(BMBFConfig.Config));
                 postChanges(exe + "\\tmp\\config.json");
@@ -1327,16 +1327,6 @@ namespace BMBF_Manager
                 }
             }
 
-        }
-
-        public void Sync()
-        {
-            System.Threading.Thread.Sleep(2000);
-            using (WebClient client = new WebClient())
-            {
-                client.QueryString.Add("foo", "foo");
-                client.UploadValues("http://" + MainWindow.config.IP + ":50000/host/beatsaber/commitconfig", "POST", client.QueryString);
-            }
         }
 
         private void Drag(object sender, RoutedEventArgs e)

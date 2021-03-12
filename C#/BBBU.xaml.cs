@@ -525,6 +525,7 @@ namespace BMBF_Manager
 
         public void PushPNG(String Path)
         {
+            if (!Directory.Exists(Path)) return;
             String[] directories = Directory.GetFiles(Path);
 
 
@@ -582,20 +583,17 @@ namespace BMBF_Manager
 
         public void postChanges(String Config)
         {
-            using (WebClient client = new WebClient())
+            try
             {
-                client.QueryString.Add("foo", "foo");
-                client.UploadFile("http://" + MainWindow.config.IP + ":50000/host/beatsaber/config", "PUT", Config);
-                client.UploadValues("http://" + MainWindow.config.IP + ":50000/host/beatsaber/commitconfig", "POST", client.QueryString);
-            }
-        }
-        public void Sync()
-        {
-            System.Threading.Thread.Sleep(2000);
-            using (WebClient client = new WebClient())
+                using (WebClient client = new WebClient())
+                {
+                    client.QueryString.Add("foo", "foo");
+                    client.UploadFile("http://" + MainWindow.config.IP + ":50000/host/beatsaber/config", "PUT", Config);
+                    client.UploadValues("http://" + MainWindow.config.IP + ":50000/host/beatsaber/commitconfig", "POST", client.QueryString);
+                }
+            } catch
             {
-                client.QueryString.Add("foo", "foo");
-                client.UploadValues("http://" + MainWindow.config.IP + ":50000/host/beatsaber/commitconfig", "POST", client.QueryString);
+                txtbox.AppendText(MainWindow.globalLanguage.global.BMBF100);
             }
         }
 
@@ -614,7 +612,6 @@ namespace BMBF_Manager
                     try
                     {
                         client.UploadFile("http://" + MainWindow.config.IP + ":50000/host/beatsaber/upload?overwrite", directories[i]);
-                        return;
                     }
                     catch
                     {
@@ -625,12 +622,11 @@ namespace BMBF_Manager
                 if (i % 20 == 0 && i != 0)
                 {
                     txtbox.AppendText("\n\n" + MainWindow.globalLanguage.global.syncingToBS);
-                    Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
-                    Sync();
+                    MainWindow.bMBFUtils.Sync(txtbox);
                     System.Threading.Thread.Sleep(2000);
                 }
             }
-            Sync();
+            MainWindow.bMBFUtils.Sync(txtbox);
         }
 
         public void BackupFGet()

@@ -28,6 +28,7 @@ using ComputerUtils.RegxTemplates;
 using DCRPManager;
 using BMBFManager.Config;
 using BMBFManager.Utils;
+using System.Runtime.CompilerServices;
 
 namespace BMBF_Manager
 {
@@ -38,7 +39,7 @@ namespace BMBF_Manager
     {
         int MajorV = 1;
         int MinorV = 14;
-        int PatchV = 7;
+        int PatchV = 8;
         Boolean Preview = false;
         public static bool log = false;
 
@@ -51,15 +52,18 @@ namespace BMBF_Manager
         public static JSONNode UpdateJSON = JSON.Parse("{}");
         JSONNode BMBFStable = JSON.Parse("{}");
         bool Quest2 = false;
+        public static String lastActionBeforeException = "N/A";
         public static PresenceManager DCRPM;
         public static ADBInteractor aDBI = new ADBInteractor();
         public static IPUtils iPUtils = new IPUtils();
+        public static BMBFUtils bMBFUtils = new BMBFUtils();
 
         public static Language globalLanguage = new Language();
 
         public MainWindow()
         {
             InitializeComponent();
+            CheckExecutionDir();
 
             SetupExceptionHandlers();
 
@@ -109,6 +113,19 @@ namespace BMBF_Manager
             
         }
 
+        public static void SetLastActionBeforeException(String msg, [CallerMemberName] String callerName = "N/A")
+        {
+            lastActionBeforeException = "[" + callerName + "] " + msg;
+        }
+
+        public void CheckExecutionDir()
+        {
+            if (RegexTemplates.IsInSystemFolder(exe))
+            {
+                MessageBox.Show(globalLanguage.processer.ReturnProcessed(globalLanguage.mainMenu.code.systemDirWarning, RegexTemplates.SystemDirFolderRegex), "BMBF Manager", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+            }
+        }
+
         public void SetupExceptionHandlers()
         {
             AppDomain.CurrentDomain.UnhandledException += (s, e) =>
@@ -135,9 +152,10 @@ namespace BMBF_Manager
             Save += "\n- IP (Quest private IP): " + config.IP;
             Save += "\n- Version: " + MajorV + "." + MinorV + "." + PatchV + "   Preview Version: " + Preview.ToString() + "   Logging enabled: " + log.ToString();
             Save += "\n- On Quest 2 (probably not right): " + Quest2.ToString();
-            Save += "\n- Execution directory (Usernames Removed): " + RegexTemplates.ReplaceUserName(exe, "CensoredUsername");
+            Save += "\n- Execution directory (Usernames Removed): " + RegexTemplates.RemoveUserName(exe);
             Save += "\n- Language: " + globalLanguage.language + " by " + globalLanguage.translator;
-            Save += "\n\nException:\n" + e.ToString();
+            Save += "\nLast action before Exception (not every function has this implemented so it might be wrong):\n\n" + lastActionBeforeException;
+            Save += "\n\nException (Usernames Removed):\n   " + RegexTemplates.RemoveUserName(e.ToString());
             File.AppendAllText(exe + "\\Crash.log", Save);
             MessageBoxResult r = MessageBox.Show(globalLanguage.mainMenu.code.Exception + "\n\n" + e.ToString(), "BMBF Manager - Exception Reporter", MessageBoxButton.OKCancel, MessageBoxImage.Error);
             if (r == MessageBoxResult.Cancel) return;
@@ -208,7 +226,11 @@ namespace BMBF_Manager
             playlistEditorButton.Content = globalLanguage.mainMenu.UI.playlistEditorButton;
             settingsButton.Content = globalLanguage.mainMenu.UI.settingsButton;
 
-            //File.WriteAllText("D:\\en.json", JsonSerializer.Serialize(globalLanguage));
+            try
+            {
+                //File.WriteAllText("D:\\en.json", JsonSerializer.Serialize(globalLanguage));
+            }
+            catch { }
         }
 
         public static void Log(String s)
@@ -241,27 +263,17 @@ namespace BMBF_Manager
                 String n = await c.DownloadStringTaskAsync(new Uri("https://bmbf.dev/stable/json"));
                 local = JsonSerializer.Deserialize<BMBFlocal>(l);
                 stable = JsonSerializer.Deserialize<List<BMBFStableVersions>>(n);
-                String[] lo = local.version.Split('.');
-                List<int> vl = new List<int>();
-                vl.Add(0);
-                vl.Add(0);
-                vl.Add(0);
-                for (int i = 0; i < lo.Count(); i++) vl[i] = Convert.ToInt32(lo[i]);
+                int[] vn = Array.ConvertAll(local.version.Split('.'), s => int.Parse(s));
 
                 String v = stable[0].tag.Replace("v", "");
-                String[] ne = v.Split('.');
-                List<int> vn = new List<int>();
-                vn.Add(0);
-                vn.Add(0);
-                vn.Add(0);
-                for (int i = 0; i < ne.Count(); i++) vn[i] = Convert.ToInt32(ne[i]);
+                int[] vl = Array.ConvertAll(v.Split('.'), s => int.Parse(s));
 
                 if ((vn[0] >= vl[0] && vn[1] >= vl[1] && vn[2] > vl[2]) || (vn[0] >= vl[0] && vn[1] > vl[1]) || (vn[0] > vl[0]))
                 {
                     txtbox.AppendText("\n\n" + globalLanguage.processer.ReturnProcessed(globalLanguage.mainMenu.code.newBMBFAvailable, local.version, v));
                 }
                 else txtbox.AppendText("\n\n" + globalLanguage.mainMenu.code.onNewestBMBF);
-            } catch { }
+            } catch {  }
         }
 
         private void TryGetStats()

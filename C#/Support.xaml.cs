@@ -385,7 +385,7 @@ namespace BMBF_Manager
         {
             try
             {
-                Sync();
+                MainWindow.bMBFUtils.Sync(txtbox);
                 txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.mainMenu.code.playlistBackup, "\\tmp\\Playlists.json"));
                 txtbox.ScrollToEnd();
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
@@ -462,16 +462,6 @@ namespace BMBF_Manager
             }
         }
 
-        public void Sync()
-        {
-            System.Threading.Thread.Sleep(2000);
-            using (TimeoutWebClient client = new TimeoutWebClient())
-            {
-                client.QueryString.Add("foo", "foo");
-                client.UploadValues("http://" + MainWindow.config.IP + ":50000/host/beatsaber/commitconfig", "POST", client.QueryString);
-            }
-        }
-
         public async void StartSupport(String Link)
         {
             String section = Link.Replace("bm://", "").Replace("%20", " ").ToLower();
@@ -495,7 +485,7 @@ namespace BMBF_Manager
                 BackupPlaylists();
                 resetassets();
                 reloadsongsfolder();
-                Sync();
+                MainWindow.bMBFUtils.Sync(txtbox);
                 RestorePlaylists();
                 this.Close();
             } else if(section.StartsWith("mods/install/"))

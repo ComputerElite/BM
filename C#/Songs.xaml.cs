@@ -274,108 +274,122 @@ namespace BMBF_Manager
                 return;
             }
 
-            String Input = "";
             System.Windows.Forms.OpenFileDialog ofd = new System.Windows.Forms.OpenFileDialog();
             ofd.Filter = MainWindow.globalLanguage.songs.code.zipFile + " (*.zip)|*.zip";
+            ofd.Multiselect = true;
             DialogResult result = ofd.ShowDialog();
             if (result == System.Windows.Forms.DialogResult.Cancel) { Running = false; return; }
+            List<String> valid = new List<string>();
             if (result == System.Windows.Forms.DialogResult.OK)
             {
                 //Get the path of specified file
-                if (File.Exists(ofd.FileName))
+                foreach(String s in ofd.FileNames)
                 {
-                    Input = ofd.FileName;
+                    if (File.Exists(ofd.FileName))
+                    {
+                        valid.Add(s);
+                    }
+                    else
+                    {
+                        MessageBox.Show(MainWindow.globalLanguage.songs.code.selectValidZip, "BMBF Manager - Zip Song Installing", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        return;
+                    }
+                }
+            }
+            foreach (String s in valid)
+            {
+                String Input = s;
+                FileInfo fi = new FileInfo(Input);
+                long ZipSize = fi.Length;
+                if (ZipSize < 50000000) //50 MB
+                {
+                    if (downloadqueue.Contains(new Tuple<string, bool>(Input, true)))
+                    {
+                        txtbox.AppendText("\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.songs.code.songAlreadyInQueue, System.IO.Path.GetFileName(Input)));
+                        continue;
+                    }
+                    downloadqueue.Add(new Tuple<string, bool>(Input, true));
+                    txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.songs.code.songAddedToQueue, System.IO.Path.GetFileName(Input)));
+                    checkqueue();
+                    continue;
+                }
+
+                MessageBoxResult result1 = MessageBox.Show(MainWindow.globalLanguage.songs.code.songBig, "BMBF Manager - Zip Song installing", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+
+                switch (result1)
+                {
+                    case MessageBoxResult.No:
+                        if (downloadqueue.Contains(new Tuple<string, bool>(Input, true)))
+                        {
+                            txtbox.AppendText("\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.songs.code.songAlreadyInQueue, System.IO.Path.GetFileName(Input)));
+                            continue;
+                        }
+                        downloadqueue.Add(new Tuple<string, bool>(Input, true));
+                        txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.songs.code.songAddedToQueue, System.IO.Path.GetFileName(Input)));
+                        checkqueue();
+                        continue;
+                        continue;
+                }
+
+                if (Directory.Exists(exe + "\\tmp\\unzipped")) Directory.Delete(exe + "\\tmp\\unzipped", true);
+
+                String name = CheckSongZip(Input);
+                if (name == "Error")
+                {
+                    downloadqueue.RemoveAt(0);
+                    Running = false;
+                    Progress.Value = 0;
+                    checkqueue();
+                    continue;
+                }
+
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.songs.code.unzippingSong);
+                ZipFile.ExtractToDirectory(exe + "\\tmp\\finished\\" + name + ".zip", exe + "\\tmp\\unzipped");
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.songs.code.unzippedSong);
+
+                String[] f = Directory.GetDirectories(exe + "\\tmp\\unzipped");
+                if (f.Count() != 0)
+                {
+                    Input = f[0];
                 }
                 else
                 {
-                    MessageBox.Show(MainWindow.globalLanguage.songs.code.selectValidZip, "BMBF Manager - Zip Song Installing", MessageBoxButton.OK, MessageBoxImage.Warning);
-                    return;
+                    Input = exe + "\\tmp\\unzipped";
                 }
 
+
+
+                String hash = GetCustomLevelHash(Input);
+
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.songs.code.generatedHash, hash));
+                if (Directory.Exists(exe + "\\tmp\\custom_level_" + hash)) Directory.Delete(exe + "\\tmp\\custom_level_" + hash, true);
+                Directory.Move(Input, exe + "\\tmp\\custom_level_" + hash);
+                if (!MainWindow.aDBI.adb("push \"" + exe + "\\tmp\\custom_level_" + hash + "\" /sdcard/BMBFData/CustomSongs", txtbox)) return;
+                Directory.Delete(exe + "\\tmp\\custom_level_" + hash, true);
+
+                //Playlist Backup
+                BackupPlaylists();
+
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.global.syncingToBS);
+                txtbox.ScrollToEnd();
+                MainWindow.bMBFUtils.Sync(txtbox);
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.global.syncedToBS);
+                txtbox.ScrollToEnd();
+
+                reloadsongsfolder();
+
+                RestorePlaylists();
+
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.songs.code.installedSong);
+                txtbox.ScrollToEnd();
             }
-            FileInfo fi = new FileInfo(Input);
-            long ZipSize = fi.Length;
-            if(ZipSize < 50000000) //35 MB
-            {
-                if (downloadqueue.Contains(new Tuple<string, bool>(Input, true)))
-                {
-                    txtbox.AppendText("\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.songs.code.songAlreadyInQueue, System.IO.Path.GetFileName(Input)));
-                    return;
-                }
-                downloadqueue.Add(new Tuple<string, bool>(Input, true));
-                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.songs.code.songAddedToQueue, System.IO.Path.GetFileName(Input)));
-                checkqueue();
-                return;
-            }
-
-            MessageBoxResult result1 = MessageBox.Show(MainWindow.globalLanguage.songs.code.songBig, "BMBF Manager - Zip Song installing", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-
-            switch (result1)
-            {
-                case MessageBoxResult.No:
-                    txtbox.AppendText("\n\n" + MainWindow.globalLanguage.songs.code.songInstallAborted);
-                    txtbox.ScrollToEnd();
-                    return;
-            }
-
-            if (Directory.Exists(exe + "\\tmp\\unzipped")) Directory.Delete(exe + "\\tmp\\unzipped", true);
-
-            String name = CheckSongZip(Input);
-            if (name == "Error")
-            {
-                downloadqueue.RemoveAt(0);
-                Running = false;
-                Progress.Value = 0;
-                checkqueue();
-                return;
-            }
-
-            txtbox.AppendText("\n\n" + MainWindow.globalLanguage.songs.code.unzippingSong);
-            ZipFile.ExtractToDirectory(exe + "\\tmp\\finished\\" + name + ".zip", exe + "\\tmp\\unzipped");
-            txtbox.AppendText("\n\n" + MainWindow.globalLanguage.songs.code.unzippedSong);
-            
-            String[] f = Directory.GetDirectories(exe + "\\tmp\\unzipped");
-            if (f.Count() != 0)
-            {
-                Input = f[0];
-            }
-            else
-            {
-                Input = exe + "\\tmp\\unzipped";
-            }
-
-
-
-            String hash = GetCustomLevelHash(Input);
-
-            txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.songs.code.generatedHash, hash));
-            if (Directory.Exists(exe + "\\tmp\\custom_level_" + hash)) Directory.Delete(exe + "\\tmp\\custom_level_" + hash, true);
-            Directory.Move(Input, exe + "\\tmp\\custom_level_" + hash);
-            if (!MainWindow.aDBI.adb("push \"" + exe + "\\tmp\\custom_level_" + hash + "\" /sdcard/BMBFData/CustomSongs", txtbox)) return;
-            Directory.Delete(exe + "\\tmp\\custom_level_" + hash, true);
-
-            //Playlist Backup
-            BackupPlaylists();
-
-            txtbox.AppendText("\n\n" + MainWindow.globalLanguage.global.syncingToBS);
-            txtbox.ScrollToEnd();
-            Sync();
-            txtbox.AppendText("\n\n" + MainWindow.globalLanguage.global.syncedToBS);
-            txtbox.ScrollToEnd();
-
-            reloadsongsfolder();
-
-            RestorePlaylists();
-
-            txtbox.AppendText("\n\n" + MainWindow.globalLanguage.songs.code.installedSong);
-            txtbox.ScrollToEnd();
         }
 
         public void BackupPlaylists()
         {
             try
             {
-                Sync();
+                MainWindow.bMBFUtils.Sync(txtbox);
                 txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.mainMenu.code.playlistBackup, "\\Backup\\Playlists.json"));
                 txtbox.ScrollToEnd();
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
@@ -478,7 +492,7 @@ namespace BMBF_Manager
             {
                 if(PEO && installed % 20 == 0 && installed != 0)
                 {
-                    Sync();
+                    MainWindow.bMBFUtils.Sync(txtbox);
                 }
                 txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.songs.code.remainingToInstall, downloadqueue.Count.ToString()));
                 txtbox.ScrollToEnd();
@@ -493,7 +507,7 @@ namespace BMBF_Manager
                 DownloadLable.Text = MainWindow.globalLanguage.global.allFinished;
                 if (PEO)
                 {
-                    Sync();
+                    MainWindow.bMBFUtils.Sync(txtbox);
                     PlaylistEditor.waiting = false;
                     this.Close();
                 }
@@ -669,7 +683,7 @@ namespace BMBF_Manager
 
         private void finished_upload(object sender, AsyncCompletedEventArgs e, bool uploadfile)
         {
-            if (!PEO) Sync();
+            if (!PEO) MainWindow.bMBFUtils.Sync(txtbox);
             txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.songs.code.songWasSynced, downloadqueue[0].Item1));
             txtbox.ScrollToEnd();
             downloadqueue.RemoveAt(0);
@@ -677,25 +691,6 @@ namespace BMBF_Manager
             Progress.Value = 0;
             installed++;
             checkqueue();
-        }
-
-        public void Sync()
-        {
-            System.Threading.Thread.Sleep(2000);
-            try
-            {
-                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.global.syncingToBS);
-                using (WebClient client = new WebClient())
-                {
-                    client.QueryString.Add("foo", "foo");
-                    client.UploadValues("http://" + MainWindow.config.IP + ":50000/host/beatsaber/commitconfig", "POST", client.QueryString);
-                }
-                txtbox.AppendText("\n" + MainWindow.globalLanguage.global.syncedToBS);
-            } catch
-            {
-                txtbox.AppendText("\n" + MainWindow.globalLanguage.songs.code.couldntSync);
-            }
-            txtbox.ScrollToEnd();
         }
 
         private void SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -708,7 +703,7 @@ namespace BMBF_Manager
 
         public String CheckSongZip(String zip)
         {
-            ZipUtils.ExtractSafe(zip, exe + "\\tmp\\correct");
+            if(!ZipUtils.ExtractSafe(zip, exe + "\\tmp\\correct")) return "Error";
             //ZipFile.ExtractToDirectory(zip, exe + "\\tmp\\correct");
             return CheckSong(exe + "\\tmp\\correct");
         }

@@ -32,7 +32,7 @@ namespace BMBFManager.Config
 
         public static ConfigFile LoadConfig(string path)
         {
-            return JsonSerializer.Deserialize<ConfigFile>(File.ReadAllText(path));
+            return JsonSerializer.Deserialize<ConfigFile>(File.ReadAllText(path), new JsonSerializerOptions() { IgnoreNullValues = true});
         }
 
         public void SaveConfig()

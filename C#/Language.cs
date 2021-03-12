@@ -69,8 +69,8 @@ namespace BMBFManager.Language
         public String tryPullPlayerStats { get; set; } = "Trying to pull Player Stats";
         public String questNotConnectedNoPlayerStats { get; set; } = "Quest isn't connected. Not displaying Player stats";
         public String pullPlayerStatsFailed { get; set; } = "Couldn't pull PlayerStats from Quest. Not displaying Player stats";
-        public String noPlayerStatsSaved { get; set; }  = "No stats saved.";
-        public String overallStats { get; set; }  = "Overall Stats:";
+        public String noPlayerStatsSaved { get; set; } = "No stats saved.";
+        public String overallStats { get; set; } = "Overall Stats:";
         public String goodCuts { get; set; } = "- Good Cuts count: ";
         public String badCuts { get; set; } = "- Bad Cuts count: ";
         public String missedCuts { get; set; } = "- Missed Cuts count: ";
@@ -140,6 +140,9 @@ namespace BMBFManager.Language
 
         //Exception
         public String Exception { get; set; } = "You just noticed a bug. This window shouldn't show up if all goes right. I saved useful information for ComputerElite (Creator of BMBF Manager) to fix your bug in a file labeled \"Crash.log\". Please send that file to ComputerElite via Discord and tell him what you wanted to do. I'll close myself once you clicked ok so nothing gets messed up (If you still want to continue press cancle).\n\nException:";
+
+        //Warning
+        public String systemDirWarning { get; set; } = "Hello friendly BMBF Manager here. I just wanted to inform you that you put me in a folder where I can't save files (The folders get identified with this RegularExpression: \"{0}\"). Please move me to a save location like your Downloads or Documents folder so I can operate.";
     }
 
     public class MainMenuUI
@@ -588,6 +591,7 @@ namespace BMBFManager.Language
         //Song Lib switching
         public String songLibSwitchInfo { get; set; } = "So you want to transfer your Song library from the PC Version of Beat Saber to the Quest Version or from the Quest Version to the PC Version? You are in the right place! It's hightly suggested to make a backup before proceeding! Please press following button:\nQuest to PC = Yes, PC to Quest = No, cancle = cancle";
         public String choosePCModsFolder { get; set; } = "Please choose the CustomSongs folder of your PC installation and plug in your Quest via USB";
+        public String differentVolumeWarning { get; set; } = "Attention! BMBF Manager and your Beat Saber installation are on different volumes (Beat Saber is on volume {0} and BMBF Manager on volume {1})! Please move BMBF Manager to volume {0} for this function to work. I'll abort now-";
         public String operationRunning { get; set; } = "A Operation is already running. Please wait until it has finished.";
         public String folderDoesntExist { get; set; } = "The folder you choose doesn't exist.";
         public String startInfoQuestToPC { get; set; } = "Alright I'll now attempt to pull your Quests CustomSongs and Playlist configuration. After that I'll Move all your Quests Songs and attempt to also restore the Playlists. Note: BMBF Manager will freeze. That means it IS WORKING. Just let it do the work and DO NOT close it if Windows asks you.";
@@ -635,7 +639,7 @@ namespace BMBFManager.Language
         public String zipFile { get; set; } = "Zip Files";
         public String selectValidZip { get; set; } = "Please select a valid Zip File";
         public String songAddedToQueue { get; set; } = "{0} has been added to the queue";
-        public String songBig { get; set; } = "This Song is over 50MB. A experimental method to install sogns will be used. Is your Quest connected?";
+        public String songBig { get; set; } = "This Song is over 50MB. A experimental method to install sogns will be used. If your Quest connected and you'd like to use this method press yes. Otherwise press no and I'll upload it as normal.";
         public String songInstallAborted { get; set; } = "Song Installing Aborted";
         public String unzippingSong { get; set; } = "unzipping Song";
         public String unzippedSong { get; set; } = "unzipped Song";

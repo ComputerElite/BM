@@ -4,6 +4,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
+using System.Net;
 using System.Windows.Controls;
 
 namespace BMBFManager.Utils
@@ -134,21 +135,51 @@ namespace BMBFManager.Utils
         }
     }
 
+    public class BMBFUtils
+    {
+        public bool Sync(TextBox txtbox)
+        {
+            try
+            {
+                System.Threading.Thread.Sleep(2000);
+                using (WebClient client = new WebClient())
+                {
+                    client.QueryString.Add("foo", "foo");
+                    client.UploadValues("http://" + MainWindow.config.IP + ":50000/host/beatsaber/commitconfig", "POST", client.QueryString);
+                }
+                return true;
+            }
+            catch
+            {
+                txtbox.AppendText(MainWindow.globalLanguage.global.BMBF110);
+                return false;
+            }
+        }
+    }
+
     public class ZipUtils
     {
-        public static void ExtractSafe(String sourceZip, String destinationFolder)
+        public static bool ExtractSafe(String sourceZip, String destinationFolder)
         {
-            if (!Directory.Exists(destinationFolder)) Directory.CreateDirectory(destinationFolder);
-            using (ZipArchive archive = ZipFile.OpenRead(sourceZip))
+            try
             {
-                foreach (ZipArchiveEntry entry in archive.Entries)
+                if (!Directory.Exists(destinationFolder)) Directory.CreateDirectory(destinationFolder);
+                using (ZipArchive archive = ZipFile.OpenRead(sourceZip))
                 {
-                    String name = entry.FullName;
-                    if (name.EndsWith("/")) continue;
-                    if (name.Contains("/")) Directory.CreateDirectory(destinationFolder + "\\" + System.IO.Path.GetDirectoryName(name));
-                    entry.ExtractToFile(destinationFolder + "\\" + entry.FullName, true);
+                    foreach (ZipArchiveEntry entry in archive.Entries)
+                    {
+                        String name = entry.FullName;
+                        if (name.EndsWith("/") || name.EndsWith("/")) continue;
+                        if (name.Contains("/")) Directory.CreateDirectory(destinationFolder + "\\" + System.IO.Path.GetDirectoryName(name));
+                        entry.ExtractToFile(destinationFolder + "\\" + entry.FullName, true);
+                    }
                 }
+                return true;
+            } catch
+            {
+                return false;
             }
+            
         }
     }
 }

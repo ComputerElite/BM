@@ -292,28 +292,9 @@ namespace BMBF_Manager
             {
                 txtbox.AppendText("\n\n" + MainWindow.globalLanguage.global.syncingToBS);
             }));
-            Sync();
+            MainWindow.bMBFUtils.Sync(txtbox);
             txtbox.AppendText("\n\n" + MainWindow.globalLanguage.global.syncedToBS);
             Running = false;
-        }
-
-        public void Sync()
-        {
-            try
-            {
-                System.Threading.Thread.Sleep(2000);
-                using (WebClient client = new WebClient())
-                {
-                    client.QueryString.Add("foo", "foo");
-                    client.UploadValues("http://" + MainWindow.config.IP + ":50000/host/beatsaber/commitconfig", "POST", client.QueryString);
-                }
-            }
-            catch
-            {
-                txtbox.AppendText(MainWindow.globalLanguage.global.BMBF110);
-                Process.Start("http://" + MainWindow.config.IP + ":50000/main/playlists");
-                Running = false;
-            }
         }
     }
 }

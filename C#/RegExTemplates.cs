@@ -5,6 +5,7 @@ namespace ComputerUtils.RegxTemplates
 {
     public class RegexTemplates
     {
+        public static String SystemDirFolderRegex = @"[A-Z]:\\(Program Files( x86)?|Windows)";
         public static bool IsIP(String input)
         {
             return Regex.IsMatch(input, "((2(5[0-5]|[0-4][0-9])|1?[0-9]?[0-9])\\.){3}(2(5[0-5]|[0-4][0-9])|1?[0-9]?[0-9])");
@@ -17,9 +18,14 @@ namespace ComputerUtils.RegxTemplates
             return found.Value;
         }
 
-        public static String ReplaceUserName(String input, String replacement)
+        public static String RemoveUserName(String input)
         {
             return Regex.Replace(input, @"([A-Z]{1}\:\\[Uu]sers\\)([^\\]*\\)(.*)", "$1$3");
+        }
+
+        public static bool IsInSystemFolder(String input)
+        {
+            return Regex.IsMatch(input, SystemDirFolderRegex);
         }
     }
 }

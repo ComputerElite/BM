@@ -95,13 +95,18 @@ namespace BMBF_Manager
 
             try
             {
-                BMBF = SimpleJSON.JSON.Parse(client.DownloadString("http://" + MainWindow.config.IP + ":50000/host/beatsaber/config?nonsensecauseofcaching=" + DateTime.Now));
+                BMBF = SimpleJSON.JSON.Parse(client.DownloadString("http://" + MainWindow.config.IP + ":50000/host/beatsaber/config"));
                 MainWindow.config.GameVersion = BMBF["BeatSaberVersion"];
             }
             catch
             {
                 txtbox.AppendText(MainWindow.globalLanguage.global.BMBF100);
                 Reaching = false;
+            }
+            if (MainWindow.config.GameVersion == null)
+            {
+                txtbox.AppendText("aua");
+                return;
             }
             String[] GameVersion = MainWindow.config.GameVersion.ToString().Replace("\"", "").Split('.');
             //String[] GameVersion = "1.13.0".Replace("\"", "").Split('.');
@@ -498,14 +503,12 @@ namespace BMBF_Manager
 
         private void finished_upload(object sender, AsyncCompletedEventArgs e)
         {
+            txtbox.AppendText(e.Error.ToString());
             if (AllModList[Index].downloads[AllModList[Index].MatchingDownload].gameversion[AllModList[Index].MatchingGameVersion] == MainWindow.config.GameVersion)
             {
                 try
                 {
-                    Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
-                    {
-                        Sync();
-                    }));
+                    if (!MainWindow.bMBFUtils.Sync(txtbox)) throw new Exception();
                     txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.mods.code.syncedToQuest, AllModList[Index].name));
                     txtbox.ScrollToEnd();
                 }
@@ -538,24 +541,6 @@ namespace BMBF_Manager
                 client.QueryString.Add("foo", "foo");
                 client.UploadFile("http://" + MainWindow.config.IP + ":50000/host/beatsaber/config", "PUT", Config);
                 client.UploadValues("http://" + MainWindow.config.IP + ":50000/host/beatsaber/commitconfig", "POST", client.QueryString);
-            }
-        }
-
-        public void Sync()
-        {
-            try
-            {
-                System.Threading.Thread.Sleep(2000);
-                using (WebClient client = new WebClient())
-                {
-                    client.QueryString.Add("foo", "foo");
-                    client.UploadValues("http://" + MainWindow.config.IP + ":50000/host/beatsaber/commitconfig", "POST", client.QueryString);
-                }
-            }
-            catch
-            {
-                txtbox.AppendText(MainWindow.globalLanguage.global.BMBF110);
-                Running = false;
             }
         }
     }
