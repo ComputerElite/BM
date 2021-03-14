@@ -5,7 +5,10 @@ using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Controls;
+using System.Windows.Threading;
 
 namespace BMBFManager.Utils
 {
@@ -13,17 +16,55 @@ namespace BMBFManager.Utils
     {
         public bool adb(String Argument, TextBox txtbox)
         {
+            return adbThreadHandler(Argument, txtbox).Result;
+        }
+
+        public async Task<bool> adbThreadHandler(String Argument, TextBox txtbox)
+        {
+            bool returnValue = false;
+            String txtAppend = "N/A";
+            Thread t = new Thread(() =>
+            {
+                switch (adbThread(Argument))
+                {
+                    case "true":
+                        returnValue = true;
+                        break;
+                    case "adb110":
+                        txtAppend = MainWindow.globalLanguage.global.ADB110;
+                        break;
+                    case "adb100":
+                        txtAppend = MainWindow.globalLanguage.global.ADB100;
+                        break;
+
+                }
+            });
+            t.Start();
+            while(txtAppend == "N/A" && returnValue == false)
+            {
+                await DelayCheck();
+            }
+            if (txtAppend != "N/A")
+            {
+                txtbox.AppendText(txtAppend);
+                txtbox.ScrollToEnd();
+            }
+            return returnValue;
+        }
+
+        public string adbThread(String Argument)
+        {
             String User = System.Environment.GetEnvironmentVariable("USERPROFILE");
 
             foreach (String ADB in MainWindow.config.CachedADBPaths)
             {
                 ProcessStartInfo s = new ProcessStartInfo();
-                s.CreateNoWindow = true;
                 s.UseShellExecute = false;
                 s.FileName = ADB.Replace("User", User);
                 s.WindowStyle = ProcessWindowStyle.Minimized;
                 s.Arguments = Argument;
                 s.RedirectStandardOutput = true;
+                s.CreateNoWindow = true;
                 if (MainWindow.config.ShowADB)
                 {
                     s.RedirectStandardOutput = false;
@@ -41,17 +82,14 @@ namespace BMBFManager.Utils
                             exeProcess.WaitForExit();
                             if (IPS.Contains("no devices/emulators found"))
                             {
-                                txtbox.AppendText(MainWindow.globalLanguage.global.ADB110);
-                                txtbox.ScrollToEnd();
-                                return false;
+                                return "adb100";
                             }
                         }
                         else
                         {
                             exeProcess.WaitForExit();
                         }
-
-                        return true;
+                        return "true";
                     }
                 }
                 catch
@@ -59,12 +97,60 @@ namespace BMBFManager.Utils
                     continue;
                 }
             }
-            txtbox.AppendText(MainWindow.globalLanguage.global.ADB100);
-            txtbox.ScrollToEnd();
-            return false;
+            return "adb100";
         }
 
-        public String adbS(String Argument, TextBox txtbox)
+        public string adbS(String Argument, TextBox txtbox)
+        {
+            return adbSThreadHandler(Argument, txtbox).Result;
+        }
+
+        public async Task<string> adbSThreadHandler(String Argument, TextBox txtbox)
+        {
+            string returnValue = "Error";
+            String txtAppend = "N/A";
+            Thread t = new Thread(() =>
+            {
+                String MethodReturnValue = adbSThread(Argument);
+                Console.WriteLine("adbS finished");
+                switch (MethodReturnValue)
+                {
+                    case "adb110":
+                        txtAppend = MainWindow.globalLanguage.global.ADB110;
+                        break;
+                    case "adb100":
+                        txtAppend = MainWindow.globalLanguage.global.ADB100;
+                        break;
+                    default:
+                        returnValue = MethodReturnValue;
+                        break;
+                }
+            });
+            t.Start();
+            while (txtAppend == "N/A" && returnValue == "Error")
+            {
+                await DelayCheck();
+            }
+            if (txtAppend != "N/A")
+            {
+                txtbox.AppendText(txtAppend);
+                txtbox.ScrollToEnd();
+            }
+            return returnValue;
+        }
+
+        public async Task DelayCheck()
+        {
+            var frame = new DispatcherFrame();
+            new Thread((ThreadStart)(() =>
+            {
+                Thread.Sleep(500);
+                frame.Continue = false;
+            })).Start();
+            Dispatcher.PushFrame(frame);
+        }
+
+        public string adbSThread(String Argument)
         {
             String User = System.Environment.GetEnvironmentVariable("USERPROFILE");
 
@@ -87,9 +173,7 @@ namespace BMBFManager.Utils
                         exeProcess.WaitForExit();
                         if (IPS.Contains("no devices/emulators found"))
                         {
-                            txtbox.AppendText(MainWindow.globalLanguage.global.ADB110);
-                            txtbox.ScrollToEnd();
-                            return "Error";
+                            return "adb110";
                         }
 
                         return IPS;
@@ -100,9 +184,7 @@ namespace BMBFManager.Utils
                     continue;
                 }
             }
-            txtbox.AppendText(MainWindow.globalLanguage.global.ADB100);
-            txtbox.ScrollToEnd();
-            return "Error";
+            return "adb100";
         }
 
         public void StartBMBF(TextBox txtbox)

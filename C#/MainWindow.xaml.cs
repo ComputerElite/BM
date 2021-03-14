@@ -38,8 +38,8 @@ namespace BMBF_Manager
     public partial class MainWindow : Window
     {
         int MajorV = 1;
-        int MinorV = 14;
-        int PatchV = 8;
+        int MinorV = 15;
+        int PatchV = 0;
         Boolean Preview = false;
         public static bool log = false;
 

@@ -503,7 +503,6 @@ namespace BMBF_Manager
 
         private void finished_upload(object sender, AsyncCompletedEventArgs e)
         {
-            txtbox.AppendText(e.Error.ToString());
             if (AllModList[Index].downloads[AllModList[Index].MatchingDownload].gameversion[AllModList[Index].MatchingGameVersion] == MainWindow.config.GameVersion)
             {
                 try

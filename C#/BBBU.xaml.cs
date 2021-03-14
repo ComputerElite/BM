@@ -319,6 +319,7 @@ namespace BMBF_Manager
                 {
                     case MessageBoxResult.Yes:
                         txtbox.AppendText("\n\n" + MainWindow.globalLanguage.bBBU.code.restoringAborted);
+                        running = false;
                         return;
                 }
             }

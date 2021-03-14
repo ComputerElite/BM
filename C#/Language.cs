@@ -568,7 +568,7 @@ namespace BMBFManager.Language
         public String debugOverwritten { get; set; } = "Overwritten files:";
 
         //Check folders
-        public String checkFoldersWarning { get; set; } = "This option may nuke your Playlists. It will Backup all your Songs, rename them to the right folder name, check them if they are working and then put them back on your Quest. All in all it may take a few minutes without a responding window.\nDo you want to proceed?";
+        public String checkFoldersWarning { get; set; } = "This option may nuke your Playlists. It will Backup all your Songs, rename them to the right folder name, check them if they are working and then put them back on your Quest.\nDo you want to proceed?";
         public String aborted { get; set; } = "Aborted";
         public String songFinishedProcessing { get; set; } = "Song {0} has finished processing";
         public String finishedChecking { get; set; } = "Finished. Please reload your songs folder in BMBF";
@@ -594,8 +594,8 @@ namespace BMBFManager.Language
         public String differentVolumeWarning { get; set; } = "Attention! BMBF Manager and your Beat Saber installation are on different volumes (Beat Saber is on volume {0} and BMBF Manager on volume {1})! Please move BMBF Manager to volume {0} for this function to work. I'll abort now-";
         public String operationRunning { get; set; } = "A Operation is already running. Please wait until it has finished.";
         public String folderDoesntExist { get; set; } = "The folder you choose doesn't exist.";
-        public String startInfoQuestToPC { get; set; } = "Alright I'll now attempt to pull your Quests CustomSongs and Playlist configuration. After that I'll Move all your Quests Songs and attempt to also restore the Playlists. Note: BMBF Manager will freeze. That means it IS WORKING. Just let it do the work and DO NOT close it if Windows asks you.";
-        public String startInfoPCToQuest { get; set; } = "Alright I'll now attempt to Copy all your Songs to the Quest, rename them to the right folder and even attempt to restore your Playlists. Note: BMBF Manager will freeze. That means it IS WORKING. Just let it do the work and DO NOT close it if Windows asks you.";
+        public String startInfoQuestToPC { get; set; } = "Alright I'll now attempt to pull your Quests CustomSongs and Playlist configuration. After that I'll Move all your Quests Songs and attempt to also restore the Playlists.";
+        public String startInfoPCToQuest { get; set; } = "Alright I'll now attempt to Copy all your Songs to the Quest, rename them to the right folder and even attempt to restore your Playlists.";
         public String songLibraryMoved { get; set; } = "Your Songs have been moved. It were {0} in total.";
         public String reloadSongsFolder { get; set; } = "I copied all Songs over. Please click reload songs folder in the window I opened and then press OK. I'll then attempt to restore your Playlists";
         public String reloadSongsFolderConfirmation { get; set; } = "Did you reload your Songs folder AND it finished? After you confirmed I'll sort the Playlists via the Playlist editor.";
