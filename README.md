@@ -8,12 +8,16 @@ The utility to install songs, install mods, install/update BMBF, install HitSoun
 
 # All Instructions are [here](https://github.com/ComputerElite/wiki/wiki/BM)
 
+## Info
+Currently BMBF 2 is in the working. As I can see from the test releases (those are only for testing and can make you factory reset your Quest so **Don't use them**) much changed. Since nothing is finalised yet I can't really start but I'll do my best to make BMBF Manager compatible with BMBF 2 as soon as possible (please note that BMBF manager might only work with Beat Saber first. Now you ask why? Well BMBF 2 will be able to mod any game which is made with ill2cpp in unity)
+
 # Credits
 - [ComputerElite](https://github.com/ComputerElite) (They guy that made the program from ground up based on his other projects)
 - [Bunny83](https://github.com/Bunny83) with [SimpleJSON.cs](https://github.com/Bunny83/SimpleJSON/blob/master/SimpleJSON.cs)
 - darkuni (helped me making the Playlist backuping and restoring possible. Check out his nice program: [Playlist Editor Pro](https://beatsaberquest.com/bmbf/my-tools/playlist-editor-pro/#:~:text=Playlist%20Editor%20Pro%20is%20a,details%20and%20download%20it%20here.))
 - [Sc2ad](https://github.com/sc2ad) (made automatic modding possible)
 - [ppotatoo](https://github.com/ppotatoo) (Suggested a change in the readme)
+- ofc the unnicorns for making [BMBF](https://bmbf.dev/)
 
 - Used services
    - [Jellyfish with BeatSaver](https://beatsaver.com/) (Public song distributin service)
