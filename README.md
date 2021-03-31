@@ -9,7 +9,7 @@ The utility to install songs, install mods, install/update BMBF, install HitSoun
 # All Instructions are [here](https://github.com/ComputerElite/wiki/wiki/BM)
 
 ## Info
-Currently BMBF 2 is in the working. As I can see from the test releases (those are only for testing and can make you factory reset your Quest so **Don't use them**) much changed. Since nothing is finalised yet I can't really start but I'll do my best to make BMBF Manager compatible with BMBF 2 as soon as possible (please note that BMBF manager might only work with Beat Saber first. Now you ask why? Well BMBF 2 will be able to mod any game which is made with ill2cpp in unity)
+Currently a big BMBF update is in the working. As I can see from the test releases (those are only for testing and can make you factory reset your Quest so **Don't use them**) much changed. Since nothing is finalised yet I can't really start but I'll do my best to make BMBF Manager compatible with this and all future BMBF releases as soon as possible.
 
 # Credits
 - [ComputerElite](https://github.com/ComputerElite) (They guy that made the program from ground up based on his other projects)
