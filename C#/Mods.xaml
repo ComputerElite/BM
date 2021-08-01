@@ -27,7 +27,7 @@
         <TextBox MouseEnter="noDrag" MouseLeave="doDrag" FontFamily="lucida console" Opacity="0.8" IsReadOnly="True" x:Name="txtbox" HorizontalAlignment="Left" Height="576" Margin="10,30,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="188" Background="#FF494949" Foreground="#FFA6A6A6" BorderBrush="#FFD30000"/>
         <AccessText Opacity="0.8" HorizontalAlignment="Left" Height="24" VerticalAlignment="Top" Width="249" RenderTransformOrigin="0.5,0.5" Text="BMBF Manager - Mod Installing" FontSize="14" Foreground="Black" Margin="40,4,0,0"/>
         <Button x:Name="installModButton" MouseEnter="noDrag" MouseLeave="doDrag" FontFamily="lucida console" Opacity="0.8" Click="AddSelectedModToQueue" Content="Install/Update selected Mod" HorizontalAlignment="Left" Margin="525,463,0,0" VerticalAlignment="Top" Width="348" Height="33" RenderTransformOrigin="-0.858,0.891" Background="#FF005654" Foreground="#FFF3F3F3" BorderBrush="#FFB94747"/>
-        <ListView MouseEnter="noDrag" MouseLeave="doDrag" FontFamily="lucida console" x:Name="ModList" HorizontalAlignment="Left" Height="400" Margin="203,58,0,0" Opacity="0.8" VerticalAlignment="Top" Width="670" Background="#aaaaaa" Foreground="#171717" BorderBrush="#FFB94747">
+        <ListView MouseDoubleClick="MoreInfoDoubleClick" MouseEnter="noDrag" MouseLeave="doDrag" FontFamily="lucida console" x:Name="ModList" HorizontalAlignment="Left" Height="400" Margin="203,58,0,0" Opacity="0.8" VerticalAlignment="Top" Width="670" Background="#aaaaaa" Foreground="#171717" BorderBrush="#FFB94747">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Mod Name" Width="200" DisplayMemberBinding="{Binding Name}"/>
@@ -45,9 +45,10 @@
             </ListView.View>
         </ListView>
         <Button x:Name="moreInfoButton" MouseEnter="noDrag" MouseLeave="doDrag" FontFamily="lucida console" Opacity="0.8" Click="MoreInfo" Content="More Info" HorizontalAlignment="Left" Margin="203,463,0,0" VerticalAlignment="Top" Width="315" Height="33" RenderTransformOrigin="-0.858,0.891" Background="#FF005654" Foreground="#FFF3F3F3" BorderBrush="#FFB94747"/>
-        <Button x:Name="updateAllModsButton" MouseEnter="noDrag" MouseLeave="doDrag" FontFamily="lucida console" Opacity="0.8" Click="UpdateMods" Content="Update all Mods" HorizontalAlignment="Left" Margin="203,505,0,0" VerticalAlignment="Top" Width="670" Height="33" RenderTransformOrigin="-0.858,0.891" Background="#FF005654" Foreground="#FFF3F3F3" BorderBrush="#FFB94747"/>
+        <Button x:Name="updateAllModsButton" MouseEnter="noDrag" MouseLeave="doDrag" FontFamily="lucida console" Opacity="0.8" Click="UpdateMods" Content="Update all Mods" HorizontalAlignment="Left" Margin="203,505,0,0" VerticalAlignment="Top" Width="315" Height="33" RenderTransformOrigin="-0.858,0.891" Background="#FF005654" Foreground="#FFF3F3F3" BorderBrush="#FFB94747"/>
         <ProgressBar Opacity="0.9" x:Name="Progress" HorizontalAlignment="Left" Height="19" Margin="203,587,0,0" VerticalAlignment="Top" Width="670"/>
         <AccessText FontFamily="lucida console" x:Name="DownloadLable" TextAlignment="Center" Opacity="0.8" HorizontalAlignment="Left" Height="24" VerticalAlignment="Top" Width="670" RenderTransformOrigin="0.5,0.5" Text="Nothing to do" FontSize="14" Foreground="Black" Margin="203,558,0,0"/>
+        <Button x:Name="UninstallModButton" MouseEnter="noDrag" MouseLeave="doDrag" FontFamily="lucida console" Opacity="0.8" Click="UninstallMod" Content="Uninstall selected Mod" HorizontalAlignment="Left" Margin="525,505,0,0" VerticalAlignment="Top" Width="348" Height="33" RenderTransformOrigin="-0.858,0.891" Background="#FF005654" Foreground="#FFF3F3F3" BorderBrush="#FFB94747"/>
 
     </Grid>
 </Window>

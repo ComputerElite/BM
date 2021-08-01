@@ -43,10 +43,10 @@ namespace BMBF_Manager
         String exe = AppDomain.CurrentDomain.BaseDirectory.Substring(0, AppDomain.CurrentDomain.BaseDirectory.Length - 1);
         String Key = "";
         int C = 0;
-        private static Songs instance = new Songs();
         ArrayList SongKeys = new ArrayList();
         List<Tuple<String, bool>> downloadqueue = new List<Tuple<String, bool>>();
         BeatSaverAPIInteractor interactor = new BeatSaverAPIInteractor();
+        List<BeatSaverAPISong> songs = new List<BeatSaverAPISong>();
         int installed = 0;
 
         bool OneClick = false;
@@ -222,6 +222,11 @@ namespace BMBF_Manager
 
         private void Search(object sender, RoutedEventArgs e)
         {
+            DoSearch();
+        }
+
+        public void DoSearch()
+        {
             SongList.Items.Clear();
 
             BeatSaverAPISearchResult result = interactor.SearchText(SearchTerm.Text);
@@ -231,7 +236,7 @@ namespace BMBF_Manager
                 txtbox.ScrollToEnd();
                 return;
             }
-
+            songs = result.docs;
             foreach (BeatSaverAPISong doc in result.docs)
             {
                 String Name = doc.name;
@@ -328,7 +333,6 @@ namespace BMBF_Manager
                         txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.songs.code.songAddedToQueue, System.IO.Path.GetFileName(Input)));
                         checkqueue();
                         continue;
-                        continue;
                 }
 
                 if (Directory.Exists(exe + "\\tmp\\unzipped")) Directory.Delete(exe + "\\tmp\\unzipped", true);
@@ -372,7 +376,7 @@ namespace BMBF_Manager
 
                 txtbox.AppendText("\n\n" + MainWindow.globalLanguage.global.syncingToBS);
                 txtbox.ScrollToEnd();
-                MainWindow.bMBFUtils.Sync(txtbox);
+                BMBFUtils.Sync(txtbox);
                 txtbox.AppendText("\n\n" + MainWindow.globalLanguage.global.syncedToBS);
                 txtbox.ScrollToEnd();
 
@@ -389,7 +393,7 @@ namespace BMBF_Manager
         {
             try
             {
-                MainWindow.bMBFUtils.Sync(txtbox);
+                BMBFUtils.Sync(txtbox);
                 txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.mainMenu.code.playlistBackup, "\\Backup\\Playlists.json"));
                 txtbox.ScrollToEnd();
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
@@ -433,25 +437,12 @@ namespace BMBF_Manager
                 var p = JSON.Parse(File.ReadAllText(Playlists));
 
                 j["Config"]["Playlists"] = p["Playlists"];
-                File.WriteAllText(exe + "\\tmp\\FUCKINBMBF.json", j["Config"].ToString());
-                Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate {
-                    postChanges(exe + "\\tmp\\FUCKINBMBF.json");
-                }));
+                //File.WriteAllText(exe + "\\tmp\\FUCKINBMBF.json", j["Config"].ToString()); // F. You were such a good line but were replaced :(
+                BMBFUtils.PostChangesAndSync(txtbox, j["Config"].ToString());
             }
             catch
             {
                 txtbox.AppendText(MainWindow.globalLanguage.global.PL100);
-            }
-        }
-
-        public void postChanges(String Config)
-        {
-            System.Threading.Thread.Sleep(5000);
-            using (TimeoutWebClient client = new TimeoutWebClient())
-            {
-                client.QueryString.Add("foo", "foo");
-                client.UploadFile("http://" + MainWindow.config.IP + ":50000/host/beatsaber/config", "PUT", Config);
-                client.UploadValues("http://" + MainWindow.config.IP + ":50000/host/beatsaber/commitconfig", "POST", client.QueryString);
             }
         }
 
@@ -492,7 +483,7 @@ namespace BMBF_Manager
             {
                 if(PEO && installed % 20 == 0 && installed != 0)
                 {
-                    MainWindow.bMBFUtils.Sync(txtbox);
+                    BMBFUtils.Sync(txtbox);
                 }
                 txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.songs.code.remainingToInstall, downloadqueue.Count.ToString()));
                 txtbox.ScrollToEnd();
@@ -507,7 +498,7 @@ namespace BMBF_Manager
                 DownloadLable.Text = MainWindow.globalLanguage.global.allFinished;
                 if (PEO)
                 {
-                    MainWindow.bMBFUtils.Sync(txtbox);
+                    BMBFUtils.Sync(txtbox);
                     PlaylistEditor.waiting = false;
                     this.Close();
                 }
@@ -683,7 +674,7 @@ namespace BMBF_Manager
 
         private void finished_upload(object sender, AsyncCompletedEventArgs e, bool uploadfile)
         {
-            if (!PEO) MainWindow.bMBFUtils.Sync(txtbox);
+            if (!PEO) BMBFUtils.Sync(txtbox);
             txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.songs.code.songWasSynced, downloadqueue[0].Item1));
             txtbox.ScrollToEnd();
             downloadqueue.RemoveAt(0);
@@ -903,6 +894,22 @@ namespace BMBF_Manager
 
             }
             Console.ReadLine();
+        }
+
+        private void ShowSongInfo(object sender, MouseButtonEventArgs e)
+        {
+            if(SongList.SelectedIndex < 0 || SongList.SelectedIndex >= songs.Count)
+            {
+                return;
+            }
+            BeatSaverAPISong s = songs[SongList.SelectedIndex];
+            String length = s.metadata.duration != 0 ? new TimeSpan(0, 0, (int)s.metadata.duration).ToString() : "N/A";
+            MessageBox.Show(MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.songs.code.songInfo, s.metadata.songName, s.metadata.songAuthorName, s.metadata.levelAuthorName, s.stats.upVotes.ToString(), s.stats.downVotes.ToString(), s.stats.downloads.ToString(), length, s.key), "BMBF Manager - Song Installing", MessageBoxButton.OK);
+        }
+
+        private void SearchTerm_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.Enter) DoSearch();
         }
     }
 

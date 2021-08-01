@@ -23,6 +23,8 @@ using ModObjects;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using ComputerUtils.RegxTemplates;
+using BMBF.Config;
+using BMBFManager.Utils;
 
 namespace BMBF_Manager
 {
@@ -34,9 +36,9 @@ namespace BMBF_Manager
         Boolean draggable = true;
         Boolean Running = false;
         String exe = AppDomain.CurrentDomain.BaseDirectory.Substring(0, AppDomain.CurrentDomain.BaseDirectory.Length - 1);
-        List<Mod> AllModList = new List<Mod>();
+        List<ModObjects.Mod> AllModList = new List<ModObjects.Mod>();
         List<int> downloadqueue = new List<int>();
-        JSONNode BMBF = JSON.Parse("{}");
+        BMBFC BMBF = new BMBFC();
         int C = 0;
         int Index = 0;
 
@@ -74,6 +76,7 @@ namespace BMBF_Manager
             moreInfoButton.Content = MainWindow.globalLanguage.mods.UI.moreInfoButton;
             updateAllModsButton.Content = MainWindow.globalLanguage.mods.UI.updateAllModsButton;
             installModButton.Content = MainWindow.globalLanguage.mods.UI.installModButton;
+            UninstallModButton.Content = MainWindow.globalLanguage.mods.UI.UninstallModButton;
         }
 
         public void getMods()
@@ -95,8 +98,8 @@ namespace BMBF_Manager
 
             try
             {
-                BMBF = SimpleJSON.JSON.Parse(client.DownloadString("http://" + MainWindow.config.IP + ":50000/host/beatsaber/config"));
-                MainWindow.config.GameVersion = BMBF["BeatSaberVersion"];
+                BMBF = BMBFUtils.GetBMBFConfig();
+                MainWindow.config.GameVersion = BMBF.BeatSaberVersion;
             }
             catch
             {
@@ -105,11 +108,11 @@ namespace BMBF_Manager
             }
             if (MainWindow.config.GameVersion == null)
             {
-                txtbox.AppendText("aua");
+                txtbox.AppendText(MainWindow.globalLanguage.mods.code.gameVerNull);
                 return;
             }
             String[] GameVersion = MainWindow.config.GameVersion.ToString().Replace("\"", "").Split('.');
-            //String[] GameVersion = "1.13.0".Replace("\"", "").Split('.');
+            //String[] GameVersion = "1.13.2".Replace("\"", "").Split('.');
             int major = Convert.ToInt32(GameVersion[0]);
             int minor = Convert.ToInt32(GameVersion[1]);
             int patch = Convert.ToInt32(GameVersion[2]);
@@ -144,7 +147,7 @@ namespace BMBF_Manager
         {
             int i = 0;
             bool found = false;
-            foreach (Mod m in AllModList)
+            foreach (ModObjects.Mod m in AllModList)
             {
                 if (m.name.ToLower() == ModName.ToLower())
                 {
@@ -167,7 +170,7 @@ namespace BMBF_Manager
                 WebClient client = new WebClient();
                 try
                 {
-                    BMBF = SimpleJSON.JSON.Parse(client.DownloadString("http://" + MainWindow.config.IP + ":50000/host/beatsaber/config?nonsensecauseofcaching=" + DateTime.Now));
+                    BMBF = BMBFUtils.GetBMBFConfig();
                 }
                 catch
                 {
@@ -176,27 +179,18 @@ namespace BMBF_Manager
                 }
             }
             ModList.Items.Clear();
-            foreach (Mod cmod in AllModList)
+            foreach (ModObjects.Mod cmod in AllModList)
             {
-                String BMBFVersion = "0.0.0";
-                Boolean installed = false;
-                foreach (JSONNode BMBFMod in BMBF["Config"]["Mods"])
-                {
-                    String ModID = cmod.name;
-                    if (cmod.ModID != "") ModID = cmod.ModID;
-                    if(BMBFMod["ID"] != null)
-                    {
-                        if (BMBFMod["ID"].ToString().ToLower().Replace("\"", "") == ModID.ToLower())
-                        {
-                            BMBFVersion = BMBFMod["Version"];
-                            installed = true;
-                            break;
-                        }
-                    }
-                }
 
                 //Name, Version, DownloadLink, Creator, gameVersion, Desciption, Forward, new Tuple (CoreMod, ModID, currentversion)
-                ModList.Items.Add(new ModItem(cmod.name, String.Join(", ", cmod.creator), cmod.downloads[cmod.MatchingDownload].gameversion[cmod.MatchingGameVersion], BMBFVersion, cmod.downloads[cmod.MatchingDownload].modversion, installed)); ;
+                if(cmod.downloadable)
+                {
+                    ModList.Items.Add(new ModItem(cmod.name, String.Join(", ", cmod.creator), cmod.downloads[cmod.MatchingDownload].gameversion[cmod.MatchingGameVersion], cmod.Version, cmod.downloads[cmod.MatchingDownload].modversion, cmod.installed, cmod.downloadable));
+                } else
+                {
+                    ModList.Items.Add(new ModItem(cmod.name, String.Join(", ", cmod.creator), cmod.GameVersion, cmod.Version, "N/A", cmod.installed, cmod.downloadable));
+                }
+                
             }
         }
 
@@ -256,7 +250,17 @@ namespace BMBF_Manager
 
         public void MoreInfo(object sender, RoutedEventArgs e)
         {
-            //Name, Version, DownloadLink, Creator, gameVersion, Desciption, Forward, new Tuple (CoreMod, ModID, currentversion, islatest)
+            ShowInfo();
+        }
+
+        private void MoreInfoDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            ShowInfo();
+        }
+
+        public void ShowInfo()
+        {
+            if (ModList.SelectedIndex < 0 || ModList.SelectedIndex >= AllModList.Count) return;
             MessageBox.Show(MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.mods.code.modInfo, AllModList[ModList.SelectedIndex].name, AllModList[ModList.SelectedIndex].details, AllModList[ModList.SelectedIndex].downloads[AllModList[ModList.SelectedIndex].MatchingDownload].notes), "BMBF Manager - Mod Info", MessageBoxButton.OK);
         }
 
@@ -384,14 +388,20 @@ namespace BMBF_Manager
 
         public void AddSelectedModToQueue(object sender, RoutedEventArgs e)
         {   
-            if(ModList.SelectedIndex < 0 || ModList.SelectedIndex > (ModList.Items.Count - 1))
+            if(ModList.SelectedIndex < 0 || ModList.SelectedIndex >= ModList.Items.Count)
             {
                 txtbox.AppendText("\n\n" + MainWindow.globalLanguage.mods.code.selectMod);
                 return;
             }
             if (downloadqueue.Contains(ModList.SelectedIndex))
             {
-                txtbox.AppendText("\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.mods.code.alreadyInQueue, AllModList[ModList.SelectedIndex].name));
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.mods.code.alreadyInQueue, AllModList[ModList.SelectedIndex].name));
+                txtbox.ScrollToEnd();
+                return;
+            }
+            if(!AllModList[ModList.SelectedIndex].downloadable)
+            {
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.mods.code.modNotDownloadable, AllModList[ModList.SelectedIndex].name));
                 txtbox.ScrollToEnd();
                 return;
             }
@@ -401,12 +411,45 @@ namespace BMBF_Manager
             checkqueue();
         }
 
+        public void UninstallMod(object sender, RoutedEventArgs e)
+        {
+            if (ModList.SelectedIndex < 0 || ModList.SelectedIndex >= ModList.Items.Count)
+            {
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.mods.code.selectMod);
+                txtbox.ScrollToEnd();
+                return;
+            }
+            if(!AllModList[ModList.SelectedIndex].installed)
+            {
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.mods.code.modNotInstalled, AllModList[ModList.SelectedIndex].name));
+                txtbox.ScrollToEnd();
+                return;
+            }
+            ModObjects.Mod selected = AllModList[ModList.SelectedIndex];
+            for(int i = 0; i < BMBF.Config.Mods.Count; i++)
+            {
+                if(BMBF.Config.Mods[i].Id == selected.ModID)
+                {
+                    BMBF.Config.Mods.RemoveAt(i);
+                    BMBFUtils.PostChangesAndSync(txtbox, JsonSerializer.Serialize(BMBF.Config));
+                    AllModList[ModList.SelectedIndex].installed = false;
+                    txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.mods.code.uninstalledMod, AllModList[ModList.SelectedIndex].name));
+                    txtbox.ScrollToEnd();
+                    AllModList.RemoveAt(ModList.SelectedIndex);
+                    updatemodlist();
+                    return;
+                }
+            }
+            txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.mods.code.modNotInstalled, AllModList[ModList.SelectedIndex].name));
+            txtbox.ScrollToEnd();
+        }
+
         public void UpdateMods(object sender, RoutedEventArgs e)
         {
             TimeoutWebClientShort c = new TimeoutWebClientShort();
             try
             {
-                BMBF = JSON.Parse(c.DownloadString("http://" + MainWindow.config.IP + ":50000/host/beatsaber/config"));
+                BMBF = BMBFUtils.GetBMBFConfig();
             }
             catch
             {
@@ -415,35 +458,17 @@ namespace BMBF_Manager
                 return;
             }
             int i = 0;
-            foreach(JSONNode Mod in BMBF["Config"]["Mods"])
+            foreach(BMBF.Config.Mod Mod in BMBF.Config.Mods)
             {
                 i = 0;
-                foreach(Mod m in AllModList)
+                foreach(ModObjects.Mod m in AllModList)
                 {
-                    if(Mod["ID"].ToString().Replace("\"", "").ToLower() == m.ModID.ToLower())
+                    if(Mod.Id == m.ModID && m.downloadable)
                     {
-                        String[] ModV = Mod["Version"].ToString().Replace("\"", "").Split('.');
-                        int Major = 0;
-                        int Minor = 0;
-                        int Patch = 0;
-                        try
-                        {
-                            Major = Convert.ToInt32(ModV[0]);
-                            Minor = Convert.ToInt32(ModV[1]);
-                            Patch = Convert.ToInt32(ModV[2]);
-                        } catch { }
+                        String ModV = Mod.Version;
 
-                        String[] ModVD = m.downloads[m.MatchingDownload].modversion.Split('.');
-                        int MajorD = 0;
-                        int MinorD = 0;
-                        int PatchD = 0;
-                        try
-                        {
-                            MajorD = Convert.ToInt32(ModVD[0]);
-                            MinorD = Convert.ToInt32(ModVD[1]);
-                            PatchD = Convert.ToInt32(ModVD[2]);
-                        } catch { }
-                        if((MajorD >= Major && MinorD >= Minor && PatchD > Patch) || (MajorD >= Major && MinorD > Minor) || (MajorD > Major))
+                        String ModVD = m.downloads[m.MatchingDownload].modversion;
+                        if(new Version(ModV).CompareTo(new Version(ModVD)) == -1)
                         {
                             downloadqueue.Add(i);
                             txtbox.AppendText("\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.mods.code.updateAddedToQueue, m.name, m.downloads[m.MatchingDownload].modversion));
@@ -507,7 +532,7 @@ namespace BMBF_Manager
             {
                 try
                 {
-                    if (!MainWindow.bMBFUtils.Sync(txtbox)) throw new Exception();
+                    if (!BMBFUtils.Sync(txtbox)) throw new Exception();
                     txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.mods.code.syncedToQuest, AllModList[Index].name));
                     txtbox.ScrollToEnd();
                 }
@@ -526,21 +551,12 @@ namespace BMBF_Manager
             Running = false;
             DownloadLable.Text = MainWindow.globalLanguage.global.allFinished;
             Progress.Value = 0;
+            AllModList[downloadqueue[0]].installed = true;
             downloadqueue.RemoveAt(0);
+
             updatemodlist();
             checkqueue();
             return;
-        }
-
-        public void postChanges(String Config)
-        {
-            System.Threading.Thread.Sleep(10000);
-            using (WebClient client = new WebClient())
-            {
-                client.QueryString.Add("foo", "foo");
-                client.UploadFile("http://" + MainWindow.config.IP + ":50000/host/beatsaber/config", "PUT", Config);
-                client.UploadValues("http://" + MainWindow.config.IP + ":50000/host/beatsaber/commitconfig", "POST", client.QueryString);
-            }
         }
     }
 
@@ -557,7 +573,7 @@ namespace BMBF_Manager
         public string latest { get; set; }
 
         public System.Windows.Media.SolidColorBrush Color { get; set; }
-        public ModItem(String Name, String Creator, String GameVersion, String ModVersion, String latest, Boolean installed = true)
+        public ModItem(String Name, String Creator, String GameVersion, String ModVersion, String latest, bool installed, bool downloadable)
         {
             this.Name = Name;
             this.Creator = Creator;
@@ -573,30 +589,11 @@ namespace BMBF_Manager
             } else
             {
                 this.ModVersion = ModVersion;
-                String[] ModV = ModVersion.Split('.');
-                int Major = 0;
-                int Minor = 0;
-                int Patch = 0;
-                try
+                if(!downloadable)
                 {
-                    Major = Convert.ToInt32(ModV[0]);
-                    Minor = Convert.ToInt32(ModV[1]);
-                    Patch = Convert.ToInt32(ModV[2]);
+                    newColor.Color = Colors.Yellow;
                 }
-                catch { }
-
-                String[] ModVD = latest.Split('.');
-                int MajorD = 0;
-                int MinorD = 0;
-                int PatchD = 0;
-                try
-                {
-                    MajorD = Convert.ToInt32(ModVD[0]);
-                    MinorD = Convert.ToInt32(ModVD[1]);
-                    PatchD = Convert.ToInt32(ModVD[2]);
-                }
-                catch { }
-                if (!(MajorD >= Major && MinorD >= Minor && PatchD > Patch) && !(MajorD >= Major && MinorD > Minor) && !(MajorD > Major))
+                else if (new Version(ModVersion).CompareTo(new Version(latest)) != -1)
                 {
                     newColor.Color = Colors.Green;
                 }

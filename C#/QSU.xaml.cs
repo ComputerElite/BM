@@ -27,6 +27,8 @@ using System.Threading;
 using ComputerUtils.RegxTemplates;
 using BMBF.Config;
 using ComputerUtils.StringFormatters;
+using Path = System.IO.Path;
+using BMBFManager.Utils;
 
 namespace BMBF_Manager
 {
@@ -45,7 +47,6 @@ namespace BMBF_Manager
         Boolean Running = false;
         String exe = AppDomain.CurrentDomain.BaseDirectory.Substring(0, AppDomain.CurrentDomain.BaseDirectory.Length - 1);
         ArrayList P = new ArrayList();
-        int Lists = 0;
 
         public QSU()
         {
@@ -77,9 +78,6 @@ namespace BMBF_Manager
             Backups.SelectedIndex = 0;
             getBackups(exe + "\\Playlists");
 
-            Playlists.Items.Add(MainWindow.globalLanguage.qSU.UI.loadPlaylists);
-            Playlists.SelectedIndex = 0;
-
             if (MainWindow.config.CustomImage)
             {
                 ImageBrush uniformBrush = new ImageBrush();
@@ -90,7 +88,7 @@ namespace BMBF_Manager
             else
             {
                 ImageBrush uniformBrush = new ImageBrush();
-                uniformBrush.ImageSource = new BitmapImage(new Uri("pack://application:,,,/QSU4.png", UriKind.Absolute));
+                uniformBrush.ImageSource = new BitmapImage(new Uri("pack://application:,,,/QSU5.png", UriKind.Absolute));
                 uniformBrush.Stretch = Stretch.UniformToFill;
                 this.Background = uniformBrush;
             }
@@ -105,10 +103,10 @@ namespace BMBF_Manager
             startButton.Content = MainWindow.globalLanguage.qSU.UI.startButton;
             backupPlaylistsButton.Content = MainWindow.globalLanguage.qSU.UI.backupPlaylistsButton;
             restorePlaylistsButton.Content = MainWindow.globalLanguage.qSU.UI.restorePlaylistsButton;
-            loadPlaylistsButton.Content = MainWindow.globalLanguage.qSU.UI.loadPlaylistsButton;
-            deletePlaylistButton.Content = MainWindow.globalLanguage.qSU.UI.deletePlaylistButton;
-            createBPListButton.Content = MainWindow.globalLanguage.qSU.UI.createBPListButton;
-            checkSongsButton.Content = MainWindow.globalLanguage.qSU.UI.checkSongsButton;
+            //loadPlaylistsButton.Content = MainWindow.globalLanguage.qSU.UI.loadPlaylistsButton;
+            //deletePlaylistButton.Content = MainWindow.globalLanguage.qSU.UI.deletePlaylistButton;
+            //createBPListButton.Content = MainWindow.globalLanguage.qSU.UI.createBPListButton;
+            //checkSongsButton.Content = MainWindow.globalLanguage.qSU.UI.checkSongsButton;
             BName.Text = MainWindow.globalLanguage.qSU.UI.backupNamePlaceholder;
             index.Content = MainWindow.globalLanguage.qSU.UI.makeListBox;
             zips.Content = MainWindow.globalLanguage.qSU.UI.onlyCheckZipsBox;
@@ -220,209 +218,8 @@ namespace BMBF_Manager
 
         public void StartBMBF()
         {
-            Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
-            {
-                MainWindow.aDBI.adb("shell am start -n com.weloveoculus.BMBF/com.weloveoculus.BMBF.MainActivity", txtbox);
-            }));
+            MainWindow.aDBI.adb("shell am start -n com.weloveoculus.BMBF/com.weloveoculus.BMBF.MainActivity", txtbox);
         }
-
-        public void getPlaylists(object sender, RoutedEventArgs e)
-        {
-            StartBMBF();
-            if (!MainWindow.iPUtils.CheckIP(Quest))
-            {
-                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.global.ipInvalid);
-                return;
-            }
-
-            Playlists.Items.Clear();
-            Playlists.Items.Add(MainWindow.globalLanguage.qSU.UI.playlistsName);
-
-            WebClient client = new WebClient();
-
-            var json2 = SimpleJSON.JSON.Parse(client.DownloadString("https://raw.githubusercontent.com/BMBF/resources/master/assets/beatsaber-knowns.json"));
-            ArrayList known = new ArrayList();
-
-            foreach (JSONNode pack in json2["knownLevelPackIds"])
-            {
-                known.Add(pack.ToString().Replace("\"", ""));
-            }
-
-            P = new ArrayList();
-
-            var json = SimpleJSON.JSON.Parse(client.DownloadString("http://" + MainWindow.config.IP + ":50000/host/beatsaber/config"));
-            int index = 0;
-
-            ArrayList PN = new ArrayList();
-
-            foreach (JSONNode Playlist in json["Config"]["Playlists"])
-            {
-                P.Add(Playlist["PlaylistID"].ToString().Replace("\"", ""));
-                PN.Add(Playlist["PlaylistName"].ToString().Replace("\"", ""));
-            }
-
-            foreach (String c in P)
-            {
-                if (!known.Contains(c))
-                {
-                    Playlists.Items.Add(PN[index]);
-                }
-                else
-                {
-                    Lists++;
-                }
-                index++;
-            }
-
-            Playlists.SelectedIndex = 0;
-            txtbox.AppendText("\n\n" + MainWindow.globalLanguage.qSU.code.loadedPlaylists);
-        }
-
-        public void BPList(object sender, RoutedEventArgs e)
-        {
-            if (Running)
-            {
-                return;
-            }
-            if (!MainWindow.iPUtils.CheckIP(Quest))
-            {
-                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.global.ipInvalid);
-                txtbox.ScrollToEnd();
-                return;
-            }
-            Running = true;
-
-            MainWindow.DCRPM.SetActivity(MainWindow.globalLanguage.dCRP.exportingBPList);
-
-            if (Playlists.SelectedIndex == 0)
-            {
-                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.qSU.code.choosePlaylist);
-                txtbox.ScrollToEnd();
-                Running = false;
-                return;
-            }
-
-            WebClient c = new WebClient();
-            var json = JSON.Parse(c.DownloadString("http://" + MainWindow.config.IP + ":50000/host/beatsaber/config"));
-            Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
-            {
-                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qSU.code.makingBPList, json["Config"]["Playlists"][Playlists.SelectedIndex + Lists - 1]["PlaylistName"]));
-                txtbox.ScrollToEnd();
-            }));
-            var result = JSON.Parse("{}");
-            result["playlistTitle"] = json["Config"]["Playlists"][Playlists.SelectedIndex + Lists - 1]["PlaylistName"];
-            result["playlistAuthor"] = "Quest Song Utilities";
-            Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
-            {
-                txtbox.AppendText("\n" + MainWindow.globalLanguage.qSU.code.downloadedPlaylistCover);
-                txtbox.ScrollToEnd();
-            }));
-            using (WebClient client = new WebClient())
-            {
-                try
-                {
-                    client.DownloadFile("http://" + MainWindow.config.IP + ":50000/host/beatsaber/playlist/cover?PlaylistID=" + json["Config"]["Playlists"][Playlists.SelectedIndex + Lists - 1]["PlaylistID"], exe + "\\tmp\\Playlist.png");
-                }
-                catch
-                {
-                    txtbox.AppendText(MainWindow.globalLanguage.global.BMBF100);
-                    txtbox.ScrollToEnd();
-                    Running = false;
-                    return;
-                }
-            }
-            Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
-            {
-                txtbox.AppendText("\n" + MainWindow.globalLanguage.qSU.code.downloadedPlaylistCover);
-                txtbox.ScrollToEnd();
-            }));
-            result["image"] = "data:image/png;base64," + Convert.ToBase64String(File.ReadAllBytes(exe + "\\tmp\\Playlist.png"));
-
-            int i = 0;
-            foreach (JSONNode Song in json["Config"]["Playlists"][Playlists.SelectedIndex + Lists - 1]["SongList"])
-            {
-                String SongHash = Song["SongID"];
-                SongHash = SongHash.Replace("custom_level_", "");
-                String SongName = Song["SongName"];
-                result["songs"][i]["hash"] = SongHash;
-                result["songs"][i]["songName"] = SongName;
-                i++;
-            }
-
-            File.WriteAllText(exe + "\\BPLists\\" + StringFormatter.FileNameSafe(json["Config"]["Playlists"][Playlists.SelectedIndex + Lists - 1]["PlaylistName"]) + ".bplist", result.ToString());
-            Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
-            {
-                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qSU.code.bPListMade, json["Config"]["Playlists"][Playlists.SelectedIndex + Lists - 1]["PlaylistName"], "BPLists\\" + json["Config"]["Playlists"][Playlists.SelectedIndex + Lists - 1]["PlaylistName"] + ".bplist"));
-                txtbox.ScrollToEnd();
-            }));
-            Running = false;
-        }
-
-        public void DeleteP(object sender, RoutedEventArgs e)
-        {
-            if (Running)
-            {
-                return;
-            }
-            if (!MainWindow.iPUtils.CheckIP(Quest))
-            {
-                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.global.ipInvalid);
-                txtbox.ScrollToEnd();
-                return;
-            }
-            Running = true;
-            if (Playlists.SelectedIndex == 0)
-            {
-                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.qSU.code.choosePlaylist);
-                txtbox.ScrollToEnd();
-                Running = false;
-                return;
-            }
-            MessageBoxResult result = MessageBox.Show(MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qSU.code.confirmPlaylistDelete, Playlists.SelectedValue.ToString()), "BMBF Manager - Quest Song Utilities", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-            switch (result)
-            {
-                case MessageBoxResult.No:
-                    txtbox.AppendText("\n\n" + MainWindow.globalLanguage.qSU.code.deletingAborted);
-                    Running = false;
-                    txtbox.ScrollToEnd();
-                    return;
-            }
-
-            var json = SimpleJSON.JSON.Parse(File.ReadAllText(exe + "\\tmp\\config.json"));
-
-            foreach (JSONNode song in json["Config"]["Playlists"][Playlists.SelectedIndex + Lists - 1]["SongList"])
-            {
-                if (!MainWindow.aDBI.adb("shell rm -rR /sdcard/BMBFData/CustomSongs/" + song["SongID"].ToString().Replace("\"", ""), txtbox))
-                {
-                    return;
-                }
-                Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
-                {
-                    txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qSU.code.deletedSong, song["SongID"]));
-                    txtbox.ScrollToEnd();
-                }));
-            }
-            json["Config"]["Playlists"].Remove(Playlists.SelectedIndex + Lists - 1);
-
-            try
-            {
-                File.WriteAllText(exe + "\\tmp\\config.json", json["Config"].ToString());
-
-                Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
-                {
-                    postChanges(exe + "\\tmp\\config.json");
-                }));
-                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.qSU.code.deletedPlaylist);
-                txtbox.ScrollToEnd();
-            }
-            catch
-            {
-                txtbox.AppendText(MainWindow.globalLanguage.global.BMBF100);
-                txtbox.ScrollToEnd();
-            }
-            Running = false;
-        }
-
 
         public void Move()
         {
@@ -545,7 +342,6 @@ namespace BMBF_Manager
 
                 txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qSU.code.backingUpPlaylists, "\\Playlists\\" + BName.Text + ".json"));
                 txtbox.ScrollToEnd();
-                Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
 
                 MainWindow.aDBI.adb("pull /sdcard/BMBFData/Playlists/ \"" + exe + "\\Playlists\"", txtbox);
 
@@ -556,7 +352,6 @@ namespace BMBF_Manager
 
                 txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qSU.code.backedUpPlaylists, "\\Playlists\\" + BName.Text + ".json"));
                 txtbox.ScrollToEnd();
-                Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
             }
             catch
             {
@@ -583,18 +378,7 @@ namespace BMBF_Manager
                     txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.mainMenu.code.pushingPng, directories[i]));
                     MainWindow.aDBI.adb("push \"" + directories[i] + "\" /sdcard/BMBFData/Playlists/", txtbox);
                     txtbox.ScrollToEnd();
-                    Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
                 }
-            }
-        }
-
-        public void postChanges(String Config)
-        {
-            using (WebClient client = new WebClient())
-            {
-                client.QueryString.Add("foo", "foo");
-                client.UploadFile("http://" + MainWindow.config.IP + ":50000/host/beatsaber/config", "PUT", Config);
-                client.UploadValues("http://" + MainWindow.config.IP + ":50000/host/beatsaber/commitconfig", "POST", client.QueryString);
             }
         }
 
@@ -633,7 +417,6 @@ namespace BMBF_Manager
 
                 txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qSU.code.restoringPlaylists, "\\Playlists\\" + Backups.SelectedValue + ".json"));
                 txtbox.ScrollToEnd();
-                Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
 
 
 
@@ -650,15 +433,11 @@ namespace BMBF_Manager
 
 
                 j["Config"]["Playlists"] = p["Playlists"];
-                File.WriteAllText(exe + "\\tmp\\config.json", j["Config"].ToString());
 
                 PushPNG(exe + "\\Playlists\\Playlists");
-                Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate {
-                    postChanges(exe + "\\tmp\\config.json");
-                }));
+                BMBFUtils.PostChangesAndSync(txtbox, j["Config"].ToString());
                 txtbox.AppendText("\n\n" + MainWindow.globalLanguage.qSU.code.restoredPlaylists);
                 txtbox.ScrollToEnd();
-                Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
             }
             catch
             {
@@ -800,10 +579,9 @@ namespace BMBF_Manager
             {
                 txtbox.AppendText("\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qSU.code.autoModeOn, exe + "\\tmp"));
                 txtbox.ScrollToEnd();
-                Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
                 if (!copied)
                 {
-                    if (!MainWindow.aDBI.adb("pull /sdcard/BMBFData/CustomSongs/ \"" + exe + "\\tmp\"", txtbox))
+                    if (!MainWindow.aDBI.adb("pull /sdcard/ModData/com.beatgames.beatsaber/Mods/Songloader/CustomLevels/ \"" + exe + "\\tmp\"", txtbox))
                     {
                         return;
                     }
@@ -912,7 +690,6 @@ namespace BMBF_Manager
                     zip(CD, dest + "\\" + Name + ".zip");
                     exported++;
                     Name = "";
-                    Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
                     txtbox.ScrollToEnd();
                 }
                 catch
@@ -1044,8 +821,8 @@ namespace BMBF_Manager
 
             MainWindow.DCRPM.SetActivity(MainWindow.globalLanguage.dCRP.correctingSongPath);
 
-            if (!MainWindow.aDBI.adb("pull /sdcard/BMBFData/CustomSongs/ \"" + exe + "\\tmp\"", txtbox)) return;
-            MainWindow.aDBI.adb("shell rm -r /sdcard/BMBFData/CustomSongs/", txtbox);
+            if (!MainWindow.aDBI.adb("pull /sdcard/ModData/com.beatgames.beatsaber/Mods/Songloader/CustomLevels/ \"" + exe + "\\tmp\"", txtbox)) return;
+            MainWindow.aDBI.adb("shell rm -r /sdcard/ModData/com.beatgames.beatsaber/Mods/Songloader/CustomLevels/", txtbox);
             Songs SongsWindow = new Songs();
             SongsWindow.Show();
             Directory.CreateDirectory(exe + "\\tmp\\MoveSongs");
@@ -1140,24 +917,20 @@ namespace BMBF_Manager
                     Running = false;
                     return;
                 }
-                if (!MainWindow.aDBI.adb("pull /sdcard/BMBFData/CustomSongs \"" + exe + "\\tmp\"", txtbox))
+                if (!MainWindow.aDBI.adb("pull /sdcard/ModData/com.beatgames.beatsaber/Mods/Songloader/CustomLevels/ \"" + exe + "\\tmp\"", txtbox))
                 {
                     Running = false;
                     return;
                 }
                 List<SongLibraryMoveSong> songs = new List<SongLibraryMoveSong>();
                 TimeoutWebClientShort c = new TimeoutWebClientShort();
-                bool importPlaylists = true;
-                String configString = "";
                 BMBFC config = new BMBFC();
                 try
                 {
-                    configString = c.DownloadString("http://" + MainWindow.config.IP + ":50000/host/beatsaber/config");
-                    config = JsonSerializer.Deserialize<BMBFC>(configString);
+                    config = BMBFUtils.GetBMBFConfig();
                 } catch
                 {
-                    importPlaylists = false;
-                    MainWindow.SetLastActionBeforeException("Couldn't get BMBF config. Not restoring playlists!");
+                    MainWindow.SetLastActionBeforeException("Couldn't get BMBF config.");
                 }
                 Songs s = new Songs();
                 BeatSaverAPIInteractor i = new BeatSaverAPIInteractor();
@@ -1193,7 +966,7 @@ namespace BMBF_Manager
                         {
                             foreach (BMBFSong song1 in playlist.SongList)
                             {
-                                if (song1.SongID.ToLower().Contains(moveSong.hash.ToLower()))
+                                if (song1.Hash.ToLower().Contains(moveSong.hash.ToLower()))
                                 {
                                     finishedName = song1.SongName + " - " + song1.SongAuthorName;
                                     moveSong.songName = song1.SongName;
@@ -1233,46 +1006,17 @@ namespace BMBF_Manager
                 String PlaylistFolder = String.Join("\\", CustomSongsFolder.Split('\\').ToList<String>().GetRange(0, CustomSongsFolder.Split('\\').Length - 2)) + "\\Playlists";
                 if (!Directory.Exists(PlaylistFolder)) Directory.CreateDirectory(PlaylistFolder);
 
-                BSKFile known = new BSKFile();
-
-                WebClient client = new WebClient();
-                try
+                if (MainWindow.aDBI.adb("pull /sdcard/ModData/com.beatgames.beatsaber/Mods/PlaylistManager/Playlists \"" + exe + "\\tmp\"", txtbox))
                 {
-                    String t = client.DownloadString(PlaylistEditor.bsk);
-                    known = JsonSerializer.Deserialize<BSKFile>(t);
-                }
-                catch
-                {
-                    txtbox.AppendText("\n\n" + MainWindow.globalLanguage.global.anErrorOccured);
-                    txtbox.ScrollToEnd();
-                }
-
-                foreach (BMBFPlaylist p in config.Config.Playlists)
-                {
-                    if (known.knownLevelPackIds.Contains(p.PlaylistID)) continue;
-                    BPList list = new BPList();
-                    list.playlistTitle = p.PlaylistName;
-                    list.playlistAuthor = "BMBF Manager";
-                    foreach (BMBFSong song1 in p.SongList)
+                    foreach (String f in Directory.GetFiles(exe + "\\tmp\\Playlists"))
                     {
-                        foreach (SongLibraryMoveSong moveSong in songs)
-                        {
-                            if (song1.SongID.ToLower().Contains(moveSong.hash.ToLower()))
-                            {
-                                BPListSong song = new BPListSong();
-                                song.hash = moveSong.hash;
-                                song.songName = moveSong.songName;
-                                list.songs.Add(song);
-                                break;
-                            }
-                        }
+                        File.Move(f, PlaylistFolder + "\\" + Path.GetFileName(f));
                     }
-                    File.WriteAllText(PlaylistFolder + "\\" + StringFormatter.FileNameSafe(list.playlistTitle) + ".bplist", JsonSerializer.Serialize(list));
-                }
-                if(!importPlaylists)
+                } else
                 {
-                    MessageBox.Show(MainWindow.globalLanguage.qSU.code.notRestoringPlaylists, "BMBF Manager - Quest Song Utilities", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    txtbox.AppendText("\n\n" + MainWindow.globalLanguage.qSU.code.couldntRestorePlaylists);
                 }
+                
                 MessageBox.Show(MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qSU.code.songLibraryMoved, songs.Count.ToString()), "BMBF Manager - Quest Song Utilities", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             else
@@ -1291,17 +1035,15 @@ namespace BMBF_Manager
 
                 TimeoutWebClientShort c = new TimeoutWebClientShort();
                 bool importPlaylists = true;
-                String configString = "";
                 BMBFC config = new BMBFC();
                 try
                 {
-                    configString = c.DownloadString("http://" + MainWindow.config.IP + ":50000/host/beatsaber/config");
-                    config = JsonSerializer.Deserialize<BMBFC>(configString);
+                    config = BMBFUtils.GetBMBFConfig();
                 }
                 catch
                 {
                     importPlaylists = false;
-                    MainWindow.SetLastActionBeforeException("Couldn't get BMBF config. Not restoring playlists!");
+                    MainWindow.SetLastActionBeforeException("Couldn't get BMBF config.");
                 }
                 int songCount = Directory.GetDirectories(CustomSongsFolder).Length;
                 songCount += config.Config.GetTotalSongsCount();
@@ -1309,13 +1051,6 @@ namespace BMBF_Manager
                 int limit = -1;
 
                 MainWindow.SetLastActionBeforeException("Song count: " + songCount);
-
-                if (songCount > 500)
-                {
-                    MainWindow.SetLastActionBeforeException("Showing song warning");
-                    r = MessageBox.Show(MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qSU.code.tooMuchSongs, limit.ToString()), "BMBF Manager - Quest Song Utilities", MessageBoxButton.YesNo, MessageBoxImage.Exclamation);
-                    if (r == MessageBoxResult.Yes) limit = 500;
-                }
 
                 List<SongLibraryMoveSong> songs = new List<SongLibraryMoveSong>();
                 int i = 0;
@@ -1325,22 +1060,19 @@ namespace BMBF_Manager
                     if (i > limit && limit != -1) break;
                     SongLibraryMoveSong moveSong = new SongLibraryMoveSong();
                     String zipName;
-                    MainWindow.SetLastActionBeforeException("");
                     MainWindow.SetLastActionBeforeException("Moving song: " + dir);
                     if ((zipName = s.CheckSong(dir)) == "Error") continue;
                     if (Directory.Exists(exe + "\\tmp\\Move\\" + zipName.Trim())) Directory.Delete(exe + "\\tmp\\Move\\" + zipName.Trim(), true);
                     MainWindow.SetLastActionBeforeException("Extracting");
                     ZipFile.ExtractToDirectory(exe + "\\tmp\\finished\\" + zipName + ".zip", exe + "\\tmp\\Move\\" + zipName.Trim());
-                    moveSong.hash = Songs.GetCustomLevelHash(exe + "\\tmp\\Move\\" + zipName.Trim().TrimEnd('.'));
-                    String finishedName = "custom_level_" + moveSong.hash;
-                    finishedName = StringFormatter.FileNameSafe(finishedName);
-                    if (Directory.Exists(exe + "\\tmp\\Move\\" + finishedName)) Directory.Delete(exe + "\\tmp\\Move\\" + finishedName, true);
+                    String finishedName = System.IO.Path.GetFileName(dir);
+                    if (Directory.Exists(exe + "\\tmp\\Move\\" + finishedName)) Directory.Delete(exe + "\\tmp\\Move\\" + finishedName);
                     Directory.Move(exe + "\\tmp\\Move\\" + zipName.Trim().TrimEnd('.'), exe + "\\tmp\\Move\\" + finishedName);
                     moveSong.sourceFolder = exe + "\\tmp\\Move\\" + finishedName;
                     MainWindow.SetLastActionBeforeException("Moving Song: Name: " + moveSong.songName + ", hash: " + moveSong.hash + ", source: " + moveSong.sourceFolder + ", dest: /sdcard/BMBFData/CustomSongs/" + finishedName);
 
                     //Push
-                    if (!MainWindow.aDBI.adb("push \"" + moveSong.sourceFolder + "\" /sdcard/BMBFData/CustomSongs/", txtbox))
+                    if (!MainWindow.aDBI.adb("push \"" + moveSong.sourceFolder + "\" /sdcard/ModData/com.beatgames.beatsaber/Mods/Songloader/CustomLevels/", txtbox))
                     {
                         Running = false;
                         break;
@@ -1398,6 +1130,340 @@ namespace BMBF_Manager
             //    MessageBox.Show("The program just got a error. Please contact ComputerElite and send him log.log which is located along the exe.", "BMBF Manager - Error report", MessageBoxButton.OK, MessageBoxImage.Error);
             //}
         }
+
+        //private void TransferSongLibOLD(object sender, RoutedEventArgs e)
+        //{
+        //    //try
+        //    //{
+        //    if (Running)
+        //    {
+        //        txtbox.AppendText("\n\n" + MainWindow.globalLanguage.qSU.code.operationRunning);
+        //        return;
+        //    }
+        //    if (!MainWindow.iPUtils.CheckIP(Quest))
+        //    {
+        //        txtbox.AppendText(MainWindow.globalLanguage.global.ipInvalid);
+        //        return;
+        //    }
+        //    MessageBoxResult r = MessageBox.Show(MainWindow.globalLanguage.qSU.code.songLibSwitchInfo, "BMBF Manager - Quest Song Utilities", MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
+        //    bool QuestToPC = false;
+        //    switch (r)
+        //    {
+        //        case MessageBoxResult.Yes:
+        //            QuestToPC = true;
+        //            break;
+        //        case MessageBoxResult.Cancel:
+        //            txtbox.AppendText("\n\n" + MainWindow.globalLanguage.qSU.code.aborted);
+        //            return;
+        //    }
+        //    MessageBox.Show(MainWindow.globalLanguage.qSU.code.choosePCModsFolder, "BMBF Manager - Quest Song Utilities", MessageBoxButton.OK, MessageBoxImage.Information);
+        //    CommonOpenFileDialog fd = new CommonOpenFileDialog();
+        //    fd.IsFolderPicker = true;
+        //    String CustomSongsFolder = "";
+        //    if (fd.ShowDialog() == CommonFileDialogResult.Ok)
+        //    {
+        //        if (Directory.Exists(fd.FileName))
+        //        {
+        //            CustomSongsFolder = fd.FileName;
+        //        }
+        //        else
+        //        {
+        //            txtbox.AppendText("\n\n" + MainWindow.globalLanguage.qSU.code.folderDoesntExist);
+        //            return;
+        //        }
+        //    }
+        //    else
+        //    {
+        //        txtbox.AppendText("\n\n" + MainWindow.globalLanguage.qSU.code.aborted);
+        //        return;
+        //    }
+
+        //    Running = true;
+
+        //    MainWindow.SetLastActionBeforeException("CustomLevels folder: " + CustomSongsFolder);
+
+        //    if (CustomSongsFolder.Substring(0, 1) != exe.Substring(0, 1))
+        //    {
+        //        MessageBox.Show(MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qSU.code.differentVolumeWarning, CustomSongsFolder.Substring(0, 1), exe.Substring(0, 1)), "BMBF Manager - Quest Song Utilities", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+        //        txtbox.AppendText("\n\n" + MainWindow.globalLanguage.qSU.code.aborted);
+        //        Running = false;
+        //        return;
+        //    }
+
+        //    Directory.CreateDirectory(exe + "\\tmp\\Move");
+
+        //    if (QuestToPC)
+        //    {
+        //        MainWindow.DCRPM.SetActivity(MainWindow.globalLanguage.dCRP.switchingSongLibraryQuestPC);
+
+        //        MainWindow.SetLastActionBeforeException("User choose QuestToPC");
+        //        r = MessageBox.Show(MainWindow.globalLanguage.qSU.code.startInfoQuestToPC, "BMBF Manager - Quest Song Utilities", MessageBoxButton.OKCancel, MessageBoxImage.Information);
+        //        if (r == MessageBoxResult.Cancel)
+        //        {
+        //            txtbox.AppendText("\n\n" + MainWindow.globalLanguage.qSU.code.aborted);
+        //            Running = false;
+        //            return;
+        //        }
+        //        if (!MainWindow.aDBI.adb("pull /sdcard/BMBFData/CustomSongs \"" + exe + "\\tmp\"", txtbox))
+        //        {
+        //            Running = false;
+        //            return;
+        //        }
+        //        List<SongLibraryMoveSong> songs = new List<SongLibraryMoveSong>();
+        //        TimeoutWebClientShort c = new TimeoutWebClientShort();
+        //        bool importPlaylists = true;
+        //        String configString = "";
+        //        BMBFC config = new BMBFC();
+        //        try
+        //        {
+        //            configString = c.DownloadString("http://" + MainWindow.config.IP + ":50000/host/beatsaber/config");
+        //            config = JsonSerializer.Deserialize<BMBFC>(configString);
+        //        }
+        //        catch
+        //        {
+        //            importPlaylists = false;
+        //            MainWindow.SetLastActionBeforeException("Couldn't get BMBF config. Not restoring playlists!");
+        //        }
+        //        Songs s = new Songs();
+        //        BeatSaverAPIInteractor i = new BeatSaverAPIInteractor();
+
+
+        //        foreach (String dir in Directory.GetDirectories(exe + "\\tmp\\CustomSongs"))
+        //        {
+        //            MainWindow.SetLastActionBeforeException("Processing Song: dir: " + dir);
+        //            SongLibraryMoveSong moveSong = new SongLibraryMoveSong();
+        //            String zipName;
+        //            if ((zipName = s.CheckSong(dir)) == "Error") continue;
+        //            if (Directory.Exists(exe + "\\tmp\\Move\\" + zipName.Trim())) Directory.Delete(exe + "\\tmp\\Move\\" + zipName.Trim(), true);
+        //            MainWindow.SetLastActionBeforeException("Extracting Song");
+        //            ZipFile.ExtractToDirectory(exe + "\\tmp\\finished\\" + zipName + ".zip", exe + "\\tmp\\Move\\" + zipName.Trim().TrimEnd('.'));
+        //            moveSong.sourceFolder = exe + "\\tmp\\Move\\" + zipName.Trim().TrimEnd('.');
+        //            MainWindow.SetLastActionBeforeException("Getting hash");
+        //            moveSong.hash = Songs.GetCustomLevelHash(exe + "\\tmp\\Move\\" + zipName.Trim().TrimEnd('.'));
+        //            BeatSaverAPISong song = i.GetBeatSaverAPISongViaHash(moveSong.hash);
+        //            //Define default name
+        //            String finishedName = "Custom_level_" + moveSong.hash;
+        //            if (song.GoodRequest)
+        //            {
+        //                //Use SongInfo from BeatSaver
+        //                finishedName = song.name + " - " + song.metadata.songAuthorName + " (" + song.key + ")";
+        //                moveSong.songArtist = song.metadata.songAuthorName;
+        //                moveSong.songName = song.metadata.songName;
+        //                moveSong.key = song.key;
+        //            }
+        //            else
+        //            {
+        //                //Try to find song in BMBF Config
+        //                foreach (BMBFPlaylist playlist in config.Config.Playlists)
+        //                {
+        //                    foreach (BMBFSong song1 in playlist.SongList)
+        //                    {
+        //                        if (song1.Hash.ToLower().Contains(moveSong.hash.ToLower()))
+        //                        {
+        //                            finishedName = song1.SongName + " - " + song1.SongAuthorName;
+        //                            moveSong.songName = song1.SongName;
+        //                            moveSong.songArtist = song1.SongAuthorName;
+        //                            break;
+        //                        }
+        //                    }
+        //                }
+        //                if (moveSong.songName == "")
+        //                {
+        //                    if (Directory.GetFiles(moveSong.sourceFolder).FirstOrDefault(x => x.ToLower() == "info.dat") == null) continue;
+        //                    BeatSaberSong beatSaberSong = JsonSerializer.Deserialize<BeatSaberSong>(File.ReadAllText(Directory.GetFiles(moveSong.sourceFolder).FirstOrDefault(x => x.ToLower() == "info.dat")));
+        //                    finishedName = beatSaberSong.SongName + " - " + beatSaberSong.SongArtist;
+        //                    moveSong.songName = beatSaberSong.SongName;
+        //                    moveSong.songArtist = beatSaberSong.SongArtist;
+        //                }
+        //            }
+        //            //Remove invalid chars
+        //            finishedName = StringFormatter.FileNameSafe(finishedName);
+        //            moveSong.targetFolder = CustomSongsFolder + "\\" + finishedName;
+        //            int end = 0;
+        //            while (Directory.Exists(moveSong.targetFolder))
+        //            {
+        //                end++;
+        //                //Don't ask. It increments the number at the end by 1
+        //                moveSong.targetFolder = moveSong.targetFolder.EndsWith((end - 1).ToString()) ? moveSong.targetFolder.Substring(0, moveSong.targetFolder.Length - (end - 1).ToString().Length) + end : moveSong.targetFolder + " " + end;
+        //            }
+        //            //Now everything should be right ig.
+        //            songs.Add(moveSong);
+        //            MainWindow.SetLastActionBeforeException("Moving Song: Name: " + moveSong.songName + ", hash: " + moveSong.hash + ", source: " + moveSong.sourceFolder + ", dest: " + moveSong.targetFolder);
+        //            Directory.Move(moveSong.sourceFolder, moveSong.targetFolder);
+        //            //Wait 500ms to reduce 429's
+        //            Thread.Sleep(500);
+        //        }
+
+        //        //Restore Playlists
+        //        String PlaylistFolder = String.Join("\\", CustomSongsFolder.Split('\\').ToList<String>().GetRange(0, CustomSongsFolder.Split('\\').Length - 2)) + "\\Playlists";
+        //        if (!Directory.Exists(PlaylistFolder)) Directory.CreateDirectory(PlaylistFolder);
+
+        //        BSKFile known = new BSKFile();
+
+        //        WebClient client = new WebClient();
+        //        try
+        //        {
+        //            String t = client.DownloadString(PlaylistEditor.bsk);
+        //            known = JsonSerializer.Deserialize<BSKFile>(t);
+        //        }
+        //        catch
+        //        {
+        //            txtbox.AppendText("\n\n" + MainWindow.globalLanguage.global.anErrorOccured);
+        //            txtbox.ScrollToEnd();
+        //        }
+
+        //        foreach (BMBFPlaylist p in config.Config.Playlists)
+        //        {
+        //            if (known.knownLevelPackIds.Contains(p.PlaylistID)) continue;
+        //            BPList list = new BPList();
+        //            list.playlistTitle = p.PlaylistName;
+        //            list.playlistAuthor = "BMBF Manager";
+        //            foreach (BMBFSong song1 in p.SongList)
+        //            {
+        //                foreach (SongLibraryMoveSong moveSong in songs)
+        //                {
+        //                    if (song1.Hash.ToLower().Contains(moveSong.hash.ToLower()))
+        //                    {
+        //                        BPListSong song = new BPListSong();
+        //                        song.hash = moveSong.hash;
+        //                        song.songName = moveSong.songName;
+        //                        list.songs.Add(song);
+        //                        break;
+        //                    }
+        //                }
+        //            }
+        //            File.WriteAllText(PlaylistFolder + "\\" + StringFormatter.FileNameSafe(list.playlistTitle) + ".bplist", JsonSerializer.Serialize(list));
+        //        }
+        //        if (!importPlaylists)
+        //        {
+        //            MessageBox.Show(MainWindow.globalLanguage.qSU.code.notRestoringPlaylists, "BMBF Manager - Quest Song Utilities", MessageBoxButton.OK, MessageBoxImage.Warning);
+        //        }
+        //        MessageBox.Show(MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qSU.code.songLibraryMoved, songs.Count.ToString()), "BMBF Manager - Quest Song Utilities", MessageBoxButton.OK, MessageBoxImage.Information);
+        //    }
+        //    else
+        //    {
+        //        MainWindow.DCRPM.SetActivity(MainWindow.globalLanguage.dCRP.switchingSongLibraryPCQuest);
+        //        MainWindow.SetLastActionBeforeException("User choose PCToQuest");
+        //        r = MessageBox.Show(MainWindow.globalLanguage.qSU.code.startInfoPCToQuest, "BMBF Manager - Quest Song Utilities", MessageBoxButton.OKCancel, MessageBoxImage.Information);
+        //        if (r == MessageBoxResult.Cancel)
+        //        {
+        //            txtbox.AppendText("\n\n" + MainWindow.globalLanguage.qSU.code.aborted);
+        //            Running = false;
+        //            return;
+        //        }
+
+        //        Songs s = new Songs();
+
+        //        TimeoutWebClientShort c = new TimeoutWebClientShort();
+        //        bool importPlaylists = true;
+        //        String configString = "";
+        //        BMBFC config = new BMBFC();
+        //        try
+        //        {
+        //            configString = c.DownloadString("http://" + MainWindow.config.IP + ":50000/host/beatsaber/config");
+        //            config = JsonSerializer.Deserialize<BMBFC>(configString);
+        //        }
+        //        catch
+        //        {
+        //            importPlaylists = false;
+        //            MainWindow.SetLastActionBeforeException("Couldn't get BMBF config. Not restoring playlists!");
+        //        }
+        //        int songCount = Directory.GetDirectories(CustomSongsFolder).Length;
+        //        songCount += config.Config.GetTotalSongsCount();
+
+        //        int limit = -1;
+
+        //        MainWindow.SetLastActionBeforeException("Song count: " + songCount);
+
+        //        if (songCount > 500)
+        //        {
+        //            MainWindow.SetLastActionBeforeException("Showing song warning");
+        //            r = MessageBox.Show(MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qSU.code.tooMuchSongs, limit.ToString()), "BMBF Manager - Quest Song Utilities", MessageBoxButton.YesNo, MessageBoxImage.Exclamation);
+        //            if (r == MessageBoxResult.Yes) limit = 500;
+        //        }
+
+        //        List<SongLibraryMoveSong> songs = new List<SongLibraryMoveSong>();
+        //        int i = 0;
+        //        foreach (String dir in Directory.GetDirectories(CustomSongsFolder))
+        //        {
+        //            //Do stuff for checking...
+        //            if (i > limit && limit != -1) break;
+        //            SongLibraryMoveSong moveSong = new SongLibraryMoveSong();
+        //            String zipName;
+        //            MainWindow.SetLastActionBeforeException("");
+        //            MainWindow.SetLastActionBeforeException("Moving song: " + dir);
+        //            if ((zipName = s.CheckSong(dir)) == "Error") continue;
+        //            if (Directory.Exists(exe + "\\tmp\\Move\\" + zipName.Trim())) Directory.Delete(exe + "\\tmp\\Move\\" + zipName.Trim(), true);
+        //            MainWindow.SetLastActionBeforeException("Extracting");
+        //            ZipFile.ExtractToDirectory(exe + "\\tmp\\finished\\" + zipName + ".zip", exe + "\\tmp\\Move\\" + zipName.Trim());
+        //            moveSong.hash = Songs.GetCustomLevelHash(exe + "\\tmp\\Move\\" + zipName.Trim().TrimEnd('.'));
+        //            String finishedName = "custom_level_" + moveSong.hash;
+        //            finishedName = StringFormatter.FileNameSafe(finishedName);
+        //            if (Directory.Exists(exe + "\\tmp\\Move\\" + finishedName)) Directory.Delete(exe + "\\tmp\\Move\\" + finishedName, true);
+        //            Directory.Move(exe + "\\tmp\\Move\\" + zipName.Trim().TrimEnd('.'), exe + "\\tmp\\Move\\" + finishedName);
+        //            moveSong.sourceFolder = exe + "\\tmp\\Move\\" + finishedName;
+        //            MainWindow.SetLastActionBeforeException("Moving Song: Name: " + moveSong.songName + ", hash: " + moveSong.hash + ", source: " + moveSong.sourceFolder + ", dest: /sdcard/BMBFData/CustomSongs/" + finishedName);
+
+        //            //Push
+        //            if (!MainWindow.aDBI.adb("push \"" + moveSong.sourceFolder + "\" /sdcard/BMBFData/CustomSongs/", txtbox))
+        //            {
+        //                Running = false;
+        //                break;
+        //            }
+
+        //            songs.Add(moveSong);
+        //            i++;
+        //        }
+
+
+        //        //Can fail so I'm asking the user to do it
+        //        //Support support = new Support();
+        //        //support.reloadsongsfolder();
+        //        //Wait for BMBF to finish stuff
+        //        Thread.Sleep(3000);
+
+        //        MainWindow.SetLastActionBeforeException("Asking user to reload songs");
+        //        Process.Start("http://" + MainWindow.config.IP + ":50000/main/tools");
+        //        MessageBox.Show(MainWindow.globalLanguage.qSU.code.reloadSongsFolder, "BMBF Manager - Quest Song Utilities");
+        //        r = MessageBox.Show(MainWindow.globalLanguage.qSU.code.reloadSongsFolderConfirmation, "BMBF Manager - Quest Song Utilities", MessageBoxButton.YesNo, MessageBoxImage.Question);
+        //        if (r == MessageBoxResult.No)
+        //        {
+        //            txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qSU.code.SongsFolderNotReloaded, songs.Count.ToString()));
+        //            Running = false;
+        //            return;
+        //        }
+        //        MainWindow.SetLastActionBeforeException("User reloaded songs");
+
+        //        if (importPlaylists)
+        //        {
+        //            PlaylistEditor PE = new PlaylistEditor();
+        //            PE.Show();
+
+        //            String PlaylistFolder = String.Join("\\", CustomSongsFolder.Split('\\').ToList<String>().GetRange(0, CustomSongsFolder.Split('\\').Length - 2)) + "\\Playlists";
+        //            foreach (String file in Directory.GetFiles(PlaylistFolder))
+        //            {
+        //                MainWindow.SetLastActionBeforeException("Importing BPList from: " + file);
+        //                PE.ImportBPList(JsonSerializer.Deserialize<BPList>(File.ReadAllText(file)), true);
+        //            }
+        //            MainWindow.SetLastActionBeforeException("Saving Playlist configuration");
+        //            PE.SaveAll();
+        //        }
+        //        else
+        //        {
+        //            MessageBox.Show(MainWindow.globalLanguage.qSU.code.notRestoringPlaylists, "BMBF Manager - Quest Song Utilities", MessageBoxButton.OK, MessageBoxImage.Warning);
+        //        }
+
+
+        //        MessageBox.Show(MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qSU.code.songLibraryMoved, songs.Count.ToString()), "BMBF Manager - Quest Song Utilities", MessageBoxButton.OK, MessageBoxImage.Information);
+        //    }
+        //    MainWindow.SetLastActionBeforeException("finished");
+        //    Running = false;
+        //    //} catch(Exception ex)
+        //    //{
+        //    //    MainWindow.SetLastActionBeforeException("Crash at song library transfer: \n\n" + ex.ToString());
+        //    //    MessageBox.Show("The program just got a error. Please contact ComputerElite and send him log.log which is located along the exe.", "BMBF Manager - Error report", MessageBoxButton.OK, MessageBoxImage.Error);
+        //    //}
+        //}
 
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
@@ -1458,14 +1524,11 @@ namespace BMBF_Manager
             {
                 if (!CD.EndsWith(".zip"))
                 {
-                    Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
                     continue;
                 }
 
-                Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate {
-                    f = System.IO.Path.GetFileNameWithoutExtension(CD);
-                    ZipFile.ExtractToDirectory(CD, dest + "\\" + f);
-                }));
+                f = System.IO.Path.GetFileNameWithoutExtension(CD);
+                ZipFile.ExtractToDirectory(CD, dest + "\\" + f);
 
             }
             txtbox.AppendText("\n" + MainWindow.globalLanguage.qSU.code.unzippingFilesComplete);
@@ -1500,10 +1563,9 @@ namespace BMBF_Manager
             {
                 txtbox.AppendText("\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.qSU.code.autoModeOn, exe + "\\tmp"));
                 txtbox.ScrollToEnd();
-                Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
                 if (!copied)
                 {
-                    if (!MainWindow.aDBI.adb("pull /sdcard/BMBFData/CustomSongs/ \"" + exe + "\\tmp\"", txtbox))
+                    if (!MainWindow.aDBI.adb("pull /sdcard/ModData/com.beatgames.beatsaber/Mods/Songloader/CustomLevels/ \"" + exe + "\\tmp\"", txtbox))
                     {
                         return;
                     }

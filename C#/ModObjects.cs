@@ -2,12 +2,13 @@
 using System;
 using System.Text.Json;
 using SimpleJSON;
+using BMBF.Config;
 
 namespace ModObjects
 {
     public class ModUtils
     {
-        public List<Mod> MergeModLists(ModList primary, ModList secondary, JSONNode BMBF, int major, int minor, int patch)
+        public List<Mod> MergeModLists(ModList primary, ModList secondary, BMBFC BMBF, int major, int minor, int patch)
         {
             TimeoutWebClientShort c = new TimeoutWebClientShort();
             JSONNode CoreMods = JSON.Parse(c.DownloadString("https://raw.githubusercontent.com/BMBF/resources/master/com.beatgames.beatsaber/core-mods.json"));
@@ -35,18 +36,11 @@ namespace ModObjects
                 else
                 {
                     String oldModver = finished[Index].downloads[0].modversion;
-                    String[] allver = oldModver.Replace("\"", "").Split('.');
-                    List<int> finishedver = new List<int>();
-                    String[] newver = m.downloads[0].modversion.Split('.');
                     Boolean newer = false;
-                    foreach (String CV in allver)
-                    {
-                        finishedver.Add(Convert.ToInt32(CV));
-                    }
                     int e = 0;
                     try
                     {
-                        if ((Convert.ToInt32(newver[0]) >= finishedver[0] && Convert.ToInt32(newver[1]) >= finishedver[1] && Convert.ToInt32(newver[2]) >= finishedver[2]) || (Convert.ToInt32(newver[0]) >= finishedver[0] && Convert.ToInt32(newver[1]) > finishedver[1]) || (Convert.ToInt32(newver[0]) > finishedver[0]))
+                        if (new Version(m.downloads[0].modversion).CompareTo(new Version(oldModver)) == 1)
                         {
                             newer = true;
                         }
@@ -124,6 +118,51 @@ namespace ModObjects
                 i++;
             }
             finished = new List<Mod>(tmp);
+
+            //Check if mod is installed
+            for(int ii = 0; ii < finished.Count; ii++)
+            {
+                foreach(BMBF.Config.Mod m in BMBF.Config.Mods)
+                {
+                    if (m.Id == finished[ii].ModID)
+                    {
+                        finished[ii].installed = true;
+                        finished[ii].Version = m.Version;
+                        finished[ii].GameVersion = m.Version;
+                        break;
+                    }
+                }
+            }
+
+            //Add installed mods without download
+            foreach(BMBF.Config.Mod m in BMBF.Config.Mods)
+            {
+                bool exists = false;
+                foreach (Mod m2 in finished)
+                {
+                    if(m2.ModID == m.Id)
+                    {
+                        exists = true;
+                        break;
+                    }
+                }
+                if(!exists)
+                {
+                    Mod add = new Mod();
+                    add.installed = true;
+                    add.core = m.Uninstallable;
+                    add.downloadable = false;
+                    add.GameVersion = m.TargetBeatsaberVersion;
+                    add.Version = m.Version;
+                    List<String> authors = new List<String>();
+                    authors.Add(m.Author);
+                    add.creator = authors;
+                    add.name = m.Name;
+                    add.ModID = m.Id;
+                    add.details = m.Description;
+                    finished.Add(add);
+                }
+            }
 
             return finished;
         }
@@ -222,6 +261,11 @@ namespace ModObjects
         public List<Download> downloads { get; set; } = new List<Download>();
         public int MatchingDownload = 0;
         public int MatchingGameVersion = 0;
+        public bool installed = false;
+        public bool downloadable = true;
+        public bool core = false;
+        public string GameVersion = "";
+        public string Version = "";
     }
 
     public class Download

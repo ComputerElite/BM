@@ -23,6 +23,7 @@ using BeatSaverAPI;
 using System.Text.RegularExpressions;
 using System.Text.Json;
 using ComputerUtils.RegxTemplates;
+using BMBFManager.Utils;
 
 namespace BMBF_Manager
 {
@@ -385,7 +386,7 @@ namespace BMBF_Manager
         {
             try
             {
-                MainWindow.bMBFUtils.Sync(txtbox);
+                BMBFUtils.Sync(txtbox);
                 txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.mainMenu.code.playlistBackup, "\\tmp\\Playlists.json"));
                 txtbox.ScrollToEnd();
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
@@ -426,10 +427,7 @@ namespace BMBF_Manager
                 var p = JSON.Parse(File.ReadAllText(Playlists));
 
                 j["Config"]["Playlists"] = p["Playlists"];
-                File.WriteAllText(exe + "\\tmp\\FUCKINBMBF.json", j["Config"].ToString());
-                Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate {
-                    postChanges(exe + "\\tmp\\FUCKINBMBF.json");
-                }));
+                BMBFUtils.PostChangesAndSync(txtbox, j["Config"].ToString());
             } catch
             {
                 txtbox.AppendText(MainWindow.globalLanguage.global.PL100);
@@ -449,17 +447,6 @@ namespace BMBF_Manager
             TimeoutWebClient client = new TimeoutWebClient();
             client.QueryString.Add("foo", "foo");
             client.UploadValues("http://" + MainWindow.config.IP + ":50000/host/beatsaber/reloadsongfolders", "POST", client.QueryString);
-        }
-
-        public void postChanges(String Config)
-        {
-            System.Threading.Thread.Sleep(5000);
-            using (TimeoutWebClient client = new TimeoutWebClient())
-            {
-                client.QueryString.Add("foo", "foo");
-                client.UploadFile("http://" + MainWindow.config.IP + ":50000/host/beatsaber/config", "PUT", Config);
-                client.UploadValues("http://" + MainWindow.config.IP + ":50000/host/beatsaber/commitconfig", "POST", client.QueryString);
-            }
         }
 
         public async void StartSupport(String Link)
@@ -485,7 +472,7 @@ namespace BMBF_Manager
                 BackupPlaylists();
                 resetassets();
                 reloadsongsfolder();
-                MainWindow.bMBFUtils.Sync(txtbox);
+                BMBFUtils.Sync(txtbox);
                 RestorePlaylists();
                 this.Close();
             } else if(section.StartsWith("mods/install/"))

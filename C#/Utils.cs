@@ -1,10 +1,12 @@
-﻿using BMBF_Manager;
+﻿using BMBF.Config;
+using BMBF_Manager;
 using ComputerUtils.RegxTemplates;
 using System;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Net;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Controls;
@@ -58,6 +60,7 @@ namespace BMBFManager.Utils
 
             foreach (String ADB in MainWindow.config.CachedADBPaths)
             {
+                //redirect output
                 ProcessStartInfo s = new ProcessStartInfo();
                 s.UseShellExecute = false;
                 s.FileName = ADB.Replace("User", User);
@@ -141,6 +144,7 @@ namespace BMBFManager.Utils
 
         public async Task DelayCheck()
         {
+            //Delay 500 ms without blocking thread  
             var frame = new DispatcherFrame();
             new Thread((ThreadStart)(() =>
             {
@@ -156,6 +160,7 @@ namespace BMBFManager.Utils
 
             foreach (String ADB in MainWindow.config.CachedADBPaths)
             {
+                //redirect output
                 ProcessStartInfo s = new ProcessStartInfo();
                 s.CreateNoWindow = true;
                 s.UseShellExecute = false;
@@ -219,11 +224,36 @@ namespace BMBFManager.Utils
 
     public class BMBFUtils
     {
-        public bool Sync(TextBox txtbox)
+        public static bool PostChangesAndSync(TextBox txtbox, String ConfigString)
         {
             try
             {
-                System.Threading.Thread.Sleep(2000);
+                using (WebClient client = new WebClient())
+                {
+                    client.QueryString.Add("foo", "foo");
+                    client.UploadString("http://" + MainWindow.config.IP + ":50000/host/beatsaber/config", "PUT", ConfigString);
+                    client.UploadValues("http://" + MainWindow.config.IP + ":50000/host/beatsaber/commitconfig", "POST", client.QueryString);
+                }
+                return true;
+            }
+            catch
+            {
+                txtbox.AppendText(MainWindow.globalLanguage.global.BMBF100);
+                return false;
+            }
+        }
+
+        public static BMBFC GetBMBFConfig()
+        {
+            WebClient client = new WebClient();
+            return JsonSerializer.Deserialize<BMBFC>(client.DownloadString("http://" + MainWindow.config.IP + ":50000/host/beatsaber/config"));
+        }
+
+        public static bool Sync(TextBox txtbox)
+        {
+            try
+            {
+                Thread.Sleep(2000);
                 using (WebClient client = new WebClient())
                 {
                     client.QueryString.Add("foo", "foo");

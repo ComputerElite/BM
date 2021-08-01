@@ -5,6 +5,13 @@ using System.Text.Json;
 
 namespace BMBFManager.Config
 {
+    public class BackupConfig
+    {
+        public int BackupType { get; set; } = 0;
+        public bool BSBackup { get; set; } = false;
+        public bool BMBFBackup { get; set; } = false;
+        public Version BSVersion { get; set; } = new Version(1, 13, 2);
+    }
     public class ConfigFile
     {
         public string IP { get; set; } = "";

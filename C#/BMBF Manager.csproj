@@ -107,6 +107,7 @@
     </Compile>
     <Compile Include="BeatSaber.cs" />
     <Compile Include="BeatSaverAPI.cs" />
+    <Compile Include="BList.cs" />
     <Compile Include="BMBFConfig.cs" />
     <Compile Include="BPLists.xaml.cs">
       <DependentUpon>BPLists.xaml</DependentUpon>
@@ -246,16 +247,22 @@
     <Resource Include="Main10.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="PlaylistEditor.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="BBBU4.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="QSU4.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Support8.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="PlaylistEditor2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="QSU5.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="BBBU5_A.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="BBBU5_B.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="PlaylistEditor3.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

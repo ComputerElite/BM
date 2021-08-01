@@ -1,4 +1,5 @@
-﻿using DiscordRPC;
+﻿using BMBF_Manager;
+using DiscordRPC;
 using System;
 
 namespace DCRPManager

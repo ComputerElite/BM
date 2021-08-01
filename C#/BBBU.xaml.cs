@@ -1,4 +1,5 @@
-﻿using ComputerUtils.RegxTemplates;
+﻿using BMBFManager.Config;
+using ComputerUtils.RegxTemplates;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using SimpleJSON;
 using System;
@@ -22,6 +23,10 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using System.Text.Json.Serialization;
+using System.Text.Json;
+using BMBF.Config;
+using BMBFManager.Utils;
 
 namespace BMBF_Manager
 {
@@ -30,16 +35,16 @@ namespace BMBF_Manager
     /// </summary>
     public partial class BBBU : Window
     {
-        Boolean draggable = true;
-        Boolean running = false;
+        bool draggable = true;
+        bool running = false;
         String exe = AppDomain.CurrentDomain.BaseDirectory.Substring(0, AppDomain.CurrentDomain.BaseDirectory.Length - 1);
-        String Songs = "";
+        String SongsOld = "";
         String Playlists = "";
         String Mods = "";
         String Scores = "";
         String APKs = "";
         String BackupF = "";
-        JSONNode BackupConfig = JSON.Parse("{}");
+        BackupConfig BackupConfig = new BackupConfig();
 
         public BBBU()
         {
@@ -65,7 +70,6 @@ namespace BMBF_Manager
             Convert();
             getBackups();
 
-            RSongs.IsChecked = true;
             RPlaylists.IsChecked = true;
             RScores.IsChecked = true;
             RMods.IsChecked = true;
@@ -73,7 +77,7 @@ namespace BMBF_Manager
             RAPK.IsChecked = false;
             RAPK.Visibility = Visibility.Hidden;
 
-            ChangeImage("BBBU4.png");
+            ChangeImage("BBBU5_A.png");
         }
 
         public void ApplyLanguage()
@@ -81,7 +85,6 @@ namespace BMBF_Manager
             RestoreB.Content = MainWindow.globalLanguage.bBBU.UI.restoreButton;
             BackupB.Content = MainWindow.globalLanguage.bBBU.UI.backupButton;
             ABackupB.Content = MainWindow.globalLanguage.bBBU.UI.AdvancedBackupButton;
-            RSongs.Content = MainWindow.globalLanguage.bBBU.UI.restoreSongsBox;
             RPlaylists.Content = MainWindow.globalLanguage.bBBU.UI.restorePlaylistsBox;
             RScores.Content = MainWindow.globalLanguage.bBBU.UI.restoreScoresBox;
             RMods.Content = MainWindow.globalLanguage.bBBU.UI.restoreModsBox;
@@ -113,13 +116,20 @@ namespace BMBF_Manager
                     {
                         Console.WriteLine(folder);
                         String backupName = new DirectoryInfo(folder).Name;
-                        Directory.Move(folder, exe + "\\BBBUBackups\\" + backupName);
-                        txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.bBBU.code.movedBackup, backupName));
+                        try
+                        {
+                            Directory.Move(folder, exe + "\\BBBUBackups\\" + backupName);
+                            txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.bBBU.code.movedBackup, backupName));
+                        } catch
+                        {
+                            txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.bBBU.code.backupNotMoved, backupName));
+                        }
+                        
                     }
                 }
                 else
                 {
-                    MessageBox.Show(MainWindow.globalLanguage.bBBU.code.selectValidDir, "BMBF Manager - BMBF Beat Saber backup Utility", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show(MainWindow.globalLanguage.bBBU.code.selectValidDir, "BMBF Manager - BMBF Beat Saber Backup Utility", MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
 
             }
@@ -187,7 +197,14 @@ namespace BMBF_Manager
                 running = false;
                 return;
             }
-
+            Version version = new Version(MainWindow.config.GameVersion);
+            try
+            {
+                WebClient c = new WebClient();
+                BMBFC config = BMBFUtils.GetBMBFConfig();
+                version = new Version(config.BeatSaberVersion);
+            } catch { }
+            BackupConfig.BSVersion = version;
             if(Advanced)
             {
                 MessageBoxResult r = MessageBox.Show(MainWindow.globalLanguage.bBBU.code.advancedBackupWarning, "BMBF Manager - BMBF Beat Saber Backup Utility", MessageBoxButton.YesNo, MessageBoxImage.Warning);
@@ -210,7 +227,7 @@ namespace BMBF_Manager
                 return;
             }
 
-            BackupConfig = JSON.Parse("{}");
+            BackupConfig = new BackupConfig();
 
             //Scores
             txtbox.AppendText("\n\n" + MainWindow.globalLanguage.bBBU.code.backingUpScores);
@@ -222,9 +239,9 @@ namespace BMBF_Manager
             txtbox.AppendText("\n" + MainWindow.globalLanguage.bBBU.code.backedUpScores + "\n");
             txtbox.ScrollToEnd();
 
-            //Songs
+            //Songs (now in ModData)
 
-            QSE();
+            //QSE();
             //MainWindow.aDBI.adb("pull /sdcard/BMBFData/CustomSongs \"" + BackupF + "\"");
 
             //Playlists
@@ -242,16 +259,16 @@ namespace BMBF_Manager
 
             //Mods
 
-            ModsB();
+            MainWindow.aDBI.adb("pull /sdcard/BMBFData/Mods \"" + BackupF + "\"", txtbox);
 
             if (Advanced)
             {
                 BackupAPK();
-                if(!BackupConfig["BMBFBackup"])
+                if(!BackupConfig.BMBFBackup)
                 {
                     MessageBox.Show(MainWindow.globalLanguage.bBBU.code.bMBFAPKBackupFailed, "BMBF Manager - BMBF Beat Saber Backup Utility", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
-                if (!BackupConfig["BSBackup"])
+                if (!BackupConfig.BSBackup)
                 {
                     MessageBox.Show(MainWindow.globalLanguage.bBBU.code.bSAPKBackupFailed, "BMBF Manager - BMBF Beat Saber Backup Utility", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
@@ -259,13 +276,12 @@ namespace BMBF_Manager
 
             if(Advanced)
             {
-                BackupConfig["BackupType"] = 1;
+                BackupConfig.BackupType = 1;
             } else
             {
-                BackupConfig["BackupType"] = 0;
+                BackupConfig.BackupType = 0;
             }
-            BackupConfig["Qosmetics"] = true;
-            File.WriteAllText(BackupF + "\\Backup.json", BackupConfig.ToString());
+            File.WriteAllText(BackupF + "\\Backup.json", JsonSerializer.Serialize(BackupConfig));
 
             txtbox.AppendText("\n\n\n" + MainWindow.globalLanguage.bBBU.code.backupMade);
             txtbox.ScrollToEnd();
@@ -302,7 +318,12 @@ namespace BMBF_Manager
             }
 
             //Get Backup Folders
-            BackupFGet();
+            if(!BackupFGet())
+            {
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.bBBU.code.backupDoesntExist, Backups.SelectedValue.ToString()));
+                running = false;
+                return;
+            }
 
             //Check Quest IP
             if (!MainWindow.iPUtils.CheckIP(Quest))
@@ -353,33 +374,55 @@ namespace BMBF_Manager
                 if (Directory.Exists(BackupF + "\\Configs")) MainWindow.aDBI.adb("push \"" + BackupF + "\\Configs\" /sdcard/ModData/com.beatgames.beatsaber/", txtbox);
                 if (Directory.Exists(BackupF + "\\Qosmetics")) MainWindow.aDBI.adb("push \"" + BackupF + "\\Qosmetics\" /sdcard/ModData/com.beatgames.beatsaber/Mods/", txtbox);
                 if (Directory.Exists(BackupF + "\\com.beatgames.beatsaber")) MainWindow.aDBI.adb("push \"" + BackupF + "\\com.beatgames.beatsaber\" /sdcard/ModData/", txtbox);
+                if(Directory.Exists(SongsOld))
+                {
+                    if (CheckVer() == 0)
+                    {
+                        txtbox.AppendText("\n\n" + MainWindow.globalLanguage.bBBU.code.uploadingSongs);
+                        Upload(SongsOld, ".zip");
+                        txtbox.AppendText("\n" + MainWindow.globalLanguage.bBBU.code.uploadedSongs);
+                    }
+                    else if (CheckVer() == 1)
+                    {
+                        txtbox.AppendText("\n" + MainWindow.globalLanguage.bBBU.code.pushingSongs);
+                        if(Directory.Exists(SongsOld))
+                        {
+                            Directory.Move(SongsOld, BackupF + "\\CustomLevels");
+                        }
+                        MainWindow.aDBI.adb("push \"" + BackupF + "\\CustomLevels\" /sdcard/ModData/com.beatgames.beatsaber/Mods/SongLoader/", txtbox);
+                        txtbox.AppendText("\n" + MainWindow.globalLanguage.bBBU.code.pushedSongs);
+                    }
+                }
                 txtbox.AppendText("\n" + MainWindow.globalLanguage.bBBU.code.pushedModData);
                 txtbox.ScrollToEnd();
             }
-
-            //Songs
-            if ((bool)RSongs.IsChecked)
-            {
-                if (CheckVer() == 0)
-                {
-                    txtbox.AppendText("\n\n" + MainWindow.globalLanguage.bBBU.code.uploadingSongs);
-                    Upload(Songs);
-                    txtbox.AppendText("\n" + MainWindow.globalLanguage.bBBU.code.uploadedSongs);
-                }
-                else if (CheckVer() == 1)
-                {
-                    txtbox.AppendText("\n" + MainWindow.globalLanguage.bBBU.code.pushingSongs);
-                    MainWindow.aDBI.adb("push \"" + Songs + "\" /sdcard/BMBFData", txtbox);
-                    txtbox.AppendText("\n" + MainWindow.globalLanguage.bBBU.code.pushedSongs);
-                }
-                txtbox.ScrollToEnd();
-            }
+                
 
             //Playlists
             if ((bool)RPlaylists.IsChecked)
             {
-                PlaylistsR();
-                PushPNG(Playlists + "\\Playlists");
+                Version version = new Version(MainWindow.config.GameVersion);
+                try
+                {
+                    WebClient c = new WebClient();
+                    BMBFC config = BMBFUtils.GetBMBFConfig();
+                    version = new Version(config.BeatSaberVersion);
+                }
+                catch { }
+                MessageBoxResult r = MessageBoxResult.Yes;
+                if(BackupConfig.BSVersion.CompareTo(new Version(1, 13, 4)) == -1 && version.CompareTo(new Version(1, 13, 3)) == 1)
+                {
+                    r = MessageBox.Show(MainWindow.globalLanguage.bBBU.code.backupOld, "BMBF Manager - BMBF and Beat Saber backup Utility", MessageBoxButton.YesNo, MessageBoxImage.Exclamation);
+                }
+                if(r == MessageBoxResult.Yes)
+                {
+                    PlaylistsR();
+                    PushPNG(Playlists + "\\Playlists");
+                } else
+                {
+                    txtbox.AppendText(MainWindow.globalLanguage.playlistEditor.code.aborting);
+                }
+                
                 txtbox.ScrollToEnd();
             }
 
@@ -387,7 +430,7 @@ namespace BMBF_Manager
             if ((bool)RMods.IsChecked)
             {
                 txtbox.AppendText("\n\n" + MainWindow.globalLanguage.bBBU.code.uploadingMods);
-                Upload(Mods);
+                Upload(Mods, ".qmod");
                 txtbox.AppendText("\n" + MainWindow.globalLanguage.bBBU.code.uploadedMods);
                 txtbox.ScrollToEnd();
             }
@@ -399,14 +442,13 @@ namespace BMBF_Manager
 
         public void BackupAPK()
         {
-            BackupConfig["BSBackup"] = false;
-            BackupConfig["BMBFBackup"] = false;
+            BackupConfig.BSBackup = false;
+            BackupConfig.BMBFBackup = false;
             txtbox.AppendText("\n\n" + MainWindow.globalLanguage.bBBU.code.backingUpBSAPK);
             String moddedBS = MainWindow.aDBI.adbS("shell pm path com.beatgames.beatsaber", txtbox).Replace("package:", "").Replace(System.Environment.NewLine, "");
             if (MainWindow.aDBI.adb("pull " + moddedBS + " \"" + APKs + "\\BeatSaber.apk\"", txtbox))
             {
-                BackupConfig["BSBackup"] = true;
-                if(!File.Exists(APKs + "\\BeatSaber.apk")) BackupConfig["BSBackup"] = false;
+                if(File.Exists(APKs + "\\BeatSaber.apk")) BackupConfig.BSBackup = true;
                 txtbox.AppendText("\n" + MainWindow.globalLanguage.bBBU.code.backedUpBSAPK);
             }
 
@@ -414,8 +456,7 @@ namespace BMBF_Manager
             String BMBF = MainWindow.aDBI.adbS("shell pm path com.weloveoculus.BMBF", txtbox).Replace("package:", "").Replace(System.Environment.NewLine, "");
             if (MainWindow.aDBI.adb("pull " + BMBF + " \"" + APKs + "\\BMBF.apk\"", txtbox))
             {
-                BackupConfig["BMBFBackup"] = true;
-                if (!File.Exists(APKs + "\\BMBF.apk")) BackupConfig["BMBFBackup"] = false;
+                if (File.Exists(APKs + "\\BMBF.apk")) BackupConfig.BMBFBackup = true;
                 txtbox.AppendText("\n" + MainWindow.globalLanguage.bBBU.code.backedUpBMBFAPK);
             }
 
@@ -428,7 +469,7 @@ namespace BMBF_Manager
 
         public void RestoreAPK()
         {
-            if (!BackupConfig["BSBackup"].AsBool)
+            if (!BackupConfig.BSBackup)
             {
                 MessageBox.Show(MainWindow.globalLanguage.bBBU.code.bSAPKNotFound, "BMBF Manager - BMBF Beat Saber Backup Utility", MessageBoxButton.OK, MessageBoxImage.Error);
                 txtbox.AppendText("\n\n" + MainWindow.globalLanguage.bBBU.code.aPKRestoringAborted);
@@ -510,9 +551,8 @@ namespace BMBF_Manager
 
         public int CheckVer()
         {
-            String[] directories = Directory.GetFiles(Songs);
-
-
+            if (!Directory.Exists(SongsOld)) return -1;
+            String[] directories = Directory.GetFiles(SongsOld);
 
             for (int i = 0; i < directories.Length; i++)
             {
@@ -546,9 +586,6 @@ namespace BMBF_Manager
         {
             try
             {
-                
-
-
                 String PlaylistsX;
 
                 txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.bBBU.code.restoringPlaylists, Playlists + "\\Playlists.json"));
@@ -568,11 +605,7 @@ namespace BMBF_Manager
                 var p = JSON.Parse(File.ReadAllText(PlaylistsX));
 
                 j["Config"]["Playlists"] = p["Playlists"];
-                File.WriteAllText(exe + "\\tmp\\config.json", j["Config"].ToString());
-
-                Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate {
-                    postChanges(exe + "\\tmp\\config.json");
-                }));
+                BMBFUtils.PostChangesAndSync(txtbox, j["Config"].ToString().Replace("\"SongID\"", "\"Hash\""));
                 txtbox.AppendText("\n\n" + MainWindow.globalLanguage.mainMenu.code.playlistsRestored);
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
             }
@@ -582,23 +615,7 @@ namespace BMBF_Manager
             }
         }
 
-        public void postChanges(String Config)
-        {
-            try
-            {
-                using (WebClient client = new WebClient())
-                {
-                    client.QueryString.Add("foo", "foo");
-                    client.UploadFile("http://" + MainWindow.config.IP + ":50000/host/beatsaber/config", "PUT", Config);
-                    client.UploadValues("http://" + MainWindow.config.IP + ":50000/host/beatsaber/commitconfig", "POST", client.QueryString);
-                }
-            } catch
-            {
-                txtbox.AppendText(MainWindow.globalLanguage.global.BMBF100);
-            }
-        }
-
-        public void Upload(String Path)
+        public void Upload(String Path, string fileType)
         {
             
             String[] directories = Directory.GetFiles(Path);
@@ -607,125 +624,37 @@ namespace BMBF_Manager
             for (int i = 0; i < directories.Length; i++)
             {
                 WebClient client = new WebClient();
-
+                if (!directories[i].ToLower().EndsWith(fileType)) continue;
                 txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.bBBU.code.uploadingToBMBF, directories[i]));
-                Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate {
-                    try
-                    {
-                        client.UploadFile("http://" + MainWindow.config.IP + ":50000/host/beatsaber/upload?overwrite", directories[i]);
-                    }
-                    catch
-                    {
-                        txtbox.AppendText(MainWindow.globalLanguage.global.BMBF100);
-                    }
-                }));
+                try
+                {
+                    client.UploadFile("http://" + MainWindow.config.IP + ":50000/host/beatsaber/upload?overwrite", directories[i]);
+                }
+                catch
+                {
+                    txtbox.AppendText(MainWindow.globalLanguage.global.BMBF100);
+                }
 
                 if (i % 20 == 0 && i != 0)
                 {
                     txtbox.AppendText("\n\n" + MainWindow.globalLanguage.global.syncingToBS);
-                    MainWindow.bMBFUtils.Sync(txtbox);
+                    BMBFUtils.Sync(txtbox);
                     System.Threading.Thread.Sleep(2000);
                 }
             }
-            MainWindow.bMBFUtils.Sync(txtbox);
+            BMBFUtils.Sync(txtbox);
         }
 
-        public void BackupFGet()
+        public bool BackupFGet()
         {
-
+            if (!Directory.Exists(exe + "\\BBBUBackups\\" + Backups.SelectedValue)) return false;
             BackupF = exe + "\\BBBUBackups\\" + Backups.SelectedValue;
-            Songs = BackupF + "\\CustomSongs";
+            SongsOld = BackupF + "\\CustomSongs";
             Mods = BackupF + "\\Mods";
             Scores = BackupF + "\\Scores";
             Playlists = BackupF + "\\Playlists";
             APKs = BackupF + "\\APK";
-        }
-
-        public void ModsB()
-        {
-            ArrayList list = new ArrayList();
-            int overwritten = 0;
-            int exported = 0;
-            String Name = "";
-            String Source = "";
-
-            txtbox.AppendText("\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.bBBU.code.copyingModsToTMP, exe + "\\tmp"));
-            Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
-            MainWindow.aDBI.adb("pull /sdcard/BMBFData/Mods/ \"" + exe + "\\tmp\"", txtbox);
-            if (Directory.Exists(exe + "\\tmp\\Mods"))
-            {
-                Source = exe + "\\tmp\\Mods";
-            }
-            else
-            {
-                Source = exe + "\\tmp";
-            }
-
-
-            foreach (String cd in Directory.GetDirectories(Source))
-            {
-                txtbox.AppendText("\n");
-
-                try
-                {
-                    JSONNode bmbfmod = JSON.Parse(File.ReadAllText(cd + "\\" + "bmbfmod.json"));
-                    Name = bmbfmod["name"];
-
-                    Name = Name.Replace("/", "");
-                    Name = Name.Replace(":", "");
-                    Name = Name.Replace("*", "");
-                    Name = Name.Replace("?", "");
-                    Name = Name.Replace("\"", "");
-                    Name = Name.Replace("<", "");
-                    Name = Name.Replace(">", "");
-                    Name = Name.Replace("|", "");
-                    Name = Name.Replace(@"\", "");
-                    Name = Name.Trim();
-
-                    int Time = 0;
-                    while (list.Contains(Name.ToLower()))
-                    {
-                        Time++;
-                        if (Time > 1)
-                        {
-                            Name = Name.Substring(0, Name.Length - 1);
-                            Name = Name + Time;
-                        }
-                        else
-                        {
-                            Name = Name + " " + Time;
-                        }
-
-                    }
-                    list.Add(Name.ToLower());
-                    txtbox.AppendText("\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.bBBU.code.modName, Name));
-                    txtbox.AppendText("\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.bBBU.code.folder, cd));
-
-                    bool v = File.Exists(Mods + "\\" + Name + ".zip");
-                    if (v)
-                    {
-                        File.Delete(Mods + "\\" + Name + ".zip");
-                        txtbox.AppendText("\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.bBBU.code.fileOverwritten, Mods + "\\" + Name + ".zip"));
-
-                        overwritten++;
-                    }
-
-                    zip(cd, Mods + "\\" + Name + ".zip");
-                    exported++;
-                    Name = "";
-                    Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
-                    txtbox.ScrollToEnd();
-                }
-                catch
-                {
-
-                }
-
-
-            }
-
-            txtbox.AppendText("\n\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.bBBU.code.finishedModBackup, exported.ToString()));
-            txtbox.ScrollToEnd();
+            return true;
         }
 
         public void PlaylistB()
@@ -837,7 +766,7 @@ namespace BMBF_Manager
 
 
 
-                    zip(cd, Songs + "\\" + Name + ".zip");
+                    zip(cd, SongsOld + "\\" + Name + ".zip");
                     exported++;
                     Name = "";
                     Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
@@ -907,16 +836,11 @@ namespace BMBF_Manager
                 return false;
             }
 
-            Songs = BackupF + "\\CustomSongs";
             Mods = BackupF + "\\Mods";
             Scores = BackupF + "\\Scores";
             Playlists = BackupF + "\\Playlists";
             APKs = BackupF + "\\APK";
 
-            if (!Directory.Exists(Songs))
-            {
-                Directory.CreateDirectory(Songs);
-            }
             if (!Directory.Exists(Mods))
             {
                 Directory.CreateDirectory(Mods);
@@ -1029,23 +953,22 @@ namespace BMBF_Manager
         private void GetBackupInfo(object sender, SelectionChangedEventArgs e)
         {
             if (Backups.SelectedIndex == 0) return;
+            BackupConfig = new BackupConfig();
             if(File.Exists(exe + "\\BBBUBackups\\" + Backups.SelectedValue + "\\Backup.json"))
             {
-                BackupConfig = JSON.Parse(File.ReadAllText(exe + "\\BBBUBackups\\" + Backups.SelectedValue + "\\Backup.json"));
-            } else
-            {
-                BackupConfig = JSON.Parse("{}");
-                BackupConfig["BackupType"] = 0;
+                BackupConfig = JsonSerializer.Deserialize<BackupConfig>(File.ReadAllText(exe + "\\BBBUBackups\\" + Backups.SelectedValue + "\\Backup.json"));
             }
 
-            if(BackupConfig["BackupType"] == 0)
+            if(BackupConfig.BackupType == 0)
             {
                 RAPK.Visibility = Visibility.Hidden;
                 RAPK.IsChecked = false;
+                ChangeImage("BBBU5_A.png");
             } else
             {
                 RAPK.Visibility = Visibility.Visible;
                 RAPK.IsChecked = true;
+                ChangeImage("BBBU5_B.png");
             }
         }
 

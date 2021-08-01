@@ -97,7 +97,7 @@ namespace BMBFManager.Language
         //BMBF Updates
         public String operationRunning { get; set; } = "A operation is already running. Please try again after it has finished.";
         public String onQuest2 { get; set; } = "Are you on an Oculus Quest 2?";
-        public String moddedBSDetected { get; set; } = "Modded Beat Saber has been detected. If you press yes I'll uninstall Beat Saber and BMBF and make a Backup of it to restore. If you press no you'll cancle Updating.";
+        public String moddedBSDetected { get; set; } = "Modded Beat Saber has been detected. If you press yes I'll uninstall Beat Saber and BMBF and make a Backup of it to restore. If you press no I'll cancle Updating.";
         public String bMBFUpdatatingAborted { get; set; } = "BMBF Updating aborted.";
         public String playlistBackup { get; set; } = "Backing up Playlist to {0}";
         public String playlistBackupFinished { get; set; } = "Backed up Playlists to {0}";
@@ -176,10 +176,12 @@ namespace BMBFManager.Language
         public String selectBBBUFolderInfo { get; set; } = "I'll open a window for you. Please choose the folder in which your BMBF Beat Saber Backup Utility Installation is located. I'll then transfer all Backups";
         public String selectValidDir { get; set; } = "Please select a valid Directory";
         public String movedBackup { get; set; } = "Moved Backup {0}";
+        public String backupNotMoved { get; set; } = "Backup {0} couldn't be moved";
         public String backupsMoved { get; set; } = "All Backups moved";
+        public String backupDoesntExist { get; set; } = "The Backup {0} doesn't exist.";
 
         //Backup
-        public String advancedBackupWarning { get; set; } = "This Backup Method will Backup the Beat Saber APK and BMBF APK as well. If you don't make another Backup before you restore this Backup you have to mod Beat Saber again. Only do this when you know what you're doing. Note: This has only been tested on Quest 1. If you are on Quest 2 feel free to contact me and say if it worked.\nDo you want to continue?";
+        public String advancedBackupWarning { get; set; } = "This Backup Method will Backup the Beat Saber APK and BMBF APK as well. If you don't make another Backup before you restore this Backup you have to mod Beat Saber again. Only do this when you know what you're doing.\nDo you want to continue?";
         public String backupAborted { get; set; } = "Backup Aborted.";
         public String backupExists { get; set; } = "This Backup already exists!";
         public String backingUpScores { get; set; } = "Backing up scores";
@@ -198,7 +200,7 @@ namespace BMBFManager.Language
         public String copyingModsToTMP { get; set; } = "Copying all Mods to {0}. Please be patient.";
         public String modName { get; set; } = "Mod Name: {0}";
         public String folder { get; set; } = "Folder: {0}";
-        public String fileOverwritten { get; set; } = "overwritten file: {0}";
+        public String fileOverwritten { get; set; } = "Overwritten file: {0}";
         public String finishedModBackup { get; set; } = "Finished! Backed up {0} Mods";
         public String copyingSongsToTMP { get; set; } = "Copying all Songs to {0}. Please be patient.";
         public String isNotSongs { get; set; } = "{0} is no Song";
@@ -232,17 +234,18 @@ namespace BMBFManager.Language
         public String restoredGameData { get; set; } = "Restored Game Data";
         public String restoringPlaylists { get; set; } = "Restoring Playlist from {0}";
         public String uploadingToBMBF { get; set; } = "Uploading {0} to BMBF";
+
+        public String backupOld { get; set; } = "The backup you're trying to restore has been made for BMBF 1.13.3 and lower. It may corrupt your BMBF do you want to proceed?";
     }
 
     public class BBBUUI
     {
         public String backupButton { get; set; } = "Backup";
         public String AdvancedBackupButton { get; set; } = "Advanced backup";
-        public String restoreSongsBox { get; set; } = "Restore Songs";
         public String restorePlaylistsBox { get; set; } = "Restore Playlists";
         public String restoreScoresBox { get; set; } = "Restore Scores";
         public String restoreModsBox { get; set; } = "Restore Mods";
-        public String restoreModDataBox { get; set; } = "Restore ModData\n(includes configs\nand way more)";
+        public String restoreModDataBox { get; set; } = "Restore ModData\n(includes Songs,\nConfigs, Qosmetics\nand way more)";
         public String restoreVersionBox { get; set; } = "Restore old Game Version";
         public String restoreButton { get; set; } = "Restore";
     }
@@ -325,6 +328,7 @@ namespace BMBFManager.Language
         public String ModInstalledList { get; set; } = "installed";
         public String ModLatestList { get; set; } = "latest";
         public String ModGameVersionList { get; set; } = "Game Version";
+        public String UninstallModButton { get; set; } = "Uninstall selected mod";
     }
 
     public class ModsCode
@@ -348,6 +352,10 @@ namespace BMBFManager.Language
         public String syncedToQuest { get; set; } = "Mod {0} was synced to your Quest.";
         public String unableToSync { get; set; } = "Couldn't sync with BeatSaber. Needs to be done manually.";
         public String enableManually { get; set; } = "Since you choose to install this mod you need to enable it manually. I uploaded it.";
+        public String gameVerNull { get; set; } = "GameVersion is null. Please restart BMBF Manager so I can get the right GameVersion";
+        public String modNotDownloadable { get; set; } = "The mod {0} can't be downloaded/updated. I'm just showing it as you have it installed";
+        public String modNotInstalled { get; set; } = "The mod {0} is not installed on your Quest.";
+        public String uninstalledMod { get; set; } = "Uninstalled {0}";
     }
 
     public class PlaylistEditor
@@ -366,11 +374,11 @@ namespace BMBFManager.Language
         public String deletePlaylistButton { get; set; } = "Delete Playlist";
         public String changeCoverButton { get; set; } = "Change Playlist Cover";
         public String importBPListButton { get; set; } = "Import BPList";
-        public String movePlaylistLeftButton { get; set; } = "<< Playlist";
-        public String moveSongLeftButton { get; set; } = "< Song";
-        public String movePlaylistRightButton { get; set; } = "Playlist >>";
-        public String moveSongRightButton { get; set; } = "Song >";
-        public String deleteSongButton { get; set; } = "Delete Song";
+        public String movePlaylistLeftButton { get; set; } = "< Add all songs";
+        public String moveSongLeftButton { get; set; } = "< Add Song";
+        public String movePlaylistRightButton { get; set; } = "Remove all";
+        public String moveSongRightButton { get; set; } = "Remove song";
+        public String deleteSongButton { get; set; } = "Remove Song";
         public String beastSaberButton { get; set; } = "Show Song on\nBeastSaber";
         public String beatSaverButton { get; set; } = "Show Song on\nBeatSaver";
         public String scoreSaberButton { get; set; } = "Search Song on\nScoreSaber";
@@ -387,13 +395,17 @@ namespace BMBFManager.Language
         public String artistList { get; set; } = "Artist";
         public String mapperList { get; set; } = "Mapper";
         public String chooseSong { get; set; } = "Choose a Song";
+        public String selectedPlaylistText { get; set; } = "Selected Playlist";
+        public String allSongsText { get; set; } = "All Songs";
+        public String pLUpButton { get; set; } = "Move Playlist up";
+        public String pLDownButton { get; set; } = "Move Playlist down";
     }
 
     public class PlaylistEditorCode
     {
         public String pENotes { get; set; } = "Some Notes for the Playlist Editor: Currently it is not possible to sort songs (the sorting is only for you). If you experience any issues hit me up on Discord.";
         public String loadPlaylists { get; set; } = "Please load your Playlists.";
-        public String somethingWentWrong { get; set; } = "Something went wrong";
+        public String zeroPlaylists { get; set; } = "You have no Playlist besides the base one.";
         public String playlistDoesntContainSongs { get; set; } = "The Playlists {0} doesn't contain any Songs.";
         public String couldntGetCover { get; set; } = "I couldn't get the Playlist Cover";
         public String songMustBeSelected { get; set; } = "You must have a Song selected";
@@ -436,6 +448,8 @@ namespace BMBFManager.Language
         //Cover changing
         public String picture { get; set; } = "Picture";
         public String coverChangingAborted { get; set; } = "Cover changing aborted";
+        public String coverChangingFailed { get; set; } = "Cover changing failed";
+        public String pleaseSync { get; set; } = "Please Save your changed first before changing a cover";
         public String changedPlaylistCover { get; set; } = "Changed Playlist Cover";
 
         //Create new PLaylist
@@ -446,9 +460,12 @@ namespace BMBFManager.Language
         public String renamePlaylist { get; set; } = "Renamed {0} to {1}";
 
         public String unsortedSongsWarning { get; set; } = "Warning! You still have unsorted songs (the playlist at the right). If you save you'll loose all those Songs! Do you wish to abort?";
-        public String savingAborted { get; set; } = "Saving Aborted"; 
+        public String savingFailed { get; set; } = "Saving failed"; 
         public String savingAbortedNoPlaylists { get; set; } = "Saving was aborted due to not having any Playlists at all.";
         public String saved { get; set; } = "Saved Playlists";
+
+        public String oneOrMoreSongsContained { get; set; } = "Your Playlist already has 1 or more songs you want to move.\nDo you want to skip the existing ones?";
+        public String songContained { get; set; } = "Your Playlist already has the song you want to add. \nDo you want to add it anyways?";
     }
 
     public class Qosmetics
@@ -536,6 +553,7 @@ namespace BMBFManager.Language
         public String choosePlaylist { get; set; } = "Choose a Playlist!";
         public String makingBPList { get; set; } = "Making BPList {0}";
         public String downloadingPlaylistCover { get; set; } = "Downloading Playlist Cover";
+        public String skippingPlaylistCover { get; set; } = "Skipping Playlist Cover";
         public String downloadedPlaylistCover { get; set; } = "Downloaded Playlist Cover";
         public String bPListMade { get; set; } = "BPList {0} has been made at {1}";
 
@@ -602,6 +620,7 @@ namespace BMBFManager.Language
         public String SongsFolderNotReloaded { get; set; } = "Aborted Playlist restore since the Songs folder hasn't been reloaded. Installed {0} Songs.";
         public String tooMuchSongs { get; set; } = "I'm warning you, that you have more than 500 Songs ({0} Songs to be exacr) after you imported all your PC songs. This may/will cause issues. Do you want me to stop at 500 Songs (that's the safe limit)?";
         public String notRestoringPlaylists { get; set; } = "I wasn't able to reach BMBF to alter/retrieve your Playlist configuration. Your songs are ok but I'm unable to change the Playlists.";
+        public String couldntRestorePlaylists { get; set; } = "I was unable to pull your Playlists from your Quest. As a result they couldn't get transfered.";
     }
 
     public class Songs
@@ -656,6 +675,7 @@ namespace BMBFManager.Language
         public String uploadingBeatMap { get; set; } = "Uploading BeatMap {0} to BMBF";
         public String songWasSynced { get; set; } = "Song {0} was uploaded to your Quest.";
         public String couldntSync { get; set; } = "Couldn't sync with BeatSaber. Needs to be done manually.";
+        public String songInfo { get; set; } = "Name: {0}\nArtist: {1}\nMapper: {2}\nUpVotes: {3}\nDownVotes: {4}\nDownloads: {5}\nLength: {6}\nKey: {7}";
 
         //Song Checking
         public String infoMissing { get; set; } = "Fatal: Info.dat missing";
@@ -692,7 +712,7 @@ namespace BMBFManager.Language
         public String moveQSUButton { get; set; } = "Move Data from QSU";
         public String enableADBOutputButton { get; set; } = "Enable ADB Output";
         public String disableADBOutputButton { get; set; } = "Disable ADB Output";
-        public String KeepAliveButton { get; set; } = "Keep Alive (Quest 2)";
+        public String KeepAliveButton { get; set; } = "Keep Alive (currently broken)";
         public String CreditsButton { get; set; } = "Credits";
         public String enableDCRP { get; set; } = "Enable Discord rich presence";
         public String disableDCRP { get; set; } = "Disable Discord rich presence";

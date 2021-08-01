@@ -23,6 +23,7 @@ using System.Windows.Threading;
 using BMBF.Config;
 using System.Text.RegularExpressions;
 using ComputerUtils.RegxTemplates;
+using BMBFManager.Utils;
 
 namespace BMBF_Manager
 {
@@ -292,7 +293,7 @@ namespace BMBF_Manager
             {
                 txtbox.AppendText("\n\n" + MainWindow.globalLanguage.global.syncingToBS);
             }));
-            MainWindow.bMBFUtils.Sync(txtbox);
+            BMBFUtils.Sync(txtbox);
             txtbox.AppendText("\n\n" + MainWindow.globalLanguage.global.syncedToBS);
             Running = false;
         }

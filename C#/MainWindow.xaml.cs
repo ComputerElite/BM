@@ -37,10 +37,10 @@ namespace BMBF_Manager
     /// </summary>
     public partial class MainWindow : Window
     {
-        int MajorV = 1;
-        int MinorV = 15;
-        int PatchV = 0;
-        Boolean Preview = false;
+        public static int MajorV = 1;
+        public static int MinorV = 16;
+        public static int PatchV = 0;
+        public static Boolean Preview = true;
         public static bool log = false;
 
         public static ConfigFile config = new ConfigFile();
@@ -52,11 +52,11 @@ namespace BMBF_Manager
         public static JSONNode UpdateJSON = JSON.Parse("{}");
         JSONNode BMBFStable = JSON.Parse("{}");
         bool Quest2 = false;
-        public static String lastActionBeforeException = "N/A";
         public static PresenceManager DCRPM;
         public static ADBInteractor aDBI = new ADBInteractor();
         public static IPUtils iPUtils = new IPUtils();
         public static BMBFUtils bMBFUtils = new BMBFUtils();
+        public static List<String> lastActionsBeforeException = new List<string>();
 
         public static Language globalLanguage = new Language();
 
@@ -65,7 +65,7 @@ namespace BMBF_Manager
             InitializeComponent();
             CheckExecutionDir();
 
-            SetupExceptionHandlers();
+            //SetupExceptionHandlers();
 
             if (!Directory.Exists(exe + "\\Backups")) Directory.CreateDirectory(exe + "\\Backups");
             if (!Directory.Exists(exe + "\\Backup")) Directory.CreateDirectory(exe + "\\Backup");
@@ -115,7 +115,8 @@ namespace BMBF_Manager
 
         public static void SetLastActionBeforeException(String msg, [CallerMemberName] String callerName = "N/A")
         {
-            lastActionBeforeException = "[" + callerName + "] " + msg;
+            lastActionsBeforeException.Add("[" + callerName + "] " + msg);
+            if (lastActionsBeforeException.Count > 20) lastActionsBeforeException.RemoveAt(lastActionsBeforeException.Count - 1);
         }
 
         public void CheckExecutionDir()
@@ -154,7 +155,7 @@ namespace BMBF_Manager
             Save += "\n- On Quest 2 (probably not right): " + Quest2.ToString();
             Save += "\n- Execution directory (Usernames Removed): " + RegexTemplates.RemoveUserName(exe);
             Save += "\n- Language: " + globalLanguage.language + " by " + globalLanguage.translator;
-            Save += "\nLast action before Exception (not every function has this implemented so it might be wrong):\n\n" + lastActionBeforeException;
+            Save += "\nLast actions before Exception (not every function has this implemented so it might be wrong; up to 20):\n\n" + String.Join("\n- ", lastActionsBeforeException);
             Save += "\n\nException (Usernames Removed):\n   " + RegexTemplates.RemoveUserName(e.ToString());
             File.AppendAllText(exe + "\\Crash.log", Save);
             MessageBoxResult r = MessageBox.Show(globalLanguage.mainMenu.code.Exception + "\n\n" + e.ToString(), "BMBF Manager - Exception Reporter", MessageBoxButton.OKCancel, MessageBoxImage.Error);
@@ -228,7 +229,7 @@ namespace BMBF_Manager
 
             try
             {
-                //File.WriteAllText("D:\\en.json", JsonSerializer.Serialize(globalLanguage));
+                File.WriteAllText("D:\\en.json", JsonSerializer.Serialize(globalLanguage));
             }
             catch { }
         }
@@ -902,11 +903,7 @@ namespace BMBF_Manager
                 var p = JSON.Parse(File.ReadAllText(Playlists));
 
                 j["Config"]["Playlists"] = p["Playlists"];
-                File.WriteAllText(exe + "\\tmp\\config.json", j["Config"].ToString());
-
-                Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate {
-                    postChanges(exe + "\\tmp\\config.json");
-                }));
+                BMBFUtils.PostChangesAndSync(txtbox, j["Config"].ToString());
                 txtbox.AppendText("\n\n" + globalLanguage.mainMenu.code.playlistsRestored);
                 txtbox.ScrollToEnd();
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
@@ -914,17 +911,6 @@ namespace BMBF_Manager
             catch
             {
                 txtbox.AppendText(globalLanguage.global.BMBF100);
-            }
-        }
-
-        public void postChanges(String Config)
-        {
-            System.Threading.Thread.Sleep(10000);
-            using (WebClient client = new WebClient())
-            {
-                client.QueryString.Add("foo", "foo");
-                client.UploadFile("http://" + config.IP + ":50000/host/beatsaber/config", "PUT", Config);
-                client.UploadValues("http://" + config.IP + ":50000/host/beatsaber/commitconfig", "POST", client.QueryString);
             }
         }
 

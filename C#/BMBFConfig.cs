@@ -7,32 +7,62 @@ namespace BMBF.Config
     public class BMBFC
     {
         public BMBFConfig Config { get; set; } = new BMBFConfig();
+        public String BeatSaberVersion { get; set; } = "";
+    }
+
+    public class Mod
+    {
+        public string Id { get; set; } = "";
+        public string Path { get; set; } = "";
+        public string Version { get; set; } = "";
+        public string TargetBeatsaberVersion { get; set; } = "";
+        public string Author { get; set; } = "";
+        public string Name { get; set; } = "";
+        public string CoverImageFilename { get; set; } = "";
+        public string Description { get; set; } = "";
+        public bool Installed { get; set; } = false;
+        public bool IsAwaitingSync { get; set; } = false;
+        public bool Uninstallable { get; set; } = false;
+        public JsonElement Porter { get; set; } = new JsonElement();
     }
 
     public class BMBFConfig
     {
+        public string ModsPath { get; set; } = "/sdcard/BMBFData/Mods/";
+        public string PlaylistsPath { get; set; } = "/sdcard/BMBFData/Playlists";
         public List<BMBFPlaylist> Playlists { get; set; } = new List<BMBFPlaylist>();
-        public List<JsonElement> Mods { get; set; } = new List<JsonElement>();
-        public JsonElement Saber { get; set; } = new JsonElement();
-        public JsonElement LeftColor { get; set; } = new JsonElement();
-        public JsonElement RightColor { get; set; } = new JsonElement();
-        public List<JsonElement> TextChanges { get; set; } = new List<JsonElement>();
+        public List<Mod> Mods { get; set; } = new List<Mod>();
+        public Dictionary<String, BMBFSong> KnownSongs { get; set; } = new Dictionary<String, BMBFSong>();
+
+        public List<BMBFSong> GetAllSongs()
+        {
+            List<BMBFSong> songs = new List<BMBFSong>();
+            foreach(String s in KnownSongs.Keys)
+            {
+                songs.Add(KnownSongs[s]);
+                //Console.WriteLine(KnownSongs[s].Hash);
+            }
+            return songs;
+        }
 
         public int GetTotalSongsCount()
         {
-            int i = 0;
-            foreach (BMBFPlaylist pl in Playlists) i += pl.SongList.Count;
-            return i;
+            return GetAllSongs().Count;
         }
     }
 
     public class BMBFPlaylist
     {
-        public String PlaylistID { get; set; } = "";
+        public String PlaylistId { get; set; } = "";
         public String PlaylistName { get; set; } = "N/A";
         public List<BMBFSong> SongList { get; set; } = new List<BMBFSong>();
-        public string CoverImageBytes { get; set; } = null;
-        public bool IsCoverLoaded { get; set; } = true;
+        public string Path { get; set; } = "";
+        public string CoverImageFilename { get; set; } = null;
+
+        public void Init()
+        {
+            this.PlaylistId = PlaylistName + DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString();
+        }
 
         public int GetSongCount()
         {
@@ -42,12 +72,18 @@ namespace BMBF.Config
 
     public class BMBFSong
     {
-        public String SongID { get; set; } = "";
+        public String Hash { get; set; } = "";
         public String SongName { get; set; } = "";
         public String SongSubName { get; set; } = "";
         public String SongAuthorName { get; set; } = "";
         public String LevelAuthorName { get; set; } = "";
-        public String CustomSongPath { get; set; } = null;
+        public String Path { get; set; } = null;
+
+        public override bool Equals(object obj)
+        {
+            BMBFSong s = (BMBFSong)obj;
+            return Hash == s.Hash && SongName == s.SongName && SongSubName == s.SongSubName && SongAuthorName == s.SongAuthorName && LevelAuthorName == s.LevelAuthorName && Path == s.Path;
+        }
     }
 
     public class BPList
