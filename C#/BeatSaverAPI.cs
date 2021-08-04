@@ -50,8 +50,6 @@ namespace BeatSaverAPI
     public class BeatSaverAPISearchResult
     {
         public List<BeatSaverAPISong> docs { get; set; } = new List<BeatSaverAPISong>();
-        public int totalDocs { get; set; } = 0;
-        public int lastPage { get; set; } = 0;
         public bool RequestGood { get; set; } = false;
 
         public bool HasResults()
@@ -77,108 +75,107 @@ namespace BeatSaverAPI
         public BeatSaverAPIMetadata metadata { get; set; } = new BeatSaverAPIMetadata();
         public BeatSaverAPIStats stats { get; set; } = new BeatSaverAPIStats();
         public string description { get; set; } = "N/A";
-        public string deletedAt { get; set; } = "N/A";
-        public string _id { get; set; } = "N/A";
-        public string key { get; set; } = "N/A";
+        public string id { get; set; } = "N/A";
         public string name { get; set; } = "N/A";
         public BeatSaverAPIUploader uploader { get; set; } = new BeatSaverAPIUploader();
-        public string hash { get; set; } = "N/A";
-        public string uploaded { get; set; } = "N/A";
-        public string directDownload { get; set; } = "N/A";
-        public string downloadURL { get; set; } = "N/A";
-        public string coverURL { get; set; } = "N/A";
+        public DateTime uploaded { get; set; } = DateTime.MinValue;
+        public bool automapper { get; set; } = false;
+        public bool ranked { get; set; } = false;
+        public bool qualified { get; set; } = false;
+        public List<BeatSaverAPISongVersion> versions { get; set; } = new List<BeatSaverAPISongVersion>();
         public bool GoodRequest { get; set; } = false;
 
-        public BeatSaberSong ConvertToBeatSaberSong()
-        {
-            BeatSaberSong finished = new BeatSaberSong();
-            finished.BPM = metadata.bpm;
-            finished.Hash = hash;
-            finished.Key = key;
-            finished.Mapper = metadata.levelAuthorName;
-            finished.SongName = name;
-            finished.SongArtist = metadata.songAuthorName;
-            finished.RequestGood = true;
-            finished.SubName = metadata.songSubName;
-            finished.RequestGood = GoodRequest;
-            foreach (BeatSaverAPICharacteristic characteristic in metadata.characteristics)
-            {
-                BeatSaberSongBeatMapCharacteristic characteristic1 = new BeatSaberSongBeatMapCharacteristic();
-                characteristic1.BeatMapCharacteristicName = characteristic.name;
-                if (characteristic.difficulties.easy != null)
-                {
-                    BeatSaberSongDifficulty easy = new BeatSaberSongDifficulty();
-                    easy.Bombs = characteristic.difficulties.easy.bombs;
-                    easy.DifficultyID = 1;
-                    easy.DifficultyName = "easy";
-                    easy.Duration = characteristic.difficulties.easy.duration;
-                    easy.Length = characteristic.difficulties.easy.length;
-                    easy.NJS = characteristic.difficulties.easy.njs;
-                    easy.NJSOffset = characteristic.difficulties.easy.njsOffset;
-                    easy.Notes = characteristic.difficulties.easy.notes;
-                    easy.Obstacles = characteristic.difficulties.easy.obstacles;
-                    characteristic1.Difficulties.Add(easy);
-                }
-                if (characteristic.difficulties.normal != null)
-                {
-                    BeatSaberSongDifficulty normal = new BeatSaberSongDifficulty();
-                    normal.Bombs = characteristic.difficulties.normal.bombs;
-                    normal.DifficultyID = 3;
-                    normal.DifficultyName = "normal";
-                    normal.Duration = characteristic.difficulties.normal.duration;
-                    normal.Length = characteristic.difficulties.normal.length;
-                    normal.NJS = characteristic.difficulties.normal.njs;
-                    normal.NJSOffset = characteristic.difficulties.normal.njsOffset;
-                    normal.Notes = characteristic.difficulties.normal.notes;
-                    normal.Obstacles = characteristic.difficulties.normal.obstacles;
-                    characteristic1.Difficulties.Add(normal);
-                }
-                if (characteristic.difficulties.hard != null)
-                {
-                    BeatSaberSongDifficulty hard = new BeatSaberSongDifficulty();
-                    hard.Bombs = characteristic.difficulties.hard.bombs;
-                    hard.DifficultyID = 5;
-                    hard.DifficultyName = "hard";
-                    hard.Duration = characteristic.difficulties.hard.duration;
-                    hard.Length = characteristic.difficulties.hard.length;
-                    hard.NJS = characteristic.difficulties.hard.njs;
-                    hard.NJSOffset = characteristic.difficulties.hard.njsOffset;
-                    hard.Notes = characteristic.difficulties.hard.notes;
-                    hard.Obstacles = characteristic.difficulties.hard.obstacles;
-                    characteristic1.Difficulties.Add(hard);
-                }
-                if (characteristic.difficulties.expert != null)
-                {
-                    BeatSaberSongDifficulty expert = new BeatSaberSongDifficulty();
-                    expert.Bombs = characteristic.difficulties.expert.bombs;
-                    expert.DifficultyID = 7;
-                    expert.DifficultyName = "expert";
-                    expert.Duration = characteristic.difficulties.expert.duration;
-                    expert.Length = characteristic.difficulties.expert.length;
-                    expert.NJS = characteristic.difficulties.expert.njs;
-                    expert.NJSOffset = characteristic.difficulties.expert.njsOffset;
-                    expert.Notes = characteristic.difficulties.expert.notes;
-                    expert.Obstacles = characteristic.difficulties.expert.obstacles;
-                    characteristic1.Difficulties.Add(expert);
-                }
-                if (characteristic.difficulties.expertPlus != null)
-                {
-                    BeatSaberSongDifficulty expertPlus = new BeatSaberSongDifficulty();
-                    expertPlus.Bombs = characteristic.difficulties.expertPlus.bombs;
-                    expertPlus.DifficultyID = 9;
-                    expertPlus.DifficultyName = "expertPlus";
-                    expertPlus.Duration = characteristic.difficulties.expertPlus.duration;
-                    expertPlus.Length = characteristic.difficulties.expertPlus.length;
-                    expertPlus.NJS = characteristic.difficulties.expertPlus.njs;
-                    expertPlus.NJSOffset = characteristic.difficulties.expertPlus.njsOffset;
-                    expertPlus.Notes = characteristic.difficulties.expertPlus.notes;
-                    expertPlus.Obstacles = characteristic.difficulties.expertPlus.obstacles;
-                    characteristic1.Difficulties.Add(expertPlus);
-                }
-                finished.BeatMapCharacteristics.Add(characteristic1);
-            }
-            return finished;
-        }
+        //public BeatSaberSong ConvertToBeatSaberSong()
+        //{
+        //    BeatSaberSong finished = new BeatSaberSong();
+        //    finished.BPM = metadata.bpm;
+        //    finished.Hash = versions[0].hash;
+        //    finished.Key = id;
+        //    finished.Mapper = metadata.levelAuthorName;
+        //    finished.SongName = name;
+        //    finished.SongArtist = metadata.songAuthorName;
+        //    finished.RequestGood = GoodRequest;
+        //    finished.SubName = metadata.songSubName;
+        //    finished.RequestGood = GoodRequest;
+        //    foreach (BeatSaverAPISongDifficulty diff in versions[0].diffs)
+        //    {
+        //        if(finished.BeatMapCharacteristics)
+        //        BeatSaberSongBeatMapCharacteristic characteristic1 = new BeatSaberSongBeatMapCharacteristic();
+        //        characteristic1.BeatMapCharacteristicName = characteristic.name;
+        //        if (characteristic.difficulties.easy != null)
+        //        {
+        //            BeatSaberSongDifficulty easy = new BeatSaberSongDifficulty();
+        //            easy.Bombs = characteristic.difficulties.easy.bombs;
+        //            easy.DifficultyID = 1;
+        //            easy.DifficultyName = "easy";
+        //            easy.Duration = characteristic.difficulties.easy.duration;
+        //            easy.Length = characteristic.difficulties.easy.length;
+        //            easy.NJS = characteristic.difficulties.easy.njs;
+        //            easy.NJSOffset = characteristic.difficulties.easy.njsOffset;
+        //            easy.Notes = characteristic.difficulties.easy.notes;
+        //            easy.Obstacles = characteristic.difficulties.easy.obstacles;
+        //            characteristic1.Difficulties.Add(easy);
+        //        }
+        //        if (characteristic.difficulties.normal != null)
+        //        {
+        //            BeatSaberSongDifficulty normal = new BeatSaberSongDifficulty();
+        //            normal.Bombs = characteristic.difficulties.normal.bombs;
+        //            normal.DifficultyID = 3;
+        //            normal.DifficultyName = "normal";
+        //            normal.Duration = characteristic.difficulties.normal.duration;
+        //            normal.Length = characteristic.difficulties.normal.length;
+        //            normal.NJS = characteristic.difficulties.normal.njs;
+        //            normal.NJSOffset = characteristic.difficulties.normal.njsOffset;
+        //            normal.Notes = characteristic.difficulties.normal.notes;
+        //            normal.Obstacles = characteristic.difficulties.normal.obstacles;
+        //            characteristic1.Difficulties.Add(normal);
+        //        }
+        //        if (characteristic.difficulties.hard != null)
+        //        {
+        //            BeatSaberSongDifficulty hard = new BeatSaberSongDifficulty();
+        //            hard.Bombs = characteristic.difficulties.hard.bombs;
+        //            hard.DifficultyID = 5;
+        //            hard.DifficultyName = "hard";
+        //            hard.Duration = characteristic.difficulties.hard.duration;
+        //            hard.Length = characteristic.difficulties.hard.length;
+        //            hard.NJS = characteristic.difficulties.hard.njs;
+        //            hard.NJSOffset = characteristic.difficulties.hard.njsOffset;
+        //            hard.Notes = characteristic.difficulties.hard.notes;
+        //            hard.Obstacles = characteristic.difficulties.hard.obstacles;
+        //            characteristic1.Difficulties.Add(hard);
+        //        }
+        //        if (characteristic.difficulties.expert != null)
+        //        {
+        //            BeatSaberSongDifficulty expert = new BeatSaberSongDifficulty();
+        //            expert.Bombs = characteristic.difficulties.expert.bombs;
+        //            expert.DifficultyID = 7;
+        //            expert.DifficultyName = "expert";
+        //            expert.Duration = characteristic.difficulties.expert.duration;
+        //            expert.Length = characteristic.difficulties.expert.length;
+        //            expert.NJS = characteristic.difficulties.expert.njs;
+        //            expert.NJSOffset = characteristic.difficulties.expert.njsOffset;
+        //            expert.Notes = characteristic.difficulties.expert.notes;
+        //            expert.Obstacles = characteristic.difficulties.expert.obstacles;
+        //            characteristic1.Difficulties.Add(expert);
+        //        }
+        //        if (characteristic.difficulties.expertPlus != null)
+        //        {
+        //            BeatSaberSongDifficulty expertPlus = new BeatSaberSongDifficulty();
+        //            expertPlus.Bombs = characteristic.difficulties.expertPlus.bombs;
+        //            expertPlus.DifficultyID = 9;
+        //            expertPlus.DifficultyName = "expertPlus";
+        //            expertPlus.Duration = characteristic.difficulties.expertPlus.duration;
+        //            expertPlus.Length = characteristic.difficulties.expertPlus.length;
+        //            expertPlus.NJS = characteristic.difficulties.expertPlus.njs;
+        //            expertPlus.NJSOffset = characteristic.difficulties.expertPlus.njsOffset;
+        //            expertPlus.Notes = characteristic.difficulties.expertPlus.notes;
+        //            expertPlus.Obstacles = characteristic.difficulties.expertPlus.obstacles;
+        //            characteristic1.Difficulties.Add(expertPlus);
+        //        }
+        //        finished.BeatMapCharacteristics.Add(characteristic1);
+        //    }
+        //    return finished;
+        //}
     }
 
     public class BeatSaverAPIStats
@@ -187,22 +184,20 @@ namespace BeatSaverAPI
         public int plays { get; set; } = 0;
         public int downVotes { get; set; } = 0;
         public int upVotes { get; set; } = 0;
-        public decimal heat { get; set; } = 0.0m;
-        public decimal rating { get; set; } = 0.0m;
+        public decimal score { get; set; } = 0.0m;
     }
 
     public class BeatSaverAPIUploader
     {
         public string _id { get; set; } = "N/A";
         public string username { get; set; } = "N/A";
+        public string hash { get; set; } = "N/A";
+        public string avatar { get; set; } = "N/A";
     }
 
     public class BeatSaverAPIMetadata
     {
-        public BeatSaverAPIDifficulties difficulties { get; set; } = new BeatSaverAPIDifficulties();
         public decimal duration { get; set; } = 0.0m;
-        public string automapper { get; set; } = "N/A";
-        public List<BeatSaverAPICharacteristic> characteristics { get; set; } = new List<BeatSaverAPICharacteristic>();
         public string levelAuthorName { get; set; } = "N/A";
         public string songAuthorName { get; set; } = "N/A";
         public string songName { get; set; } = "N/A";
@@ -210,81 +205,84 @@ namespace BeatSaverAPI
         public decimal bpm { get; set; } = 0.0m;
     }
 
-    public class BeatSaverAPICharacteristic
+    public class BeatSaverAPISongVersion
     {
-        public BeatSaverAPICharacteristicDifficulties difficulties { get; set; } = new BeatSaverAPICharacteristicDifficulties();
-        public string name { get; set; } = "N/A";
+        public string hash { get; set; } = "";
+        public string key { get; set; } = "";
+        public string state { get; set; } = "Published";
+        public DateTime createdAt { get; set; } = DateTime.MinValue;
+        public int sageScore { get; set; } = 0;
+        public List<BeatSaverAPISongDifficulty> diffs { get; set; } = new List<BeatSaverAPISongDifficulty>();
+        public string downloadURL { get; set; } = "";
+        public string coverURL { get; set; } = "";
+        public string previewURL { get; set; } = "";
+    }
 
+    public class BeatSaverAPISongDifficulty
+    {
+        public decimal njs { get; set; } = 0.0m;
+        public decimal offset { get; set; } = 0.0m;
+        public int notes { get; set; } = 0;
+        public int bombs { get; set; } = 0;
+        public int obstacles { get; set; } = 0;
+        public decimal nps { get; set; } = 0.0m;
+        public decimal length { get; set; } = 0.0m;
+        public string characteristic { get; set; } = "";
+        public string difficulty { get; set; } = "";
+        public int events { get; set; } = 0;
+        public bool chroma { get; set; } = false;
+        public bool me { get; set; } = false;
+        public bool ne { get; set; } = false;
+        public bool cinema { get; set; } = false;
+        public BeatSaverAPISongParitySummary paritySummary { get; set; } = new BeatSaverAPISongParitySummary();
         public bool IsLawless()
         {
-            if (name.ToLower() == "lawless") return true;
-            else return false;
+            if (characteristic.ToLower() == "lawless") return true;
+            return false;
         }
 
         public bool IsLightshow()
         {
-            if (name.ToLower() == "lightshow") return true;
-            else return false;
+            if (characteristic.ToLower() == "lightshow") return true;
+            return false;
         }
 
         public bool IsStandart()
         {
-            if (name.ToLower() == "standard") return true;
-            else return false;
+            if (characteristic.ToLower() == "standard") return true;
+            return false;
         }
 
         public bool IsNoArrows()
         {
-            if (name.ToLower() == "noarrows") return true;
-            else return false;
+            if (characteristic.ToLower() == "noarrows") return true;
+            return false;
         }
 
         public bool IsOneSaber()
         {
-            if (name.ToLower() == "onesaber") return true;
-            else return false;
+            if (characteristic.ToLower() == "onesaber") return true;
+            return false;
         }
 
         public bool IsNinetyDegree()
         {
-            if (name.ToLower() == "90degree") return true;
-            else return false;
+            if (characteristic.ToLower() == "90degree") return true;
+            return false;
         }
 
         public bool IsThreeSixtyDegree()
         {
-            if (name.ToLower() == "360degree") return true;
-            else return false;
+            if (characteristic.ToLower() == "360degree") return true;
+            return false;
         }
     }
 
-    public class BeatSaverAPICharacteristicDifficulties
+    public class BeatSaverAPISongParitySummary
     {
-        public BeatSaverAPICharacteristicDifficulty easy { get; set; } = new BeatSaverAPICharacteristicDifficulty();
-        public BeatSaverAPICharacteristicDifficulty expert { get; set; } = new BeatSaverAPICharacteristicDifficulty();
-        public BeatSaverAPICharacteristicDifficulty expertPlus { get; set; } = new BeatSaverAPICharacteristicDifficulty();
-        public BeatSaverAPICharacteristicDifficulty hard { get; set; } = new BeatSaverAPICharacteristicDifficulty();
-        public BeatSaverAPICharacteristicDifficulty normal { get; set; } = new BeatSaverAPICharacteristicDifficulty();
-    }
-
-    public class BeatSaverAPICharacteristicDifficulty
-    {
-        public decimal duration { get; set; } = 0.0m;
-        public decimal length { get; set; } = 0.0m;
-        public decimal njs { get; set; } = 0.0m;
-        public decimal njsOffset { get; set; } = 0.0m;
-        public int bombs { get; set; } = 0;
-        public int notes { get; set; } = 0;
-        public int obstacles { get; set; } = 0;
-    }
-
-    public class BeatSaverAPIDifficulties
-    {
-        public bool easy { get; set; } = false;
-        public bool expert { get; set; } = false;
-        public bool expertPlus { get; set; } = false;
-        public bool hard { get; set; } = false;
-        public bool normal { get; set; } = false;
+        public int errors { get; set; } = 0;
+        public int warns { get; set; } = 0;
+        public int resets { get; set; } = 0;
     }
 
     public class BeatSaberSongDifficulty
@@ -347,8 +345,8 @@ namespace BeatSaverAPI
 
     public class BeatSaverAPIInteractor
     {
-        public readonly string BeatSaverAPIBaseLink = "https://beatsaver.com/api/";
-        public readonly string BeatSaverLink = "https://beatsaver.com";
+        public readonly string BeatSaverAPIBaseLink = "https://api.beatmaps.io/";
+        public readonly string BeatSaverLink = "https://beatmaps.io";
 
         public BeatSaberSong LoadFromInfoDat(String json)
         {
@@ -367,7 +365,7 @@ namespace BeatSaverAPI
                 cl.Headers.Add("user-agent", "BeatSaverAPIInteractor/1.0");
                 try
                 {
-                    String tmp = cl.DownloadString(BeatSaverAPIBaseLink + "maps/by-hash/" + Hash.ToLower());
+                    String tmp = cl.DownloadString(BeatSaverAPIBaseLink + "maps/hash/" + Hash.ToLower());
                     BeatSaverResult = JsonSerializer.Deserialize<BeatSaverAPISong>(tmp);
                     BeatSaverResult.GoodRequest = true;
                     RateLimit = false;
@@ -405,7 +403,7 @@ namespace BeatSaverAPI
                 cl.Headers.Add("user-agent", "BeatSaverAPIInteractor/1.0");
                 try
                 {
-                    String tmp = cl.DownloadString(BeatSaverAPIBaseLink + "maps/detail/" + Key.ToLower());
+                    String tmp = cl.DownloadString(BeatSaverAPIBaseLink + "maps/beatsaver/" + Key.ToLower());
                     BeatSaverResult = JsonSerializer.Deserialize<BeatSaverAPISong>(tmp);
                     RateLimit = false;
                     BeatSaverResult.GoodRequest = true;
@@ -466,27 +464,27 @@ namespace BeatSaverAPI
             return song;
         }
 
-        public BeatSaberSong GetBeatSaberSong(String HashOrKey)
-        {
-            BeatSaberSong song = GetBeatSaberSongViaKey(HashOrKey);
-            if (!song.RequestGood)
-            {
-                song = GetBeatSaberSongViaHash(HashOrKey);
-            }
-            return song;
-        }
+        //public BeatSaberSong GetBeatSaberSong(String HashOrKey)
+        //{
+        //    BeatSaberSong song = GetBeatSaberSongViaKey(HashOrKey);
+        //    if (!song.RequestGood)
+        //    {
+        //        song = GetBeatSaberSongViaHash(HashOrKey);
+        //    }
+        //    return song;
+        //}
 
-        public BeatSaberSong GetBeatSaberSongViaHash(String Hash)
-        {
-            BeatSaverAPISong convert = GetBeatSaverAPISongViaHash(Hash);
-            return convert.ConvertToBeatSaberSong();
-        }
+        //public BeatSaberSong GetBeatSaberSongViaHash(String Hash)
+        //{
+        //    BeatSaverAPISong convert = GetBeatSaverAPISongViaHash(Hash);
+        //    return convert.ConvertToBeatSaberSong();
+        //}
 
-        public BeatSaberSong GetBeatSaberSongViaKey(String Key)
-        {
-            BeatSaverAPISong convert = GetBeatSaverAPISongViaKey(Key);
-            return convert.ConvertToBeatSaberSong();
-        }
+        //public BeatSaberSong GetBeatSaberSongViaKey(String Key)
+        //{
+        //    BeatSaverAPISong convert = GetBeatSaverAPISongViaKey(Key);
+        //    return convert.ConvertToBeatSaberSong();
+        //}
 
         internal async Task<BeatSaverAPISearchResult> SearchTextAPI(String text)
         {
@@ -500,7 +498,7 @@ namespace BeatSaverAPI
                 cl.Headers.Add("user-agent", "BeatSaverAPIInteractor/1.0");
                 try
                 {
-                    String tmp = cl.DownloadString(BeatSaverAPIBaseLink + "search/text?q=\"" + text + "\"");
+                    String tmp = cl.DownloadString(BeatSaverAPIBaseLink + "search/text/0?q=" + text + "&sortOrder=Latest");
                     BeatSaverResult = JsonSerializer.Deserialize<BeatSaverAPISearchResult>(tmp);
                     RateLimit = false;
                     BeatSaverResult.RequestGood = true;

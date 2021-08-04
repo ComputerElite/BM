@@ -189,19 +189,19 @@ namespace BMBF_Manager
 
             Key = SongKey.Text;
 
-            BeatSaberSong song = interactor.GetBeatSaberSong(Key);
-            if(!song.RequestGood)
+            BeatSaverAPISong song = interactor.GetBeatSaverAPISong(Key);
+            if(!song.GoodRequest)
             {
                 txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.songs.code.beatmapDoesntExist, Key)) ;
                 txtbox.ScrollToEnd();
                 return;
             }
             
-            String SongName = song.SongName;
-            String SongArtist = song.SongArtist;
-            String MapAuthor = song.Mapper;
-            String SubName = song.SubName;
-            String BPM = song.BPM.ToString();
+            String SongName = song.metadata.songName;
+            String SongArtist = song.metadata.songAuthorName;
+            String MapAuthor = song.metadata.levelAuthorName;
+            String SubName = song.metadata.songSubName;
+            String BPM = song.metadata.bpm.ToString();
 
             if (SongName == "") SongName = "N/A";
             if (SongArtist == "") SongArtist = "N/A";
@@ -243,7 +243,7 @@ namespace BMBF_Manager
                 String Mapper = doc.metadata.levelAuthorName;
                 String Artist = doc.metadata.songAuthorName;
 
-                SongKeys.Add(doc.key);
+                SongKeys.Add(doc.versions[0].key);
                 SongList.Items.Add(new SongItem { Name = Name, Mapper = Mapper, Artist = Artist });
             }
 
@@ -588,7 +588,7 @@ namespace BMBF_Manager
             txtbox.ScrollToEnd();
             WebClient cl = new WebClient();
             cl.Headers.Add("user-agent", "BMBF Manager/1.0");
-            Uri keys = new Uri(interactor.BeatSaverLink + song.downloadURL);
+            Uri keys = new Uri(interactor.BeatSaverLink + song.versions[0].downloadURL);
             try
             {
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
@@ -904,7 +904,7 @@ namespace BMBF_Manager
             }
             BeatSaverAPISong s = songs[SongList.SelectedIndex];
             String length = s.metadata.duration != 0 ? new TimeSpan(0, 0, (int)s.metadata.duration).ToString() : "N/A";
-            MessageBox.Show(MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.songs.code.songInfo, s.metadata.songName, s.metadata.songAuthorName, s.metadata.levelAuthorName, s.stats.upVotes.ToString(), s.stats.downVotes.ToString(), s.stats.downloads.ToString(), length, s.key), "BMBF Manager - Song Installing", MessageBoxButton.OK);
+            MessageBox.Show(MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.songs.code.songInfo, s.metadata.songName, s.metadata.songAuthorName, s.metadata.levelAuthorName, s.stats.upVotes.ToString(), s.stats.downVotes.ToString(), s.stats.downloads.ToString(), length, s.versions[0].key), "BMBF Manager - Song Installing", MessageBoxButton.OK);
         }
 
         private void SearchTerm_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)

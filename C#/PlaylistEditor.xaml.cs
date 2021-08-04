@@ -654,7 +654,7 @@ namespace BMBF_Manager
                 txtbox.ScrollToEnd();
                 return;
             }
-            Process.Start("https://bsaber.com/songs/" + s.key);
+            Process.Start("https://bsaber.com/songs/" + s.versions[0].key);
         }
 
         private void BeatSShow(object sender, RoutedEventArgs e)
@@ -666,7 +666,7 @@ namespace BMBF_Manager
                 txtbox.ScrollToEnd();
                 return;
             }
-            Process.Start("https://beatsaver.com/beatmap/" + s.key);
+            Process.Start("https://beatsaver.com/beatmap/" + s.versions[0].key);
         }
 
         private void SSSearch(object sender, RoutedEventArgs e)
@@ -807,7 +807,7 @@ namespace BMBF_Manager
                     txtbox.ScrollToEnd();
                     return;
                 }
-                Process.Start("https://skystudioapps.com/bs-viewer/?id=" + s.key);
+                Process.Start("https://skystudioapps.com/bs-viewer/?id=" + s.versions[0].key);
             }
 
         }
@@ -972,7 +972,7 @@ namespace BMBF_Manager
                         txtbox.ScrollToEnd();
                         continue;
                     }
-                    SongsWindow.InstallSongPE(r.key);
+                    SongsWindow.InstallSongPE(r.versions[0].key);
                     await Task.Delay(1000);
                 }
 

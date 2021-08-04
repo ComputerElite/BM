@@ -954,10 +954,10 @@ namespace BMBF_Manager
                     if (song.GoodRequest)
                     {
                         //Use SongInfo from BeatSaver
-                        finishedName = song.name + " - " + song.metadata.songAuthorName + " (" + song.key + ")";
+                        finishedName = song.name + " - " + song.metadata.songAuthorName + " (" + song.versions[0].key + ")";
                         moveSong.songArtist = song.metadata.songAuthorName;
                         moveSong.songName = song.metadata.songName;
-                        moveSong.key = song.key;
+                        moveSong.key = song.versions[0].key;
                     }
                     else
                     {
