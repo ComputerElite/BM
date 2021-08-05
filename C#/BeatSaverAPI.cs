@@ -208,7 +208,6 @@ namespace BeatSaverAPI
     public class BeatSaverAPISongVersion
     {
         public string hash { get; set; } = "";
-        public string key { get; set; } = "";
         public string state { get; set; } = "Published";
         public DateTime createdAt { get; set; } = DateTime.MinValue;
         public int sageScore { get; set; } = 0;
