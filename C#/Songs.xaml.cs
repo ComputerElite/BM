@@ -588,7 +588,7 @@ namespace BMBF_Manager
             txtbox.ScrollToEnd();
             WebClient cl = new WebClient();
             cl.Headers.Add("user-agent", "BMBF Manager/1.0");
-            Uri keys = new Uri(interactor.BeatSaverLink + song.versions[0].downloadURL);
+            Uri keys = new Uri(song.versions[0].downloadURL);
             try
             {
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
