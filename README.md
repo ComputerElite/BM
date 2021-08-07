@@ -20,7 +20,7 @@ Currently a big BMBF update is in the working. As I can see from the test releas
 - ofc the unnicorns for making [BMBF](https://bmbf.dev/)
 
 - Used services
-   - [Jellyfish with BeatSaver](https://beatsaver.com/) (Public song distributin service)
+   - [Top_Cat with BeatSaver](https://beatsaver.com/) (Public song distribution service)
    - [ScoreSaber Team](https://scoresaber.com/faq) (Leaderboards for Custom Songs)
    - [QuestBoard Team](https://www.questmodding.com/) (Quest mods and more)
    - [BeastSaber Team](https://bsaber.com/) (A place for articles, songs, playlists and more)
