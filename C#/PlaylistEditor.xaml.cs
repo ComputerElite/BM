@@ -1046,7 +1046,7 @@ namespace BMBF_Manager
                 {
                     foreach (BPListSong search in tmp)
                     {
-                        if (search.hash.ToLower().Contains(s.Hash.ToLower()))
+                        if (s.Hash.ToLower().Contains(search.hash.ToLower()))
                         {
                             txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.playlistEditor.code.movedSongToBPList, s.SongName));
                             newpl.SongList.Add(s);
@@ -1106,7 +1106,7 @@ namespace BMBF_Manager
                 {
                     foreach (BPListSong search in tmp)
                     {
-                        if (search.hash.ToLower().Contains(s.Hash.ToLower()))
+                        if (s.Hash.ToLower().Contains(search.hash.ToLower()))
                         {
                             txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.playlistEditor.code.movedSongToBPList, s.SongName));
                             BMBFConfig.Config.Playlists[pl].SongList.Add(s);
@@ -1171,7 +1171,7 @@ namespace BMBF_Manager
                 {
                     foreach (BPListSong search in tmp)
                     {
-                        if (search.hash.ToLower().Contains(s.Hash.ToLower()))
+                        if (s.Hash.ToLower().Contains(search.hash.ToLower()))
                         {
                             txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.playlistEditor.code.movedSongToBPList, s.SongName));
                             newpl.SongList.Add(s);

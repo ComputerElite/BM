@@ -39,7 +39,7 @@ namespace BMBF_Manager
     {
         public static int MajorV = 1;
         public static int MinorV = 16;
-        public static int PatchV = 2;
+        public static int PatchV = 3;
         public static bool Preview = false;
         public static bool log = false;
 
