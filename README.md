@@ -28,8 +28,7 @@ Currently a big BMBF update is in the working. As I can see from the test releas
    - [SkyStudioApps](https://skystudioapps.com/) with [BS Viewer](https://skystudioapps.com/bs-viewer/) (Lets you view Beat Saber maps in your Browser)
 
 # Known Issues
-- Non fixable issues:
-   - Advanced Backups, version switching back to modded and Automatic BMBF Modding will most likely not work on Quest 2 since adb is more locked down.
+- N/A
 
 # To-Do
 - N/A
