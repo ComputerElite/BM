@@ -17,6 +17,26 @@
                     "forward": false,
                     "coremod": false,
                     "notes": ""
+                },
+                {
+                    "modversion": "1.0.1",
+                    "gameversion": [
+                        "1.13.2"
+                    ],
+                    "download": "https://github.com/RedBrumbler/AntiVertigo/releases/latest/download/AntiVertigo.zip",
+                    "forward": false,
+                    "coremod": false,
+                    "notes": ""
+                },
+                {
+                    "modversion": "1.0.0",
+                    "gameversion": [
+                        "1.13.0"
+                    ],
+                    "download": "https://github.com/RedBrumbler/AntiVertigo/releases/download/1.0.0/AntiVertigo.zip",
+                    "forward": false,
+                    "coremod": false,
+                    "notes": "N/A"
                 }
             ]
         },
@@ -144,7 +164,7 @@
         },
         {
             "name": "I Forgor",
-            "details": "I Forgor 💀\r\nPort of https://discordapp.com/channels/441805394323439646/867133699035496448/869668912076308540\r\n\r\nA mod that displays the last notes and saber angles before you paused in the pause menu. This is aimed to help give you a general idea of which direction your sabers are supposed to go when you unpause.",
+            "details": "I Forgor ðŸ’€\r\nPort of https://discordapp.com/channels/441805394323439646/867133699035496448/869668912076308540\r\n\r\nA mod that displays the last notes and saber angles before you paused in the pause menu. This is aimed to help give you a general idea of which direction your sabers are supposed to go when you unpause.",
             "ModID": "IForgor",
             "creator": [
                 "Ckosmic",
@@ -180,6 +200,26 @@
                     "forward": false,
                     "coremod": false,
                     "notes": ""
+                },
+                {
+                    "modversion": "0.1.8",
+                    "gameversion": [
+                        "1.13.2"
+                    ],
+                    "download": "https://github.com/Lauriethefish/CustomFailText/releases/download/0.1.8/custom-fail-text_v0.1.8.zip",
+                    "forward": false,
+                    "coremod": false,
+                    "notes": "Changelog:\r\n- Updated all libraries.\r\n- Changed version to beat saber 1.13.2.\r\n- Added cursed mode\r\n- Added text size customisation\r\n- Added ability to use text in bailout mode."
+                },
+                {
+                    "modversion": "0.1.7",
+                    "gameversion": [
+                        "1.13.0"
+                    ],
+                    "download": "https://github.com/Lauriethefish/CustomFailText/releases/download/0.1.7/custom-fail-text_v0.1.7.zip",
+                    "forward": false,
+                    "coremod": false,
+                    "notes": "N/A"
                 }
             ]
         },
@@ -208,7 +248,7 @@
         },
         {
             "name": "AikaTweaks",
-            "details": "We are back! AikaTweaks gives you various in-game tweaks (mostly graphics), wrapped into a nicely designed UI which is easy to understand.\r\n\r\nFeatures:\r\n- Clean and easy to use UI.\r\n- Easily adjust anti-aliasing!\r\n- Change resolution and refresh rate in-game! No more SideQuest.\r\n- Graphics Presets! This feature is currently only for Quest 2.\r\n- Bloom! Enhance your Quest's visuals, with PC-like graphics.\r\n- CPU\/GPU levels adjustment. Squeeze more performance out of your Quest!\r\n- And more!\r\n\r\nThank you to @xyonico, without him I wouldn't have been able to get bloom working on Quest.",
+            "details": "We are back! AikaTweaks gives you various in-game tweaks (mostly graphics), wrapped into a nicely designed UI which is easy to understand.\r\n\r\nFeatures:\r\n- Clean and easy to use UI.\r\n- Easily adjust anti-aliasing!\r\n- Change resolution and refresh rate in-game! No more SideQuest.\r\n- Graphics Presets! This feature is currently only for Quest 2.\r\n- Bloom! Enhance your Quest's visuals, with PC-like graphics.\r\n- CPU/GPU levels adjustment. Squeeze more performance out of your Quest!\r\n- And more!\r\n\r\nThank you to @xyonico, without him I wouldn't have been able to get bloom working on Quest.",
             "ModID": "AikaTweaks",
             "creator": [
                 "Aika",
@@ -244,6 +284,26 @@
                     "forward": false,
                     "coremod": false,
                     "notes": ""
+                },
+                {
+                    "modversion": "0.1.1",
+                    "gameversion": [
+                        "1.13.2"
+                    ],
+                    "download": "https://github.com/Lauriethefish/ModList/releases/download/0.1.1/mod-list_v0.1.1.zip",
+                    "forward": false,
+                    "coremod": false,
+                    "notes": "Changelog:\r\n- Updated all libraries.\r\n- Updated for Beat Saber 1.13.2.\r\n- Decreased text size to fit more mods left to right."
+                },
+                {
+                    "modversion": "0.1.0",
+                    "gameversion": [
+                        "1.13.0"
+                    ],
+                    "download": "https://github.com/Lauriethefish/ModList/releases/download/0.1.0/mod-list_v0.1.0.zip",
+                    "forward": false,
+                    "coremod": false,
+                    "notes": "N/A"
                 }
             ]
         },
@@ -285,6 +345,36 @@
                     "forward": false,
                     "coremod": false,
                     "notes": ""
+                },
+                {
+                    "modversion": "0.2.0",
+                    "gameversion": [
+                        "1.13.2"
+                    ],
+                    "download": "https://github.com/EnderdracheLP/QuestSounds/releases/download/0.2.0/QuestSounds.zip",
+                    "forward": false,
+                    "coremod": false,
+                    "notes": "Changelog: \r\n- Updated dependency BS-Hook to 1.0.12\r\n- Changed default Path to, sdcard/ModData/com.beatgames.beatsaber/Mods/QuestSounds/"
+                },
+                {
+                    "modversion": "0.1.3",
+                    "gameversion": [
+                        "1.13.0"
+                    ],
+                    "download": "https://cdn.discordapp.com/attachments/776551464117075978/776918618596048916/QuestSounds.zip",
+                    "forward": false,
+                    "coremod": false,
+                    "notes": "N/A"
+                },
+                {
+                    "modversion": "0.1.1",
+                    "gameversion": [
+                        "1.12.2"
+                    ],
+                    "download": "https://cdn.discordapp.com/attachments/765630505000894484/773105655040966716/QuestSounds.zip",
+                    "forward": false,
+                    "coremod": false,
+                    "notes": "N/A"
                 }
             ]
         },
@@ -325,6 +415,36 @@
                     "forward": false,
                     "coremod": false,
                     "notes": "Full Changelog List (Too many characters for me to include in the mod release): https://pastebin.com/7tsWEdie"
+                },
+                {
+                    "modversion": "0.4.0",
+                    "gameversion": [
+                        "1.13.2"
+                    ],
+                    "download": "https://github.com/henwill8/ReplayDownload/releases/download/0.4.0/replay_v0.4.0.zip",
+                    "forward": false,
+                    "coremod": false,
+                    "notes": "Changelog:\r\n- FIXED CRASHES IN MULTI, YOU NO LONGER SHOULD HAVE TO DISABLE REPLAY TO PLAY MULTIPLAYER\r\n- Now saves your best attempt on a song and tells you when you died on it.\r\n- In the level failed screen you can now choose to replay that specific play.\r\n- Added option to never save no fail plays.\r\n- Added feature to change the song time in the pause menu (so you can now skip around and see different parts easier)."
+                },
+                {
+                    "modversion": "0.3.0",
+                    "gameversion": [
+                        "1.13.0"
+                    ],
+                    "download": "https://github.com/henwill8/ReplayDownload/releases/download/v0.3.0/ReplayLite.zip",
+                    "forward": false,
+                    "coremod": false,
+                    "notes": "N/A"
+                },
+                {
+                    "modversion": "0.1.0",
+                    "gameversion": [
+                        "1.13.0"
+                    ],
+                    "download": "https://github.com/henwill8/ReplayDownload/releases/download/0.1.0/recorder_v0.1.0.zip",
+                    "forward": false,
+                    "coremod": false,
+                    "notes": "N/A"
                 }
             ]
         },
@@ -342,9 +462,9 @@
                         "1.16.4"
                     ],
                     "download": "https://github.com/Raemien/CustomBackgroundsQuest/releases/download/v1.3.0/CustomBackgrounds.qmod",
-                    "notes": "",
                     "forward": false,
-                    "coremod": false
+                    "coremod": false,
+                    "notes": ""
                 },
                 {
                     "modversion": "1.2.6",
@@ -352,9 +472,9 @@
                         "1.13.2"
                     ],
                     "download": "https://github.com/Raemien/CustomBackgroundsQuest/releases/download/v1.2.6/CustomBackgrounds.zip",
-                    "notes": "Changelog:\r\n- Fixed some hidden renderers causing issues with Replay's fixed camera system.\r\n- The modified menu environment is now correctly hidden by Tweakaroo's 'Void Environment' setting.",
                     "forward": false,
-                    "coremod": false
+                    "coremod": false,
+                    "notes": "Changelog:\r\n- Fixed some hidden renderers causing issues with Replay's fixed camera system.\r\n- The modified menu environment is now correctly hidden by Tweakaroo's 'Void Environment' setting."
                 },
                 {
                     "modversion": "1.2.5",
@@ -443,9 +563,9 @@
                         "1.16.4"
                     ],
                     "download": "https://github.com/Inferno-idk-what-to-do/AddedModifiers/releases/download/2.0.7/AddedModifiers_v2.0.7.qmod",
-                    "notes": "",
                     "forward": false,
-                    "coremod": false
+                    "coremod": false,
+                    "notes": ""
                 },
                 {
                     "modversion": "1.0.11",
@@ -474,9 +594,9 @@
                         "1.16.4"
                     ],
                     "download": "https://github.com/EnderdracheLP/ClockMod/releases/download/1.4.0/Clockmod.qmod",
-                    "notes": "",
                     "forward": false,
-                    "coremod": false
+                    "coremod": false,
+                    "notes": ""
                 },
                 {
                     "modversion": "1.3.1",
@@ -484,9 +604,9 @@
                         "1.13.2"
                     ],
                     "download": "https://github.com/EnderdracheLP/ClockMod/releases/download/1.3.1/Clockmod.zip",
-                    "notes": "Bug Fixes:\r\n- Did it crash when you tried joining someone in Multiplayer? Yeah I fixed that, very sorry for it again, (blame me for copy pasting my own code).\r\n\r\nComing in 1.4.0:\r\n- Option to Offset Clock Position\r\n- Option to Change colour\r\n- Battery Indicator will change colour according to charge\r\n- General Code Tweaks\r\n- More?",
                     "forward": false,
-                    "coremod": false
+                    "coremod": false,
+                    "notes": "Bug Fixes:\r\n- Did it crash when you tried joining someone in Multiplayer? Yeah I fixed that, very sorry for it again, (blame me for copy pasting my own code).\r\n\r\nComing in 1.4.0:\r\n- Option to Offset Clock Position\r\n- Option to Change colour\r\n- Battery Indicator will change colour according to charge\r\n- General Code Tweaks\r\n- More?"
                 },
                 {
                     "modversion": "1.3.0",
@@ -494,9 +614,9 @@
                         "1.13.2"
                     ],
                     "download": "https://github.com/EnderdracheLP/ClockMod/releases/download/1.3.0/Clockmod.zip",
-                    "notes": "Changelog:\r\n- Changed versioning from MAJORER.MAJOR.MINOR.PATCH to MAJOR.MINOR.PATCH\r\n\r\nBug Fixes:\r\n- Clock should now align properly with the Multiplayer Lobby Menu (not tested for Quick Play or joining per code, works when hosting though). Tell me if anyone is experiencing issues even after the patch.\r\n- Battery Percentage should now always display correctly.",
                     "forward": false,
-                    "coremod": false
+                    "coremod": false,
+                    "notes": "Changelog:\r\n- Changed versioning from MAJORER.MAJOR.MINOR.PATCH to MAJOR.MINOR.PATCH\r\n\r\nBug Fixes:\r\n- Clock should now align properly with the Multiplayer Lobby Menu (not tested for Quick Play or joining per code, works when hosting though). Tell me if anyone is experiencing issues even after the patch.\r\n- Battery Percentage should now always display correctly."
                 },
                 {
                     "modversion": "0.1.3",
@@ -504,9 +624,9 @@
                         "1.13.2"
                     ],
                     "download": "https://github.com/EnderdracheLP/ClockMod/releases/latest/download/Clockmod.zip",
-                    "notes": "Changelog:\r\n- Added Headset Batterycharge Indicator, can be toggled on in the options, off by default.\r\n- Added Option to change FontSize (default: 4).\r\n- Tweaked General Clock Position.\r\n- Tweaked HoverTooltips for the Settings.\r\n- Changed Clock Position for the Multiplayer Lobby.\r\n- \"Show During Song\" will now be on by default.\r\n\r\nNotes:\r\n- Temp Fix for the clock position in the multiplayer lobby (set for someone of a height of 1.80m for now), apparenty the windows adjusts based on your height, I'll work on a better solution asap.\r\n\r\nI'm very sorry for the issues this could have caused any off you.\r\n\r\nKnown Bugs:\r\n- Battery Percentage can show 52.999996% instead of 53/52%\r\n\r\nMissing Features:\r\n- Change color.\r\n- Change Position.\r\n\r\nNote by ComputerElite:\r\nPlease check your versioning! https://semver.org/",
                     "forward": false,
-                    "coremod": false
+                    "coremod": false,
+                    "notes": "Changelog:\r\n- Added Headset Batterycharge Indicator, can be toggled on in the options, off by default.\r\n- Added Option to change FontSize (default: 4).\r\n- Tweaked General Clock Position.\r\n- Tweaked HoverTooltips for the Settings.\r\n- Changed Clock Position for the Multiplayer Lobby.\r\n- \"Show During Song\" will now be on by default.\r\n\r\nNotes:\r\n- Temp Fix for the clock position in the multiplayer lobby (set for someone of a height of 1.80m for now), apparenty the windows adjusts based on your height, I'll work on a better solution asap.\r\n\r\nI'm very sorry for the issues this could have caused any off you.\r\n\r\nKnown Bugs:\r\n- Battery Percentage can show 52.999996% instead of 53/52%\r\n\r\nMissing Features:\r\n- Change color.\r\n- Change Position.\r\n\r\nNote by ComputerElite:\r\nPlease check your versioning! https://semver.org/"
                 },
                 {
                     "modversion": "0.1.3",
@@ -517,6 +637,36 @@
                     "forward": false,
                     "coremod": false,
                     "notes": "Changelog:\r\n- Added Headset Batterycharge Indicator, can be toggled on in the options, off by default.\r\n- Added Option to change FontSize (default: 4).\r\n- Tweaked General Clock Position.\r\n- Tweaked HoverTooltips for the Settings.\r\n- Changed Clock Position for the Multiplayer Lobby.\r\n- \"Show During Song\" will now be on by default.\r\n\r\nMissing Features:\r\n- Change color.\r\n- Change Position."
+                },
+                {
+                    "modversion": "0.1.2",
+                    "gameversion": [
+                        "1.13.2"
+                    ],
+                    "download": "https://github.com/EnderdracheLP/ClockMod/releases/latest/download/Clockmod.zip",
+                    "forward": false,
+                    "coremod": false,
+                    "notes": ""
+                },
+                {
+                    "modversion": "0.1.1",
+                    "gameversion": [
+                        "1.13.0"
+                    ],
+                    "download": "https://github.com/ChillGunner/ClockMod/releases/download/v0.1.1/clockmod_v0.1.1.zip",
+                    "forward": false,
+                    "coremod": false,
+                    "notes": "This update adds a few customization options to decide how you like your clock."
+                },
+                {
+                    "modversion": "0.1.0",
+                    "gameversion": [
+                        "1.13.0"
+                    ],
+                    "download": "https://github.com/ChillGunner/ClockMod/releases/download/v0.1.0/clockmod_v0.1.0.zip",
+                    "forward": false,
+                    "coremod": false,
+                    "notes": "Initial release"
                 }
             ]
         },
@@ -574,9 +724,9 @@
                         "1.16.4"
                     ],
                     "download": "https://github.com/ComputerElite/play3rdper/releases/download/0.2.1/Play3rdPer.qmod",
-                    "notes": "Library update",
                     "forward": false,
-                    "coremod": false
+                    "coremod": false,
+                    "notes": "Library update"
                 },
                 {
                     "modversion": "0.2.0",
@@ -584,9 +734,9 @@
                         "1.16.4"
                     ],
                     "download": "https://github.com/ComputerElite/play3rdper/releases/download/0.2/Play3rdPer.qmod",
-                    "notes": "",
                     "forward": false,
-                    "coremod": false
+                    "coremod": false,
+                    "notes": ""
                 },
                 {
                     "modversion": "0.1.2",
@@ -594,9 +744,9 @@
                         "1.13.2"
                     ],
                     "download": "https://github.com/ComputerElite/play3rdper/releases/download/0.1.2/Play3rdPer_v0.1.2.zip",
-                    "notes": "Changelog:\r\n- You can now fix your camera to your any of your hands. (You can also apply the offset you specify for the normal third person camera)\r\n- You can move the camera now while you are playing by holding Y (there is a multiplier in the settings for the speed)\r\n- You can now only apply the position and not the rotation (will most likely reduce motion sickness)\r\n- Third person mod can now be disabled while viewing replays due to Replay having it's own camera system (please note that this is part of the full replay mod. This won't work right now)",
                     "forward": false,
-                    "coremod": false
+                    "coremod": false,
+                    "notes": "Changelog:\r\n- You can now fix your camera to your any of your hands. (You can also apply the offset you specify for the normal third person camera)\r\n- You can move the camera now while you are playing by holding Y (there is a multiplier in the settings for the speed)\r\n- You can now only apply the position and not the rotation (will most likely reduce motion sickness)\r\n- Third person mod can now be disabled while viewing replays due to Replay having it's own camera system (please note that this is part of the full replay mod. This won't work right now)"
                 },
                 {
                     "modversion": "0.1.1",
@@ -607,6 +757,26 @@
                     "forward": false,
                     "coremod": false,
                     "notes": "Changelog:\r\n- Did you notice those objects which just suddenly disappeared? I fixed that."
+                },
+                {
+                    "modversion": "0.1.3",
+                    "gameversion": [
+                        "1.13.2"
+                    ],
+                    "download": "https://github.com/ComputerElite/play3rdper/releases/download/0.1.3/Play3rdPer_v0.1.3.zip",
+                    "forward": false,
+                    "coremod": false,
+                    "notes": "Changelog:\r\n- Removed Disable while replay function since it caused crashes (thx to @Unusual Danger  for pointing this out)"
+                },
+                {
+                    "modversion": "0.1.0",
+                    "gameversion": [
+                        "1.13.2"
+                    ],
+                    "download": "https://github.com/ComputerElite/play3rdper/releases/download/0.1.0/Play3rdPer_v0.1.0.zip",
+                    "forward": false,
+                    "coremod": false,
+                    "notes": ""
                 }
             ]
         },
@@ -627,6 +797,26 @@
                     "forward": false,
                     "coremod": false,
                     "notes": "Known Issues:\r\n* Particles having white tints (colorOverLifetime?)"
+                },
+                {
+                    "modversion": "1.0.1",
+                    "gameversion": [
+                        "1.13.0"
+                    ],
+                    "download": "https://github.com/SuperMarcus/QuestParticleTuner/releases/download/1.0.1/ParticleTuner_1.0.1.zip",
+                    "forward": false,
+                    "coremod": false,
+                    "notes": "N/A"
+                },
+                {
+                    "modversion": "1.0.0",
+                    "gameversion": [
+                        "1.12.2"
+                    ],
+                    "download": "https://github.com/SuperMarcus/QuestParticleTuner/releases/download/1.0.0/ParticleTuner_1.0.0.zip",
+                    "forward": false,
+                    "coremod": false,
+                    "notes": "N/A"
                 }
             ]
         },
@@ -684,9 +874,9 @@
                         "1.13.2"
                     ],
                     "download": "https://github.com/RedBrumbler/CustomPillowsQuest/releases/latest/download/CustomPillowsQuest.zip",
-                    "notes": "Changelog:\r\n - Allow any image type to be loaded, not just png\r\n - Pillows now get a texture, not a sprite loaded (speed up)\r\n - should crash less often as pillows now only spawn AFTER being loaded instead of assuming they are loaded, also they are being loaded later after any scene changes",
                     "forward": false,
-                    "coremod": false
+                    "coremod": false,
+                    "notes": "Changelog:\r\n - Allow any image type to be loaded, not just png\r\n - Pillows now get a texture, not a sprite loaded (speed up)\r\n - should crash less often as pillows now only spawn AFTER being loaded instead of assuming they are loaded, also they are being loaded later after any scene changes"
                 },
                 {
                     "modversion": "1.0.0",
@@ -735,9 +925,9 @@
                         "1.13.2"
                     ],
                     "download": "https://github.com/Fernthedev/Quest-Trick-Saber/releases/download/0.3.1/TrickSaber_v0.3.1.zip",
-                    "notes": "Changelog: \r\n- Trick cutting has been removed from the UI\r\n- Fixed various crashes in TrickSaber\r\n- Fixed trails not working without Qosmetics enabled\r\n- Fix saber vibration bug\r\n- Switch to dropdown menus for remap buttons\r\n- Add note tracking to disable notes while on screen (Thanks Henwill for that!)\r\n- Fix crash while using Slow-Mo",
                     "forward": false,
-                    "coremod": false
+                    "coremod": false,
+                    "notes": "Changelog: \r\n- Trick cutting has been removed from the UI\r\n- Fixed various crashes in TrickSaber\r\n- Fixed trails not working without Qosmetics enabled\r\n- Fix saber vibration bug\r\n- Switch to dropdown menus for remap buttons\r\n- Add note tracking to disable notes while on screen (Thanks Henwill for that!)\r\n- Fix crash while using Slow-Mo"
                 },
                 {
                     "modversion": "0.3.0",
@@ -748,36 +938,6 @@
                     "forward": false,
                     "coremod": false,
                     "notes": "Known Incompatibilities:\r\n- Trick cutting DOES NOT WORK (sad)"
-                }
-            ]
-        },
-        {
-            "name": "Third Person mod",
-            "details": "A mod which lets you play in third person\r\n\r\nFeatures:\r\n- Play with a fixed camera position\r\n- Fly anywhere\r\n- Fix the camera to your saber\r\n- And more options to keep you away from motion sickness",
-            "ModID": "play3rdper",
-            "creator": [
-                "ComputerElite"
-            ],
-            "downloads": [
-                {
-                    "modversion": "0.1.3",
-                    "gameversion": [
-                        "1.13.2"
-                    ],
-                    "download": "https://github.com/ComputerElite/play3rdper/releases/download/0.1.3/Play3rdPer_v0.1.3.zip",
-                    "notes": "Changelog:\r\n- Removed Disable while replay function since it caused crashes (thx to @Unusual Danger  for pointing this out)",
-                    "forward": false,
-                    "coremod": false
-                },
-                {
-                    "modversion": "0.1.0",
-                    "gameversion": [
-                        "1.13.2"
-                    ],
-                    "download": "https://github.com/ComputerElite/play3rdper/releases/download/0.1.0/Play3rdPer_v0.1.0.zip",
-                    "forward": false,
-                    "coremod": false,
-                    "notes": ""
                 }
             ]
         },
@@ -795,9 +955,9 @@
                         "1.16.4"
                     ],
                     "download": "https://github.com/ComputerElite/CrashMod/releases/download/0.2.1/CrashMod.qmod",
-                    "notes": "Library update",
                     "forward": false,
-                    "coremod": false
+                    "coremod": false,
+                    "notes": "Library update"
                 },
                 {
                     "modversion": "0.2.0",
@@ -805,9 +965,9 @@
                         "1.16.4"
                     ],
                     "download": "https://github.com/ComputerElite/CrashMod/releases/download/0.2/CrashMod.qmod",
-                    "notes": "",
                     "forward": false,
-                    "coremod": false
+                    "coremod": false,
+                    "notes": ""
                 },
                 {
                     "modversion": "0.1.0",
@@ -835,9 +995,9 @@
                         "1.13.2"
                     ],
                     "download": "https://github.com/danrouse/bsq-qounters-minus/releases/download/1.0.2/qounters-minus_v1.0.2.zip",
-                    "notes": "Changelog:\r\n- Added option to disable Qounters- in 90ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â° mode\r\n- Some minor performance improvements\r\n- Significantly less logspam on startup\r\n- Fixed incompatibility with NoHealthAndSafety mod",
                     "forward": false,
-                    "coremod": false
+                    "coremod": false,
+                    "notes": "Changelog:\r\n- Added option to disable Qounters- in 90ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â° mode\r\n- Some minor performance improvements\r\n- Significantly less logspam on startup\r\n- Fixed incompatibility with NoHealthAndSafety mod"
                 },
                 {
                     "modversion": "1.0.0",
@@ -845,9 +1005,9 @@
                         "1.13.2"
                     ],
                     "download": "https://github.com/danrouse/bsq-qounters-minus/releases/download/1.0.0/qounters-minus_v1.0.0.zip",
-                    "notes": "Not compatible (currently) with Laurie's NoHealthAndSafety",
                     "forward": false,
-                    "coremod": false
+                    "coremod": false,
+                    "notes": "Not compatible (currently) with Laurie's NoHealthAndSafety"
                 },
                 {
                     "modversion": "1.0.0",
@@ -875,9 +1035,9 @@
                         "1.13.2"
                     ],
                     "download": "https://github.com/Lauriethefish/NoHealthAndSafety/releases/download/0.1.1/no-health-and-safety_v0.1.1.zip",
-                    "notes": "Changelog:\r\n- Updated all libraries.\r\n- Updated to Beat Saber 1.13.2.",
                     "forward": false,
-                    "coremod": false
+                    "coremod": false,
+                    "notes": "Changelog:\r\n- Updated all libraries.\r\n- Updated to Beat Saber 1.13.2."
                 },
                 {
                     "modversion": "0.1.0",
@@ -885,47 +1045,6 @@
                         "1.13.0"
                     ],
                     "download": "https://github.com/Lauriethefish/NoHealthAndSafety/releases/download/0.1.0/no-health-and-safety_v0.1.0.zip",
-                    "forward": false,
-                    "coremod": false,
-                    "notes": "Initial release"
-                }
-            ]
-        },
-        {
-            "name": "Clock Mod",
-            "details": "Features:\r\n- Toggle Clock off in maps.\r\n- Change Clock between 24/12 Hour format.\r\n- Toggle Seconds on/off\r\n- Added HoverText explanations to the config menu.\r\n\r\nMissing Features:\r\n- Change size\r\n- Change color\r\n\r\nNote:\r\nSince the original source code only had the code to show the clock, I had to rewrite things like changing the format to 12 from 24 hours and toggling seconds on and off.\r\nWhich means any previous config values will not load. You will have to set the settings again.",
-            "ModID": "clockmod",
-            "creator": [
-                "EnderdracheLP",
-                "BoopetyDoopety"
-            ],
-            "downloads": [
-                {
-                    "modversion": "0.1.2",
-                    "gameversion": [
-                        "1.13.2"
-                    ],
-                    "download": "https://github.com/EnderdracheLP/ClockMod/releases/latest/download/Clockmod.zip",
-                    "notes": "",
-                    "forward": false,
-                    "coremod": false
-                },
-                {
-                    "modversion": "0.1.1",
-                    "gameversion": [
-                        "1.13.0"
-                    ],
-                    "download": "https://github.com/ChillGunner/ClockMod/releases/download/v0.1.1/clockmod_v0.1.1.zip",
-                    "notes": "This update adds a few customization options to decide how you like your clock.",
-                    "forward": false,
-                    "coremod": false
-                },
-                {
-                    "modversion": "0.1.0",
-                    "gameversion": [
-                        "1.13.0"
-                    ],
-                    "download": "https://github.com/ChillGunner/ClockMod/releases/download/v0.1.0/clockmod_v0.1.0.zip",
                     "forward": false,
                     "coremod": false,
                     "notes": "Initial release"
@@ -986,9 +1105,9 @@
                         "1.13.0"
                     ],
                     "download": "https://github.com/MillzyG/LOLCAT_BMBF/releases/download/BSABER_1.13.0/lolcat_bmbf_v0.3.0.zip",
-                    "notes": "CHANGELOG:\r\n\r\n   - Optimised Translations\r\n   - Created Translation Template\r\n   - Translated More Buttons\r\n   - Fixed Edit Avatar Menu\r\n   - Created Translation Map",
                     "forward": false,
-                    "coremod": false
+                    "coremod": false,
+                    "notes": "CHANGELOG:\r\n\r\n   - Optimised Translations\r\n   - Created Translation Template\r\n   - Translated More Buttons\r\n   - Fixed Edit Avatar Menu\r\n   - Created Translation Map"
                 },
                 {
                     "modversion": "0.2.1",
@@ -996,9 +1115,9 @@
                         "1.13.0"
                     ],
                     "download": "https://github.com/MillzyG/LOLCAT_BMBF/releases/download/0.2.1/lolcat_bmbf_v0.2.1.zip",
-                    "notes": "PATCH CHANGELOG:\r\n    - Fixed SoloFreePlayViewer and PartyFreePlayViewer have the same title",
                     "forward": false,
-                    "coremod": false
+                    "coremod": false,
+                    "notes": "PATCH CHANGELOG:\r\n    - Fixed SoloFreePlayViewer and PartyFreePlayViewer have the same title"
                 },
                 {
                     "modversion": "0.2.0",
@@ -1006,9 +1125,9 @@
                         "1.13.0"
                     ],
                     "download": "https://github.com/MillzyG/LOLCAT_BMBF/releases/download/0.2.0/lolcat_bmbf_v0.2.0.zip",
-                    "notes": "SoloFreePlayViewer and PartyFreePlayViewer have the same title",
                     "forward": false,
-                    "coremod": false
+                    "coremod": false,
+                    "notes": "SoloFreePlayViewer and PartyFreePlayViewer have the same title"
                 },
                 {
                     "modversion": "0.1.0",
@@ -1036,9 +1155,9 @@
                         "1.13.2"
                     ],
                     "download": "https://github.com/pythonology/BeatTogether.Quest/releases/download/v1.1.0/BeatTogether_v1.1.0.zip",
-                    "notes": "Change Log\r\n* Updated for Beat Saber 1.13.2\r\n* Checks server availability and properly displays maintenance/out-of-date status",
                     "forward": false,
-                    "coremod": false
+                    "coremod": false,
+                    "notes": "Change Log\r\n* Updated for Beat Saber 1.13.2\r\n* Checks server availability and properly displays maintenance/out-of-date status"
                 },
                 {
                     "modversion": "1.0.1",
@@ -1066,9 +1185,9 @@
                         "1.13.2"
                     ],
                     "download": "https://github.com/IsGabriellaCurious/BTSYeeter/releases/download/v0.2.0/bts-yeeter_v0.2.0.zip",
-                    "notes": "Changelog:\r\n- Updated to 1.13.2  + dependency updates",
                     "forward": false,
-                    "coremod": false
+                    "coremod": false,
+                    "notes": "Changelog:\r\n- Updated to 1.13.2  + dependency updates"
                 },
                 {
                     "modversion": "0.1.0",
@@ -1097,7 +1216,8 @@
                     ],
                     "download": "https://github.com/BSMGPink/QuestNoItalics/releases/download/1.0.0/NoItalicsQuestDownload.zip",
                     "forward": false,
-                    "coremod": false
+                    "coremod": false,
+                    "notes": "N/A"
                 }
             ]
         },
@@ -1118,7 +1238,8 @@
                     ],
                     "download": "https://github.com/BSMGPink/QuestDarthMaul/releases/download/1.0.0/DarthMaul.zip",
                     "forward": false,
-                    "coremod": false
+                    "coremod": false,
+                    "notes": "N/A"
                 }
             ]
         },
@@ -1138,7 +1259,8 @@
                     ],
                     "download": "https://github.com/BSMGPink/QuestNoBoom/releases/download/1.0.0/NoBoom.zip",
                     "forward": false,
-                    "coremod": false
+                    "coremod": false,
+                    "notes": "N/A"
                 }
             ]
         },
@@ -1157,7 +1279,8 @@
                     ],
                     "download": "https://github.com/BSMGPink/BurnMarksKeeper/releases/download/1.0.0/BurnMarksKeeper.zip",
                     "forward": false,
-                    "coremod": false
+                    "coremod": false,
+                    "notes": "N/A"
                 }
             ]
         },
@@ -1175,9 +1298,9 @@
                         "1.13.2"
                     ],
                     "download": "https://github.com/IsGabriellaCurious/NoMissText/releases/download/v2.1.0/nomisstext_v2.1.0.zip",
-                    "notes": "2.1.0 Changelog:\r\n- Added Subtle No Fail, which removes the massive red flash and X from appearing when you deplete all energy with no fail enabled.\r\n- Updated cover image.",
                     "forward": false,
-                    "coremod": false
+                    "coremod": false,
+                    "notes": "2.1.0 Changelog:\r\n- Added Subtle No Fail, which removes the massive red flash and X from appearing when you deplete all energy with no fail enabled.\r\n- Updated cover image."
                 },
                 {
                     "modversion": "2.0.0",
@@ -1185,9 +1308,9 @@
                         "1.13.2"
                     ],
                     "download": "https://github.com/IsGabriellaCurious/nomisstext/releases/download/v2.0.0/nomisstext_v2.0.0.zip",
-                    "notes": "Changelog:\r\n- Complete re-write of the original mod\r\n- Added ability to hide the combo break line animation\r\n- An in-game GUI, which you can toggle on and off the miss text and the combo break animation",
                     "forward": false,
-                    "coremod": false
+                    "coremod": false,
+                    "notes": "Changelog:\r\n- Complete re-write of the original mod\r\n- Added ability to hide the combo break line animation\r\n- An in-game GUI, which you can toggle on and off the miss text and the combo break animation"
                 },
                 {
                     "modversion": "1.0.0",
@@ -1196,36 +1319,8 @@
                     ],
                     "download": "https://github.com/BSMGPink/QuestNoMissText/releases/download/1.0.0/NoMissText.zip",
                     "forward": false,
-                    "coremod": false
-                }
-            ]
-        },
-        {
-            "name": "Replay Lite",
-            "details": "OUTDATED: USE REPLAY INSTEAD.\r\n\r\n Lets you view your replay of your best attempt or score on a song. Replays can be sped up or slowed down and paired with death replays (the replays that show on the level failed screen), this can be an excellent practice tool. View your death replay and slow it down a lot to see exactly why you died.\r\n\r\nFull replay will still take a while but I am definitely making progress.\r\n\r\nMy Patreon (If you join then you get some perks): https://www.patreon.com/henwill8?fan_landing=true",
-            "ModID": "replay",
-            "creator": [
-                "Henwill8"
-            ],
-            "downloads": [
-                {
-                    "modversion": "0.4.0",
-                    "gameversion": [
-                        "1.13.2"
-                    ],
-                    "download": "https://github.com/henwill8/ReplayDownload/releases/download/0.4.0/replay_v0.4.0.zip",
-                    "notes": "Changelog:\r\n- FIXED CRASHES IN MULTI, YOU NO LONGER SHOULD HAVE TO DISABLE REPLAY TO PLAY MULTIPLAYER\r\n- Now saves your best attempt on a song and tells you when you died on it.\r\n- In the level failed screen you can now choose to replay that specific play.\r\n- Added option to never save no fail plays.\r\n- Added feature to change the song time in the pause menu (so you can now skip around and see different parts easier).",
-                    "forward": false,
-                    "coremod": false
-                },
-                {
-                    "modversion": "0.3.0",
-                    "gameversion": [
-                        "1.13.0"
-                    ],
-                    "download": "https://github.com/henwill8/ReplayDownload/releases/download/v0.3.0/ReplayLite.zip",
-                    "forward": false,
-                    "coremod": false
+                    "coremod": false,
+                    "notes": "N/A"
                 }
             ]
         },
@@ -1243,9 +1338,9 @@
                         "1.13.2"
                     ],
                     "download": "https://github.com/ComputerElite/RedBar/releases/download/1.3.0/RedBar_v1.3.0.zip",
-                    "notes": "Changelog:\r\n- Updated for Beat Saber 1.13.2.\r\n- Updated all libraries.",
                     "forward": false,
-                    "coremod": false
+                    "coremod": false,
+                    "notes": "Changelog:\r\n- Updated for Beat Saber 1.13.2.\r\n- Updated all libraries."
                 },
                 {
                     "modversion": "0.2.0",
@@ -1254,7 +1349,8 @@
                     ],
                     "download": "https://github.com/Lauriethefish/PauseConfirm/releases/download/0.2.0/pause-confirm_v0.2.0.zip",
                     "forward": false,
-                    "coremod": false
+                    "coremod": false,
+                    "notes": "N/A"
                 },
                 {
                     "modversion": "0.1.0",
@@ -1263,7 +1359,8 @@
                     ],
                     "download": "https://github.com/Lauriethefish/PauseConfirm/releases/download/0.1.0/pause-confirm_v0.1.0.zip",
                     "forward": false,
-                    "coremod": false
+                    "coremod": false,
+                    "notes": "N/A"
                 }
             ]
         },
@@ -1281,9 +1378,9 @@
                         "1.13.2"
                     ],
                     "download": "https://github.com/Lauriethefish/SlowResume/releases/download/0.1.1/slow-resume_v0.1.1.zip",
-                    "notes": "Changelog:\r\n- Updated to Beat Saber 1.13.2.\r\n- Updated all libraries.",
                     "forward": false,
-                    "coremod": false
+                    "coremod": false,
+                    "notes": "Changelog:\r\n- Updated to Beat Saber 1.13.2.\r\n- Updated all libraries."
                 },
                 {
                     "modversion": "0.1.0",
@@ -1292,7 +1389,8 @@
                     ],
                     "download": "https://github.com/Lauriethefish/SlowResume/releases/download/0.1.0/slow-resume_v0.1.0.zip",
                     "forward": false,
-                    "coremod": false
+                    "coremod": false,
+                    "notes": "N/A"
                 }
             ]
         },
@@ -1310,9 +1408,9 @@
                         "1.16.4"
                     ],
                     "download": "https://github.com/Raemien/DebrisTweaksQuest/releases/download/v1.1.0/DebrisTweaks.qmod",
-                    "notes": "",
                     "forward": false,
-                    "coremod": false
+                    "coremod": false,
+                    "notes": ""
                 },
                 {
                     "modversion": "1.0.0",
@@ -1320,9 +1418,9 @@
                         "1.13.2"
                     ],
                     "download": "https://github.com/Raemien/DebrisTweaksQuest/releases/latest/download/DebrisTweaks.zip",
-                    "notes": "The v.1.0.0 release is here!\r\nThis version brings all features of the PC version to Quest, including a revamped UI!",
                     "forward": false,
-                    "coremod": false
+                    "coremod": false,
+                    "notes": "The v.1.0.0 release is here!\r\nThis version brings all features of the PC version to Quest, including a revamped UI!"
                 },
                 {
                     "modversion": "0.3.0",
@@ -1331,7 +1429,8 @@
                     ],
                     "download": "https://github.com/Raemien/DebrisTweaksQuest/releases/download/0.3.0/DebrisTweaks.zip",
                     "forward": false,
-                    "coremod": false
+                    "coremod": false,
+                    "notes": "N/A"
                 },
                 {
                     "modversion": "0.2.0",
@@ -1340,7 +1439,8 @@
                     ],
                     "download": "https://cdn.discordapp.com/attachments/776551464117075978/789054295823613952/DebrisTweaks_v0.2.0.zip",
                     "forward": false,
-                    "coremod": false
+                    "coremod": false,
+                    "notes": "N/A"
                 }
             ]
         },
@@ -1359,7 +1459,8 @@
                     ],
                     "download": "https://cdn.discordapp.com/attachments/776551464117075978/788705187862544384/randomendless.zip",
                     "forward": false,
-                    "coremod": false
+                    "coremod": false,
+                    "notes": "N/A"
                 }
             ]
         },
@@ -1377,9 +1478,9 @@
                         "1.16.4"
                     ],
                     "download": "https://github.com/ComputerElite/RedBar/releases/download/1.4.2/RedBar.qmod",
-                    "notes": "Library update",
                     "forward": false,
-                    "coremod": false
+                    "coremod": false,
+                    "notes": "Library update"
                 },
                 {
                     "modversion": "1.4.1",
@@ -1387,9 +1488,9 @@
                         "1.16.4"
                     ],
                     "download": "https://github.com/ComputerElite/RedBar/releases/download/1.4.1/RedBar.qmod",
-                    "notes": "",
                     "forward": false,
-                    "coremod": false
+                    "coremod": false,
+                    "notes": ""
                 },
                 {
                     "modversion": "1.4.0",
@@ -1397,9 +1498,9 @@
                         "1.16.4"
                     ],
                     "download": "https://github.com/ComputerElite/RedBar/releases/download/1.4/RedBar.qmod",
-                    "notes": "",
                     "forward": false,
-                    "coremod": false
+                    "coremod": false,
+                    "notes": ""
                 },
                 {
                     "modversion": "1.3.1",
@@ -1407,9 +1508,9 @@
                         "1.13.2"
                     ],
                     "download": "https://github.com/ComputerElite/RedBar/releases/download/1.3.1/RedBar_v1.3.1.zip",
-                    "notes": "Changelog:\r\n- Fixed crash if you play a second song in multiplayer",
                     "forward": false,
-                    "coremod": false
+                    "coremod": false,
+                    "notes": "Changelog:\r\n- Fixed crash if you play a second song in multiplayer"
                 },
                 {
                     "modversion": "1.3.0",
@@ -1417,9 +1518,9 @@
                         "1.13.2"
                     ],
                     "download": "https://github.com/ComputerElite/RedBar/releases/download/1.3.0/RedBar_v1.3.0.zip",
-                    "notes": "Changelog:\r\n- Updated dependencies and code to BS 1.13.2\r\n- improved color fading\r\n- added option to fade between 2 colors\r\n- Replaced increments with a color picker\r\n\r\nIncompatibilities:\r\n- going into the settings menu of Qounters- and RedBar successively will crash the game",
                     "forward": false,
-                    "coremod": false
+                    "coremod": false,
+                    "notes": "Changelog:\r\n- Updated dependencies and code to BS 1.13.2\r\n- improved color fading\r\n- added option to fade between 2 colors\r\n- Replaced increments with a color picker\r\n\r\nIncompatibilities:\r\n- going into the settings menu of Qounters- and RedBar successively will crash the game"
                 },
                 {
                     "modversion": "1.2.0",
@@ -1428,7 +1529,8 @@
                     ],
                     "download": "https://github.com/ComputerElite/RedBar/releases/download/1.2.0/RedBar_v1.2.0.zip",
                     "forward": false,
-                    "coremod": false
+                    "coremod": false,
+                    "notes": "N/A"
                 }
             ]
         },
@@ -1447,36 +1549,8 @@
                     ],
                     "download": "https://new.scoresaber.com/quest/",
                     "forward": true,
-                    "coremod": false
-                }
-            ]
-        },
-        {
-            "name": "AntiVertigo",
-            "details": "Spawns a plane or circle under you to help you deal with vertigo issues.",
-            "ModID": "AntiVertigo",
-            "creator": [
-                "RedBrumbler"
-            ],
-            "downloads": [
-                {
-                    "modversion": "1.0.1",
-                    "gameversion": [
-                        "1.13.2"
-                    ],
-                    "download": "https://github.com/RedBrumbler/AntiVertigo/releases/latest/download/AntiVertigo.zip",
-                    "notes": "",
-                    "forward": false,
-                    "coremod": false
-                },
-                {
-                    "modversion": "1.0.0",
-                    "gameversion": [
-                        "1.13.0"
-                    ],
-                    "download": "https://github.com/RedBrumbler/AntiVertigo/releases/download/1.0.0/AntiVertigo.zip",
-                    "forward": false,
-                    "coremod": false
+                    "coremod": false,
+                    "notes": "N/A"
                 }
             ]
         },
@@ -1494,7 +1568,9 @@
                         "1.13.0"
                     ],
                     "download": "https://cdn.discordapp.com/attachments/776551464117075978/776918481831723048/MorePrecisePlayerHeightForQuest.zip",
-                    "forward": false
+                    "forward": false,
+                    "coremod": false,
+                    "notes": "N/A"
                 },
                 {
                     "modversion": "0.1.2",
@@ -1502,44 +1578,9 @@
                         "1.12.2"
                     ],
                     "download": "https://cdn.discordapp.com/attachments/765630505000894484/773112282913570827/MorePrecisePlayerHeightForQuest.zip",
-                    "forward": false
-                }
-            ]
-        },
-        {
-            "name": "QuestSounds",
-            "details": "QuestSounds or QSounds for short, allows the user to change sounds without asset mods, \r\njust drop them into default path or your custom path!\r\n\r\nFeatures:\r\n  Support for OGG, MP3 and WAV file formats!\r\n  Creates QuestSounds folder at /sdcard/ModData/com.beatgames.beatsaber/Mods/\r\n  AFTER YOU HAVE RAN THE MOD ONCE\r\n  Config for disabling and enabling Custom Sounds!\r\n  Custom filepaths in config, so you can decide where you want the sounds!\r\n\r\nPlanned features:\r\n- Settings Menu to select Sounds.\r\n- More Sounds to customize",
-            "ModID": "QuestSounds",
-            "creator": [
-                "EnderdracheLP",
-                "Lillie"
-            ],
-            "downloads": [
-                {
-                    "modversion": "0.2.0",
-                    "gameversion": [
-                        "1.13.2"
-                    ],
-                    "download": "https://github.com/EnderdracheLP/QuestSounds/releases/download/0.2.0/QuestSounds.zip",
-                    "notes": "Changelog: \r\n- Updated dependency BS-Hook to 1.0.12\r\n- Changed default Path to, sdcard/ModData/com.beatgames.beatsaber/Mods/QuestSounds/",
                     "forward": false,
-                    "coremod": false
-                },
-                {
-                    "modversion": "0.1.3",
-                    "gameversion": [
-                        "1.13.0"
-                    ],
-                    "download": "https://cdn.discordapp.com/attachments/776551464117075978/776918618596048916/QuestSounds.zip",
-                    "forward": false
-                },
-                {
-                    "modversion": "0.1.1",
-                    "gameversion": [
-                        "1.12.2"
-                    ],
-                    "download": "https://cdn.discordapp.com/attachments/765630505000894484/773105655040966716/QuestSounds.zip",
-                    "forward": false
+                    "coremod": false,
+                    "notes": "N/A"
                 }
             ]
         },
@@ -1557,9 +1598,9 @@
                         "1.13.2"
                     ],
                     "download": "https://github.com/Rugtveit/GoodbyeBug/releases/download/0.1.4/GoodbyeBug.zip",
-                    "notes": "Changelog:\r\n   - Updated beatsaber-hook version to support compatibility with newer mods!",
                     "forward": false,
-                    "coremod": false
+                    "coremod": false,
+                    "notes": "Changelog:\r\n   - Updated beatsaber-hook version to support compatibility with newer mods!"
                 },
                 {
                     "modversion": "0.1.3",
@@ -1568,7 +1609,8 @@
                     ],
                     "download": "https://github.com/Rugtveit/GoodbyeBug/releases/download/0.1.3/GoodbyeBug.zip",
                     "forward": false,
-                    "coremod": true
+                    "coremod": true,
+                    "notes": "N/A"
                 },
                 {
                     "modversion": "0.1.1",
@@ -1577,7 +1619,8 @@
                     ],
                     "download": "https://cdn.discordapp.com/attachments/765630505000894484/772899029985919047/GoodbyeBug.zip",
                     "forward": false,
-                    "coremod": false
+                    "coremod": false,
+                    "notes": "N/A"
                 }
             ]
         },
@@ -1594,33 +1637,10 @@
                     "gameversion": [
                         "1.12.2"
                     ],
-                    "download": "https://github.com/SuperMarcus/RumbleRumbleQuest/releases/download/1.0.0/RumbleRumbleQuest.zip"
-                }
-            ]
-        },
-        {
-            "name": "Quest Particles",
-            "details": "Partially ported ParticleOverdrive to the Quest. Particles (a.k.a. ParticleTuner) allows you to adjust the particles spawned after slicing a note, remove saber clashing effects, and reduce environmental dust. There's also a built-in rainbow mode for particles :)",
-            "ModID": "particletuner",
-            "creator": [
-                "marcuszhou"
-            ],
-            "downloads": [
-                {
-                    "modversion": "1.0.1",
-                    "gameversion": [
-                        "1.13.0"
-                    ],
-                    "download": "https://github.com/SuperMarcus/QuestParticleTuner/releases/download/1.0.1/ParticleTuner_1.0.1.zip",
-                    "forward": false
-                },
-                {
-                    "modversion": "1.0.0",
-                    "gameversion": [
-                        "1.12.2"
-                    ],
-                    "download": "https://github.com/SuperMarcus/QuestParticleTuner/releases/download/1.0.0/ParticleTuner_1.0.0.zip",
-                    "forward": false
+                    "download": "https://github.com/SuperMarcus/RumbleRumbleQuest/releases/download/1.0.0/RumbleRumbleQuest.zip",
+                    "forward": false,
+                    "coremod": false,
+                    "notes": "N/A"
                 }
             ]
         },
@@ -1640,21 +1660,28 @@
                     ],
                     "download": "https://cdn.discordapp.com/attachments/776551464117075978/794607261074980894/BetterMenu.zip",
                     "forward": false,
-                    "coremod": false
+                    "coremod": false,
+                    "notes": "N/A"
                 },
                 {
                     "modversion": "0.2.0",
                     "gameversion": [
                         "1.13.0"
                     ],
-                    "download": "https://cdn.discordapp.com/attachments/776551464117075978/776648476418244638/BetterMenu.zip"
+                    "download": "https://cdn.discordapp.com/attachments/776551464117075978/776648476418244638/BetterMenu.zip",
+                    "forward": false,
+                    "coremod": false,
+                    "notes": "N/A"
                 },
                 {
                     "modversion": "0.1.1",
                     "gameversion": [
                         "1.12.2"
                     ],
-                    "download": "https://cdn.discordapp.com/attachments/765630505000894484/771166107708424242/BetterMenu.zip"
+                    "download": "https://cdn.discordapp.com/attachments/765630505000894484/771166107708424242/BetterMenu.zip",
+                    "forward": false,
+                    "coremod": false,
+                    "notes": "N/A"
                 }
             ]
         },
@@ -1672,9 +1699,9 @@
                         "1.13.2"
                     ],
                     "download": "https://cdn.discordapp.com/attachments/801837630827921438/806364563125043200/MappingExtensions.zip",
-                    "notes": "Changes\r\n- Many performance improvements :D\r\n- Updated libraries \r\n\r\nRequirements\r\n- PinkCore 1.4.1",
                     "forward": false,
-                    "coremod": false
+                    "coremod": false,
+                    "notes": "Changes\r\n- Many performance improvements :D\r\n- Updated libraries \r\n\r\nRequirements\r\n- PinkCore 1.4.1"
                 },
                 {
                     "modversion": "0.19.1",
@@ -1682,9 +1709,9 @@
                         "1.13.2"
                     ],
                     "download": "https://cdn.discordapp.com/attachments/801837630827921438/805176155891695686/MappingExtensions.zip",
-                    "notes": "Changes\r\n- Many performance improvements :D\r\n- Updated libraries ",
                     "forward": false,
-                    "coremod": false
+                    "coremod": false,
+                    "notes": "Changes\r\n- Many performance improvements :D\r\n- Updated libraries "
                 },
                 {
                     "modversion": "0.18.0",
@@ -1693,7 +1720,8 @@
                     ],
                     "download": "https://github.com/StackDoubleFlow/QuestMods/releases/download/0.18.0/MappingExtensions_v0.18.0.zip",
                     "forward": false,
-                    "coremod": false
+                    "coremod": false,
+                    "notes": "N/A"
                 }
             ]
         },
@@ -1711,7 +1739,9 @@
                         "1.12.2"
                     ],
                     "download": "https://cdn.discordapp.com/attachments/765630505000894484/775909171714981908/scorepercentage.zip",
-                    "forward": false
+                    "forward": false,
+                    "coremod": false,
+                    "notes": "N/A"
                 },
                 {
                     "modversion": "0.3.0",
@@ -1719,7 +1749,9 @@
                         "1.12.2"
                     ],
                     "download": "https://cdn.discordapp.com/attachments/765630505000894484/770781443579969556/scorepercentage.zip",
-                    "forward": false
+                    "forward": false,
+                    "coremod": false,
+                    "notes": "N/A"
                 }
             ]
         },
@@ -1736,7 +1768,10 @@
                     "gameversion": [
                         "1.12.2"
                     ],
-                    "download": "https://github.com/RedBrumbler/QuestTrailOverlap/releases/latest/download/QuestTrailOverlap.zip"
+                    "download": "https://github.com/RedBrumbler/QuestTrailOverlap/releases/latest/download/QuestTrailOverlap.zip",
+                    "forward": false,
+                    "coremod": false,
+                    "notes": "N/A"
                 }
             ]
         },
@@ -1754,7 +1789,9 @@
                         "1.13.0"
                     ],
                     "download": "https://cdn.discordapp.com/attachments/776551464117075978/776806942374625290/MotionBlurDisabler_v1.2.0.zip",
-                    "forward": false
+                    "forward": false,
+                    "coremod": false,
+                    "notes": "N/A"
                 },
                 {
                     "modversion": "1.1.0",
@@ -1762,35 +1799,9 @@
                         "1.12.2"
                     ],
                     "download": "https://cdn.discordapp.com/attachments/765630505000894484/776483474311741500/MotionBlurDisabler_v0.1.0.zip",
-                    "forward": false
-                }
-            ]
-        },
-        {
-            "name": "Custom Fail Text",
-            "details": "Allows you to customise the text that appears when you fail a level.\r\nThe text can be changed in the mod settings menu.",
-            "ModID": "custom-fail-text",
-            "creator": [
-                "Laurie"
-            ],
-            "downloads": [
-                {
-                    "modversion": "0.1.8",
-                    "gameversion": [
-                        "1.13.2"
-                    ],
-                    "download": "https://github.com/Lauriethefish/CustomFailText/releases/download/0.1.8/custom-fail-text_v0.1.8.zip",
-                    "notes": "Changelog:\r\n- Updated all libraries.\r\n- Changed version to beat saber 1.13.2.\r\n- Added cursed mode\r\n- Added text size customisation\r\n- Added ability to use text in bailout mode.",
                     "forward": false,
-                    "coremod": false
-                },
-                {
-                    "modversion": "0.1.7",
-                    "gameversion": [
-                        "1.13.0"
-                    ],
-                    "download": "https://github.com/Lauriethefish/CustomFailText/releases/download/0.1.7/custom-fail-text_v0.1.7.zip",
-                    "forward": false
+                    "coremod": false,
+                    "notes": "N/A"
                 }
             ]
         },
@@ -1808,9 +1819,9 @@
                         "1.16.4"
                     ],
                     "download": "https://github.com/Lauriethefish/Quest-Discord-Presence/releases/download/0.3.2/discord-presence_v0.3.2.qmod",
-                    "notes": "",
                     "forward": false,
-                    "coremod": false
+                    "coremod": false,
+                    "notes": ""
                 },
                 {
                     "modversion": "0.3.1",
@@ -1818,9 +1829,9 @@
                         "1.13.2"
                     ],
                     "download": "https://github.com/Lauriethefish/Quest-Discord-Presence/releases/download/0.3.1/discord-presence_v0.3.1.zip",
-                    "notes": "Changelog:\r\n- Added support for showing the time elapsed in the main menu and in multiplayer lobbies.\r\nNOTE: This requires an update of the client, linked below.",
                     "forward": false,
-                    "coremod": false
+                    "coremod": false,
+                    "notes": "Changelog:\r\n- Added support for showing the time elapsed in the main menu and in multiplayer lobbies.\r\nNOTE: This requires an update of the client, linked below."
                 },
                 {
                     "modversion": "0.3.0",
@@ -1828,9 +1839,9 @@
                         "1.13.2"
                     ],
                     "download": "https://github.com/Lauriethefish/Quest-Discord-Presence/releases/download/0.3.0/discord-presence_v0.3.0.zip",
-                    "notes": "Changelog:\r\n- Updated to Beat Saber 1.13.2.\r\n- Updated all libraries.",
                     "forward": false,
-                    "coremod": false
+                    "coremod": false,
+                    "notes": "Changelog:\r\n- Updated to Beat Saber 1.13.2.\r\n- Updated all libraries."
                 },
                 {
                     "modversion": "0.2.1",
@@ -1839,7 +1850,8 @@
                     ],
                     "download": "https://github.com/Lauriethefish/Quest-Discord-Presence/releases/download/0.2.1/discord-presence_v0.2.1.zip",
                     "forward": false,
-                    "coremod": false
+                    "coremod": false,
+                    "notes": "N/A"
                 },
                 {
                     "modversion": "0.2.0",
@@ -1848,7 +1860,8 @@
                     ],
                     "download": "https://github.com/Lauriethefish/Quest-Discord-Presence/releases/download/0.2.0/discord-presence_v0.2.0.zip",
                     "forward": false,
-                    "coremod": false
+                    "coremod": false,
+                    "notes": "N/A"
                 },
                 {
                     "modversion": "0.1.3",
@@ -1857,7 +1870,8 @@
                     ],
                     "download": "https://github.com/Lauriethefish/Quest-Discord-Presence/releases/download/0.1.3/discord-presence_v0.1.3.zip",
                     "forward": false,
-                    "coremod": false
+                    "coremod": false,
+                    "notes": "N/A"
                 },
                 {
                     "modversion": "0.1.3",
@@ -1865,7 +1879,9 @@
                         "1.13.0"
                     ],
                     "download": "https://github.com/Lauriethefish/Quest-Discord-Presence/releases/download/0.1.3/discord-presence_v0.1.3.zip",
-                    "forward": false
+                    "forward": false,
+                    "coremod": false,
+                    "notes": "N/A"
                 }
             ]
         },
@@ -1883,9 +1899,9 @@
                         "1.13.2"
                     ],
                     "download": "https://github.com/RedBrumbler/Qosmetics/releases/download/1.2.1/Qosmetics.zip",
-                    "notes": "Adds a list of donators and patrons in the main qosmetics view controller, which is a reward for the top 3 tiers of the patreon page and one time paypal donators in the following order:\r\n\r\n- Legendary patron\r\n- Amazing patron\r\n- Enthusiastic patron\r\n- paypal donator\r\nIf you want to donate, follow these links:\r\n\r\nFind the Patreon page here https://www.patreon.com/Qosmetics\r\nOnly want to donate once? paypal works too! https://paypal.me/RedBrumblerOfficial?locale.x=nl_NL",
                     "forward": false,
-                    "coremod": false
+                    "coremod": false,
+                    "notes": "Adds a list of donators and patrons in the main qosmetics view controller, which is a reward for the top 3 tiers of the patreon page and one time paypal donators in the following order:\r\n\r\n- Legendary patron\r\n- Amazing patron\r\n- Enthusiastic patron\r\n- paypal donator\r\nIf you want to donate, follow these links:\r\n\r\nFind the Patreon page here https://www.patreon.com/Qosmetics\r\nOnly want to donate once? paypal works too! https://paypal.me/RedBrumblerOfficial?locale.x=nl_NL"
                 },
                 {
                     "modversion": "1.2.0",
@@ -1893,9 +1909,9 @@
                         "1.13.2"
                     ],
                     "download": "https://github.com/RedBrumbler/Qosmetics/releases/download/1.2.0/Qosmetics.zip",
-                    "notes": "",
                     "forward": false,
-                    "coremod": false
+                    "coremod": false,
+                    "notes": ""
                 },
                 {
                     "modversion": "1.1.7",
@@ -1904,7 +1920,8 @@
                     ],
                     "download": "https://github.com/RedBrumbler/Qosmetics/releases/download/1.1.7/Qosmetics.zip",
                     "forward": false,
-                    "coremod": false
+                    "coremod": false,
+                    "notes": "N/A"
                 },
                 {
                     "modversion": "1.1.6",
@@ -1913,7 +1930,8 @@
                     ],
                     "download": "https://github.com/RedBrumbler/Qosmetics/releases/latest/download/Qosmetics.zip",
                     "forward": false,
-                    "coremod": false
+                    "coremod": false,
+                    "notes": "N/A"
                 },
                 {
                     "modversion": "1.1.5",
@@ -1922,7 +1940,8 @@
                     ],
                     "download": "https://github.com/RedBrumbler/Qosmetics/releases/latest/download/Qosmetics.zip",
                     "forward": false,
-                    "coremod": false
+                    "coremod": false,
+                    "notes": "N/A"
                 }
             ]
         },
@@ -1940,9 +1959,9 @@
                         "1.13.2"
                     ],
                     "download": "https://github.com/Lauriethefish/AutoDebris/releases/download/0.1.4/auto-debris_v0.1.4.zip",
-                    "notes": "Changelog:\r\n- Updated to Beat Saber 1.13.2.\r\n- Updated all libraries.",
                     "forward": false,
-                    "coremod": false
+                    "coremod": false,
+                    "notes": "Changelog:\r\n- Updated to Beat Saber 1.13.2.\r\n- Updated all libraries."
                 },
                 {
                     "modversion": "0.1.3",
@@ -1950,7 +1969,9 @@
                         "1.13.0"
                     ],
                     "download": "https://cdn.discordapp.com/attachments/776551464117075978/777280121291800606/auto-debris_v0.1.3.zip",
-                    "forward": false
+                    "forward": false,
+                    "coremod": false,
+                    "notes": "N/A"
                 }
             ]
         },
@@ -1971,9 +1992,9 @@
                         "1.13.2"
                     ],
                     "download": "https://github.com/BSMGPink/PinkCore/releases/download/1.4.1/PinkCoreV1.4.1.zip",
-                    "notes": "New Features/Bug Fixes\r\n- In-Game Patreon supporter recognition via a button on the Noticeboard.\r\n- Requirements are now per-difficulty. (If a map has a non-Noodle difficulty, you can now play that difficulty again)\r\n- Fixed NoteProcessorClampPatch which ensures Mapping Extensions compatibility. (thanks Stack)\r\n- Requirements API using env vars.",
                     "forward": false,
-                    "coremod": false
+                    "coremod": false,
+                    "notes": "New Features/Bug Fixes\r\n- In-Game Patreon supporter recognition via a button on the Noticeboard.\r\n- Requirements are now per-difficulty. (If a map has a non-Noodle difficulty, you can now play that difficulty again)\r\n- Fixed NoteProcessorClampPatch which ensures Mapping Extensions compatibility. (thanks Stack)\r\n- Requirements API using env vars."
                 },
                 {
                     "modversion": "1.4.0",
@@ -1981,9 +2002,9 @@
                         "1.13.2"
                     ],
                     "download": "https://github.com/BSMGPink/PinkCore/releases/download/1.4.0/PinkCoreV1.4.0.zip",
-                    "notes": "New Features/Bug Fixes\r\n- Fixed soft locking when you edit the OST packs.\r\n- All map previews will now show, fixing any infinitely loading maps.\r\n- Maps will showcase their mod requirements if you have any missing.\r\n- You will be unable to play a map without its required mods.\r\n- The NoticeBoard has now been moved to the right hand side.\r\n- New network error message for the leaderboards.\r\n- IN GAME CONFIG UI!",
                     "forward": false,
-                    "coremod": true
+                    "coremod": true,
+                    "notes": "New Features/Bug Fixes\r\n- Fixed soft locking when you edit the OST packs.\r\n- All map previews will now show, fixing any infinitely loading maps.\r\n- Maps will showcase their mod requirements if you have any missing.\r\n- You will be unable to play a map without its required mods.\r\n- The NoticeBoard has now been moved to the right hand side.\r\n- New network error message for the leaderboards.\r\n- IN GAME CONFIG UI!"
                 },
                 {
                     "modversion": "1.3.1",
@@ -1992,36 +2013,8 @@
                     ],
                     "download": "https://github.com/BSMGPink/PinkUtils/releases/download/1.3.1/PinkCorev1.3.1.zip",
                     "forward": false,
-                    "coremod": true
-                }
-            ]
-        },
-        {
-            "name": "ModList",
-            "details": "Allows you to see which mods have loaded correctly ingame, and tells you why a mod failed to load. Useful for support and troubleshooting.\r\n\r\nTo view loaded mods, go to the settings icon in the main menu, then select mod settings and go to mod list.",
-            "ModID": "mod-list",
-            "creator": [
-                "Laurie"
-            ],
-            "downloads": [
-                {
-                    "modversion": "0.1.1",
-                    "gameversion": [
-                        "1.13.2"
-                    ],
-                    "download": "https://github.com/Lauriethefish/ModList/releases/download/0.1.1/mod-list_v0.1.1.zip",
-                    "notes": "Changelog:\r\n- Updated all libraries.\r\n- Updated for Beat Saber 1.13.2.\r\n- Decreased text size to fit more mods left to right.",
-                    "forward": false,
-                    "coremod": false
-                },
-                {
-                    "modversion": "0.1.0",
-                    "gameversion": [
-                        "1.13.0"
-                    ],
-                    "download": "https://github.com/Lauriethefish/ModList/releases/download/0.1.0/mod-list_v0.1.0.zip",
-                    "forward": false,
-                    "coremod": false
+                    "coremod": true,
+                    "notes": "N/A"
                 }
             ]
         },
@@ -2040,7 +2033,8 @@
                     ],
                     "download": "https://cdn.discordapp.com/attachments/776551464117075978/780981587021791232/DebrisKeeper_v0.1.1.zip",
                     "forward": false,
-                    "coremod": false
+                    "coremod": false,
+                    "notes": "N/A"
                 }
             ]
         },
@@ -2059,7 +2053,8 @@
                     ],
                     "download": "https://cdn.discordapp.com/attachments/776551464117075978/788886975230246932/mplighting_v0.1.5.zip",
                     "forward": false,
-                    "coremod": false
+                    "coremod": false,
+                    "notes": "N/A"
                 },
                 {
                     "modversion": "0.1.4",
@@ -2068,26 +2063,8 @@
                     ],
                     "download": "https://cdn.discordapp.com/attachments/776551464117075978/781950389163130900/mplighting_v0.1.4.zip",
                     "forward": false,
-                    "coremod": false
-                }
-            ]
-        },
-        {
-            "name": "Recorder",
-            "details": "A temporary pre-replay update mod that makes replay files.",
-            "ModID": "replay",
-            "creator": [
-                "Henwill8"
-            ],
-            "downloads": [
-                {
-                    "modversion": "0.1.0",
-                    "gameversion": [
-                        "1.13.0"
-                    ],
-                    "download": "https://github.com/henwill8/ReplayDownload/releases/download/0.1.0/recorder_v0.1.0.zip",
-                    "forward": false,
-                    "coremod": false
+                    "coremod": false,
+                    "notes": "N/A"
                 }
             ]
         },
@@ -2105,9 +2082,9 @@
                         "1.16.4"
                     ],
                     "download": "https://github.com/RedBrumbler/InvertedArrows/releases/download/v1.0.4/InvertedArrows.qmod",
-                    "notes": "",
                     "forward": false,
-                    "coremod": false
+                    "coremod": false,
+                    "notes": ""
                 },
                 {
                     "modversion": "1.0.2",
@@ -2115,9 +2092,9 @@
                         "1.13.2"
                     ],
                     "download": "https://github.com/RedBrumbler/InvertedArrows/releases/download/1.0.2/InvertedArrows.zip",
-                    "notes": "",
                     "forward": false,
-                    "coremod": false
+                    "coremod": false,
+                    "notes": ""
                 },
                 {
                     "modversion": "1.0.0",
@@ -2126,7 +2103,8 @@
                     ],
                     "download": "https://github.com/RedBrumbler/InvertedArrows/releases/latest/download/InvertedArrows.zip",
                     "forward": false,
-                    "coremod": false
+                    "coremod": false,
+                    "notes": "N/A"
                 }
             ]
         },
@@ -2145,7 +2123,8 @@
                     ],
                     "download": "https://github.com/sc2ad/QuestHitScoreVisualizer/releases/download/v4.2.0/QuestHitscoreVisualizer_v4.2.0.zip",
                     "forward": false,
-                    "coremod": false
+                    "coremod": false,
+                    "notes": "N/A"
                 }
             ]
         }
@@ -2156,22 +2135,26 @@
                 {
                     "Major": 1,
                     "Minor": 13,
-                    "Patch": 5
+                    "Patch": 5,
+                    "Version": "1.13.5"
                 },
                 {
                     "Major": 1,
                     "Minor": 13,
-                    "Patch": 4
+                    "Patch": 4,
+                    "Version": "1.13.4"
                 },
                 {
                     "Major": 1,
                     "Minor": 13,
-                    "Patch": 2
+                    "Patch": 2,
+                    "Version": "1.13.2"
                 },
                 {
                     "Major": 1,
                     "Minor": 13,
-                    "Patch": 0
+                    "Patch": 0,
+                    "Version": "1.13.0"
                 }
             ]
         }
