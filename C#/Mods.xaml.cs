@@ -41,6 +41,9 @@ namespace BMBF_Manager
         BMBFC BMBF = new BMBFC();
         int C = 0;
         int Index = 0;
+        int major = 0;
+        int minor = 0;
+        int patch = 0;
 
         public Mods()
         {
@@ -113,9 +116,9 @@ namespace BMBF_Manager
             }
             String[] GameVersion = MainWindow.config.GameVersion.ToString().Replace("\"", "").Split('.');
             //String[] GameVersion = "1.13.2".Replace("\"", "").Split('.');
-            int major = Convert.ToInt32(GameVersion[0]);
-            int minor = Convert.ToInt32(GameVersion[1]);
-            int patch = Convert.ToInt32(GameVersion[2]);
+            major = Convert.ToInt32(GameVersion[0]);
+            minor = Convert.ToInt32(GameVersion[1]);
+            patch = Convert.ToInt32(GameVersion[2]);
 
             ModList QB = new ModList();
 
@@ -167,7 +170,6 @@ namespace BMBF_Manager
         {
             if(downloadbmbf)
             {
-                WebClient client = new WebClient();
                 try
                 {
                     BMBF = BMBFUtils.GetBMBFConfig();
@@ -176,6 +178,19 @@ namespace BMBF_Manager
                 {
                     txtbox.AppendText(MainWindow.globalLanguage.global.BMBF100);
                     txtbox.ScrollToEnd();
+                }
+            }
+            for (int ii = 0; ii < AllModList.Count; ii++)
+            {
+                foreach (BMBF.Config.Mod m in BMBF.Config.Mods)
+                {
+                    if (m.Id == AllModList[ii].ModID)
+                    {
+                        AllModList[ii].installed = true;
+                        AllModList[ii].Version = m.Version;
+                        AllModList[ii].GameVersion = m.Version;
+                        break;
+                    }
                 }
             }
             ModList.Items.Clear();
@@ -366,7 +381,7 @@ namespace BMBF_Manager
                     DownloadLable.Text = MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.mods.code.downloadingMod, AllModList[Index].name);
                     c.DownloadFileCompleted += new AsyncCompletedEventHandler(finished_download);
                     c.DownloadProgressChanged += new DownloadProgressChangedEventHandler(client_DownloadProgressChanged);
-                    c.DownloadFileAsync(uri, exe + "\\tmp\\" + AllModList[Index].name + C + ".zip");
+                    c.DownloadFileAsync(uri, exe + "\\tmp\\" + AllModList[Index].name + C + "." + System.IO.Path.GetExtension(Download));
                 }));
             }
             catch
@@ -489,7 +504,7 @@ namespace BMBF_Manager
                 txtbox.AppendText("\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.mods.code.downloadedMod, AllModList[Index].name));
                 txtbox.ScrollToEnd();
             }));
-            upload(exe + "\\tmp\\" + AllModList[Index].name + C + ".zip");
+            upload(exe + "\\tmp\\" + AllModList[Index].name + C + "." + System.IO.Path.GetExtension(AllModList[Index].downloads[AllModList[Index].MatchingDownload].download));
         }
 
         public void upload(String path)
@@ -589,18 +604,25 @@ namespace BMBF_Manager
             } else
             {
                 this.ModVersion = ModVersion;
-                if(!downloadable)
+                try
+                {
+                    if (!downloadable)
+                    {
+                        newColor.Color = Colors.Yellow;
+                    }
+                    else if (new Version(ModVersion).CompareTo(new Version(latest)) != -1)
+                    {
+                        newColor.Color = Colors.Green;
+                    }
+                    else
+                    {
+                        newColor.Color = Colors.Red;
+                    }
+                } catch
                 {
                     newColor.Color = Colors.Yellow;
                 }
-                else if (new Version(ModVersion).CompareTo(new Version(latest)) != -1)
-                {
-                    newColor.Color = Colors.Green;
-                }
-                else
-                {
-                    newColor.Color = Colors.Red;
-                }
+                
             }
             this.Color = newColor;
         }

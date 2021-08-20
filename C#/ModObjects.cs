@@ -93,7 +93,7 @@ namespace ModObjects
                                 }
                             }
                             
-                            if (!d.download.EndsWith(".zip")) tmp[i - removed].downloads[tmp[i - removed].MatchingDownload].forward = true;
+                            if (!d.download.EndsWith(".zip") && !d.download.ToLower().EndsWith(".qmod")) tmp[i - removed].downloads[tmp[i - removed].MatchingDownload].forward = true;
                             break;
                         }
                         gv++;

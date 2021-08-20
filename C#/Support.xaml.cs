@@ -460,14 +460,7 @@ namespace BMBF_Manager
                 s.InstallSong(bsr);
                 this.Close();
             }
-            else if(section.StartsWith("support/resetassets"))
-            {
-                BackupPlaylists();
-                resetassets();
-                reloadsongsfolder();
-                RestorePlaylists();
-                this.Close();
-            } else if(section.StartsWith("support/quickfix"))
+            else if(section.StartsWith("support/quickfix"))
             {
                 BackupPlaylists();
                 resetassets();

@@ -39,7 +39,7 @@ namespace BMBF_Manager
     {
         public static int MajorV = 1;
         public static int MinorV = 16;
-        public static int PatchV = 3;
+        public static int PatchV = 4;
         public static bool Preview = false;
         public static bool log = false;
 
@@ -653,7 +653,6 @@ namespace BMBF_Manager
                 {
                     txtbox.AppendText("\n\n" + globalLanguage.processer.ReturnProcessed(globalLanguage.mainMenu.code.playlistBackup, exe + "\\Backup\\Playlists.json"));
                     txtbox.ScrollToEnd();
-                    Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
 
                     if (!aDBI.adb("pull /sdcard/BMBFData/Playlists/ \"" + exe + "\\Backup\"", txtbox)) return;
 
@@ -663,7 +662,6 @@ namespace BMBF_Manager
                     File.WriteAllText(exe + "\\Backup\\Playlists.json", j["Config"].ToString());
                     txtbox.AppendText("\n\n" + globalLanguage.processer.ReturnProcessed(globalLanguage.mainMenu.code.playlistBackupFinished, exe + "\\Backup\\Playlists.json"));
                     txtbox.ScrollToEnd();
-                    Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
                 }
                 catch
                 {
