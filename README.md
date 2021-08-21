@@ -17,7 +17,7 @@ Currently a big BMBF update is in the working. As I can see from the test releas
 - darkuni (helped me making the Playlist backuping and restoring possible. Check out his nice program: [Playlist Editor Pro](https://beatsaberquest.com/bmbf/my-tools/playlist-editor-pro/#:~:text=Playlist%20Editor%20Pro%20is%20a,details%20and%20download%20it%20here.))
 - [Sc2ad](https://github.com/sc2ad) (made automatic modding possible)
 - [ppotatoo](https://github.com/ppotatoo) (Suggested a change in the readme)
-- ofc the unnicorns for making [BMBF](https://bmbf.dev/)
+- ofc the unicorns for making [BMBF](https://bmbf.dev/)
 
 - Used services
    - [Top_Cat with BeatSaver](https://beatsaver.com/) (Public song distribution service)
