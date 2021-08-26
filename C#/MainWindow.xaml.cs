@@ -29,6 +29,12 @@ using DCRPManager;
 using BMBFManager.Config;
 using BMBFManager.Utils;
 using System.Runtime.CompilerServices;
+using System.Windows.Forms;
+using MessageBox = System.Windows.MessageBox;
+using Application = System.Windows.Application;
+using MouseEventArgs = System.Windows.Input.MouseEventArgs;
+using Path = System.IO.Path;
+using System.Threading;
 
 namespace BMBF_Manager
 {
@@ -39,7 +45,7 @@ namespace BMBF_Manager
     {
         public static int MajorV = 1;
         public static int MinorV = 16;
-        public static int PatchV = 4;
+        public static int PatchV = 5;
         public static bool Preview = false;
         public static bool log = false;
 
@@ -96,7 +102,7 @@ namespace BMBF_Manager
             else
             {
                 ImageBrush uniformBrush = new ImageBrush();
-                uniformBrush.ImageSource = new BitmapImage(new Uri("pack://application:,,,/Main10.png", UriKind.Absolute));
+                uniformBrush.ImageSource = new BitmapImage(new Uri("pack://application:,,,/Main11.png", UriKind.Absolute));
                 uniformBrush.Stretch = Stretch.UniformToFill;
                 this.Background = uniformBrush;
             }
@@ -226,6 +232,7 @@ namespace BMBF_Manager
             installQosmeticsButton.Content = globalLanguage.mainMenu.UI.installQosmeticsButton;
             playlistEditorButton.Content = globalLanguage.mainMenu.UI.playlistEditorButton;
             settingsButton.Content = globalLanguage.mainMenu.UI.settingsButton;
+            uploadToBMBFButton.Content = globalLanguage.mainMenu.UI.uploadToBMBFButton;
 
             try
             {
@@ -1177,6 +1184,36 @@ namespace BMBF_Manager
             iPUtils.CheckIP(Quest);
             PlaylistEditor PlaylistEditorWindow = new PlaylistEditor();
             PlaylistEditorWindow.Show();
+        }
+
+        private void UploadToBMBF(object sender, RoutedEventArgs e)
+        {
+            iPUtils.CheckIP(Quest);
+            
+                
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.Multiselect = true;
+            if (ofd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                Thread t = new Thread(() =>
+                {
+                    foreach (string f in ofd.FileNames)
+                    {
+                        if (File.Exists(f))
+                        {
+                            Dispatcher.Invoke(() => { txtbox.AppendText(globalLanguage.processer.ReturnProcessed("\n" + globalLanguage.mainMenu.code.uploading, Path.GetFileName(f))); });
+                            WebClient c = new WebClient();
+                            c.UploadFile("http://" + MainWindow.config.IP + ":50000/host/beatsaber/upload?overwrite", f);
+                            Dispatcher.Invoke(() => { txtbox.AppendText(globalLanguage.processer.ReturnProcessed("\n" + globalLanguage.mainMenu.code.uploaded, Path.GetFileName(f))); });
+                        }
+                    }
+                });
+                t.Start();
+            }
+            else
+            {
+                txtbox.AppendText(globalLanguage.mainMenu.code.uploadingAborted);
+            }
         }
 
         internal void CustomProto(string Link)

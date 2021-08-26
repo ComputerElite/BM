@@ -143,11 +143,18 @@ namespace BMBFManager.Language
 
         //Warning
         public String systemDirWarning { get; set; } = "Hello friendly BMBF Manager here. I just wanted to inform you that you put me in a folder where I can't save files (The folders get identified with this RegularExpression: \"{0}\"). Please move me to a save location like your Downloads or Documents folder so I can operate.";
+
+        //BMBFUploading
+        public String uploadingAborted { get; set; } = "No file has been selected. Not uploading anything";
+        public String uploading { get; set; } = "Uploading {0}";
+        public String uploaded { get; set; } = "Uploaded {0}. Check the BMBF Web interface to see if it was successful";
+
     }
 
     public class MainMenuUI
     {
         public String updateButton { get; set; } = "Update";
+        public String uploadToBMBFButton { get; set; } = "Upload to BMBF";
         public String installSongsButton { get; set; } = "Install Songs";
         public String installModsButton { get; set; } = "Install Mods";
         public String updateBMBFButton { get; set; } = "Update/Install BMBF";
