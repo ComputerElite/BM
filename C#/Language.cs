@@ -385,7 +385,7 @@ namespace BMBFManager.Language
         public String moveSongLeftButton { get; set; } = "< Add Song";
         public String movePlaylistRightButton { get; set; } = "Remove all";
         public String moveSongRightButton { get; set; } = "Remove song";
-        public String deleteSongButton { get; set; } = "Remove Song";
+        public String deleteSongButton { get; set; } = "Delete Song";
         public String beastSaberButton { get; set; } = "Show Song on\nBeastSaber";
         public String beatSaverButton { get; set; } = "Show Song on\nBeatSaver";
         public String scoreSaberButton { get; set; } = "Search Song on\nScoreSaber";
@@ -417,8 +417,9 @@ namespace BMBFManager.Language
         public String couldntGetCover { get; set; } = "I couldn't get the Playlist Cover";
         public String songMustBeSelected { get; set; } = "You must have a Song selected";
         public String oSTDeletingNotAllowed { get; set; } = "I'll not allow you to delete any OST Song.";
-        public String sureDeleteSong { get; set; } = "Are you sure you want to delete {0}? This can NOT be undone after saving!";
+        public String sureDeleteSong { get; set; } = "Are you sure you want to delete {0} from your Quest? This can NOT be undone!";
         public String deletingSongAborted { get; set; } = "Deleting of {0} aborted.";
+        public String deletedSong { get; set; } = "Deleted {0}";
         public String mustHavePlaylistSelected { get; set; } = "You must have a Playlist selected";
         public String notAllowedToDeleteCustomSongs { get; set; } = "I'll not allow you to delete the CustomSongs Playlist.";
         public String oSTPlaylistDeletingNotAllowed { get; set; } = "I'll not allow you to delete any OST Playlist ({0}) for your own safety.";

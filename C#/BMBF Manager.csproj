@@ -244,13 +244,7 @@
     <Resource Include="Qosmetics2.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Main10.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Support8.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="PlaylistEditor2.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="QSU5.png" />
@@ -262,7 +256,10 @@
     <Resource Include="BBBU5_B.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="PlaylistEditor3.png" />
+    <Resource Include="Main11.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="PlaylistEditor4.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
