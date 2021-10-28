@@ -1,4 +1,5 @@
-﻿/*
+﻿
+/*
     You ask what this is? I had the Idea of lerning how to work with different classes and help myself a bit better with the BeatSaver api. (DON'T SPAM ME THAT BEATSAVERSHARP EXISTS).
     Btw nice that you are interested in my code.
 */
@@ -344,8 +345,9 @@ namespace BeatSaverAPI
 
     public class BeatSaverAPIInteractor
     {
-        public readonly string BeatSaverAPIBaseLink = "https://api.beatmaps.io/";
-        public readonly string BeatSaverLink = "https://beatmaps.io";
+        public readonly string BeatSaverAPIBaseLink = "https://api.beatsaver.com/";
+        public readonly string BeatSaverLink = "https://beatsaver.com";
+        public List<BeatSaverAPISong> songs = new List<BeatSaverAPISong>();
 
         public BeatSaberSong LoadFromInfoDat(String json)
         {
@@ -402,7 +404,7 @@ namespace BeatSaverAPI
                 cl.Headers.Add("user-agent", "BeatSaverAPIInteractor/1.0");
                 try
                 {
-                    String tmp = cl.DownloadString(BeatSaverAPIBaseLink + "maps/beatsaver/" + Key.ToLower());
+                    String tmp = cl.DownloadString(BeatSaverAPIBaseLink + "maps/id/" + Key.ToLower());
                     BeatSaverResult = JsonSerializer.Deserialize<BeatSaverAPISong>(tmp);
                     RateLimit = false;
                     BeatSaverResult.GoodRequest = true;
@@ -435,7 +437,8 @@ namespace BeatSaverAPI
             {
                 BeatSaverAPISong s = BeatSaverAPISongKey(key).Result;
                 return s;
-            } catch
+            }
+            catch
             {
                 return new BeatSaverAPISong();
             }
@@ -447,7 +450,8 @@ namespace BeatSaverAPI
             {
                 BeatSaverAPISong s = BeatSaverAPISongHash(hash).Result;
                 return s;
-            } catch
+            }
+            catch
             {
                 return new BeatSaverAPISong();
             }
@@ -528,5 +532,10 @@ namespace BeatSaverAPI
         {
             return SearchTextAPI(text).Result;
         }
+    }
+
+    public class SongCacheList
+    {
+        public List<BeatSaberSong> Songs { get; set; } = new List<BeatSaberSong>();
     }
 }

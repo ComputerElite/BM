@@ -261,5 +261,11 @@
   <ItemGroup>
     <Resource Include="PlaylistEditor4.png" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\ComputerUtils\ComputerUtils\ComputerUtils.csproj">
+      <Project>{F4A6AA3F-D1B6-42B4-9183-CA3F2D75C7DF}</Project>
+      <Name>ComputerUtils</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

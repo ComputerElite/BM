@@ -80,7 +80,7 @@ namespace BMBF_Manager
         {
             searchButton.Content = MainWindow.globalLanguage.songs.UI.searchButton;
             showMetadataButton.Content = MainWindow.globalLanguage.songs.UI.showMetadataButton;
-            cancleDownloadsButton.Content = MainWindow.globalLanguage.songs.UI.cancleDownloadsButton;
+            cancleDownloadsButton.Content = MainWindow.globalLanguage.songs.UI.cancelDownloadsButton;
             installSongButton.Content = MainWindow.globalLanguage.songs.UI.installSongButton;
             installPCSongButton.Content = MainWindow.globalLanguage.songs.UI.installPCSongButton;
             SongKey.Text = MainWindow.globalLanguage.songs.UI.songKeyPlaceholder;
@@ -260,7 +260,7 @@ namespace BMBF_Manager
         {
             if(downloadqueue.Count() == 0)
             {
-                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.songs.code.cantCancleNonActive);
+                txtbox.AppendText("\n\n" + MainWindow.globalLanguage.songs.code.cantCancelNonActive);
                 txtbox.ScrollToEnd();
             } else
             {

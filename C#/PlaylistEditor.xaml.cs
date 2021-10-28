@@ -24,6 +24,7 @@ using System.Text.RegularExpressions;
 using ComputerUtils.RegxTemplates;
 using ComputerUtils.StringFormatters;
 using BMBFManager.Utils;
+using ComputerUtils.Timing;
 
 namespace BMBF_Manager
 {
@@ -1045,14 +1046,14 @@ namespace BMBF_Manager
                         continue;
                     }
                     SongsWindow.InstallSongPE(r.id);
-                    await Task.Delay(1000);
+                    await TimeDelay.DelayWithoutThreadBlock(1000);
                 }
 
                 txtbox.AppendText("\n\n" + MainWindow.globalLanguage.playlistEditor.code.installingSongs);
                 txtbox.ScrollToEnd();
                 while (waiting)
                 {
-                    await Task.Delay(1000);
+                    await TimeDelay.DelayWithoutThreadBlock(1000);
                 }
                 txtbox.AppendText("\n" + MainWindow.globalLanguage.playlistEditor.code.installedSongs);
                 txtbox.ScrollToEnd();

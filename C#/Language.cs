@@ -97,7 +97,7 @@ namespace BMBFManager.Language
         //BMBF Updates
         public String operationRunning { get; set; } = "A operation is already running. Please try again after it has finished.";
         public String onQuest2 { get; set; } = "Are you on an Oculus Quest 2?";
-        public String moddedBSDetected { get; set; } = "Modded Beat Saber has been detected. If you press yes I'll uninstall Beat Saber and BMBF and make a Backup of it to restore. If you press no I'll cancle Updating.";
+        public String moddedBSDetected { get; set; } = "Modded Beat Saber has been detected. If you press yes I'll uninstall Beat Saber and BMBF and make a Backup of it to restore. If you press no I'll cancel Updating.";
         public String bMBFUpdatatingAborted { get; set; } = "BMBF Updating aborted.";
         public String playlistBackup { get; set; } = "Backing up Playlist to {0}";
         public String playlistBackupFinished { get; set; } = "Backed up Playlists to {0}";
@@ -139,7 +139,7 @@ namespace BMBFManager.Language
         public String bMBFNotReachable { get; set; } = "I couldn't reach BMBF. The IP you typed is: \"{0}\". Is this right? If it is check that BMBF is opened on your Quest and that your Quest and PC are on the same Wifi network.";
 
         //Exception
-        public String Exception { get; set; } = "You just noticed a bug. This window shouldn't show up if all goes right. I saved useful information for ComputerElite (Creator of BMBF Manager) to fix your bug in a file labeled \"Crash.log\". Please send that file to ComputerElite via Discord and tell him what you wanted to do. I'll close myself once you clicked ok so nothing gets messed up (If you still want to continue press cancle).\n\nException:";
+        public String Exception { get; set; } = "You just noticed a bug. This window shouldn't show up if all goes right. I saved useful information for ComputerElite (Creator of BMBF Manager) to fix your bug in a file labeled \"Crash.log\". Please send that file to ComputerElite via Discord and tell him what you wanted to do. I'll close myself once you clicked ok so nothing gets messed up (If you still want to continue press cancel).\n\nException:";
 
         //Warning
         public String systemDirWarning { get; set; } = "Hello friendly BMBF Manager here. I just wanted to inform you that you put me in a folder where I can't save files (The folders get identified with this RegularExpression: \"{0}\"). Please move me to a save location like your Downloads or Documents folder so I can operate.";
@@ -615,7 +615,7 @@ namespace BMBFManager.Language
         public String finishedIndex { get; set; } = "Finished! Listed {0} songs in Songs.txt";
 
         //Song Lib switching
-        public String songLibSwitchInfo { get; set; } = "So you want to transfer your Song library from the PC Version of Beat Saber to the Quest Version or from the Quest Version to the PC Version? You are in the right place! It's hightly suggested to make a backup before proceeding! Please press following button:\nQuest to PC = Yes, PC to Quest = No, cancle = cancle";
+        public String songLibSwitchInfo { get; set; } = "So you want to transfer your Song library from the PC Version of Beat Saber to the Quest Version or from the Quest Version to the PC Version? You are in the right place! It's hightly suggested to make a backup before proceeding! Please press following button:\nQuest to PC = Yes, PC to Quest = No, cancel = cancel";
         public String choosePCModsFolder { get; set; } = "Please choose the CustomSongs folder of your PC installation and plug in your Quest via USB";
         public String differentVolumeWarning { get; set; } = "Attention! BMBF Manager and your Beat Saber installation are on different volumes (Beat Saber is on volume {0} and BMBF Manager on volume {1})! Please move BMBF Manager to volume {0} for this function to work. I'll abort now-";
         public String operationRunning { get; set; } = "A Operation is already running. Please wait until it has finished.";
@@ -643,7 +643,7 @@ namespace BMBFManager.Language
         public String searchTermPlaceholder { get; set; } = "Search Term";
         public String songKeyPlaceholder { get; set; } = "Song Key";
         public String showMetadataButton { get; set; } = "See complete Song Metadata";
-        public String cancleDownloadsButton { get; set; } = "cancel downloads";
+        public String cancelDownloadsButton { get; set; } = "cancel downloads";
         public String installSongButton { get; set; } = "Install selected Song";
         public String installPCSongButton { get; set; } = "Install Song that's on\nyour PC";
     }
@@ -661,7 +661,7 @@ namespace BMBFManager.Language
         public String beatMapKey { get; set; } = "BeatMap Key: {0}";
         public String beatSaverError { get; set; } = "Beat Saver error";
         public String noResultsFound { get; set; } = "No results found. Try another Search Term";
-        public String cantCancleNonActive { get; set; } = "You can't cancle a non active download.";
+        public String cantCancelNonActive { get; set; } = "You can't cancel a non active download.";
         public String clearedQueue { get; set; } = "removed all queued downloads";
         public String zipFile { get; set; } = "Zip Files";
         public String selectValidZip { get; set; } = "Please select a valid Zip File";
