@@ -1,6 +1,26 @@
 {
     "mods": [
         {
+            "name": "GAY FROGS!",
+            "details": "I DON'T LIKE EM' PUTTIN' CHEMICALS IN THE WATER THAT TURNED THE FREAKIN' FROGS GAY!!!",
+            "ModID": "GayFrogs",
+            "creator": [
+                "Millzy"
+            ],
+            "downloads": [
+                {
+                    "modversion": "0.1.0",
+                    "gameversion": [
+                        "1.17.1"
+                    ],
+                    "download": "https://cdn.discordapp.com/attachments/959136713987465326/968556900453068820/GayFrogs-0.1.0.qmod",
+                    "forward": false,
+                    "coremod": false,
+                    "notes": ""
+                }
+            ]
+        },
+        {
             "name": "Custom Main Menu",
             "details": "Customize the text on the main menu of Beat Saber",
             "ModID": "CustomMainMenu",
@@ -232,6 +252,16 @@
                 {
                     "modversion": "2.1.0",
                     "gameversion": [
+                        "1.21.0"
+                    ],
+                    "download": "https://cal117.itch.io/colorama",
+                    "notes": "",
+                    "forward": true,
+                    "coremod": false
+                },
+                {
+                    "modversion": "2.1.0",
+                    "gameversion": [
                         "1.20.0"
                     ],
                     "download": "https://cal117.itch.io/colorama",
@@ -310,6 +340,16 @@
                 " xyonico"
             ],
             "downloads": [
+                {
+                    "modversion": "5.0.1",
+                    "gameversion": [
+                        "1.21.0"
+                    ],
+                    "download": "https://github.com/ItsKaitlyn03/AnyTweaks/releases/download/v5.0.1/anytweaks_v5.0.1.qmod",
+                    "notes": "",
+                    "forward": false,
+                    "coremod": false
+                },
                 {
                     "modversion": "5.0.0",
                     "gameversion": [
@@ -1160,6 +1200,16 @@
                 " cal117"
             ],
             "downloads": [
+                {
+                    "modversion": "1.4.0",
+                    "gameversion": [
+                        "1.21.0"
+                    ],
+                    "download": "https://cal117.itch.io/particletuner",
+                    "notes": "",
+                    "forward": true,
+                    "coremod": false
+                },
                 {
                     "modversion": "1.4.0",
                     "gameversion": [
