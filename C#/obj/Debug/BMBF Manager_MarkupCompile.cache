@@ -4,17 +4,17 @@
 winexe
 C#
 .cs
-D:\Visual Studio\BMBF Manager\BMBF Manager\obj\Debug\
+C:\Users\riley\Source\Repos\BM\C#\obj\Debug\
 BMBF_Manager
 none
 false
 DEBUG;TRACE
-D:\Visual Studio\BMBF Manager\BMBF Manager\App.xaml
-7-2092981587
+C:\Users\riley\Source\Repos\BM\C#\App.xaml
+10-934260084
 
-14-1636255513
-15931940256
-BBBU.xaml;BPLists.xaml;HitSounds.xaml;MainWindow.xaml;Mods.xaml;Songs.xaml;Support.xaml;
+29294128915
+201235592074
+BBBU.xaml;BPLists.xaml;HitSounds.xaml;MainWindow.xaml;Mods.xaml;PlaylistEditor.xaml;Qosmetics.xaml;QSU.xaml;Songs.xaml;Support.xaml;
 
-False
+True
 
