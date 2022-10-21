@@ -1,6 +1,26 @@
 {
     "mods": [
         {
+            "name": "Adblock",
+            "details": "???",
+            "ModID": "adblock",
+            "creator": [
+                "nesiLLL"
+            ],
+            "downloads": [
+                {
+                    "modversion": "0.1.0",
+                    "gameversion": [
+                        "1.25.1"
+                    ],
+                    "download": "https://github.com/WaffleTheCool/Adblock/releases/download/1.25.1/Adblock.qmod",
+                    "forward": false,
+                    "coremod": false,
+                    "notes": ""
+                }
+            ]
+        },
+        {
             "name": "Speecil Tweaks",
             "details": "Cool little tweaks i think are pretty cool such as: Results menu tweaks, Play button tweaks, and more",
             "ModID": "SpeecilTweaks",
