@@ -1,6 +1,46 @@
 {
     "mods": [
         {
+            "name": "Trick Saber",
+            "details": "Mod that lets you throw and spin your sabers every which way you want!",
+            "ModID": "trick-saber",
+            "creator": [
+                "RedBrumbler"
+            ],
+            "downloads": [
+                {
+                    "modversion": "0.1.0",
+                    "gameversion": [
+                        "1.25.1"
+                    ],
+                    "download": "https://github.com/RedBrumbler/TrickSaber/releases/download/v0.1.0/TrickSaber.qmod",
+                    "forward": false,
+                    "coremod": false,
+                    "notes": ""
+                }
+            ]
+        },
+        {
+            "name": "Adblock",
+            "details": "???",
+            "ModID": "adblock",
+            "creator": [
+                "nesiLLL"
+            ],
+            "downloads": [
+                {
+                    "modversion": "0.1.0",
+                    "gameversion": [
+                        "1.25.1"
+                    ],
+                    "download": "https://github.com/WaffleTheCool/Adblock/releases/download/1.25.1/Adblock.qmod",
+                    "forward": false,
+                    "coremod": false,
+                    "notes": ""
+                }
+            ]
+        },
+        {
             "name": "Adblock",
             "details": "???",
             "ModID": "adblock",
@@ -69,6 +109,16 @@
             ],
             "downloads": [
                 {
+                    "modversion": "1.1.0",
+                    "gameversion": [
+                        "1.25.1"
+                    ],
+                    "download": "https://github.com/ItsKaitlyn03/PeripheralHUD/releases/download/v1.1.0/peripheralhud_v1.1.0.qmod",
+                    "forward": false,
+                    "coremod": false,
+                    "notes": ""
+                },
+                {
                     "modversion": "1.0.0",
                     "gameversion": [
                         "1.24.0"
@@ -102,12 +152,22 @@
         },
         {
             "name": "Burn Mark Tweaks",
-            "details": "#{description}",
+            "details": "Burn mark Tweaker",
             "ModID": "burnmarktweaks",
             "creator": [
                 "Core"
             ],
             "downloads": [
+                {
+                    "modversion": "0.2.0",
+                    "gameversion": [
+                        "1.25.1"
+                    ],
+                    "download": "https://github.com/Core-Quest/BurnMarktweaks/releases/download/v0.2.0/BurnMarkTweaks.qmod",
+                    "forward": false,
+                    "coremod": false,
+                    "notes": ""
+                },
                 {
                     "modversion": "0.1.0",
                     "gameversion": [
@@ -222,12 +282,22 @@
         },
         {
             "name": "More By Core",
-            "details": "More By Core, version #{version} for 1.24! Lets you customize BeatSaber with added stuff!",
+            "details": "More By Core, for 1.25.1! Lets you customize BeatSaber with added stuff!",
             "ModID": "morebycore",
             "creator": [
                 "Core"
             ],
             "downloads": [
+                {
+                    "modversion": "1.3.1",
+                    "gameversion": [
+                        "1.25.1"
+                    ],
+                    "download": "https://github.com/Core-Quest/MoreByCore/releases/download/v1.3.1/MoreByCore.qmod",
+                    "forward": false,
+                    "coremod": false,
+                    "notes": ""
+                },
                 {
                     "modversion": "1.3.0",
                     "gameversion": [
@@ -785,6 +855,16 @@
                 {
                     "modversion": "0.2.1",
                     "gameversion": [
+                        "1.25.1"
+                    ],
+                    "download": "https://github.com/Tatenshi/RandomSongPicker/releases/download/v0.2.1/RandomSongPicker_1_25_1.qmod",
+                    "forward": false,
+                    "coremod": false,
+                    "notes": ""
+                },
+                {
+                    "modversion": "0.2.1",
+                    "gameversion": [
                         "1.24.0"
                     ],
                     "download": "https://github.com/Tatenshi/RandomSongPicker/releases/download/v0.2.1/RandomSongPicker_1_24_0.qmod",
@@ -874,6 +954,16 @@
                 "Temmie#7854 | WaffleTheCool#8942"
             ],
             "downloads": [
+                {
+                    "modversion": "0.1.1",
+                    "gameversion": [
+                        "1.25.1"
+                    ],
+                    "download": "https://github.com/WaffleTheCool/CustomMainMenu/releases/download/1.25.1/CustomMainMenu.qmod",
+                    "forward": false,
+                    "coremod": false,
+                    "notes": ""
+                },
                 {
                     "modversion": "0.1.1",
                     "gameversion": [
@@ -1207,6 +1297,16 @@
             ],
             "downloads": [
                 {
+                    "modversion": "6.1.0",
+                    "gameversion": [
+                        "1.25.1"
+                    ],
+                    "download": "https://github.com/ItsKaitlyn03/AnyTweaks/releases/download/v6.1.0/anytweaks_v6.1.0.qmod",
+                    "forward": false,
+                    "coremod": false,
+                    "notes": ""
+                },
+                {
                     "modversion": "6.0.0",
                     "gameversion": [
                         "1.24.0"
@@ -1308,6 +1408,16 @@
                 " EnderdracheLP"
             ],
             "downloads": [
+                {
+                    "modversion": "1.7.0",
+                    "gameversion": [
+                        "1.25.1"
+                    ],
+                    "download": "https://github.com/EnderdracheLP/ClockMod/releases/download/1.7.0/ClockMod.qmod",
+                    "forward": false,
+                    "coremod": false,
+                    "notes": ""
+                },
                 {
                     "modversion": "1.6.0",
                     "gameversion": [
@@ -1492,7 +1602,7 @@
         },
         {
             "name": "Streamer Tools",
-            "details": "Allows applications to get information from the game like, currently played song.\r\n\r\nMod Setup video: https://www.youtube.com/watch?v=1OMHjjSi-5s",
+            "details": "Allows applications to get information from the game like, currently played song.",
             "ModID": "Streamer-Tools",
             "creator": [
                 "EnderdracheLP",
@@ -1501,6 +1611,16 @@
                 " Phaze"
             ],
             "downloads": [
+                {
+                    "modversion": "0.6.0",
+                    "gameversion": [
+                        "1.25.1"
+                    ],
+                    "download": "https://github.com/EnderdracheLP/streamer-tools/releases/download/0.7.0/StreamerTools.qmod",
+                    "forward": false,
+                    "coremod": false,
+                    "notes": ""
+                },
                 {
                     "modversion": "0.5.1",
                     "gameversion": [
@@ -1582,6 +1702,16 @@
                 "Kinsi55"
             ],
             "downloads": [
+                {
+                    "modversion": "1.5.0",
+                    "gameversion": [
+                        "1.25.1"
+                    ],
+                    "download": "https://github.com/ItsKaitlyn03/SmoothedController/releases/download/v1.5.0/smoothedcontroller_v1.5.0.qmod",
+                    "forward": false,
+                    "coremod": false,
+                    "notes": ""
+                },
                 {
                     "modversion": "1.4.0",
                     "gameversion": [
@@ -2439,6 +2569,16 @@
             ],
             "downloads": [
                 {
+                    "modversion": "1.2.3",
+                    "gameversion": [
+                        "1.25.1"
+                    ],
+                    "download": "https://github.com/FranciscoRibeiro03/SearchFixesQuest/releases/download/v1.2.3/SearchFixes.qmod",
+                    "forward": false,
+                    "coremod": false,
+                    "notes": ""
+                },
+                {
                     "modversion": "1.2.2",
                     "gameversion": [
                         "1.24.0"
@@ -2823,12 +2963,22 @@
         },
         {
             "name": "Third Person mod",
-            "details": "- Play in third person\r\n- Fix your camera to your saber\r\n- Fix your camera\r\n- Fly through the enviorment",
+            "details": "undefined",
             "ModID": "Play3rdPer",
             "creator": [
                 "ComputerElite"
             ],
             "downloads": [
+                {
+                    "modversion": "0.9.0",
+                    "gameversion": [
+                        "1.25.1"
+                    ],
+                    "download": "https://github.com/ComputerElite/play3rdper/releases/download/0.9.0/Play3rdPer.qmod",
+                    "forward": false,
+                    "coremod": false,
+                    "notes": ""
+                },
                 {
                     "modversion": "0.8.0",
                     "gameversion": [
@@ -3910,6 +4060,16 @@
             ],
             "downloads": [
                 {
+                    "modversion": "1.3.0",
+                    "gameversion": [
+                        "1.25.1"
+                    ],
+                    "download": "https://github.com/EnderdracheLP/QuestSounds/releases/download/1.3.0/QuestSounds.qmod",
+                    "forward": false,
+                    "coremod": false,
+                    "notes": ""
+                },
+                {
                     "modversion": "1.2.0",
                     "gameversion": [
                         "1.24.0"
@@ -4748,12 +4908,22 @@
         },
         {
             "name": "CrashMod",
-            "details": "Crash your mod via various triggers. e. g. Crash on Play, Miss, Good cut, Turn and way more",
+            "details": "undefined",
             "ModID": "CrashMod",
             "creator": [
                 "ComputerElite"
             ],
             "downloads": [
+                {
+                    "modversion": "0.9.0",
+                    "gameversion": [
+                        "1.25.1"
+                    ],
+                    "download": "https://github.com/ComputerElite/CrashMod/releases/download/0.9.0/CrashMod.qmod",
+                    "forward": false,
+                    "coremod": false,
+                    "notes": ""
+                },
                 {
                     "modversion": "0.8.0",
                     "gameversion": [
@@ -5581,12 +5751,22 @@
         },
         {
             "name": "RedBar",
-            "details": "Custom color for your energy bar which changes according to your health and Rainbow mode",
+            "details": "undefined",
             "ModID": "RedBar",
             "creator": [
                 "ComputerElite"
             ],
             "downloads": [
+                {
+                    "modversion": "1.11.0",
+                    "gameversion": [
+                        "1.25.1"
+                    ],
+                    "download": "https://github.com/ComputerElite/RedBar/releases/download/1.11.0/RedBar.qmod",
+                    "forward": false,
+                    "coremod": false,
+                    "notes": ""
+                },
                 {
                     "modversion": "1.10.0",
                     "gameversion": [
