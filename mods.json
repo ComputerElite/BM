@@ -41,26 +41,6 @@
             ]
         },
         {
-            "name": "Adblock",
-            "details": "???",
-            "ModID": "adblock",
-            "creator": [
-                "nesiLLL"
-            ],
-            "downloads": [
-                {
-                    "modversion": "0.1.0",
-                    "gameversion": [
-                        "1.25.1"
-                    ],
-                    "download": "https://github.com/WaffleTheCool/Adblock/releases/download/1.25.1/Adblock.qmod",
-                    "forward": false,
-                    "coremod": false,
-                    "notes": ""
-                }
-            ]
-        },
-        {
             "name": "Speecil Tweaks",
             "details": "Cool little tweaks i think are pretty cool such as: Results menu tweaks, Play button tweaks, and more",
             "ModID": "SpeecilTweaks",
@@ -68,6 +48,16 @@
                 "speecil"
             ],
             "downloads": [
+                {
+                    "modversion": "0.2.0",
+                    "gameversion": [
+                        "1.25.1"
+                    ],
+                    "download": "https://github.com/speecil/SpeecilTweaks/releases/download/v0.2.0/SpeecilTweaks.qmod",
+                    "forward": false,
+                    "coremod": false,
+                    "notes": ""
+                },
                 {
                     "modversion": "0.1.0",
                     "gameversion": [
@@ -603,12 +593,22 @@
         },
         {
             "name": "SmallQubes",
-            "details": "Your lovely basic cubes but smoll:cheems: \r\n\r\n- Changes the cubes/chains size, hitboxes are the same\r\n- Modifiers compatible\r\n- Will disable itself if Qosmetics cubes installed",
+            "details": "undefined",
             "ModID": "SmallQubes",
             "creator": [
                 "NSGolova"
             ],
             "downloads": [
+                {
+                    "modversion": "0.1.1",
+                    "gameversion": [
+                        "1.25.1"
+                    ],
+                    "download": "https://github.com/NSGolova/SmallQubes/releases/download/v0.1.1/SmallQubes.qmod",
+                    "forward": false,
+                    "coremod": false,
+                    "notes": ""
+                },
                 {
                     "modversion": "0.1.0",
                     "gameversion": [
@@ -2375,6 +2375,16 @@
                 "Christoffyw"
             ],
             "downloads": [
+                {
+                    "modversion": "0.1.0",
+                    "gameversion": [
+                        "1.25.1"
+                    ],
+                    "download": "https://cdn.discordapp.com/attachments/1015346189828374528/1033549143274172456/ThinSabers.qmod",
+                    "forward": false,
+                    "coremod": false,
+                    "notes": ""
+                },
                 {
                     "modversion": "0.1.0",
                     "gameversion": [
