@@ -1524,12 +1524,22 @@
         },
         {
             "name": "BeatLeader",
-            "details": "",
+            "details": "undefined",
             "ModID": "BeatLeader",
             "creator": [
                 "NSGolova"
             ],
             "downloads": [
+                {
+                    "modversion": "0.4.2",
+                    "gameversion": [
+                        "1.25.1"
+                    ],
+                    "download": "https://github.com/BeatLeader/beatleader-qmod/releases/download/v0.4.2/BeatLeader_1_25_1.qmod",
+                    "forward": false,
+                    "coremod": false,
+                    "notes": ""
+                },
                 {
                     "modversion": "0.4.1",
                     "gameversion": [
@@ -4235,12 +4245,22 @@
         },
         {
             "name": "Replay",
-            "details": "Replay lets you view your past plays which is useful for training and recording! You can record replays with a smooth camera, third person camera, and with an avatar! This is currently the main way content creators record Beat Saber on quest.\r\n",
+            "details": "Watch back your best scores!",
             "ModID": "replay",
             "creator": [
-                "Henwill8"
+                "Metalit"
             ],
             "downloads": [
+                {
+                    "modversion": "0.1.0",
+                    "gameversion": [
+                        "1.25.1"
+                    ],
+                    "download": "https://github.com/Metalit/Replay/releases/download/0.1.0/Replay.qmod",
+                    "forward": false,
+                    "coremod": false,
+                    "notes": ""
+                },
                 {
                     "modversion": "0.6.3",
                     "gameversion": [
