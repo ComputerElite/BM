@@ -1,6 +1,48 @@
 {
     "mods": [
         {
+            "name": "Pause Remapper",
+            "details": "Allows the user to change which button pauses a map",
+            "ModID": "PauseRemapper",
+            "creator": [
+                "speecil"
+            ],
+            "downloads": [
+                {
+                    "modversion": "0.1.0",
+                    "gameversion": [
+                        "1.25.1"
+                    ],
+                    "download": "https://github.com/speecil/PauseRemapper/releases/download/v0.1.0/Pause.Remapper.qmod",
+                    "forward": false,
+                    "coremod": false,
+                    "notes": ""
+                }
+            ]
+        },
+        {
+            "name": "MultiplayerCore",
+            "details": "Port of MultiplayerCore, the PC mod that adds features to BeatTogether Multiplayer.",
+            "ModID": "multiplayer-core",
+            "creator": [
+                "EnderdracheLP",
+                " cubic",
+                "Goobie"
+            ],
+            "downloads": [
+                {
+                    "modversion": "1.3.1",
+                    "gameversion": [
+                        "1.25.1"
+                    ],
+                    "download": "https://github.com/EnderdracheLP/MultiplayerCore.Quest/releases/download/1.3.1/MultiplayerCore_1.3.1.qmod",
+                    "forward": false,
+                    "coremod": false,
+                    "notes": ""
+                }
+            ]
+        },
+        {
             "name": "MultiplayerCore",
             "details": "Port of MultiplayerCore, the PC mod that adds features to BeatTogether Multiplayer.",
             "ModID": "multiplayer-core",
@@ -114,12 +156,22 @@
         },
         {
             "name": "CrashReporter",
-            "details": "Automatically uploads crashes to https://analyzer.questmodding.com/crashes (Publicly Visible)",
+            "details": "Automatically upload crashes.",
             "ModID": "crashreporter",
             "creator": [
                 "darknight1050"
             ],
             "downloads": [
+                {
+                    "modversion": "0.1.4",
+                    "gameversion": [
+                        "1.25.1"
+                    ],
+                    "download": "https://github.com/darknight1050/CrashReporter/releases/download/v0.1.4/CrashReporter.qmod",
+                    "forward": false,
+                    "coremod": false,
+                    "notes": ""
+                },
                 {
                     "modversion": "0.1.4",
                     "gameversion": [
@@ -572,6 +624,16 @@
             ],
             "downloads": [
                 {
+                    "modversion": "0.1.2",
+                    "gameversion": [
+                        "1.25.1"
+                    ],
+                    "download": "https://github.com/oli-ctrl/acculight/releases/download/v0.1.2/Acculight.qmod",
+                    "forward": false,
+                    "coremod": false,
+                    "notes": ""
+                },
+                {
                     "modversion": "0.1.1",
                     "gameversion": [
                         "1.24.0"
@@ -801,6 +863,16 @@
                 "Oli"
             ],
             "downloads": [
+                {
+                    "modversion": "0.1.3",
+                    "gameversion": [
+                        "1.25.1"
+                    ],
+                    "download": "https://github.com/oli-ctrl/ShortSaber/releases/download/v0.1.3/ShortSaber.qmod",
+                    "forward": false,
+                    "coremod": false,
+                    "notes": ""
+                },
                 {
                     "modversion": "0.1.1",
                     "gameversion": [
@@ -2120,12 +2192,22 @@
         },
         {
             "name": "NoodleExtensions",
-            "details": "This adds a host of new things you can do with your maps. Original mod for PC by Aeroluna. Contributions by Fern and Sc2ad.\n\nCheck out the settings, there's some useful toggles for wall looks\n\n- Does NOT support most v3 specific features. (sliders, arcs etc.)\n- Mostly the renames for v3 are supported",
+            "details": "This adds a host of new things you can do with your maps. Original mod for PC by Aeroluna. Contributions by Fern and Sc2ad.",
             "ModID": "NoodleExtensions",
             "creator": [
                 "StackDoubleFlow"
             ],
             "downloads": [
+                {
+                    "modversion": "1.3.0-beta1",
+                    "gameversion": [
+                        "1.25.1"
+                    ],
+                    "download": "https://github.com/StackDoubleFlow/NoodleExtensions/releases/download/v1.3.0/noodle_extensions.qmod",
+                    "forward": false,
+                    "coremod": false,
+                    "notes": ""
+                },
                 {
                     "modversion": "1.3.0-beta1",
                     "gameversion": [
@@ -2230,12 +2312,23 @@
         },
         {
             "name": "Qubes",
-            "details": "Have you ever wanted a cube to play with? Or maybe more than one? Well, with this mod you can have as many as you want, wherever you want. You can make them pause for you, crash your game, become modern art, or just be fun to cut.\r\n\r\nThe original idea for this is the PC mod PauseCoob, created by Goobwabber: https://discord.com/channels/441805394323439646/889894313763422218/895121405388144680\r\nAlong with multiple requests in mod-requests that made me think of making this something more.",
+            "details": "Highly customizable Qubes(tm) that you can play with. Currently updated by speecil",
             "ModID": "qubes",
             "creator": [
-                "Metalit"
+                "Metalit",
+                " speecil"
             ],
             "downloads": [
+                {
+                    "modversion": "1.3.1",
+                    "gameversion": [
+                        "1.25.1"
+                    ],
+                    "download": "https://github.com/speecil/Qubes/releases/download/v1.3.1/Qubes.qmod",
+                    "forward": false,
+                    "coremod": false,
+                    "notes": ""
+                },
                 {
                     "modversion": "1.1.0",
                     "gameversion": [
@@ -3575,6 +3668,16 @@
                     "notes": ""
                 },
                 {
+                    "modversion": "2.7.0",
+                    "gameversion": [
+                        "1.25.1"
+                    ],
+                    "download": "https://github.com/bsq-ports/Chroma/releases/download/v2.7.0/chroma.qmod",
+                    "forward": false,
+                    "coremod": false,
+                    "notes": ""
+                },
+                {
                     "modversion": "2.6.5",
                     "gameversion": [
                         "1.24.0"
@@ -4285,12 +4388,22 @@
         },
         {
             "name": "Replay",
-            "details": "Watch back your best scores!\nFor any questions about the mod, refer to the FAQ before asking in quest-help: https://github.com/Metalit/Replay#faq-frequently-asked-questions\nOther information and rendering tips can be found by scrolling down from there.",
+            "details": "Watch back your best scores!",
             "ModID": "replay",
             "creator": [
                 "Metalit"
             ],
             "downloads": [
+                {
+                    "modversion": "0.1.0",
+                    "gameversion": [
+                        "1.25.1"
+                    ],
+                    "download": "https://github.com/Metalit/Replay/releases/download/0.1.1/Replay.qmod",
+                    "forward": false,
+                    "coremod": false,
+                    "notes": ""
+                },
                 {
                     "modversion": "0.1.0",
                     "gameversion": [
@@ -5508,6 +5621,16 @@
                 "BeatTogether Team"
             ],
             "downloads": [
+                {
+                    "modversion": "1.6.0",
+                    "gameversion": [
+                        "1.25.1"
+                    ],
+                    "download": "https://github.com/BeatTogether/BeatTogether.Quest/releases/download/v1.6.0/BeatTogether_v1.6.0.qmod",
+                    "forward": false,
+                    "coremod": false,
+                    "notes": ""
+                },
                 {
                     "modversion": "1.4.0",
                     "gameversion": [
