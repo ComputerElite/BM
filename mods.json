@@ -1,6 +1,26 @@
 {
     "mods": [
         {
+            "name": "ImageFactory",
+            "details": "Place and customize images throughout your game.",
+            "ModID": "ImageFactory",
+            "creator": [
+                "Optimus"
+            ],
+            "downloads": [
+                {
+                    "modversion": "1.0.0",
+                    "gameversion": [
+                        "1.25.1"
+                    ],
+                    "download": "https://github.com/OptimusChen/ImageFactory-Quest/releases/download/v1.0.0/ImageFactory.qmod",
+                    "forward": false,
+                    "coremod": false,
+                    "notes": ""
+                }
+            ]
+        },
+        {
             "name": "Pause Remapper",
             "details": "Allows the user to change which button pauses a map",
             "ModID": "PauseRemapper",
@@ -8,6 +28,46 @@
                 "speecil"
             ],
             "downloads": [
+                {
+                    "modversion": "0.1.0",
+                    "gameversion": [
+                        "1.25.1"
+                    ],
+                    "download": "https://github.com/speecil/PauseRemapper/releases/download/v0.2.0/Pause.Remapper.qmod",
+                    "forward": false,
+                    "coremod": false,
+                    "notes": ""
+                },
+                {
+                    "modversion": "0.1.0",
+                    "gameversion": [
+                        "1.25.1"
+                    ],
+                    "download": "https://github.com/speecil/PauseRemapper/releases/download/v0.1.0/Pause.Remapper.qmod",
+                    "forward": false,
+                    "coremod": false,
+                    "notes": ""
+                }
+            ]
+        },
+        {
+            "name": "Pause Remapper",
+            "details": "Allows the user to change which button pauses a map",
+            "ModID": "PauseRemapper",
+            "creator": [
+                "speecil"
+            ],
+            "downloads": [
+                {
+                    "modversion": "0.1.0",
+                    "gameversion": [
+                        "1.25.1"
+                    ],
+                    "download": "https://github.com/speecil/PauseRemapper/releases/download/v0.2.0/Pause.Remapper.qmod",
+                    "forward": false,
+                    "coremod": false,
+                    "notes": ""
+                },
                 {
                     "modversion": "0.1.0",
                     "gameversion": [
@@ -4374,6 +4434,16 @@
                 "Metalit"
             ],
             "downloads": [
+                {
+                    "modversion": "0.1.0",
+                    "gameversion": [
+                        "1.25.1"
+                    ],
+                    "download": "https://github.com/Metalit/Replay/releases/download/0.1.1/Replay.qmod",
+                    "forward": false,
+                    "coremod": false,
+                    "notes": ""
+                },
                 {
                     "modversion": "0.1.0",
                     "gameversion": [
