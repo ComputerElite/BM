@@ -85,26 +85,6 @@
             ]
         },
         {
-            "name": "Trick Saber",
-            "details": "Mod that lets you throw and spin your sabers every which way you want!",
-            "ModID": "trick-saber",
-            "creator": [
-                "RedBrumbler"
-            ],
-            "downloads": [
-                {
-                    "modversion": "0.1.0",
-                    "gameversion": [
-                        "1.25.1"
-                    ],
-                    "download": "https://github.com/RedBrumbler/TrickSaber/releases/download/v0.1.0/TrickSaber.qmod",
-                    "forward": false,
-                    "coremod": false,
-                    "notes": ""
-                }
-            ]
-        },
-        {
             "name": "Adblock",
             "details": "???",
             "ModID": "adblock",
