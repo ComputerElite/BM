@@ -1,6 +1,47 @@
 {
     "mods": [
         {
+            "name": "SessionQombo",
+            "details": "A mod for beat saber that makes the combo counter persist across level load, like in the game `In The Groove` ",
+            "ModID": "SessionQombo",
+            "creator": [
+                "Original by Headaassbtw",
+                " ported by Oli"
+            ],
+            "downloads": [
+                {
+                    "modversion": "0.1.0",
+                    "gameversion": [
+                        "1.25.1"
+                    ],
+                    "download": "https://github.com/oli-ctrl/SessionQombo/releases/download/v0.1.0/SessionQombo.qmod",
+                    "forward": false,
+                    "coremod": false,
+                    "notes": ""
+                }
+            ]
+        },
+        {
+            "name": "ImageFactory",
+            "details": "Place and customize images throughout your game.",
+            "ModID": "ImageFactory",
+            "creator": [
+                "Optimus"
+            ],
+            "downloads": [
+                {
+                    "modversion": "1.0.0",
+                    "gameversion": [
+                        "1.25.1"
+                    ],
+                    "download": "https://github.com/OptimusChen/ImageFactory-Quest/releases/download/v1.0.0/ImageFactory.qmod",
+                    "forward": false,
+                    "coremod": false,
+                    "notes": ""
+                }
+            ]
+        },
+        {
             "name": "ImageFactory",
             "details": "Place and customize images throughout your game.",
             "ModID": "ImageFactory",
