@@ -1,12 +1,21 @@
 {
     "1.25.1": [
         {
+            "name": "Simple Beatmap Play Count",
+            "description": "",
+            "id": "BeatmapPlayCount",
+            "version": "0.2.1",
+            "download": "https://github.com/netux/BeatSaber-BeatmapPlayCount-Quest/releases/download/v0.2.1/BeatmapPlayCount.v0.2.1.qmod",
+            "source": "https://github.com/netux/BeatSaber-BeatmapPlayCount-Quest",
+            "author": "Netux"
+        },
+        {
             "name": "Qolour Switcher",
             "description": "Allows user full control over the colours of the notes, bombs, and walls!",
             "id": "QolourSwitcher",
             "version": "2.0.0",
             "download": "https://github.com/NuggoDEV/Qolour-Switcher-Rewritten/releases/download/v2.0.0/QolourSwitcher.qmod",
-            "source": "https://github.com/NuggoDEV/Qolour-Switcher-Rewritten/",
+            "source": "https://githubhttps://github.com/NuggoDEV/Qolour-Switcher-Rewritten/",
             "author": "Nuggo#9535"
         },
         {
