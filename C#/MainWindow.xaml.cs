@@ -45,7 +45,7 @@ namespace BMBF_Manager
     {
         public static int MajorV = 1;
         public static int MinorV = 16;
-        public static int PatchV = 7;
+        public static int PatchV = 8;
         public static bool Preview = false;
         public static bool log = false;
 
@@ -687,15 +687,14 @@ namespace BMBF_Manager
                     Running = false;
                     return;
                 }
+                Process.Start("https://computerelite.github.io/tools/Oculus/AppVersions.html?id=2448060205267927");
                 MessageBoxResult result2 = MessageBox.Show(globalLanguage.mainMenu.code.downloadBS, "BMBF Manager - BMBF Updater", MessageBoxButton.OK, MessageBoxImage.Warning);
-                MessageBoxResult result3 = MessageBox.Show(globalLanguage.mainMenu.code.makingSure, "BMBF Manager - BMBF Updater", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-                switch (result3)
+                OpenFileDialog dialog = new OpenFileDialog();
+                dialog.Filter = "Apk (*.apk)|*.apk";
+                txtbox.AppendText(globalLanguage.mainMenu.code.installingBS);
+                if(dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
-                    case MessageBoxResult.No:
-                        txtbox.AppendText("\n\n" + globalLanguage.mainMenu.code.bMBFUpdatatingAbortedInstallBS);
-                        txtbox.ScrollToEnd();
-                        Running = false;
-                        return;
+                    aDBI.adb("install \"" + dialog.FileName + "\"", txtbox);
                 }
             }
             else

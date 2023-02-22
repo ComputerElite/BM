@@ -632,15 +632,20 @@ namespace BMBF_Manager
                     txtbox.ScrollToEnd();
                     return;
                 }
-                MessageBoxResult r = MessageBox.Show(MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.playlistEditor.code.sureDeleteSong, UnsortedPlaylist[selected + NotProcessed].SongName), "BMBF Manager - Playlist Editor", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-                switch (r)
+                if(!asked)
                 {
-                    case MessageBoxResult.No:
-                        txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.playlistEditor.code.deletingSongAborted, UnsortedPlaylist[selected + NotProcessed].SongName));
-                        txtbox.ScrollToEnd();
-                        NotProcessed++;
-                        continue;
-                }
+					MessageBoxResult r = MessageBox.Show(MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.playlistEditor.code.sureDeleteSong, UnsortedPlaylist[selected + NotProcessed].SongName), "BMBF Manager - Playlist Editor", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+					switch (r)
+					{
+						case MessageBoxResult.No:
+							txtbox.AppendText("\n\n" + MainWindow.globalLanguage.processer.ReturnProcessed(MainWindow.globalLanguage.playlistEditor.code.deletingSongAborted, UnsortedPlaylist[selected + NotProcessed].SongName));
+							txtbox.ScrollToEnd();
+							NotProcessed++;
+							continue;
+					}
+                    asked = true;
+				}
+                
                 ADBInteractor interactor = new ADBInteractor();
                 string name = UnsortedPlaylist[selected + NotProcessed].SongName;
                 for(int i = 0; i < BMBFConfig.Config.Playlists.Count; i++)
