@@ -1,6 +1,60 @@
 {
     "1.25.1": [
         {
+            "name": "Darth Maul",
+            "description": "Double saber thing",
+            "id": "darthmaul",
+            "version": "0.1.0",
+            "download": "https://github.com/Core-Quest/Quhttps://github.com/Core-Quest/DarthMaul/releases/download/v0.1/DarthMaul.qmodest-RPC/releases/download/v0.1/QuestRPC-v0.1.qmod",
+            "source": "https://github.com/Core-Quest/Quhttps://github.com/Core-Quest/DarthMaul/",
+            "author": "Core"
+        },
+        {
+            "name": "QuestDiscordRPC",
+            "description": "Quest Discord RPC to show that your playing discord.",
+            "id": "questrpc",
+            "version": "0.1.0",
+            "download": "https://github.com/Core-Quest/Quest-RPC/releases/download/v0.1/QuestRPC-v0.1.qmod",
+            "source": "https://github.com/Core-Quest/Quest-RPC/",
+            "author": "Core"
+        },
+        {
+            "name": "Fail Button",
+            "description": "Adds a button that forces a fail",
+            "id": "FailButton",
+            "version": "0.1.0",
+            "download": "https://github.com/speecil/FailButton-Quest/releases/download/v0.1.0/FailButton.qmod",
+            "source": "https://github.com/speecil/FailButton-Quest/",
+            "author": "speecil"
+        },
+        {
+            "name": "No Play Beat Saber",
+            "description": "Literally does not allow you to play beat saber. Why do you even want this?",
+            "id": "noplaybeatsaber",
+            "version": "1.16.0",
+            "download": "https://github.com/Kaylerr/No-Play-Beat-Saber/releases/download/v10/noplaybeatsaberV1.qmod",
+            "source": "https://github.com/Kaylerr/No-Play-Beat-Saber/",
+            "author": "Kaylerr"
+        },
+        {
+            "name": "Nya",
+            "description": "Beat Saber mod for displaying nya-tastic images from various anime themed web APIs!",
+            "id": "Nya",
+            "version": "0.2.4",
+            "download": "https://github.com/FrozenAlex/Nya-quest/releases/download/v0.2.4-bs-1.25.1/Nya.qmod",
+            "source": "https://github.com/FrozenAlex/Nya-quest/",
+            "author": "FrozenAlex"
+        },
+        {
+            "name": "CrashInfo",
+            "description": "Shows backtraces for recent crashes ingame if crash reporter uploads crashes. Mainly intended for those who dont know how to read logs.",
+            "id": "crashinfo",
+            "version": "0.1.0",
+            "download": "https://github.com/kodenamekrak/CrashInfo/releases/download/0.1.0/CrashInfo-1.25.1.qmod",
+            "source": "https://github.com/kodenamekrak/CrashInfo/",
+            "author": "KodenameKRAK"
+        },
+        {
             "name": "NoParticles",
             "description": "Allows you to disable various particles throughout the game",
             "id": "NoParticles",
@@ -26,6 +80,15 @@
             "download": "https://github.com/NuggoDEV/Qolour-Switcher-Rewritten/releases/download/v2.0.0/QolourSwitcher.qmod",
             "source": "https://githubhttps://github.com/NuggoDEV/Qolour-Switcher-Rewritten/",
             "author": "Nuggo#9535"
+        },
+        {
+            "name": "MultiplayerCore",
+            "description": "Port of MultiplayerCore, the PC mod that adds features to BeatTogether Multiplayer.",
+            "id": "multiplayer-core",
+            "version": "1.3.2",
+            "download": "https://github.com/EnderdracheLP/MultiplayerCore.Quest/releases/download/1.3.2/MultiplayerCore_1.3.2.qmod",
+            "source": "https://github.com/EnderdracheLP/MultiplayerCore.Quest/",
+            "author": "EnderdracheLP, cubic,Goobie"
         },
         {
             "name": "Acculight",
@@ -217,6 +280,15 @@
             "author": "EnderdracheLP,  cubic, Goobie"
         },
         {
+            "name": "Nya",
+            "description": "Beat Saber mod for displaying nya-tastic images from various anime themed web APIs!",
+            "id": "Nya",
+            "version": "0.2.3",
+            "download": "https://github.com/FrozenAlex/Nya-quest/releases/download/v0.2.3-bs-1.25.1/Nya.qmod",
+            "source": "https://github.com/FrozenAlex/Nya-quest/",
+            "author": "FrozenAlex"
+        },
+        {
             "name": "NoodleExtensions",
             "description": "This adds a host of new things you can do with your maps. Original mod for PC by Aeroluna. Contributions by Fern and Sc2ad.",
             "id": "NoodleExtensions",
@@ -233,6 +305,15 @@
             "download": "https://github.com/kodenamekrak/NoParticles/releases/download/0.1.4/NoParticles.qmod",
             "source": "https://github.com/kodenamekrak/NoParticles/",
             "author": "AllyPallyUK,  updated by KodenameKRAK"
+        },
+        {
+            "name": "Nya",
+            "description": "Beat Saber mod for displaying nya-tastic images from various anime themed web APIs!",
+            "id": "Nya",
+            "version": "0.2.4",
+            "download": "https://github.com/FrozenAlex/Nya-quest/releases/download/v0.2.4-bs-1.25.1/Nya.qmod",
+            "source": "https://github.com/FrozenAlex/Nya-quest/",
+            "author": "FrozenAlex"
         },
         {
             "name": "Pause Remapper",
@@ -624,8 +705,17 @@
             "author": "StackDoubleFlow,  rxzz0,  rcelyte"
         },
         {
+            "name": "Nya",
+            "description": "Beat Saber mod for displaying nya-tastic images from various anime themed web APIs!",
+            "id": "Nya",
+            "version": "0.2.3",
+            "download": "https://github.com/FrozenAlex/Nya-quest/releases/download/v0.2.3-bs-1.24.0/Nya.qmod",
+            "source": "https://github.com/FrozenAlex/Nya-quest/",
+            "author": "FrozenAlex"
+        },
+        {
             "name": "More By Core",
-            "description": "More By Core, for 1.25.1! Lets you customize BeatSaber with added stuff!",
+            "description": "More By Core, for 1.24.0! Lets you customize BeatSaber with added stuff!",
             "id": "morebycore",
             "version": "1.3.0",
             "download": "https://github.com/Core-Quest/MoreByCore/releases/download/v1.4.0/MoreByCore.qmod",
@@ -663,8 +753,8 @@
             "name": "Nya",
             "description": "Beat Saber mod for displaying nya-tastic images from various anime themed web APIs!",
             "id": "Nya",
-            "version": "0.2.2",
-            "download": "https://github.com/FrozenAlex/Nya-quest/releases/download/v0.2.2/Nya.qmod",
+            "version": "0.2.4",
+            "download": "https://github.com/FrozenAlex/Nya-quest/releases/download/v0.2.4-bs-1.24.0/Nya.qmod",
             "source": "https://github.com/FrozenAlex/Nya-quest/",
             "author": "FrozenAlex"
         },
